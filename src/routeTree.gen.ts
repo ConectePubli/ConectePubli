@@ -13,17 +13,143 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TermosIndexImport } from './routes/termos/index'
+import { Route as PrivacidadeIndexImport } from './routes/privacidade/index'
+import { Route as dashboardSideNavDashboardImport } from './routes/(dashboard)/_side-nav-dashboard'
+import { Route as authLoginIndexImport } from './routes/(auth)/login/index'
+import { Route as authEsqueciSenhaIndexImport } from './routes/(auth)/esqueci-senha/index'
+import { Route as authCadastroMarcaImport } from './routes/(auth)/cadastro/marca'
+import { Route as authCadastroInfluenciadorImport } from './routes/(auth)/cadastro/influenciador'
+import { Route as perfisMarcaUserNameIndexImport } from './routes/(perfis)/marca/$userName/index'
+import { Route as perfisInfluenciadorUsernameIndexImport } from './routes/(perfis)/influenciador/$username/index'
+import { Route as dashboardSideNavDashboardDashboardIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/index'
+import { Route as dashboardSideNavDashboardDashboardLayoutImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/_layout'
+import { Route as dashboardSideNavDashboardDashboardCriarIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/criar/index'
+import { Route as dashboardSideNavDashboardDashboardCampanhasIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/index'
+import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/index'
+import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar'
+import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
+import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar'
 
 // Create Virtual Routes
 
+const dashboardImport = createFileRoute('/(dashboard)')()
 const IndexLazyImport = createFileRoute('/')()
+const dashboardSideNavDashboardDashboardImport = createFileRoute(
+  '/(dashboard)/_side-nav-dashboard/dashboard',
+)()
 
 // Create/Update Routes
+
+const dashboardRoute = dashboardImport.update({
+  id: '/(dashboard)',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const TermosIndexRoute = TermosIndexImport.update({
+  path: '/termos/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PrivacidadeIndexRoute = PrivacidadeIndexImport.update({
+  path: '/privacidade/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const dashboardSideNavDashboardRoute = dashboardSideNavDashboardImport.update({
+  id: '/_side-nav-dashboard',
+  getParentRoute: () => dashboardRoute,
+} as any)
+
+const dashboardSideNavDashboardDashboardRoute =
+  dashboardSideNavDashboardDashboardImport.update({
+    path: '/dashboard',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
+const authLoginIndexRoute = authLoginIndexImport.update({
+  path: '/login/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authEsqueciSenhaIndexRoute = authEsqueciSenhaIndexImport.update({
+  path: '/esqueci-senha/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authCadastroMarcaRoute = authCadastroMarcaImport.update({
+  path: '/cadastro/marca',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authCadastroInfluenciadorRoute = authCadastroInfluenciadorImport.update({
+  path: '/cadastro/influenciador',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const perfisMarcaUserNameIndexRoute = perfisMarcaUserNameIndexImport.update({
+  path: '/marca/$userName/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const perfisInfluenciadorUsernameIndexRoute =
+  perfisInfluenciadorUsernameIndexImport.update({
+    path: '/influenciador/$username/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardIndexRoute =
+  dashboardSideNavDashboardDashboardIndexImport.update({
+    path: '/',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardLayoutRoute =
+  dashboardSideNavDashboardDashboardLayoutImport.update({
+    id: '/_layout',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardCriarIndexRoute =
+  dashboardSideNavDashboardDashboardCriarIndexImport.update({
+    path: '/criar/',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardCampanhasIndexRoute =
+  dashboardSideNavDashboardDashboardCampanhasIndexImport.update({
+    path: '/campanhas/',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute =
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport.update({
+    path: '/campanhas/$campaignId/',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute =
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarImport.update({
+    path: '/campanhas/$campaignId/editar',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute =
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarImport.update({
+    path: '/campanhas/$campaignId/aprovar',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute =
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarImport.update({
+    path: '/campanhas/$campaignId/aplicar',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -36,39 +162,355 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/(dashboard)': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof dashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/(dashboard)/_side-nav-dashboard': {
+      id: '/_side-nav-dashboard'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof dashboardSideNavDashboardImport
+      parentRoute: typeof dashboardRoute
+    }
+    '/privacidade/': {
+      id: '/privacidade/'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/termos/': {
+      id: '/termos/'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/cadastro/influenciador': {
+      id: '/cadastro/influenciador'
+      path: '/cadastro/influenciador'
+      fullPath: '/cadastro/influenciador'
+      preLoaderRoute: typeof authCadastroInfluenciadorImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/cadastro/marca': {
+      id: '/cadastro/marca'
+      path: '/cadastro/marca'
+      fullPath: '/cadastro/marca'
+      preLoaderRoute: typeof authCadastroMarcaImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/esqueci-senha/': {
+      id: '/esqueci-senha/'
+      path: '/esqueci-senha'
+      fullPath: '/esqueci-senha'
+      preLoaderRoute: typeof authEsqueciSenhaIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard': {
+      id: '/_side-nav-dashboard/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard/_layout': {
+      id: '/_side-nav-dashboard/dashboard/_layout'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardLayoutImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardRoute
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard/': {
+      id: '/_side-nav-dashboard/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardIndexImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
+    '/(perfis)/influenciador/$username/': {
+      id: '/influenciador/$username/'
+      path: '/influenciador/$username'
+      fullPath: '/influenciador/$username'
+      preLoaderRoute: typeof perfisInfluenciadorUsernameIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(perfis)/marca/$userName/': {
+      id: '/marca/$userName/'
+      path: '/marca/$userName'
+      fullPath: '/marca/$userName'
+      preLoaderRoute: typeof perfisMarcaUserNameIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/': {
+      id: '/_side-nav-dashboard/dashboard/campanhas/'
+      path: '/campanhas'
+      fullPath: '/dashboard/campanhas'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasIndexImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard/criar/': {
+      id: '/_side-nav-dashboard/dashboard/criar/'
+      path: '/criar'
+      fullPath: '/dashboard/criar'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardCriarIndexImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar': {
+      id: '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar'
+      path: '/campanhas/$campaignId/aplicar'
+      fullPath: '/dashboard/campanhas/$campaignId/aplicar'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': {
+      id: '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
+      path: '/campanhas/$campaignId/aprovar'
+      fullPath: '/dashboard/campanhas/$campaignId/aprovar'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar': {
+      id: '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar'
+      path: '/campanhas/$campaignId/editar'
+      fullPath: '/dashboard/campanhas/$campaignId/editar'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/': {
+      id: '/_side-nav-dashboard/dashboard/campanhas/$campaignId/'
+      path: '/campanhas/$campaignId'
+      fullPath: '/dashboard/campanhas/$campaignId'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface dashboardSideNavDashboardDashboardRouteChildren {
+  dashboardSideNavDashboardDashboardLayoutRoute: typeof dashboardSideNavDashboardDashboardLayoutRoute
+  dashboardSideNavDashboardDashboardIndexRoute: typeof dashboardSideNavDashboardDashboardIndexRoute
+  dashboardSideNavDashboardDashboardCampanhasIndexRoute: typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
+  dashboardSideNavDashboardDashboardCriarIndexRoute: typeof dashboardSideNavDashboardDashboardCriarIndexRoute
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
+}
+
+const dashboardSideNavDashboardDashboardRouteChildren: dashboardSideNavDashboardDashboardRouteChildren =
+  {
+    dashboardSideNavDashboardDashboardLayoutRoute:
+      dashboardSideNavDashboardDashboardLayoutRoute,
+    dashboardSideNavDashboardDashboardIndexRoute:
+      dashboardSideNavDashboardDashboardIndexRoute,
+    dashboardSideNavDashboardDashboardCampanhasIndexRoute:
+      dashboardSideNavDashboardDashboardCampanhasIndexRoute,
+    dashboardSideNavDashboardDashboardCriarIndexRoute:
+      dashboardSideNavDashboardDashboardCriarIndexRoute,
+    dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute:
+      dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute,
+    dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute:
+      dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute,
+    dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute:
+      dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute,
+    dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute:
+      dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute,
+  }
+
+const dashboardSideNavDashboardDashboardRouteWithChildren =
+  dashboardSideNavDashboardDashboardRoute._addFileChildren(
+    dashboardSideNavDashboardDashboardRouteChildren,
+  )
+
+interface dashboardSideNavDashboardRouteChildren {
+  dashboardSideNavDashboardDashboardRoute: typeof dashboardSideNavDashboardDashboardRouteWithChildren
+}
+
+const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChildren =
+  {
+    dashboardSideNavDashboardDashboardRoute:
+      dashboardSideNavDashboardDashboardRouteWithChildren,
+  }
+
+const dashboardSideNavDashboardRouteWithChildren =
+  dashboardSideNavDashboardRoute._addFileChildren(
+    dashboardSideNavDashboardRouteChildren,
+  )
+
+interface dashboardRouteChildren {
+  dashboardSideNavDashboardRoute: typeof dashboardSideNavDashboardRouteWithChildren
+}
+
+const dashboardRouteChildren: dashboardRouteChildren = {
+  dashboardSideNavDashboardRoute: dashboardSideNavDashboardRouteWithChildren,
+}
+
+const dashboardRouteWithChildren = dashboardRoute._addFileChildren(
+  dashboardRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
+  '/': typeof dashboardSideNavDashboardRouteWithChildren
+  '/privacidade': typeof PrivacidadeIndexRoute
+  '/termos': typeof TermosIndexRoute
+  '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
+  '/cadastro/marca': typeof authCadastroMarcaRoute
+  '/esqueci-senha': typeof authEsqueciSenhaIndexRoute
+  '/login': typeof authLoginIndexRoute
+  '/dashboard': typeof dashboardSideNavDashboardDashboardLayoutRoute
+  '/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
+  '/influenciador/$username': typeof perfisInfluenciadorUsernameIndexRoute
+  '/marca/$userName': typeof perfisMarcaUserNameIndexRoute
+  '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
+  '/dashboard/criar': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
+  '/dashboard/campanhas/$campaignId/aplicar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute
+  '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
+  '/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
+  '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
+  '/': typeof dashboardSideNavDashboardRouteWithChildren
+  '/privacidade': typeof PrivacidadeIndexRoute
+  '/termos': typeof TermosIndexRoute
+  '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
+  '/cadastro/marca': typeof authCadastroMarcaRoute
+  '/esqueci-senha': typeof authEsqueciSenhaIndexRoute
+  '/login': typeof authLoginIndexRoute
+  '/dashboard': typeof dashboardSideNavDashboardDashboardIndexRoute
+  '/influenciador/$username': typeof perfisInfluenciadorUsernameIndexRoute
+  '/marca/$userName': typeof perfisMarcaUserNameIndexRoute
+  '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
+  '/dashboard/criar': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
+  '/dashboard/campanhas/$campaignId/aplicar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute
+  '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
+  '/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
+  '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
+  '/': typeof dashboardRouteWithChildren
+  '/_side-nav-dashboard': typeof dashboardSideNavDashboardRouteWithChildren
+  '/privacidade/': typeof PrivacidadeIndexRoute
+  '/termos/': typeof TermosIndexRoute
+  '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
+  '/cadastro/marca': typeof authCadastroMarcaRoute
+  '/esqueci-senha/': typeof authEsqueciSenhaIndexRoute
+  '/login/': typeof authLoginIndexRoute
+  '/_side-nav-dashboard/dashboard': typeof dashboardSideNavDashboardDashboardRouteWithChildren
+  '/_side-nav-dashboard/dashboard/_layout': typeof dashboardSideNavDashboardDashboardLayoutRoute
+  '/_side-nav-dashboard/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
+  '/influenciador/$username/': typeof perfisInfluenciadorUsernameIndexRoute
+  '/marca/$userName/': typeof perfisMarcaUserNameIndexRoute
+  '/_side-nav-dashboard/dashboard/campanhas/': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
+  '/_side-nav-dashboard/dashboard/criar/': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
+  '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute
+  '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
+  '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
+  '/_side-nav-dashboard/dashboard/campanhas/$campaignId/': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/privacidade'
+    | '/termos'
+    | '/cadastro/influenciador'
+    | '/cadastro/marca'
+    | '/esqueci-senha'
+    | '/login'
+    | '/dashboard'
+    | '/dashboard/'
+    | '/influenciador/$username'
+    | '/marca/$userName'
+    | '/dashboard/campanhas'
+    | '/dashboard/criar'
+    | '/dashboard/campanhas/$campaignId/aplicar'
+    | '/dashboard/campanhas/$campaignId/aprovar'
+    | '/dashboard/campanhas/$campaignId/editar'
+    | '/dashboard/campanhas/$campaignId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/privacidade'
+    | '/termos'
+    | '/cadastro/influenciador'
+    | '/cadastro/marca'
+    | '/esqueci-senha'
+    | '/login'
+    | '/dashboard'
+    | '/influenciador/$username'
+    | '/marca/$userName'
+    | '/dashboard/campanhas'
+    | '/dashboard/criar'
+    | '/dashboard/campanhas/$campaignId/aplicar'
+    | '/dashboard/campanhas/$campaignId/aprovar'
+    | '/dashboard/campanhas/$campaignId/editar'
+    | '/dashboard/campanhas/$campaignId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_side-nav-dashboard'
+    | '/privacidade/'
+    | '/termos/'
+    | '/cadastro/influenciador'
+    | '/cadastro/marca'
+    | '/esqueci-senha/'
+    | '/login/'
+    | '/_side-nav-dashboard/dashboard'
+    | '/_side-nav-dashboard/dashboard/_layout'
+    | '/_side-nav-dashboard/dashboard/'
+    | '/influenciador/$username/'
+    | '/marca/$userName/'
+    | '/_side-nav-dashboard/dashboard/campanhas/'
+    | '/_side-nav-dashboard/dashboard/criar/'
+    | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar'
+    | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
+    | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar'
+    | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  dashboardRoute: typeof dashboardRouteWithChildren
+  PrivacidadeIndexRoute: typeof PrivacidadeIndexRoute
+  TermosIndexRoute: typeof TermosIndexRoute
+  authCadastroInfluenciadorRoute: typeof authCadastroInfluenciadorRoute
+  authCadastroMarcaRoute: typeof authCadastroMarcaRoute
+  authEsqueciSenhaIndexRoute: typeof authEsqueciSenhaIndexRoute
+  authLoginIndexRoute: typeof authLoginIndexRoute
+  perfisInfluenciadorUsernameIndexRoute: typeof perfisInfluenciadorUsernameIndexRoute
+  perfisMarcaUserNameIndexRoute: typeof perfisMarcaUserNameIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  dashboardRoute: dashboardRouteWithChildren,
+  PrivacidadeIndexRoute: PrivacidadeIndexRoute,
+  TermosIndexRoute: TermosIndexRoute,
+  authCadastroInfluenciadorRoute: authCadastroInfluenciadorRoute,
+  authCadastroMarcaRoute: authCadastroMarcaRoute,
+  authEsqueciSenhaIndexRoute: authEsqueciSenhaIndexRoute,
+  authLoginIndexRoute: authLoginIndexRoute,
+  perfisInfluenciadorUsernameIndexRoute: perfisInfluenciadorUsernameIndexRoute,
+  perfisMarcaUserNameIndexRoute: perfisMarcaUserNameIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -83,11 +525,100 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/",
+        "/privacidade/",
+        "/termos/",
+        "/cadastro/influenciador",
+        "/cadastro/marca",
+        "/esqueci-senha/",
+        "/login/",
+        "/influenciador/$username/",
+        "/marca/$userName/"
       ]
     },
     "/": {
-      "filePath": "index.lazy.tsx"
+      "filePath": "(dashboard)",
+      "children": [
+        "/_side-nav-dashboard"
+      ]
+    },
+    "/_side-nav-dashboard": {
+      "filePath": "(dashboard)/_side-nav-dashboard.tsx",
+      "parent": "/",
+      "children": [
+        "/_side-nav-dashboard/dashboard"
+      ]
+    },
+    "/privacidade/": {
+      "filePath": "privacidade/index.tsx"
+    },
+    "/termos/": {
+      "filePath": "termos/index.tsx"
+    },
+    "/cadastro/influenciador": {
+      "filePath": "(auth)/cadastro/influenciador.tsx"
+    },
+    "/cadastro/marca": {
+      "filePath": "(auth)/cadastro/marca.tsx"
+    },
+    "/esqueci-senha/": {
+      "filePath": "(auth)/esqueci-senha/index.tsx"
+    },
+    "/login/": {
+      "filePath": "(auth)/login/index.tsx"
+    },
+    "/_side-nav-dashboard/dashboard": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard",
+      "parent": "/_side-nav-dashboard",
+      "children": [
+        "/_side-nav-dashboard/dashboard/_layout",
+        "/_side-nav-dashboard/dashboard/",
+        "/_side-nav-dashboard/dashboard/campanhas/",
+        "/_side-nav-dashboard/dashboard/criar/",
+        "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar",
+        "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar",
+        "/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar",
+        "/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
+      ]
+    },
+    "/_side-nav-dashboard/dashboard/_layout": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/_layout.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/_side-nav-dashboard/dashboard/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/index.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/influenciador/$username/": {
+      "filePath": "(perfis)/influenciador/$username/index.tsx"
+    },
+    "/marca/$userName/": {
+      "filePath": "(perfis)/marca/$userName/index.tsx"
+    },
+    "/_side-nav-dashboard/dashboard/campanhas/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/index.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/_side-nav-dashboard/dashboard/criar/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/criar/index.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/_side-nav-dashboard/dashboard/campanhas/$campaignId/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/index.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
     }
   }
 }
