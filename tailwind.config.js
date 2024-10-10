@@ -51,6 +51,16 @@ export default {
           5: "hsl(var(--chart-5))",
         },
       },
+      container: {
+        center: true,
+        padding: "2rem",
+        screens: {
+          sm: "92%",
+          md: "90%",
+          lg: "80%",
+          xl: "75%",
+        },
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
