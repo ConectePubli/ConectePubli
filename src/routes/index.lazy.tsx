@@ -5,6 +5,7 @@ import { BrandsSection } from "@/components/sections/LandingPage/BrandSection";
 import { HowItWorksSection } from "@/components/sections/LandingPage/HowItWorksSection";
 import { SectionInfo } from "@/components/sections/LandingPage/SectionInfo";
 import { ConnectSection } from "@/components/sections/LandingPage/ConnectSection";
+import { Footer } from "@/components/sections/LandingPage/Footer";
 
 import brand from "@/assets/brand.svg";
 import influencers from "@/assets/influencers.svg";
@@ -67,6 +68,8 @@ function Index() {
       />
 
       <ConnectSection />
+
+      <Footer />
     </div>
   );
 }
