@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { HeroSection } from "@/components/sections/LandingPage/HeroSection";
 import { BrandsSection } from "@/components/sections/LandingPage/BrandSection";
@@ -6,6 +6,7 @@ import { HowItWorksSection } from "@/components/sections/LandingPage/HowItWorksS
 import { SectionInfo } from "@/components/sections/LandingPage/SectionInfo";
 import { ConnectSection } from "@/components/sections/LandingPage/ConnectSection";
 
+import { Footer } from "@/components/sections/LandingPage/Footer";
 import brand from "@/assets/brand.svg";
 import influencers from "@/assets/influencers.svg";
 
@@ -14,8 +15,10 @@ export const Route = createLazyFileRoute("/")({
 });
 
 function Index() {
+  const navigate = useNavigate();
+
   return (
-    <div className="px-10">
+    <div className="container px-10">
       <HeroSection />
 
       <BrandsSection />
@@ -41,7 +44,7 @@ function Index() {
         }
         buttonLabel="Cadastro Marcas"
         buttonVariant="blue"
-        buttonOnClick={() => console.log("Cadastro Marcas")}
+        buttonOnClick={() => navigate({ to: "/cadastro/marca" })}
       />
 
       <SectionInfo
@@ -62,11 +65,13 @@ function Index() {
         }
         buttonLabel="Cadastro Influenciadores"
         buttonVariant="orange"
-        buttonOnClick={() => console.log("Cadastro Influenciadores")}
+        buttonOnClick={() => navigate({ to: "/cadastro/influenciador" })}
         reverse
       />
 
       <ConnectSection />
+
+      <Footer />
     </div>
   );
 }

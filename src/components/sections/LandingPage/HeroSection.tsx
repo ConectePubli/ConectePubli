@@ -1,10 +1,13 @@
 import React from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
 import heroImage from "@/assets/hero-image.svg";
 
 export const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="py-16 flex flex-col md:flex-row items-center justify-between bg-white">
       <div className="flex-1 space-y-4">
@@ -19,14 +22,11 @@ export const HeroSection: React.FC = () => {
         <div className="flex gap-4">
           <Button
             variant="orange"
-            onClick={() => console.log("Acessar Minha Conta clicado")}
+            onClick={() => navigate({ to: "/login" })}
           >
             Acessar Minha Conta
           </Button>
-          <Button
-            variant="blue"
-            onClick={() => console.log("Cadastrar-se e Comece clicado")}
-          >
+          <Button variant="blue" onClick={() => navigate({ to: "/cadastro" })}>
             Cadastrar-se e Comece
           </Button>
         </div>

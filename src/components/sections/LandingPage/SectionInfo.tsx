@@ -21,7 +21,7 @@ export const SectionInfo: React.FC<SectionInfoProps> = ({
   reverse = false,
 }) => {
   return (
-    <section className="py-8">
+    <section className="py-12">
       <div
         className={`flex flex-col ${
           reverse ? "lg:flex-row-reverse" : "lg:flex-row"

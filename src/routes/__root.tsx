@@ -6,9 +6,9 @@ import logo from "@/assets/logo.svg";
 export const Route = createRootRoute({
   component: () => (
     <>
-      <div className="container">
-        <header className="bg-white py-4">
-          <div className="mx-auto lg:px-0 flex justify-between items-center">
+      <div className="container h-[65px] w-[100%] flex">
+        <header className="bg-white flex w-[100%]">
+          <div className="mx-auto lg:px-0 w-[100%] flex justify-between items-center">
             <Link to="/">
               <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
             </Link>
@@ -32,11 +32,7 @@ export const Route = createRootRoute({
 
       <hr />
 
-      <main className="container">
-        <div className="mx-auto px-4 lg:px-0">
-          <Outlet />
-        </div>
-      </main>
+      <Outlet />
 
       <TanStackRouterDevtools />
     </>

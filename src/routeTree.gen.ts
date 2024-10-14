@@ -18,6 +18,7 @@ import { Route as PrivacidadeIndexImport } from './routes/privacidade/index'
 import { Route as dashboardSideNavDashboardImport } from './routes/(dashboard)/_side-nav-dashboard'
 import { Route as authLoginIndexImport } from './routes/(auth)/login/index'
 import { Route as authEsqueciSenhaIndexImport } from './routes/(auth)/esqueci-senha/index'
+import { Route as authCadastroIndexImport } from './routes/(auth)/cadastro/index'
 import { Route as authCadastroMarcaImport } from './routes/(auth)/cadastro/marca'
 import { Route as authCadastroInfluenciadorImport } from './routes/(auth)/cadastro/influenciador'
 import { Route as perfisMarcaUserNameIndexImport } from './routes/(perfis)/marca/$userName/index'
@@ -79,6 +80,11 @@ const authLoginIndexRoute = authLoginIndexImport.update({
 
 const authEsqueciSenhaIndexRoute = authEsqueciSenhaIndexImport.update({
   path: '/esqueci-senha/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authCadastroIndexRoute = authCadastroIndexImport.update({
+  path: '/cadastro/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -202,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/cadastro/marca'
       fullPath: '/cadastro/marca'
       preLoaderRoute: typeof authCadastroMarcaImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/cadastro/': {
+      id: '/cadastro/'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof authCadastroIndexImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/esqueci-senha/': {
@@ -369,6 +382,7 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
   '/cadastro/marca': typeof authCadastroMarcaRoute
+  '/cadastro': typeof authCadastroIndexRoute
   '/esqueci-senha': typeof authEsqueciSenhaIndexRoute
   '/login': typeof authLoginIndexRoute
   '/dashboard': typeof dashboardSideNavDashboardDashboardLayoutRoute
@@ -389,6 +403,7 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
   '/cadastro/marca': typeof authCadastroMarcaRoute
+  '/cadastro': typeof authCadastroIndexRoute
   '/esqueci-senha': typeof authEsqueciSenhaIndexRoute
   '/login': typeof authLoginIndexRoute
   '/dashboard': typeof dashboardSideNavDashboardDashboardIndexRoute
@@ -410,6 +425,7 @@ export interface FileRoutesById {
   '/termos/': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
   '/cadastro/marca': typeof authCadastroMarcaRoute
+  '/cadastro/': typeof authCadastroIndexRoute
   '/esqueci-senha/': typeof authEsqueciSenhaIndexRoute
   '/login/': typeof authLoginIndexRoute
   '/_side-nav-dashboard/dashboard': typeof dashboardSideNavDashboardDashboardRouteWithChildren
@@ -433,6 +449,7 @@ export interface FileRouteTypes {
     | '/termos'
     | '/cadastro/influenciador'
     | '/cadastro/marca'
+    | '/cadastro'
     | '/esqueci-senha'
     | '/login'
     | '/dashboard'
@@ -452,6 +469,7 @@ export interface FileRouteTypes {
     | '/termos'
     | '/cadastro/influenciador'
     | '/cadastro/marca'
+    | '/cadastro'
     | '/esqueci-senha'
     | '/login'
     | '/dashboard'
@@ -471,6 +489,7 @@ export interface FileRouteTypes {
     | '/termos/'
     | '/cadastro/influenciador'
     | '/cadastro/marca'
+    | '/cadastro/'
     | '/esqueci-senha/'
     | '/login/'
     | '/_side-nav-dashboard/dashboard'
@@ -494,6 +513,7 @@ export interface RootRouteChildren {
   TermosIndexRoute: typeof TermosIndexRoute
   authCadastroInfluenciadorRoute: typeof authCadastroInfluenciadorRoute
   authCadastroMarcaRoute: typeof authCadastroMarcaRoute
+  authCadastroIndexRoute: typeof authCadastroIndexRoute
   authEsqueciSenhaIndexRoute: typeof authEsqueciSenhaIndexRoute
   authLoginIndexRoute: typeof authLoginIndexRoute
   perfisInfluenciadorUsernameIndexRoute: typeof perfisInfluenciadorUsernameIndexRoute
@@ -507,6 +527,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermosIndexRoute: TermosIndexRoute,
   authCadastroInfluenciadorRoute: authCadastroInfluenciadorRoute,
   authCadastroMarcaRoute: authCadastroMarcaRoute,
+  authCadastroIndexRoute: authCadastroIndexRoute,
   authEsqueciSenhaIndexRoute: authEsqueciSenhaIndexRoute,
   authLoginIndexRoute: authLoginIndexRoute,
   perfisInfluenciadorUsernameIndexRoute: perfisInfluenciadorUsernameIndexRoute,
@@ -531,6 +552,7 @@ export const routeTree = rootRoute
         "/termos/",
         "/cadastro/influenciador",
         "/cadastro/marca",
+        "/cadastro/",
         "/esqueci-senha/",
         "/login/",
         "/influenciador/$username/",
@@ -561,6 +583,9 @@ export const routeTree = rootRoute
     },
     "/cadastro/marca": {
       "filePath": "(auth)/cadastro/marca.tsx"
+    },
+    "/cadastro/": {
+      "filePath": "(auth)/cadastro/index.tsx"
     },
     "/esqueci-senha/": {
       "filePath": "(auth)/esqueci-senha/index.tsx"

@@ -1,19 +1,25 @@
 import React from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
+import connect1 from "@/assets/connect1.svg";
+import connect2 from "@/assets/connect2.svg";
+
 export const ConnectSection: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="py-16">
       <div className="flex flex-col lg:flex-row items-center gap-6">
         <div className="flex flex-col md:flex-row w-full lg:w-[50%] gap-4">
           <img
-            src="https://via.placeholder.com/300"
+            src={connect1}
             alt="Influencer 1"
             className="rounded-lg shadow-lg w-full h-64 object-cover"
           />
           <img
-            src="https://via.placeholder.com/300"
+            src={connect2}
             alt="Influencer 2"
             className="rounded-lg shadow-lg w-full h-64 object-cover"
           />
@@ -38,7 +44,7 @@ export const ConnectSection: React.FC = () => {
             <Button
               variant="blue"
               size="lg"
-              onClick={() => console.log("Registrar")}
+              onClick={() => navigate({ to: "/cadastro" })}
             >
               Registrar-se Agora
             </Button>
