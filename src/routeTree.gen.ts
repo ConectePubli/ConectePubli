@@ -17,7 +17,7 @@ import { Route as TermosIndexImport } from './routes/termos/index'
 import { Route as PrivacidadeIndexImport } from './routes/privacidade/index'
 import { Route as dashboardSideNavDashboardImport } from './routes/(dashboard)/_side-nav-dashboard'
 import { Route as authLoginIndexImport } from './routes/(auth)/login/index'
-import { Route as authEsqueciSenhaIndexImport } from './routes/(auth)/esqueci-senha/index'
+import { Route as authEsquecerSenhaIndexImport } from './routes/(auth)/esquecer-senha/index'
 import { Route as authCadastroIndexImport } from './routes/(auth)/cadastro/index'
 import { Route as authCadastroMarcaImport } from './routes/(auth)/cadastro/marca'
 import { Route as authCadastroInfluenciadorImport } from './routes/(auth)/cadastro/influenciador'
@@ -78,8 +78,8 @@ const authLoginIndexRoute = authLoginIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const authEsqueciSenhaIndexRoute = authEsqueciSenhaIndexImport.update({
-  path: '/esqueci-senha/',
+const authEsquecerSenhaIndexRoute = authEsquecerSenhaIndexImport.update({
+  path: '/esquecer-senha/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -217,11 +217,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authCadastroIndexImport
       parentRoute: typeof rootRoute
     }
-    '/(auth)/esqueci-senha/': {
-      id: '/esqueci-senha/'
-      path: '/esqueci-senha'
-      fullPath: '/esqueci-senha'
-      preLoaderRoute: typeof authEsqueciSenhaIndexImport
+    '/(auth)/esquecer-senha/': {
+      id: '/esquecer-senha/'
+      path: '/esquecer-senha'
+      fullPath: '/esquecer-senha'
+      preLoaderRoute: typeof authEsquecerSenhaIndexImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/login/': {
@@ -383,7 +383,7 @@ export interface FileRoutesByFullPath {
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
   '/cadastro/marca': typeof authCadastroMarcaRoute
   '/cadastro': typeof authCadastroIndexRoute
-  '/esqueci-senha': typeof authEsqueciSenhaIndexRoute
+  '/esquecer-senha': typeof authEsquecerSenhaIndexRoute
   '/login': typeof authLoginIndexRoute
   '/dashboard': typeof dashboardSideNavDashboardDashboardLayoutRoute
   '/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
@@ -404,7 +404,7 @@ export interface FileRoutesByTo {
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
   '/cadastro/marca': typeof authCadastroMarcaRoute
   '/cadastro': typeof authCadastroIndexRoute
-  '/esqueci-senha': typeof authEsqueciSenhaIndexRoute
+  '/esquecer-senha': typeof authEsquecerSenhaIndexRoute
   '/login': typeof authLoginIndexRoute
   '/dashboard': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/influenciador/$username': typeof perfisInfluenciadorUsernameIndexRoute
@@ -426,7 +426,7 @@ export interface FileRoutesById {
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
   '/cadastro/marca': typeof authCadastroMarcaRoute
   '/cadastro/': typeof authCadastroIndexRoute
-  '/esqueci-senha/': typeof authEsqueciSenhaIndexRoute
+  '/esquecer-senha/': typeof authEsquecerSenhaIndexRoute
   '/login/': typeof authLoginIndexRoute
   '/_side-nav-dashboard/dashboard': typeof dashboardSideNavDashboardDashboardRouteWithChildren
   '/_side-nav-dashboard/dashboard/_layout': typeof dashboardSideNavDashboardDashboardLayoutRoute
@@ -450,7 +450,7 @@ export interface FileRouteTypes {
     | '/cadastro/influenciador'
     | '/cadastro/marca'
     | '/cadastro'
-    | '/esqueci-senha'
+    | '/esquecer-senha'
     | '/login'
     | '/dashboard'
     | '/dashboard/'
@@ -470,7 +470,7 @@ export interface FileRouteTypes {
     | '/cadastro/influenciador'
     | '/cadastro/marca'
     | '/cadastro'
-    | '/esqueci-senha'
+    | '/esquecer-senha'
     | '/login'
     | '/dashboard'
     | '/influenciador/$username'
@@ -490,7 +490,7 @@ export interface FileRouteTypes {
     | '/cadastro/influenciador'
     | '/cadastro/marca'
     | '/cadastro/'
-    | '/esqueci-senha/'
+    | '/esquecer-senha/'
     | '/login/'
     | '/_side-nav-dashboard/dashboard'
     | '/_side-nav-dashboard/dashboard/_layout'
@@ -514,7 +514,7 @@ export interface RootRouteChildren {
   authCadastroInfluenciadorRoute: typeof authCadastroInfluenciadorRoute
   authCadastroMarcaRoute: typeof authCadastroMarcaRoute
   authCadastroIndexRoute: typeof authCadastroIndexRoute
-  authEsqueciSenhaIndexRoute: typeof authEsqueciSenhaIndexRoute
+  authEsquecerSenhaIndexRoute: typeof authEsquecerSenhaIndexRoute
   authLoginIndexRoute: typeof authLoginIndexRoute
   perfisInfluenciadorUsernameIndexRoute: typeof perfisInfluenciadorUsernameIndexRoute
   perfisMarcaUserNameIndexRoute: typeof perfisMarcaUserNameIndexRoute
@@ -528,7 +528,7 @@ const rootRouteChildren: RootRouteChildren = {
   authCadastroInfluenciadorRoute: authCadastroInfluenciadorRoute,
   authCadastroMarcaRoute: authCadastroMarcaRoute,
   authCadastroIndexRoute: authCadastroIndexRoute,
-  authEsqueciSenhaIndexRoute: authEsqueciSenhaIndexRoute,
+  authEsquecerSenhaIndexRoute: authEsquecerSenhaIndexRoute,
   authLoginIndexRoute: authLoginIndexRoute,
   perfisInfluenciadorUsernameIndexRoute: perfisInfluenciadorUsernameIndexRoute,
   perfisMarcaUserNameIndexRoute: perfisMarcaUserNameIndexRoute,
@@ -553,7 +553,7 @@ export const routeTree = rootRoute
         "/cadastro/influenciador",
         "/cadastro/marca",
         "/cadastro/",
-        "/esqueci-senha/",
+        "/esquecer-senha/",
         "/login/",
         "/influenciador/$username/",
         "/marca/$userName/"
@@ -587,8 +587,8 @@ export const routeTree = rootRoute
     "/cadastro/": {
       "filePath": "(auth)/cadastro/index.tsx"
     },
-    "/esqueci-senha/": {
-      "filePath": "(auth)/esqueci-senha/index.tsx"
+    "/esquecer-senha/": {
+      "filePath": "(auth)/esquecer-senha/index.tsx"
     },
     "/login/": {
       "filePath": "(auth)/login/index.tsx"

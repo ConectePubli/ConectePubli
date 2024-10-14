@@ -37,7 +37,7 @@ export const ConnectSection: React.FC = () => {
             <Button
               variant="orange"
               size="lg"
-              onClick={() => console.log("Login")}
+              onClick={() => navigate({ to: "/login" })}
             >
               Fazer Login
             </Button>
