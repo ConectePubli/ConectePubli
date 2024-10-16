@@ -20,7 +20,7 @@ function Page() {
         />
       </div>
 
-      <div className="w-full lg:w-[50%] flex flex-col justify-center items-left p-8 bg-white overflow-hidden">
+      <div className="w-full lg:w-[50%] flex flex-col justify-center items-left p-8 bg-white overflow-hidden max-sm:px-5">
         <h2 className="text-3xl font-bold mb-4">Escolha seu Registro</h2>
         <p className="text-gray-600 mb-6">
           Selecione uma das opções abaixo para continuar.

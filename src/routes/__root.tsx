@@ -1,10 +1,19 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  Link,
+  Outlet,
+  useNavigate,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+
 import { Button } from "@/components/ui/button";
+
 import logo from "@/assets/logo.svg";
 
-export const Route = createRootRoute({
-  component: () => (
+function RootComponent() {
+  const navigate = useNavigate();
+
+  return (
     <>
       <div className="container h-[65px] w-[100%] flex">
         <header className="bg-white flex w-[100%]">
@@ -21,7 +30,7 @@ export const Route = createRootRoute({
               <Button
                 variant="orange"
                 size="default"
-                onClick={() => console.log("Cadastro clicado")}
+                onClick={() => navigate({ to: "/cadastro" })}
               >
                 Cadastro
               </Button>
@@ -36,5 +45,9 @@ export const Route = createRootRoute({
 
       <TanStackRouterDevtools />
     </>
-  ),
+  );
+}
+
+export const Route = createRootRoute({
+  component: RootComponent,
 });

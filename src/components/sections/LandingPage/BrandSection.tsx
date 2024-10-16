@@ -19,7 +19,10 @@ export const BrandsSection: React.FC = () => {
       {isMobile ? (
         <Swiper
           modules={[Navigation]}
-          navigation
+          navigation={{
+            nextEl: ".custom-next",
+            prevEl: ".custom-prev",
+          }}
           spaceBetween={20}
           slidesPerView={2}
           breakpoints={{
@@ -55,6 +58,10 @@ export const BrandsSection: React.FC = () => {
               link="https://discord.com"
             />
           </SwiperSlide>
+
+          {/* Custom navigation buttons */}
+          <div className="custom-prev swiper-button-prev"></div>
+          <div className="custom-next swiper-button-next"></div>
         </Swiper>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12 items-center justify-items-center">
