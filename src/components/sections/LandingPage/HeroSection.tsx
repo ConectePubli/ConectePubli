@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 
 import heroImage from "@/assets/hero-image.svg";
 
+import adImage from "@/assets/ad_example.jpg";
+
 export const HeroSection: React.FC = () => {
   const navigate = useNavigate();
 
@@ -19,16 +21,31 @@ export const HeroSection: React.FC = () => {
           influenciadores em parcerias estratégicas, impulsionando campanhas
           digitais e gerando resultados reais de forma simples e eficiente.
         </p>
+
         <div className="flex gap-4">
-          <Button
-            variant="orange"
-            onClick={() => navigate({ to: "/login" })}
-          >
+          <Button variant="orange" onClick={() => navigate({ to: "/login" })}>
             Acessar Minha Conta
           </Button>
           <Button variant="blue" onClick={() => navigate({ to: "/cadastro" })}>
             Cadastrar-se e Comece
           </Button>
+        </div>
+
+        <div className="relative mt-8 border border-gray-300 rounded-lg overflow-hidden shadow-md">
+          <div className="absolute top-0 right-0 bg-gray-500 text-white text-xs px-2 py-1">
+            Publicidade
+          </div>
+          <a
+            href="https://www.exemplo-anunciante.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={adImage}
+              alt="Publicidade de exemplo"
+              className="w-full h-20 object-cover object-center"
+            />
+          </a>
         </div>
       </div>
 
