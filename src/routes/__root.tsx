@@ -23,16 +23,16 @@ function RootComponent() {
             </Link>
 
             <div className="flex items-center gap-4">
-              <Link to="/login" className="text-black">
+              {/* <Link to="/login" className="text-black">
                 Entrar
-              </Link>
+              </Link> */}
 
               <Button
                 variant="orange"
                 size="default"
                 onClick={() => navigate({ to: "/cadastro" })}
               >
-                Cadastro
+                Fazer Pré Cadastro
               </Button>
             </div>
           </div>

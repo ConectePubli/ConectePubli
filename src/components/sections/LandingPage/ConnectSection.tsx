@@ -34,19 +34,19 @@ export const ConnectSection: React.FC = () => {
             garantir sua entrada na plataforma sem taxa de adesão!
           </p>
           <div className="flex flex-col lg:flex-row gap-4 justify-center lg:justify-start">
-            <Button
+            {/* <Button
               variant="orange"
               size="lg"
               onClick={() => navigate({ to: "/login" })}
             >
               Fazer Login
-            </Button>
+            </Button> */}
             <Button
               variant="blue"
               size="lg"
               onClick={() => navigate({ to: "/cadastro" })}
             >
-              Registrar-se Agora
+              Fazer Pré Cadastro
             </Button>
           </div>
         </div>

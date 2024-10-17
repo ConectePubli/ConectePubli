@@ -2,12 +2,16 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
-import { loginWithEmailBrand, loginWithEmailInfluencer } from "@/lib/auth";
+import pb from "@/lib/pb";
+import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-
 import loginImage from "@/assets/login.svg";
+
+interface PreRegister {
+  id: string;
+  email: string;
+}
 
 export const Route = createFileRoute("/(auth)/login/")({
   component: Page,
@@ -16,40 +20,93 @@ export const Route = createFileRoute("/(auth)/login/")({
 function Page() {
   const navigate = useNavigate();
 
-  // Data
+  // States for form data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Visibility
-  const [errorMessage, setErrorMessage] = useState("");
+  // Visibility and logic controls
   const [showPassword, setShowPassword] = useState(false);
-
-  // Navigation
+  const [isPreRegistered, setIsPreRegistered] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [loginType, setLoginType] = useState<"brand" | "influencer">("brand");
 
+  // Pre registration
+  const [dataPreRegister, setDataPreRegister] = useState<PreRegister>({
+    id: "",
+    email: "",
+  });
+
+  // Mutation for handling login and registration logic
   const mutation = useMutation({
     mutationFn: async () => {
-      setErrorMessage("");
-      try {
-        if (loginType === "brand") {
-          await loginWithEmailBrand(email, password);
-        } else {
-          await loginWithEmailInfluencer(email, password);
+      const collection = loginType === "brand" ? "Brands" : "Influencers";
+      if (isPreRegistered) {
+        if (password !== confirmPassword) {
+          throw new Error("As senhas não coincidem.");
         }
-        navigate({ to: "/home" });
-      } catch (e: any) {
-        console.log(`error auth: ${e}`);
-        if (e.message == "Failed to authenticate.") {
-          setErrorMessage("Email e/ou senha incorretos.");
-        } else {
-          setErrorMessage("Ocorreu um erro ao fazer login.");
+        if (password.length < 8) {
+          throw new Error("A senha deve ter pelo menos 8 caracteres.");
         }
+        await pb.collection(collection).create({
+          email,
+          password,
+          passwordConfirm: confirmPassword,
+        });
+        await pb.collection(collection).authWithPassword(email, password);
+        const preRegCollection =
+          loginType === "brand"
+            ? "Brands_Pre_Registration"
+            : "Influencers_Pre_Registration";
+        await pb.collection(preRegCollection).delete(dataPreRegister.id);
+      } else {
+        await pb.collection(collection).authWithPassword(email, password);
+      }
+    },
+    onSuccess: () => {
+      navigate({ to: "/home" });
+    },
+    onError: (error: any) => {
+      if (error.message === "Failed to authenticate.") {
+        setErrorMessage("Email e/ou senha incorretos.");
+      } else {
+        setErrorMessage(error.message || "Ocorreu um erro ao fazer login.");
       }
     },
   });
 
+  const checkPreRegistration = async () => {
+    if (email) {
+      try {
+        const collection =
+          loginType === "brand"
+            ? "Brands_Pre_Registration"
+            : "Influencers_Pre_Registration";
+        const preRegistration = await pb
+          .collection(collection)
+          .getFirstListItem(`email="${email}"`);
+        if (preRegistration) {
+          setIsPreRegistered(true);
+        } else {
+          setIsPreRegistered(false);
+        }
+
+        setDataPreRegister(preRegistration as unknown as PreRegister);
+      } catch (e) {
+        console.log(`error check pre-register: ${e}`);
+        setIsPreRegistered(false);
+      }
+    }
+  };
+
+  // Call checkPreRegistration when the user focuses on the password field
+  const handlePasswordFocus = () => {
+    checkPreRegistration();
+  };
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
     mutation.mutate();
   };
 
@@ -124,6 +181,7 @@ function Page() {
                   type={showPassword ? "text" : "password"}
                   id="senha"
                   value={password}
+                  onFocus={handlePasswordFocus}
                   onChange={(e) => setPassword(e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Informe a senha"
@@ -140,6 +198,27 @@ function Page() {
                 </span>
               </div>
             </div>
+
+            {isPreRegistered && (
+              <div>
+                <label
+                  className="block text-sm font-medium text-gray-700"
+                  htmlFor="confirm-senha"
+                >
+                  Confirmar Senha
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="confirm-senha"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Confirme a senha"
+                  />
+                </div>
+              </div>
+            )}
 
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
@@ -158,7 +237,13 @@ function Page() {
               className="w-full"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Entrando..." : "Entrar"}
+              {mutation.isPending
+                ? isPreRegistered
+                  ? "Cadastrando..."
+                  : "Entrando..."
+                : isPreRegistered
+                  ? "Cadastrar"
+                  : "Entrar"}
             </Button>
 
             <div className="text-center">

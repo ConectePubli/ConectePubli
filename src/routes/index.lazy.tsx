@@ -42,7 +42,7 @@ function Index() {
             </p>
           </>
         }
-        buttonLabel="Cadastro Marcas"
+        buttonLabel="Pré Cadastro de Marcas"
         buttonVariant="blue"
         buttonOnClick={() => navigate({ to: "/cadastro/marca" })}
       />
@@ -63,7 +63,7 @@ function Index() {
             </p>
           </>
         }
-        buttonLabel="Cadastro Influenciadores"
+        buttonLabel="Pré Cadastro de Influenciadores"
         buttonVariant="orange"
         buttonOnClick={() => navigate({ to: "/cadastro/influenciador" })}
         reverse
