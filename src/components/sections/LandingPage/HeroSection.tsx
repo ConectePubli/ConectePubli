@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import heroImage from "@/assets/hero-image.svg";
 
-import adImage from "@/assets/ad_example.jpg";
+//import adImage from "@/assets/ad_example.jpg";
 
 export const HeroSection: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ export const HeroSection: React.FC = () => {
           </Button>
         </div>
 
-        <div className="relative mt-8 border border-gray-300 rounded-lg overflow-hidden shadow-md">
+        {/* <div className="relative mt-8 border border-gray-300 rounded-lg overflow-hidden shadow-md">
           <div className="absolute top-0 right-0 bg-gray-500 text-white text-xs px-2 py-1">
             Publicidade
           </div>
@@ -46,7 +46,7 @@ export const HeroSection: React.FC = () => {
               className="w-full h-20 object-cover object-center"
             />
           </a>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex justify-end flex-1 mt-8 md:mt-0 md:ml-0">
