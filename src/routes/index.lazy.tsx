@@ -9,6 +9,7 @@ import { ConnectSection } from "@/components/sections/LandingPage/ConnectSection
 import { Footer } from "@/components/sections/LandingPage/Footer";
 import brand from "@/assets/brand.svg";
 import influencers from "@/assets/influencers.svg";
+import { ConnectBrandsSection } from "@/components/sections/LandingPage/ConnectBrandsSection";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -18,7 +19,7 @@ function Index() {
   const navigate = useNavigate();
 
   return (
-    <div className="container px-10 max-sm:px-5">
+    <div className="container px-10 max-sm:px-5 overflow-hidden">
       <HeroSection />
 
       <BrandsSection />
@@ -68,6 +69,8 @@ function Index() {
         buttonOnClick={() => navigate({ to: "/cadastro/influenciador" })}
         reverse
       />
+
+      <ConnectBrandsSection />
 
       <ConnectSection />
 

@@ -43,7 +43,9 @@ function RootComponent() {
 
       <Outlet />
 
-      <TanStackRouterDevtools />
+      {window.location.hostname != "conectepubli.com.br" && (
+        <TanStackRouterDevtools />
+      )}
     </>
   );
 }
