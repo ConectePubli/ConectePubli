@@ -9,13 +9,13 @@ class CustomPocketBase extends PocketBase {
     window.localStorage.setItem("pr_redirect", window.location.pathname);
   }
 
-  replaceWithRemembered(fallback = "/home") {
+  replaceWithRemembered(fallback = "/dashboard") {
     const path = window.localStorage.getItem("pr_redirect");
     window.localStorage.removeItem("pr_redirect");
     window.location.replace(path || fallback);
   }
 
-  getRememberedRoute(fallback = "/home") {
+  getRememberedRoute(fallback = "/dashboard") {
     const path = window.localStorage.getItem("pr_redirect");
     window.localStorage.removeItem("pr_redirect");
     return path || fallback;
@@ -24,7 +24,7 @@ class CustomPocketBase extends PocketBase {
   logout(redirect = true) {
     this.authStore.clear();
     if (redirect) {
-      window.location.replace("/entrar");
+      window.location.replace("/login123new");
     }
   }
 

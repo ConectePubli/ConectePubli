@@ -1,49 +1,39 @@
-import {
-  createRootRoute,
-  Link,
-  Outlet,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-
-import { Button } from "@/components/ui/button";
-
-import logo from "@/assets/logo.svg";
+import { isAuthenticatedBrands, isAuthenticatedInfluencer } from "@/lib/auth";
+import { PrivateHeader } from "@/components/ui/PrivateHeader";
+import { PublicHeader } from "@/components/ui/PublicHeader";
 
 function RootComponent() {
-  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      const isBrandAuth = await isAuthenticatedBrands();
+      const isInfluencerAuth = await isAuthenticatedInfluencer();
+
+      if (isBrandAuth) {
+        setIsAuthenticated(true);
+      } else if (isInfluencerAuth) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkAuthentication();
+  }, []);
 
   return (
     <>
-      <div className="container h-[65px] w-[100%] flex">
-        <header className="bg-white flex w-[100%]">
-          <div className="mx-auto lg:px-0 w-[100%] flex justify-between items-center">
-            <Link to="/">
-              <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
-            </Link>
-
-            <div className="flex items-center gap-4">
-              {/* <Link to="/login" className="text-black">
-                Entrar
-              </Link> */}
-
-              <Button
-                variant="orange"
-                size="default"
-                onClick={() => navigate({ to: "/cadastro" })}
-              >
-                Fazer Pré Cadastro
-              </Button>
-            </div>
-          </div>
-        </header>
-      </div>
+      {isAuthenticated ? <PrivateHeader /> : <PublicHeader />}
 
       <hr />
 
       <Outlet />
 
-      {window.location.hostname != "conectepubli.com.br" && (
+      {window.location.hostname !== "conectepubli.com.br" && (
         <TanStackRouterDevtools />
       )}
     </>
