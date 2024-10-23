@@ -1,5 +1,5 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
-import { WhatsappLogo } from "phosphor-react"
+import { WhatsappLogo } from "phosphor-react";
 
 import { HeroSection } from "@/components/sections/LandingPage/HeroSection";
 //import { BrandsSection } from "@/components/sections/LandingPage/BrandSection";
@@ -77,7 +77,6 @@ function Index() {
 
       <Footer />
 
-      {/* Botão Flutuante de WhatsApp */}
       <a
         href="https://api.whatsapp.com/send?phone=5511913185849"
         target="_blank"
