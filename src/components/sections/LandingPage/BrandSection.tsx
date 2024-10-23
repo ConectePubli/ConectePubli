@@ -8,6 +8,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { BrandLogo } from "@/components/LandingPage/Brand/BrandLogo";
 
 import discordLogo from "@/assets/discord.svg";
+import yourclubLogo from "@/assets/yourclub.png";
 
 export const BrandsSection: React.FC = () => {
   const { width } = useWindowSize();
@@ -32,9 +33,16 @@ export const BrandsSection: React.FC = () => {
         >
           <SwiperSlide>
             <BrandLogo
-              imageSrc={discordLogo}
-              altText="Discord"
-              link="https://discord.com"
+              imageSrc="https://expoempreendedor.com.br/images/logo.svg"
+              altText="Expo empreendedor"
+              link="https://expoempreendedor.com.br/"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <BrandLogo
+              imageSrc={yourclubLogo}
+              altText="Yourclub"
+              link="https://yourclub.io"
             />
           </SwiperSlide>
           <SwiperSlide>
@@ -46,16 +54,9 @@ export const BrandsSection: React.FC = () => {
           </SwiperSlide>
           <SwiperSlide>
             <BrandLogo
-              imageSrc={discordLogo}
-              altText="Discord"
-              link="https://discord.com"
-            />
-          </SwiperSlide>
-          <SwiperSlide>
-            <BrandLogo
-              imageSrc={discordLogo}
-              altText="Discord"
-              link="https://discord.com"
+              imageSrc="https://yourversenft.com/assets/logo.6954b581.png"
+              altText="YourVerse NFT"
+              link="https://yourversenft.com"
             />
           </SwiperSlide>
 
@@ -66,9 +67,14 @@ export const BrandsSection: React.FC = () => {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-12 items-center justify-items-center">
           <BrandLogo
-            imageSrc={discordLogo}
+            imageSrc="https://expoempreendedor.com.br/images/logo.svg"
             altText="Discord"
-            link="https://discord.com"
+            link="https://expoempreendedor.com.br/"
+          />
+          <BrandLogo
+            imageSrc={yourclubLogo}
+            altText="Yourclub"
+            link="https://yourclub.io"
           />
           <BrandLogo
             imageSrc={discordLogo}
@@ -76,14 +82,9 @@ export const BrandsSection: React.FC = () => {
             link="https://discord.com"
           />
           <BrandLogo
-            imageSrc={discordLogo}
-            altText="Discord"
-            link="https://discord.com"
-          />
-          <BrandLogo
-            imageSrc={discordLogo}
-            altText="Discord"
-            link="https://discord.com"
+            imageSrc="https://yourversenft.com/assets/logo.6954b581.png"
+            altText="YourVerse NFT"
+            link="https://yourversenft.com"
           />
         </div>
       )}

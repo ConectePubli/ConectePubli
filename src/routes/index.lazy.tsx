@@ -1,7 +1,8 @@
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { WhatsappLogo } from "phosphor-react"
 
 import { HeroSection } from "@/components/sections/LandingPage/HeroSection";
-import { BrandsSection } from "@/components/sections/LandingPage/BrandSection";
+//import { BrandsSection } from "@/components/sections/LandingPage/BrandSection";
 import { HowItWorksSection } from "@/components/sections/LandingPage/HowItWorksSection";
 import { SectionInfo } from "@/components/sections/LandingPage/SectionInfo";
 import { ConnectSection } from "@/components/sections/LandingPage/ConnectSection";
@@ -22,7 +23,7 @@ function Index() {
     <div className="container px-10 max-sm:px-5 overflow-hidden">
       <HeroSection />
 
-      <BrandsSection />
+      {/*  <BrandsSection /> */}
 
       <HowItWorksSection />
 
@@ -75,6 +76,17 @@ function Index() {
       <ConnectSection />
 
       <Footer />
+
+      {/* Botão Flutuante de WhatsApp */}
+      <a
+        href="https://api.whatsapp.com/send?phone=5511913185849"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-5 right-5 bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all"
+        style={{ zIndex: 1000 }}
+      >
+        <WhatsappLogo size={30} color="#fff" />
+      </a>
     </div>
   );
 }
