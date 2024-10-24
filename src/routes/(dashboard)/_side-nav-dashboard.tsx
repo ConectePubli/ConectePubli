@@ -1,4 +1,3 @@
-import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Link, Outlet } from "@tanstack/react-router";
 import { Folder, LayoutGrid, Users, MessageCircle } from "lucide-react";
