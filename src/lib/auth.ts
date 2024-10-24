@@ -1,50 +1,38 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import pb, { PocketBaseError } from "./pb";
 
-async function refreshTokenBrands() {
+export async function getUserType() {
+  const refreshed = await refreshToken();
+  if (!refreshed) {
+    return null;
+  }
+  return pb.authStore.model?.collectionName || null;
+}
+
+export async function refreshToken() {
+  if (!pb.authStore.isValid) {
+    pb.rememberPath();
+    return false;
+  }
+
+  const collectionName = pb.authStore.model?.collectionName;
+
+  if (!collectionName) {
+    pb.logout();
+    return false;
+  }
+
   try {
-    await pb.collection("Brands").authRefresh();
+    await pb.collection(collectionName).authRefresh();
+    return true;
   } catch (error) {
     const err = error as PocketBaseError;
     console.error("Failed to refresh token:", err.data);
     if (err.data.code === 401) {
       pb.logout();
     }
-    return null;
+    return false;
   }
-}
-
-async function refreshTokenInfluencers() {
-  try {
-    await pb.collection("Influencers").authRefresh();
-  } catch (error) {
-    const err = error as PocketBaseError;
-    console.error("Failed to refresh token:", err.data);
-    if (err.data.code === 401) {
-      pb.logout();
-    }
-    return null;
-  }
-}
-
-export async function isAuthenticatedBrands() {
-  if (pb.authStore.isValid) {
-    await refreshTokenBrands();
-    return true;
-  }
-
-  pb.rememberPath();
-  return false;
-}
-
-export async function isAuthenticatedInfluencer() {
-  if (pb.authStore.isValid) {
-    await refreshTokenInfluencers();
-    return true;
-  }
-
-  pb.rememberPath();
-  return false;
 }
 
 export async function signOut() {
