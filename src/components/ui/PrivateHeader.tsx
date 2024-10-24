@@ -7,15 +7,15 @@ export const PrivateHeader = () => {
 
   return (
     <header className="bg-white h-[65px] flex items-center border-b-[1px]">
-      <div className="p-2 md:p-4 sm:hidden flex items-center justify-start">
+      <div className="p-2 md:p-4 md:hidden flex items-center justify-start">
         <button className="focus:outline-none p-2" onClick={openSheet}>
           <AlignJustify size={25} />
         </button>
       </div>
 
       <div className="flex items-center justify-end px-2 md:px-4 w-full">
-        {/* Logo (hidden no mobile até 640px) */}
-        <div className="hidden sm:block flex-grow">
+        {/* Logo (aparece após 340px de width)*/}
+        <div className="hidden min-[340px]:block flex-grow">
           <img src={logo} alt="ConectePubli" className="h-8 md:h-10" />
         </div>
 
