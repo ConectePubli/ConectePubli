@@ -66,7 +66,7 @@ function Page() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="mx-auto py-6">
       <h1 className="text-2xl font-bold mb-2">Minhas Participações</h1>
       <p className="text-gray-700 mb-6">
         Acompanhe todas as campanhas nas quais você se inscreveu e gerencie suas
