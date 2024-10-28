@@ -1,12 +1,23 @@
+import { CampaignParticipation } from "./Campaign_Participations";
+
 export interface Campaign {
-  id: number;
-  title: string;
-  time: string;
-  description: string;
-  price: string;
-  vacancies: number;
-  status: string;
-  statusColor: string;
-  image: string;
-  date: string;
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  paid?: boolean;
+  brand: string;
+  beginning: Date;
+  end: Date;
+  open_jobs?: number;
+  genre?: "UGC" | "Influencer";
+  status?: "ready" | "in_progress" | "ended";
+  created: Date;
+  updated: Date;
+  collectionId: string;
+  collectionName: string;
+
+  expand?: {
+    campaigns_participations_via_Campaign?: CampaignParticipation[];
+  };
 }
