@@ -1,18 +1,31 @@
 import { useState } from "react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { isAuthenticatedBrands, isAuthenticatedInfluencer } from "@/lib/auth";
+import { getUserType } from "@/lib/auth";
 import { Campaign } from "@/types/Campaign";
 import CampaignCard from "@/components/ui/CampaignCard";
+import pb from "@/lib/pb";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/"
 )({
   component: Page,
   beforeLoad: async () => {
-    const isBrandAuth = await isAuthenticatedBrands();
-    const isInfluencerAuth = await isAuthenticatedInfluencer();
+    const userType = await getUserType();
 
-    if (!isBrandAuth && !isInfluencerAuth) {
+    if (!userType) {
+      throw redirect({
+        to: "/login123new",
+      });
+    } else if (userType === "Brands") {
+      throw redirect({
+        to: "/dashboard-marca",
+      });
+    } else if (userType === "Influencers") {
+      throw redirect({
+        to: "/dashboard-influenciador",
+      });
+    } else {
+      pb.authStore.clear();
       throw redirect({
         to: "/login123new",
       });
@@ -66,7 +79,7 @@ function Page() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="mx-auto py-6">
       <h1 className="text-2xl font-bold mb-2">Minhas Participações</h1>
       <p className="text-gray-700 mb-6">
         Acompanhe todas as campanhas nas quais você se inscreveu e gerencie suas

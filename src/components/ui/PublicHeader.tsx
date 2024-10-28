@@ -9,7 +9,7 @@ export const PublicHeader = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="bg-white h-[65px] flex justify-between items-center px-4">
+    <header className="bg-white h-[66px] flex justify-between items-center px-4 border-b-[1px]">
       <Link to="/">
         <img src={logo} alt="ConectePubli" className="h-10" />
       </Link>
