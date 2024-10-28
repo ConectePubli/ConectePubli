@@ -1,7 +1,9 @@
 export enum StatusFilter {
   All = "",
-  Completed = "concluído",
-  Open = "aberto",
+  Completed = "ended",
+  In_Progress = "in_progress",
+  Ready = "ready",
+  Pending = "pending",
 }
 
 export enum CampaignGoalFilter {

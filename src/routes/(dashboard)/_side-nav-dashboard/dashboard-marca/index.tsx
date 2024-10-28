@@ -1,15 +1,29 @@
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import FilterSection from "@/components/ui/FilterSectionCampaign";
 import CampaignsTable from "@/components/ui/CampaignsTable";
 import { useCampaignStore } from "@/store/useCampaignStore";
+import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/"
 )({
   component: Page,
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    if (!userType) {
+      throw redirect({
+        to: "/login123new",
+      });
+    } else if (userType !== "Brands") {
+      throw redirect({
+        to: "/dashboard",
+      });
+    }
+  },
 });
 
 function Page() {

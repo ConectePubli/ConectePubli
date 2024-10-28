@@ -11,7 +11,7 @@ export interface Campaign {
   end: Date;
   open_jobs?: number;
   genre?: "UGC" | "Influencer";
-  status?: "ready" | "in_progress" | "ended";
+  status: "ready" | "in_progress" | "ended";
   created: Date;
   updated: Date;
   collectionId: string;

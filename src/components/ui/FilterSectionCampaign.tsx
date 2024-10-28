@@ -76,7 +76,6 @@ const FilterSectionCampaign: React.FC = () => {
           </span>
         </div>
 
-        {/* Campo de Status */}
         <div className="relative w-full lg:flex-[1]">
           <label htmlFor="status" className="sr-only">
             Status
@@ -88,8 +87,9 @@ const FilterSectionCampaign: React.FC = () => {
             className="w-full p-3 py-3 border border-black rounded-lg appearance-none"
           >
             <option value={StatusFilter.All}>Status</option>
-            <option value={StatusFilter.Completed}>Concluído</option>
-            <option value={StatusFilter.Open}>Aberto</option>
+            <option value={StatusFilter.Completed}>Encerrado</option>
+            <option value={StatusFilter.In_Progress}>Em andamento</option>
+            <option value={StatusFilter.Ready}>Pronto para iniciar</option>
           </select>
           <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
             <ChevronDown className="h-5 w-5 text-black" />
