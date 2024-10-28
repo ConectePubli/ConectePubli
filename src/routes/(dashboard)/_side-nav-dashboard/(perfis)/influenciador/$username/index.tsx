@@ -1,4 +1,4 @@
-import { createFileRoute, useMatch } from "@tanstack/react-router";
+import { createFileRoute, Navigate, useMatch } from "@tanstack/react-router";
 import { MapPin, Edit2, Globe, ChevronDown } from "lucide-react";
 import {
   InstagramLogo,
@@ -164,7 +164,10 @@ function InfluencerProfilePage() {
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
               Acessar midia kit
             </button>
-            <button className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-200 transition">
+            <button
+              className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-200 transition"
+              onClick={() => Navigate({ to: "/editar" })}
+            >
               Editar Perfil
             </button>
           </div>
@@ -229,9 +232,7 @@ function InfluencerProfilePage() {
             </div>
 
             <div className="mt-6">
-              <h4 className="text-lg font-semibold mb-2">
-                Portfólio
-              </h4>
+              <h4 className="text-lg font-semibold mb-2">Portfólio</h4>
             </div>
 
             <div className="mt-6">
