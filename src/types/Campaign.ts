@@ -10,7 +10,7 @@ export interface Campaign {
   beginning: Date;
   end: Date;
   open_jobs?: number;
-  genre?: "UGC" | "Influencer";
+  objective?: "UGC" | "Influencer";
   status: "ready" | "in_progress" | "ended";
   created: Date;
   updated: Date;
