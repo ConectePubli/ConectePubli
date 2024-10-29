@@ -35,7 +35,7 @@ function Page() {
   }, [fetchCampaigns, statusFilter, campaignGoalFilter, searchTerm, page]);
 
   return (
-    <div>
+    <div className="p-4">
       <h1 className="font-bold">Minhas Campanhas</h1>
       <p className="mt-2">Visualize todas as suas campanhas ou crie uma.</p>
 
