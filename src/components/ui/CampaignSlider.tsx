@@ -1,15 +1,25 @@
+// src/components/ui/CampaignSlider.tsx
 import React, { useRef } from "react";
 import ArrowLeft from "@/assets/icons/arrow-left.svg";
 import ArrowRight from "@/assets/icons/arrow-right.svg";
-import { Tag } from "lucide-react";
+import { Campaign } from "@/types/Campaign";
+import CampaignSliderBanner from "@/components/ui/CampaignSliderBanner";
 
-const CampaignSlider = ({ campaigns }) => {
-  const sliderRef = useRef(null);
+interface CampaignSliderProps {
+  campaigns: Campaign[];
+}
+
+const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+
+  const isDragging = useRef<boolean>(false);
+  const startX = useRef<number>(0);
+  const scrollLeftStart = useRef<number>(0);
 
   const scrollLeft = () => {
     if (sliderRef.current) {
       sliderRef.current.scrollBy({
-        left: -300, // Ajuste a distância de rolagem conforme necessário
+        left: -300,
         behavior: "smooth",
       });
     }
@@ -18,45 +28,40 @@ const CampaignSlider = ({ campaigns }) => {
   const scrollRight = () => {
     if (sliderRef.current) {
       sliderRef.current.scrollBy({
-        left: 300, // Ajuste a distância de rolagem conforme necessário
+        left: 300,
         behavior: "smooth",
       });
     }
   };
 
-  // Funções para permitir clicar e arrastar no desktop
-  let isDown = false;
-  let startX;
-  let scrollLeftStart;
-
-  const handleMouseDown = (e) => {
-    isDown = true;
-    sliderRef.current.classList.add("active");
-    startX = e.pageX - sliderRef.current.offsetLeft;
-    scrollLeftStart = sliderRef.current.scrollLeft;
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (sliderRef.current) {
+      isDragging.current = true;
+      sliderRef.current.classList.add("active");
+      sliderRef.current.classList.add("no-select");
+      startX.current = e.clientX;
+      scrollLeftStart.current = sliderRef.current.scrollLeft;
+    }
   };
 
-  const handleMouseLeave = () => {
-    isDown = false;
-    sliderRef.current.classList.remove("active");
+  const handlePointerUp = () => {
+    if (sliderRef.current) {
+      isDragging.current = false;
+      sliderRef.current.classList.remove("active");
+      sliderRef.current.classList.remove("no-select");
+    }
   };
 
-  const handleMouseUp = () => {
-    isDown = false;
-    sliderRef.current.classList.remove("active");
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Ajuste a velocidade de rolagem conforme necessário
-    sliderRef.current.scrollLeft = scrollLeftStart - walk;
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging.current || !sliderRef.current) return;
+    const x = e.clientX;
+    const walk = (x - startX.current) * 1;
+    sliderRef.current.scrollLeft = scrollLeftStart.current - walk;
   };
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-2 max-w-[98dvw]">
         <p className="text-lg font-bold pl-4">Campanhas</p>
         <div className="flex items-center gap-4 px-4">
           <img
@@ -74,27 +79,22 @@ const CampaignSlider = ({ campaigns }) => {
         </div>
       </div>
       <div
-        className="flex overflow-x-scroll scrollbar-hide scroll-smooth"
+        className="flex overflow-x-scroll scrollbar-hide active:cursor-grabbing"
         ref={sliderRef}
-        onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
+        onPointerMove={handlePointerMove}
       >
         {campaigns.map((campaign, index) => (
-          <div
-            key={index}
-            className={`flex-shrink-0 w-64 mr-4 ${index === 0 && "ml-4"}`}
-          >
-            <div className="flex flex-col border border-gray-400 rounded-lg p-4">
-              <p className="text-sm font-bold flex flex-row items-center text-[#10438F]">
-                <Tag className="mr-2" size={16} />
-                {campaign.objective}
-              </p>
-              <h1 className="text-lg font-bold mt-2">{campaign.name}</h1>
-            </div>
-            <p className="mt-2 text-md font-semibold">{campaign.title}</p>
-          </div>
+          <CampaignSliderBanner
+            key={campaign.id}
+            campaign={campaign}
+            isFirst={index === 0}
+            onClick={(id) => {
+              console.log("Clique na campanha", id);
+            }}
+          />
         ))}
       </div>
     </div>

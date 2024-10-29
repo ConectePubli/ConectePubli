@@ -95,7 +95,10 @@ function Page() {
           </button>
         </div>
 
-        <div className="mt-2 w-full max-w-[100dvw]">
+        <div className="border mt-5 mb-4" />
+
+        {/* CAMPANHAS*/}
+        <div className="mt-2 w-full max-w-[99dvw]">
           <CampaignSlider
             campaigns={[
               {
@@ -105,13 +108,38 @@ function Page() {
                 name: "Campanha Boticario",
                 description: "Essa campanha é para aqueles que....",
                 price: 5000,
-                beginning: "2024-10-04 12:00:00.000Z",
-                end: "2024-10-24 12:00:00.000Z",
+                beginning: new Date("2024-10-04 12:00:00.000Z"),
+                end: new Date("2024-10-24 12:00:00.000Z"),
+                niche: ["Beauty", "Makeup"],
+                brand: "Elevate Visionary Creations Co.",
                 status: "ended",
+                created: new Date("2024-10-04 12:00:00.000Z"),
+                updated: new Date("2024-10-04 12:00:00.000Z"),
+                collectionId: "x61069n6r69vq8q",
+                collectionName: "Campanha Boticario",
+              },
+              {
+                id: "x61069n6r69vq8q",
+                objective: "UGC",
+                open_jobs: 25,
+                name: "Campanha Boticario",
+                description: "Essa campanha é para aqueles que....",
+                price: 5000,
+                beginning: new Date("2024-10-04 12:00:00.000Z"),
+                end: new Date("2024-10-24 12:00:00.000Z"),
+                niche: ["Beauty", "Makeup"],
+                brand: "Elevate Visionary Creations Co.",
+                status: "ended",
+                created: new Date("2024-10-04 12:00:00.000Z"),
+                updated: new Date("2024-10-04 12:00:00.000Z"),
+                collectionId: "x61069n6r69vq8q",
+                collectionName: "Campanha Boticario",
               },
             ]}
           />
         </div>
+
+        <div className="border mt-5 mb-4" />
 
         {/* BIOGRAFIA*/}
         <div className="mt-4 px-4">
@@ -139,6 +167,8 @@ function Page() {
             #LifeStyle
           </button>
         </div>
+
+        <div className="mt-5 mb-4" />
       </div>
     </div>
   );

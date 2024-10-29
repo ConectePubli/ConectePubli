@@ -12,6 +12,7 @@ export interface Campaign {
   open_jobs?: number;
   objective?: "UGC" | "Influencer";
   status: "ready" | "in_progress" | "ended";
+  niche: string[];
   created: Date;
   updated: Date;
   collectionId: string;

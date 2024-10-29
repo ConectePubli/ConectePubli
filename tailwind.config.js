@@ -50,7 +50,7 @@ export default {
           4: "hsl(var(--chart-4))",
           5: "hsl(var(--chart-5))",
         },
-        customLinkBlue: '#10438f'
+        customLinkBlue: "#10438f",
       },
       container: {
         center: true,
@@ -64,5 +64,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
 };
