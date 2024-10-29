@@ -29,6 +29,7 @@ function Page() {
           <img
             src="https://picsum.photos/200"
             alt="avatar"
+            draggable={false}
             className="w-20 h-20 rounded-md"
           />
           <div className="ml-3">
@@ -102,9 +103,10 @@ function Page() {
           <CampaignSlider
             campaigns={[
               {
-                id: "x61069n6r69vq8q",
+                id: "x61069",
                 objective: "UGC",
                 open_jobs: 25,
+                cover: "https://picsum.photos/500/400",
                 name: "Campanha Boticario",
                 description: "Essa campanha é para aqueles que....",
                 price: 5000,
@@ -122,6 +124,7 @@ function Page() {
                 id: "x61069n6r69vq8q",
                 objective: "UGC",
                 open_jobs: 25,
+                cover: "https://picsum.photos/500/400",
                 name: "Campanha Boticario",
                 description: "Essa campanha é para aqueles que....",
                 price: 5000,

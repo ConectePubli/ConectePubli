@@ -4,6 +4,7 @@ export interface Campaign {
   id: string;
   name: string;
   description?: string;
+  cover: string;
   price: number;
   paid?: boolean;
   brand: string;
