@@ -1,37 +1,103 @@
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  useLoaderData,
+  useNavigate,
+} from "@tanstack/react-router";
 
 import CompanyIcon from "@/assets/icons/company.svg";
 import LocationPin from "@/assets/icons/location-pin.svg";
+import EditIcon from "@/assets/icons/edit.svg";
 import { Link } from "lucide-react";
-import InstagramIcon from "@/assets/icons/instagram.svg";
-import TiktokIcon from "@/assets/icons/tiktok.svg";
-import FacebookIcon from "@/assets/icons/facebook.svg";
 import CampaignSlider from "@/components/ui/CampaignSlider";
+import pb from "@/lib/pb";
+import { ClientResponseError } from "pocketbase";
+import SocialNetworks from "@/types/SocialNetworks";
+import { Brand } from "@/types/Brand";
+import { Campaign } from "@/types/Campaign";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
 )({
+  loader: async ({ params: { userName } }) => {
+    try {
+      const brandData = await pb
+        .collection<Brand>("brands")
+        .getFirstListItem(`username="${userName}"`, {
+          expand: "niche",
+        });
+
+      if (!brandData) {
+        throw notFound();
+      }
+
+      const campaignsData =
+        (await pb.collection<Campaign>("campaigns").getFullList({
+          filter: `brand="${brandData.id}"`,
+        })) || [];
+
+      return { brandData, campaignsData };
+    } catch (error) {
+      if (error instanceof ClientResponseError) {
+        if (error.status === 404) {
+          return { error: "not_found" };
+        }
+      }
+      console.error("Error fetching data:", error);
+      throw error;
+    }
+  },
   component: Page,
+  errorComponent: () => (
+    <div>
+      Aconteceu um erro ao carregar essa página, não se preocupe o erro é do
+      nosso lado e vamos trabalhar para resolve-lo!
+    </div>
+  ),
+  notFoundComponent: () => <div>Perfil não encontrado</div>,
 });
 
 function Page() {
+  const { brandData, campaignsData } = useLoaderData({ from: Route.id });
+  const brand = brandData as Brand;
+  const campaigns = campaignsData as Campaign[];
+
+  const navigate = useNavigate();
+
+  const formatLocation = (brand: Brand): string => {
+    const parts = [brand.city, brand.state, brand.country].filter(Boolean);
+    return parts.length > 0 ? parts.join(", ") : "Localização não informada";
+  };
+
+  console.log("dados da marca: ", brand);
+  console.log("campanhas da marca: ", campaigns);
+
   return (
     <div className="flex p-0 flex-col">
-      <img
-        src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?fit=crop&w=800&q=80"
-        alt="imagem"
-        className="w-full h-64 object-cover"
-      />
+      {brand?.cover_img ? (
+        <img
+          src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.cover_img}`}
+          alt="capa"
+          className="w-full h-64 object-cover bg-[#10438F]"
+        />
+      ) : (
+        <div className="w-full h-64 bg-[#10438F]" />
+      )}
 
       <div>
         {/* BASIC INFO*/}
         <div className="flex flex-row items-center px-4 mt-4">
-          <img
-            src="https://picsum.photos/200"
-            alt="avatar"
-            draggable={false}
-            className="w-20 h-20 rounded-md"
-          />
+          {brand?.profile_img ? (
+            <img
+              src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.profile_img}`}
+              alt="avatar"
+              draggable={false}
+              className="w-20 h-20 rounded-md bg-orange-500 object-cover"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-md bg-orange-500" />
+          )}
+
           <div className="ml-3">
             <p className="text-gray-500 text-sm font-bold flex flex-row items-center">
               <img
@@ -41,105 +107,80 @@ function Page() {
               />
               Marca
             </p>
-            <h1 className="text-xl font-bold">
-              Elevate Visionary Creations Co.
-            </h1>
+            <h1 className="text-xl font-bold">{brand?.name || "..."}</h1>
           </div>
         </div>
 
         {/* LOCATION*/}
         <div className="flex flex-row items-center mt-3 px-4">
           <img src={LocationPin} alt="location pin" className="w-5 h-5 mr-1" />
-          <p className="text-orange-600 font-bold text-md">
-            Denver, CO, United States
+          <p className="text-orange-600 font-bold text-md truncate max-w-xs">
+            {formatLocation(brand)}
           </p>
         </div>
 
         {/* LINK */}
-        <div className="mt-2 flex flex-row items-center px-4">
-          <Link className="text-black mr-2" size={16} />
-          <a
-            className="text-[#10438F] font-semibold text-md hover:underline"
-            href="https://www.elevatevisionarycreations.com"
-          >
-            elevatevisionarycreations.com
-          </a>
-        </div>
+        {brand?.web_site && (
+          <div className="mt-2 flex flex-row items-center px-4">
+            <Link className="text-black mr-2" size={16} />
+            <a
+              className="text-[#10438F] font-semibold text-md hover:underline"
+              href="https://www.elevatevisionarycreations.com"
+            >
+              {brand.web_site}
+            </a>
+          </div>
+        )}
 
         {/* REDES SOCIAIS*/}
         <div className="flex flex-wrap gap-2 mt-2 px-4">
-          <button className="border border-[#10438F] text-[#10438F] px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200">
-            <img
-              src={InstagramIcon}
-              alt="Ícone do Instagram"
-              className="w-5 h-5 mr-1"
-            />
-            Instagram
-          </button>
+          {SocialNetworks.map((network) => {
+            const url = network.url(brand);
+            if (!url) return null;
 
-          <button className="border border-[#10438F] text-[#10438F] px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200">
-            <img
-              src={TiktokIcon}
-              alt="Ícone do TikTok"
-              className="w-5 h-5 mr-1"
-            />
-            TikTok
-          </button>
-
-          <button className="border border-[#10438F] text-[#10438F] px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200">
-            <img
-              src={FacebookIcon}
-              alt="Ícone do Facebook"
-              className="w-5 h-5 mr-1"
-            />
-            Facebook
-          </button>
+            return (
+              <a
+                key={network.name}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center border border-[#10438F] text-[#10438F] px-3 py-2 text-md rounded-md font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200"
+              >
+                <img
+                  src={network.icon}
+                  alt={`Ícone do ${network.name}`}
+                  className="w-5 h-5 mr-2"
+                />
+                {network.name}
+              </a>
+            );
+          })}
         </div>
+
+        {brand?.id === pb.authStore.model?.id && (
+          <div className="flex px-4 mt-4">
+            <button
+              className="text-white font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-lg shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
+              onClick={() => navigate({ to: "./editar" })}
+            >
+              <img
+                src={EditIcon}
+                alt="company icon"
+                className="w-4 h-4 text-white fill-current"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+              Editar Perfil
+            </button>
+          </div>
+        )}
+
+        {/* CONTATO*/}
 
         <div className="border mt-5 mb-4" />
 
         {/* CAMPANHAS*/}
         <div className="mt-2 w-full max-w-[99dvw]">
-          <CampaignSlider
-            campaigns={[
-              {
-                id: "x61069",
-                objective: "UGC",
-                open_jobs: 25,
-                cover: "https://picsum.photos/500/400",
-                name: "Campanha Boticario",
-                description: "Essa campanha é para aqueles que....",
-                price: 5000,
-                beginning: new Date("2024-10-04 12:00:00.000Z"),
-                end: new Date("2024-10-24 12:00:00.000Z"),
-                niche: ["Beauty", "Makeup"],
-                brand: "Elevate Visionary Creations Co.",
-                status: "ended",
-                created: new Date("2024-10-04 12:00:00.000Z"),
-                updated: new Date("2024-10-04 12:00:00.000Z"),
-                collectionId: "x61069n6r69vq8q",
-                collectionName: "Campanha Boticario",
-              },
-              {
-                id: "x61069n6r69vq8q",
-                objective: "UGC",
-                open_jobs: 25,
-                cover: "https://picsum.photos/500/400",
-                name: "Campanha Boticario",
-                description: "Essa campanha é para aqueles que....",
-                price: 5000,
-                beginning: new Date("2024-10-04 12:00:00.000Z"),
-                end: new Date("2024-10-24 12:00:00.000Z"),
-                niche: ["Beauty", "Makeup"],
-                brand: "Elevate Visionary Creations Co.",
-                status: "ended",
-                created: new Date("2024-10-04 12:00:00.000Z"),
-                updated: new Date("2024-10-04 12:00:00.000Z"),
-                collectionId: "x61069n6r69vq8q",
-                collectionName: "Campanha Boticario",
-              },
-            ]}
-          />
+          <CampaignSlider campaigns={[]} />
         </div>
 
         <div className="border mt-5 mb-4" />
@@ -148,30 +189,24 @@ function Page() {
         <div className="mt-4 px-4">
           <h2 className="text-lg font-bold">Biografia</h2>
           <p className="text-black text-md mt-2">
-            Elevate Visionary Creations Co. é uma empresa de criação de conteúdo
-            visual com base em Denver, Colorado. Nossa missão é criar conteúdo
-            visual de alta qualidade que ajude a elevar a marca de nossos
-            clientes.
+            {brand?.bio || "Biografia não informada."}
           </p>
         </div>
 
         {/* HASHTAGS*/}
-        <div className="flex flex-wrap gap-2 mt-2 px-4">
-          <button className="bg-[#10438F] text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200">
-            #Electronics & Apps
-          </button>
-          <button className="bg-[#10438F] text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200">
-            #Travel
-          </button>
-          <button className="bg-[#10438F] text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200">
-            #Electronics & Apps
-          </button>
-          <button className="bg-[#10438F] text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200">
-            #LifeStyle
-          </button>
+        <div className="flex flex-wrap gap-2 mt-3 px-4">
+          {brand?.expand?.niche?.map((tag, index) => (
+            <button
+              key={index}
+              className="bg-[#10438F] cursor-default text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200"
+              title={tag.niche}
+            >
+              <span className="truncate max-w-[120px]">#{tag.niche}</span>{" "}
+            </button>
+          ))}
         </div>
 
-        <div className="mt-5 mb-4" />
+        <div className="mt-5 mb-6" />
       </div>
     </div>
   );

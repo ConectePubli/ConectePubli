@@ -26,7 +26,7 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
     >
       <div className="flex flex-row w-full border border-gray-400 rounded-lg">
         <img
-          src={campaign.cover}
+          src={campaign.cover_img}
           alt="campaign"
           draggable={false}
           className="w-[375px] h-[272px] object-cover hidden xl:block rounded-l-lg select-none"

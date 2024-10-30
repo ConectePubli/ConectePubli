@@ -33,6 +33,7 @@ import { Route as dashboardSideNavDashboardperfisInfluenciadorUsernameIndexImpor
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar'
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar'
+import { Route as dashboardSideNavDashboardperfisMarcaUserNameEditarIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/editar/index'
 import { Route as dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/editar/index'
 
 // Create Virtual Routes
@@ -171,6 +172,12 @@ const dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute =
   dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarImport.update({
     path: '/campanhas/$campaignId/aplicar',
     getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute =
+  dashboardSideNavDashboardperfisMarcaUserNameEditarIndexImport.update({
+    path: '/marca/$userName/editar/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
 const dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexRoute =
@@ -351,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/editar/': {
+      id: '/_side-nav-dashboard/marca/$userName/editar/'
+      path: '/marca/$userName/editar'
+      fullPath: '/marca/$userName/editar'
+      preLoaderRoute: typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
   }
 }
 
@@ -399,6 +413,7 @@ interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardperfisInfluenciadorUsernameIndexRoute: typeof dashboardSideNavDashboardperfisInfluenciadorUsernameIndexRoute
   dashboardSideNavDashboardperfisMarcaUserNameIndexRoute: typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexRoute: typeof dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexRoute
+  dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute: typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
 
 const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChildren =
@@ -415,6 +430,8 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardperfisMarcaUserNameIndexRoute,
     dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexRoute:
       dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexRoute,
+    dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute:
+      dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute,
   }
 
 const dashboardSideNavDashboardRouteWithChildren =
@@ -456,6 +473,7 @@ export interface FileRoutesByFullPath {
   '/marca/$userName': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
   '/influenciador/$username/editar': typeof dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexRoute
+  '/marca/$userName/editar': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -479,6 +497,7 @@ export interface FileRoutesByTo {
   '/marca/$userName': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
   '/influenciador/$username/editar': typeof dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexRoute
+  '/marca/$userName/editar': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
 
 export interface FileRoutesById {
@@ -506,6 +525,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/marca/$userName/': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
   '/_side-nav-dashboard/influenciador/$username/editar/': typeof dashboardSideNavDashboardperfisInfluenciadorUsernameEditarIndexRoute
+  '/_side-nav-dashboard/marca/$userName/editar/': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -532,6 +552,7 @@ export interface FileRouteTypes {
     | '/marca/$userName'
     | '/dashboard/campanhas/$campaignId'
     | '/influenciador/$username/editar'
+    | '/marca/$userName/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -554,6 +575,7 @@ export interface FileRouteTypes {
     | '/marca/$userName'
     | '/dashboard/campanhas/$campaignId'
     | '/influenciador/$username/editar'
+    | '/marca/$userName/editar'
   id:
     | '__root__'
     | '/'
@@ -579,6 +601,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/marca/$userName/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/'
     | '/_side-nav-dashboard/influenciador/$username/editar/'
+    | '/_side-nav-dashboard/marca/$userName/editar/'
   fileRoutesById: FileRoutesById
 }
 
@@ -644,7 +667,8 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/dashboard-marca/",
         "/_side-nav-dashboard/influenciador/$username/",
         "/_side-nav-dashboard/marca/$userName/",
-        "/_side-nav-dashboard/influenciador/$username/editar/"
+        "/_side-nav-dashboard/influenciador/$username/editar/",
+        "/_side-nav-dashboard/marca/$userName/editar/"
       ]
     },
     "/privacidade/": {
@@ -732,6 +756,10 @@ export const routeTree = rootRoute
     },
     "/_side-nav-dashboard/influenciador/$username/editar/": {
       "filePath": "(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/editar/index.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
+    "/_side-nav-dashboard/marca/$userName/editar/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/editar/index.tsx",
       "parent": "/_side-nav-dashboard"
     }
   }

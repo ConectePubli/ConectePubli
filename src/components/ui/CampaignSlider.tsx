@@ -143,19 +143,27 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
         </div>
       </div>
 
-      <div
-        className="flex overflow-x-scroll scrollbar-hide active:cursor-grabbing"
-        ref={sliderRef}
-        onPointerDown={handlePointerDown}
-      >
-        {campaigns.map((campaign, index) => (
-          <CampaignSliderBanner
-            key={campaign.id}
-            campaign={campaign}
-            isFirst={index === 0}
-          />
-        ))}
-      </div>
+      {campaigns.length === 0 && (
+        <p className="text-black px-4">
+          Esta empresa ainda não possui campanhas ativas.
+        </p>
+      )}
+
+      {campaigns.length > 0 && (
+        <div
+          className="flex overflow-x-scroll scrollbar-hide active:cursor-grabbing"
+          ref={sliderRef}
+          onPointerDown={handlePointerDown}
+        >
+          {campaigns.map((campaign, index) => (
+            <CampaignSliderBanner
+              key={campaign.id}
+              campaign={campaign}
+              isFirst={index === 0}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
