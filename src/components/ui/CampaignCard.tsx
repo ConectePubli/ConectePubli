@@ -1,73 +1,113 @@
 import React from "react";
 import { Campaign } from "@/types/Campaign";
 import { Calendar, User, Tag } from "lucide-react";
+import { Coins, Image } from "phosphor-react";
+import pb from "@/lib/pb";
 
 interface CampaignCardProps {
   campaign: Campaign;
   participationStatus: string;
+  fromMyCampaigns: boolean; // esconde algumas informações
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({
   campaign,
   participationStatus,
+  fromMyCampaigns,
 }) => {
   const beginningDate = new Date(campaign.beginning);
   const endDate = new Date(campaign.end);
-  const createdDate = new Date(campaign.created);
+
+  const readTextStatus = (type: string) => {
+    switch (type) {
+      case "waiting":
+        return "Aguardando";
+      case "approved":
+        return "Aprovado";
+      case "completed":
+        return "Concluído";
+      case "sold_out":
+        return "Vagas esgotadas";
+      default:
+        return "";
+    }
+  };
+
+  const getStatusColor = (type: string) => {
+    switch (type) {
+      case "completed":
+        return "#28A745"; // Concluído
+      case "approved":
+        return "#2881A7"; // Aprovado
+      case "waiting":
+        return "#FFC107"; // Aguardando
+      case "sold_out":
+        return "#DC3545"; // Vagas esgotadas
+      default:
+        return "#000000"; // Cor padrão (preto)
+    }
+  };
 
   return (
-    <div className="flex bg-white p-4 rounded-lg shadow-md h-[300px]">
-      <div className="w-[30%] h-auto">
-        <img
-          src="https://via.placeholder.com/300"
-          alt={campaign.name}
-          className="w-full h-full object-cover rounded-lg"
-        />
+    <div className="flex flex-col md:flex-row bg-white rounded-lg border-2 h-auto">
+      <div className="w-full md:w-[30%] h-[200px] md:h-[260px]">
+        {campaign.cover_img ? (
+          <img
+            src={pb.getFileUrl(campaign, campaign.cover_img)}
+            alt={campaign.name}
+            className="w-full h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-300 flex items-center justify-center rounded-t-lg md:rounded-l-lg md:rounded-tr-none">
+            <Image color="#fff" size={40} />
+          </div>
+        )}
       </div>
 
-      <div className="flex-1 pl-6">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-2">
+      <div className="flex-1 p-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
+          <div className="flex items-center gap-2 mb-2 md:mb-0">
             <Tag className="w-5 h-5 text-blue-500" />
             <span className="text-sm font-medium text-blue-500">
-              {campaign.genre}
+              {campaign.objective === "UGC" ? "UGC" : "Influenciador"}
             </span>
           </div>
         </div>
         <h3 className="text-lg font-bold">{campaign.name}</h3>
-        <span className="text-gray-500 text-sm mb-4">
-          {createdDate.toLocaleDateString()}
-        </span>
-        <p className="text-gray-700 mb-3">{campaign.description}</p>
 
-        <div className="flex justify-between items-center mb-2">
+        <p className="text-gray-700 mb-3">
+          {campaign.description && campaign.description.length > 250
+            ? `${campaign.description.slice(0, 250)}...`
+            : campaign.description}
+        </p>
+
+        <div className="flex justify-end items-center mb-2">
           <div className="flex items-center gap-2 text-gray-500">
             <Calendar className="w-5 h-5" />
             {`${beginningDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`}
           </div>
         </div>
 
-        <div className="flex justify-between items-center border-t-2 pt-2">
-          <div className="flex items-center">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-t-2 pt-2">
+          <div className="flex items-center mb-2 md:mb-0">
             <div className="flex items-center gap-2 text-purple-600 font-semibold">
-              <Tag className="w-5 h-5" />
-              {`R$${campaign.price}`}
+              <Coins className="w-5 h-5" />
+              {`R$${campaign.price}`}/pessoa
             </div>
 
-            <div className="ml-4 flex items-center gap-2 text-gray-500">
-              <User className="w-5 h-5" />
-              {campaign.open_jobs ?? 0} vagas abertas
-            </div>
+            {!fromMyCampaigns && (
+              <div className="ml-0 md:ml-4 flex items-center gap-2 text-gray-500">
+                <User className="w-5 h-5" />
+                {campaign.open_jobs ?? 0} vagas abertas
+              </div>
+            )}
           </div>
 
           <span
-            className={`font-semibold ${
-              participationStatus === "completed"
-                ? "text-green-500"
-                : "text-blue-500"
-            }`}
+            className="font-semibold"
+            style={{ color: getStatusColor(participationStatus) }}
           >
-            Status: {participationStatus}
+            Status: {readTextStatus(participationStatus)}
           </span>
         </div>
       </div>

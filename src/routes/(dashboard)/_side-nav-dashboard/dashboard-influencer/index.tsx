@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import CampaignCard from "@/components/ui/CampaignCard";
+import Spinner from "@/components/ui/Spinner";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { Campaign } from "@/types/Campaign";
 import pb from "@/lib/pb";
 import { UserAuth } from "@/types/UserAuth";
+import { Filter } from "lucide-react";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-influencer/"
@@ -52,6 +54,7 @@ function Page() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // filter campaigns
   const filteredCampaigns = campaigns.filter((participation) => {
     const campaign = participation.expand.Campaign as Campaign;
     const matchesSearch = campaign.name
@@ -60,20 +63,14 @@ function Page() {
     const matchesStatus =
       statusFilter === "" || participation.status === statusFilter;
     const matchesType =
-      typeFilter === "" || campaign.genre?.toLowerCase() === typeFilter;
+      typeFilter === "" || campaign.objective?.toLowerCase() === typeFilter;
 
     return matchesSearch && matchesStatus && matchesType;
   });
 
-  const noDataMessage =
-    !isLoading && filteredCampaigns.length === 0
-      ? "Nenhum resultado encontrado para o filtro selecionado."
-      : null;
-
-  const noCampaignsMessage =
-    !isLoading && campaigns.length === 0
-      ? "Você ainda não está participando de nenhuma campanha."
-      : null;
+  // control when user filter data
+  const hasFiltersApplied =
+    search !== "" || statusFilter !== "" || typeFilter !== "";
 
   return (
     <div className="mx-auto py-6">
@@ -84,8 +81,13 @@ function Page() {
       </p>
 
       <div className="bg-gray-100 p-4 rounded-lg mb-6">
-        <div className="flex gap-4">
-          <div className="w-1/2">
+        <div className="flex items-center mb-2">
+          <Filter size={18} className="mr-1" />
+          <p className="text-base font-medium">Filtro</p>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="w-full">
             <label htmlFor="search" className="sr-only">
               Pesquisar pelo nome da campanha
             </label>
@@ -99,55 +101,92 @@ function Page() {
             />
           </div>
 
-          <div className="w-1/4">
-            <label htmlFor="type" className="sr-only">
-              Categoria
-            </label>
-            <select
-              id="type"
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg"
-            >
-              <option value="">Categoria</option>
-              <option value="ugc">UGC</option>
-              <option value="influencer">Influencer</option>
-            </select>
-          </div>
+          <div className="flex flex-col md:flex-row w-full md:w-1/2 gap-4">
+            <div className="w-full md:w-1/2">
+              <label htmlFor="type" className="sr-only">
+                Categoria
+              </label>
+              <select
+                id="type"
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg"
+              >
+                <option value="">Categoria</option>
+                <option value="ugc">UGC</option>
+                <option value="influenciador">Influenciador</option>
+              </select>
+            </div>
 
-          <div className="w-1/4">
-            <label htmlFor="status" className="sr-only">
-              Status da campanha
-            </label>
-            <select
-              id="status"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg"
-            >
-              <option value="">Status da campanha</option>
-              <option value="waiting">Em espera</option>
-              <option value="approved">Aprovado</option>
-              <option value="completed">Concluído</option>
-              <option value="sold_out">Esgotado</option>
-            </select>
+            <div className="w-full">
+              <label htmlFor="status" className="sr-only">
+                Status da campanha
+              </label>
+              <select
+                id="status"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg"
+              >
+                <option value="">Status da campanha</option>
+                <option value="waiting">Aguardando</option>
+                <option value="approved">Aprovado</option>
+                <option value="completed">Concluído</option>
+                <option value="sold_out">Esgotado</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
 
       {isLoading ? (
-        <p>Carregando...</p>
+        <div className="flex flex-col items-center justify-center my-10">
+          <Spinner />
+          <p className="mt-2 text-gray-600">Carregando...</p>
+        </div>
       ) : (
         <>
-          {noDataMessage || noCampaignsMessage ? (
-            <p>{noDataMessage || noCampaignsMessage}</p>
+          {filteredCampaigns.length === 0 ? (
+            hasFiltersApplied ? (
+              <div className="flex flex-col items-center justify-center my-10">
+                <p className="text-center text-gray-700 text-base">
+                  Nenhum resultado encontrado para o filtro selecionado.
+                </p>
+                <button
+                  onClick={() => {
+                    setSearch("");
+                    setStatusFilter("");
+                    setTypeFilter("");
+                  }}
+                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                  Limpar filtros
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center my-10">
+                <p className="text-center text-gray-700 text-base">
+                  Você ainda não se inscreveu em nenhuma campanha. Navegue pelas
+                  campanhas disponíveis e comece a participar agora mesmo!
+                </p>
+                <button
+                  onClick={() => {
+                    console.log("to do");
+                  }}
+                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                  Explorar Campanhas
+                </button>
+              </div>
+            )
           ) : (
             <div className="space-y-4">
               {filteredCampaigns.map((participation) => (
                 <CampaignCard
                   key={participation.id}
-                  campaign={participation.expand.Campaign}
+                  campaign={participation.expand.Campaign as Campaign}
                   participationStatus={participation.status}
+                  fromMyCampaigns={true}
                 />
               ))}
             </div>
