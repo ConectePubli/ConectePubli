@@ -1,3 +1,6 @@
+import { Campaign } from "./Campaign";
+import { Influencer } from "./Influencer";
+
 export interface CampaignParticipation {
   id: string;
   Campaign: string;
@@ -7,4 +10,8 @@ export interface CampaignParticipation {
   updated: Date;
   collectionId: string;
   collectionName: string;
+  expand: {
+    Campaign: Campaign;
+    Influencer: Influencer;
+  };
 }

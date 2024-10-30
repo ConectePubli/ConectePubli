@@ -16,7 +16,6 @@ export interface Campaign {
   updated: Date;
   collectionId: string;
   collectionName: string;
-
   expand?: {
     campaigns_participations_via_Campaign?: CampaignParticipation[];
   };
