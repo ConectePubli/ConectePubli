@@ -20,7 +20,6 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
   const dragThreshold = 5;
   const clickThreshold = 150;
 
-  // Função de clique nos banners
   const handleBannerClick = useCallback((id: string) => {
     console.log("Clique na campanha", id); //TODO
   }, []);
