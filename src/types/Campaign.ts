@@ -4,14 +4,16 @@ export interface Campaign {
   id: string;
   name: string;
   description?: string;
+  cover: string;
   price: number;
   paid?: boolean;
   brand: string;
   beginning: Date;
   end: Date;
   open_jobs?: number;
-  genre?: "UGC" | "Influencer";
+  objective?: "UGC" | "Influencer";
   status: "ready" | "in_progress" | "ended";
+  niche: string[];
   created: Date;
   updated: Date;
   collectionId: string;

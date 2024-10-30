@@ -54,13 +54,20 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       const perPage = 5;
       const filters: string[] = [];
 
+      const currentBrandId = pb.authStore.model?.id;
+      if (currentBrandId) {
+        filters.push(`brand = "${currentBrandId}"`);
+      } else {
+        throw new Error("Brand ID não encontrado na autenticação.");
+      }
+
       // Construa os filtros com base nos filtros selecionados
       if (statusFilter) {
         filters.push(`status = "${statusFilter}"`);
       }
 
       if (campaignGoalFilter) {
-        filters.push(`genre = "${campaignGoalFilter}"`);
+        filters.push(`objective = "${campaignGoalFilter}"`);
       }
 
       if (searchTerm) {
@@ -69,7 +76,6 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
       const filterString = filters.join(" && ");
 
-      // Buscar campanhas do PocketBase
       const result = await pb
         .collection("campaigns")
         .getList<Campaign>(page, perPage, {
@@ -78,7 +84,6 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
           sort: "-created",
         });
 
-      console.log(result);
       setCampaigns(result.items);
       setTotalPages(result.totalPages);
       set({ isLoading: false });

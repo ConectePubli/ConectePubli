@@ -81,7 +81,9 @@ const CampaignsTable: React.FC = () => {
                     </span>
                   </td>
 
-                  <td className="py-2 px-4 font-semibold">{campaign.genre}</td>
+                  <td className="py-2 px-4 font-semibold">
+                    {campaign.objective}
+                  </td>
 
                   <td className="py-2 px-4 font-semibold">{inscritos}</td>
 
@@ -134,30 +136,31 @@ const CampaignsTable: React.FC = () => {
           )}
         </tbody>
       </table>
+
       {/* Controles de Paginação */}
       <div className="flex justify-between items-center mt-4">
         <button
           onClick={handlePreviousPage}
-          disabled={page === 1}
+          disabled={page === 1 || page === 0}
           className={`flex items-center px-4 py-2 rounded-lg ${
             page === 1
               ? "bg-gray-200 cursor-not-allowed"
-              : "bg-blue-500 text-white"
+              : "bg-[#10438F] text-white"
           }`}
         >
           <ChevronLeft className="h-5 w-5" />
           Anterior
         </button>
         <span>
-          Página {page} de {totalPages}
+          Página {totalPages === 0 ? 0 : page} de {totalPages}
         </span>
         <button
           onClick={handleNextPage}
-          disabled={page === totalPages}
+          disabled={page === totalPages || page === 0 || totalPages === 0}
           className={`flex items-center px-4 py-2 rounded-lg ${
             page === totalPages
               ? "bg-gray-200 cursor-not-allowed"
-              : "bg-blue-500 text-white"
+              : "bg-[#10438F] text-white"
           }`}
         >
           Próxima

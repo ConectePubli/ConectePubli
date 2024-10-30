@@ -60,9 +60,10 @@ const FilterSectionCampaign: React.FC = () => {
           <select
             id="campaignGoal"
             value={campaignGoalFilter}
-            onChange={(e) =>
-              setCampaignGoalFilter(e.target.value as CampaignGoalFilter)
-            }
+            onChange={(e) => {
+              setCampaignGoalFilter(e.target.value as CampaignGoalFilter);
+              setPage(1);
+            }}
             className="w-full p-3 py-3 border border-black rounded-lg appearance-none"
           >
             <option value={CampaignGoalFilter.All}>Objetivo da campanha</option>
@@ -83,7 +84,10 @@ const FilterSectionCampaign: React.FC = () => {
           <select
             id="status"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+            onChange={(e) => {
+              setStatusFilter(e.target.value as StatusFilter);
+              setPage(1);
+            }}
             className="w-full p-3 py-3 border border-black rounded-lg appearance-none"
           >
             <option value={StatusFilter.All}>Status</option>
