@@ -4,7 +4,6 @@ export interface Campaign {
   id: string;
   name: string;
   description?: string;
-  cover: string;
   price: number;
   paid?: boolean;
   brand: string;
@@ -13,7 +12,8 @@ export interface Campaign {
   open_jobs?: number;
   objective?: "UGC" | "Influencer";
   status: "ready" | "in_progress" | "ended";
-  cover_img: string;
+  cover_img?: string;
+  niche: string[];
   created: Date;
   updated: Date;
   collectionId: string;
