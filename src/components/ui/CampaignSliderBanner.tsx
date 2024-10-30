@@ -1,11 +1,13 @@
 // src/components/ui/CampaignSliderBanner.tsx
 import React from "react";
-import { Calendar, Coins, Tag, User } from "lucide-react";
+import { User } from "lucide-react";
 import InstagramIcon from "@/assets/icons/instagram.svg";
 import FacebookIcon from "@/assets/icons/facebook.svg";
+import CalendarIcon from "@/assets/icons/calendar.svg";
+import TagIcon from "@/assets/icons/tag.svg";
+import CoinsIcon from "@/assets/icons/coins.svg";
 import { format } from "date-fns";
 import { Campaign } from "@/types/Campaign";
-
 interface CampaignSliderBannerProps {
   campaign: Campaign;
   isFirst: boolean;
@@ -30,8 +32,8 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
           className="w-[375px] h-[272px] object-cover hidden xl:block rounded-l-lg select-none"
         />
         <div className="flex flex-col p-4 w-full">
-          <p className="text-[12px] font-bold flex flex-row items-center text-[#10438F]">
-            <Tag className="mr-1" size={16} />
+          <p className="text-[12px] font-bold flex flex-row items-center text-[#052759]">
+            <img src={TagIcon} alt="Edit" className="w-3 h-3 mr-1" />
             {campaign.objective}
           </p>
           <h1 className="text-lg font-bold mt-2">{campaign.name}</h1>
@@ -59,7 +61,7 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             </div>
 
             <div className="flex flex-row items-center mt-3">
-              <Calendar className="w-4 h-4 mr-2" />
+              <img src={CalendarIcon} alt="Calendar" className="w-4 h-4 mr-2" />
               <p className="text-[12px] text-gray-700 font-bold">
                 {campaign.beginning
                   ? format(new Date(campaign.beginning), "dd/MM/yyyy")
@@ -76,7 +78,7 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
 
           <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
             <p className="font-semibold flex flex-row items-center text-[#6F42C1]">
-              <Coins className="mr-2" size={16} />
+              <img src={CoinsIcon} alt="Coins" className="w-4 h-4 mr-2" />
               {campaign.price.toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
