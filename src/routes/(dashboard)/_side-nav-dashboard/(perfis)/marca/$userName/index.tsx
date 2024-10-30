@@ -92,10 +92,10 @@ function Page() {
               src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.profile_img}`}
               alt="avatar"
               draggable={false}
-              className="w-20 h-20 rounded-md bg-orange-500 object-cover"
+              className="w-20 h-20 rounded-md bg-orange-600 object-cover"
             />
           ) : (
-            <div className="w-20 h-20 rounded-md bg-orange-500" />
+            <div className="w-20 h-20 rounded-md bg-orange-600" />
           )}
 
           <div className="ml-3">
