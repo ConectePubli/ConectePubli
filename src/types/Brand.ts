@@ -5,13 +5,13 @@ export interface Brand {
   cover_img?: string;
   bio?: string;
   cell_phone: string;
-  cep?: number;
+  cep?: string;
   city?: string;
   collectionId?: string;
   collectionName?: string;
   company_register?: string;
   complement?: string;
-  country?: string;
+  country?: string | null;
   created?: Date;
   email: string;
   emailVisibility?: boolean;
@@ -23,7 +23,7 @@ export interface Brand {
   name?: string;
   neighborhood?: string;
   niche?: string[];
-  opening_date?: Date;
+  opening_date?: Date | null;
   pinterest_url?: string;
   pix_key?: string;
   profile_img?: string;

@@ -5,12 +5,12 @@ import { ComboboxStates } from "@/components/ui/ComboboxStates";
 import CustomPhoneInput from "@/components/ui/CustomPhoneInput";
 import DateInput from "@/components/ui/DateInput";
 import ProfileEditDropdown from "@/components/ui/ProfileEditDropdown";
-import StateSelector from "@/components/ui/StateSelector";
+import { BrazilianStates } from "@/data/Brazillian_States";
+import { countries } from "@/data/Countries";
 import { getUserType } from "@/lib/auth";
 import pb from "@/lib/pb";
 import { Brand } from "@/types/Brand";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { set } from "date-fns";
 import {
   Camera,
   LoaderIcon,
@@ -29,45 +29,6 @@ interface Option {
   value: string;
   label: string;
 }
-
-const brazilianStates = [
-  { name: "Acre", abbr: "AC" },
-  { name: "Alagoas", abbr: "AL" },
-  { name: "Amapá", abbr: "AP" },
-  { name: "Amazonas", abbr: "AM" },
-  { name: "Bahia", abbr: "BA" },
-  { name: "Ceará", abbr: "CE" },
-  { name: "Distrito Federal", abbr: "DF" },
-  { name: "Espírito Santo", abbr: "ES" },
-  { name: "Goiás", abbr: "GO" },
-  { name: "Maranhão", abbr: "MA" },
-  { name: "Mato Grosso", abbr: "MT" },
-  { name: "Mato Grosso do Sul", abbr: "MS" },
-  { name: "Minas Gerais", abbr: "MG" },
-  { name: "Pará", abbr: "PA" },
-  { name: "Paraíba", abbr: "PB" },
-  { name: "Paraná", abbr: "PR" },
-  { name: "Pernambuco", abbr: "PE" },
-  { name: "Piauí", abbr: "PI" },
-  { name: "Rio de Janeiro", abbr: "RJ" },
-  { name: "Rio Grande do Norte", abbr: "RN" },
-  { name: "Rio Grande do Sul", abbr: "RS" },
-  { name: "Rondônia", abbr: "RO" },
-  { name: "Roraima", abbr: "RR" },
-  { name: "Santa Catarina", abbr: "SC" },
-  { name: "São Paulo", abbr: "SP" },
-  { name: "Sergipe", abbr: "SE" },
-  { name: "Tocantins", abbr: "TO" },
-];
-
-const countries = [
-  { name: "Brasil", abbr: "BR" },
-  { name: "Estados Unidos", abbr: "US" },
-  { name: "Canadá", abbr: "CA" },
-  { name: "Argentina", abbr: "AR" },
-  { name: "México", abbr: "MX" },
-  // TODO: ADD TODOS PAÍSES
-];
 
 const socialMediaFields: Array<keyof Brand> = [
   "instagram_url",
@@ -236,7 +197,7 @@ function Page() {
 
       if (originalValue instanceof Date && currentValue instanceof Date) {
         if (originalValue.getTime() !== currentValue.getTime()) {
-          modified[key] = currentValue;
+          modified[key] = currentValue as T[keyof T];
         }
       } else if (Array.isArray(originalValue) && Array.isArray(currentValue)) {
         const originalArray = originalValue as unknown[];
@@ -245,10 +206,10 @@ function Page() {
           originalArray.length !== currentArray.length ||
           !originalArray.every((item, index) => item === currentArray[index])
         ) {
-          modified[key] = currentValue;
+          modified[key] = currentValue as T[keyof T];
         }
       } else if (originalValue !== currentValue) {
-        modified[key] = currentValue;
+        modified[key] = currentValue as T[keyof T];
       }
     });
 
@@ -341,7 +302,9 @@ function Page() {
             const formattedDate = value.toISOString().split("T")[0];
             formData.append(key, formattedDate);
           } else {
-            formData.append(key, value.toString());
+            if (value) {
+              formData.append(key, value ? value.toString() : "");
+            }
           }
         }
       });
@@ -352,7 +315,7 @@ function Page() {
       setUserData(updatedUserData);
       setOriginalData(updatedUserData);
 
-      toast.success("Dados sobre você salvos com sucesso!");
+      toast.success("Dados 'Sobre você' salvos com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar dados da seção 'Sobre você':", error);
       toast.error(
@@ -391,14 +354,14 @@ function Page() {
       // Adicionar os campos modificados ao FormData
       Object.entries(modifiedFields).forEach(([key, value]) => {
         if (value !== undefined && key !== "id") {
-          formData.append(key, value.toString());
+          if (value) {
+            formData.append(key, value ? value.toString() : "");
+          }
         }
       });
 
-      // Enviar os dados para o PocketBase
       await pb.collection("brands").update(pb.authStore.model?.id, formData);
 
-      // Atualizar os dados originais após o salvamento
       const updatedUserData = { ...originalData, ...modifiedFields };
       setUserData(updatedUserData);
       setOriginalData(updatedUserData);
@@ -455,7 +418,11 @@ function Page() {
 
       Object.entries(modifiedFields).forEach(([key, value]) => {
         if (value !== undefined && key !== "id") {
-          formData.append(key, value.toString());
+          if (value !== null) {
+            if (value !== undefined && value !== null && key !== "id") {
+              formData.append(key, value ? value.toString() : "");
+            }
+          }
         }
       });
 
@@ -494,7 +461,7 @@ function Page() {
 
       Object.entries(modifiedFields).forEach(([key, value]) => {
         if (value !== undefined && key !== "id") {
-          formData.append(key, value.toString());
+          formData.append(key, value?.toString() || "");
         }
       });
 
@@ -903,11 +870,17 @@ function Page() {
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Digite o número da residência"
             value={userData?.address_num || ""}
-            onChange={(event) =>
+            onChange={(event) => {
+              const value = event.target.value;
               setUserData((prev) =>
-                prev ? { ...prev, address_num: event.target.value } : prev
-              )
-            }
+                prev
+                  ? {
+                      ...prev,
+                      address_num: value !== "" ? Number(value) : undefined,
+                    }
+                  : prev
+              );
+            }}
           />
         </div>
 
@@ -970,8 +943,8 @@ function Page() {
           </div>
           <div className="mb-6 mt-1">
             <ComboboxStates
-              states={brazilianStates}
-              selectedState={userData?.state || null}
+              states={BrazilianStates}
+              selectedState={userData?.state}
               setSelectedState={(state) =>
                 setUserData({ ...userData, state: state })
               }

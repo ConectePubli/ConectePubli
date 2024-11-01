@@ -27,8 +27,8 @@ interface State {
 
 interface ComboboxStatesProps {
   states: State[];
-  selectedState: string | null;
-  setSelectedState: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedState: string | undefined;
+  setSelectedState: (state: string | undefined) => void;
 }
 
 export function ComboboxStates({
@@ -71,7 +71,7 @@ export function ComboboxStates({
 
                     if (selectedState === selected.name) {
                       // Se o estado já está selecionado, desmarque-o
-                      setSelectedState(null);
+                      setSelectedState(undefined);
                     } else {
                       // Se selecionar um novo estado, atualize
                       setSelectedState(selected.name);
