@@ -24,6 +24,7 @@ function Page() {
 
   const fetchCampaignParticipations = async () => {
     setIsLoading(true);
+
     const user: UserAuth = JSON.parse(
       localStorage.getItem("pocketbase_auth") as string
     );
