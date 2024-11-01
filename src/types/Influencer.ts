@@ -1,3 +1,5 @@
+import { Niche } from "./Niche";
+
 export interface Influencer {
   id: string;
   name: string;
@@ -45,7 +47,7 @@ export interface Influencer {
   pinterest_url: string;
   pinterest_followers_number: string;
   languages: string[] | null;
-  niche: string[];
+  niche: Niche[];
   account_type: string;
   gender: string;
   verified: boolean;
