@@ -876,7 +876,7 @@ function Page() {
                 prev
                   ? {
                       ...prev,
-                      address_num: value !== "" ? Number(value) : undefined,
+                      address_num: value !== "" ? value : undefined,
                     }
                   : prev
               );
