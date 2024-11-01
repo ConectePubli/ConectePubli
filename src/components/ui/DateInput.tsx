@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { format, parse } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -24,38 +24,56 @@ export default function DateInput({
   const [inputValue, setInputValue] = useState(
     selectedDate ? format(selectedDate, "dd/MM/yyyy") : ""
   );
+  const [isInputValid, setIsInputValid] = useState(true);
 
   const handleDateChange = (date: Date | null) => {
     onDateChange(date);
     setInputValue(date ? format(date, "dd/MM/yyyy") : "");
+    setIsInputValid(true);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
 
-    // Verificar se a máscara está completa
-    if (value.length === 10) {
-      // dd/MM/yyyy tem 10 caracteres
+    const numericValue = value.replace(/\D/g, "");
+
+    if (numericValue.length === 8) {
       const parsedDate = parse(value, "dd/MM/yyyy", new Date());
-      if (parsedDate instanceof Date && !isNaN(parsedDate.getTime())) {
+      if (isValid(parsedDate) && value === format(parsedDate, "dd/MM/yyyy")) {
         onDateChange(parsedDate);
+        setIsInputValid(true);
       } else {
         onDateChange(null);
+        setIsInputValid(false);
       }
     } else {
       onDateChange(null);
+      setIsInputValid(false);
     }
   };
 
   return (
     <div className="relative">
       <MaskedInput
-        mask={[/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/]}
+        mask={[
+          /[0-3]/,
+          inputValue[0] === "3" ? /[0-1]/ : /\d/,
+          "/",
+          /[0-1]/,
+          inputValue[3] === "1" ? /[0-2]/ : /\d/,
+          "/",
+          /\d/,
+          /\d/,
+          /\d/,
+          /\d/,
+        ]}
         value={inputValue}
         onChange={handleInputChange}
         placeholder="DD/MM/YYYY"
-        className="pr-10 w-full p-3 border rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500 focus-visible:ring-0 focus:ring-0 focus:border-black focus:border-2 border-gray-300"
+        className={`pr-10 w-full p-3 border rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500 focus-visible:ring-0 focus:ring-0 focus:border-black focus:border-2 ${
+          isInputValid ? "border-gray-300" : "border-red-500"
+        }`}
       />
       <Popover>
         <PopoverTrigger asChild>
@@ -77,6 +95,9 @@ export default function DateInput({
           />
         </PopoverContent>
       </Popover>
+      {!isInputValid && inputValue && (
+        <p className="text-red-500 text-sm mt-1">Data inválida</p>
+      )}
     </div>
   );
 }
