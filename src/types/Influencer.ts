@@ -55,4 +55,7 @@ export interface Influencer {
   updated: Date;
   collectionId: string;
   collectionName: string;
+  expand: {
+    niche: Niche[];
+  };
 }

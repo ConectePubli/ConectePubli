@@ -1,5 +1,5 @@
 import { UserAuth } from "@/types/UserAuth";
-import { createFileRoute, Navigate, useMatch } from "@tanstack/react-router";
+import { createFileRoute, useMatch, useNavigate } from "@tanstack/react-router";
 import { MapPin, Globe, User } from "lucide-react";
 import {
   InstagramLogo,
@@ -16,6 +16,7 @@ import pb from "@/lib/pb";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/ui/Spinner";
 import { Influencer } from "@/types/Influencer";
+import { Niche } from "@/types/Niche";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/"
@@ -24,6 +25,8 @@ export const Route = createFileRoute(
 });
 
 function InfluencerProfilePage() {
+  const navigate = useNavigate();
+
   const {
     params: { username },
   } = useMatch({
@@ -54,9 +57,9 @@ function InfluencerProfilePage() {
     try {
       const influencerData = await pb.collection("Influencers").getFullList({
         filter: `username="${username}"`,
+        expand: "niche",
       });
 
-      console.log(influencerData);
       return influencerData[0];
     } catch (e) {
       console.log(`error get user info: ${e}`);
@@ -251,7 +254,9 @@ function InfluencerProfilePage() {
             {userLogged?.model.id.includes(influencer.id) && (
               <button
                 className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-200 transition"
-                onClick={() => Navigate({ to: "/editar" })}
+                onClick={() =>
+                  navigate({ to: `/influenciador/${username}/editar` })
+                }
               >
                 Editar Perfil
               </button>
@@ -259,7 +264,7 @@ function InfluencerProfilePage() {
           </div>
 
           <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-1">Biografia</h3>
+            <h3 className="text-lg font-semibold mb-2">Biografia</h3>
 
             <div className="flex items-center gap-4 flex-wrap mb-1">
               <p className="text-sm text-gray-600 font-medium flex items-center">
@@ -284,16 +289,22 @@ function InfluencerProfilePage() {
               {influencer.bio}
             </p>
 
-            {/* <div className="mt-4">
-              <h4 className="text-lg font-semibold mb-2">Interesses</h4>
-              <div className="flex flex-wrap gap-2">
-                {influencer.niche && (
-                  <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                    {influencer.niche}
-                  </span>
-                )}
+            {influencer.expand && influencer.expand.niche && (
+              <div className="mt-4">
+                <div className="flex flex-wrap gap-2">
+                  {influencer.expand.niche.map((niche: Niche) => {
+                    return (
+                      <span
+                        className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                        key={niche.id}
+                      >
+                        {niche.niche}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
-            </div> */}
+            )}
 
             {/* <div className="mt-6">
               <h4 className="text-lg font-semibold mb-2">Minhas Habilidades</h4>

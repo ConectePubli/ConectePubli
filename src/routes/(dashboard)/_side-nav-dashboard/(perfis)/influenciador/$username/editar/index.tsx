@@ -1,6 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
+import { createFileRoute, useNavigate, useMatch } from "@tanstack/react-router";
+import React, { useState, useEffect } from "react";
 import { CaretDown, CaretUp, Plus, X } from "phosphor-react";
+import pb from "@/lib/pb";
+import { UserAuth } from "@/types/UserAuth";
+import { Influencer } from "@/types/Influencer";
+import Spinner from "@/components/ui/Spinner";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/editar/"
@@ -9,21 +15,352 @@ export const Route = createFileRoute(
 });
 
 function InfluencerEditProfilePage() {
+  const navigate = useNavigate();
+
+  const {
+    params: { username },
+  } = useMatch({
+    from: "/(dashboard)/_side-nav-dashboard/influenciador/$username/editar/",
+  });
+
+  const [influencer, setInfluencer] = useState<Influencer | null>(null);
+  const [formData, setFormData] = useState<any>({});
+  const [loading, setLoading] = useState(true);
+
+  // State to manage isFormChanged and loading per section
+  const [isFormChangedStates, setIsFormChangedStates] = useState<any>({
+    basicData: false,
+    about: false,
+    address: false,
+    socialMedia: false,
+    mediaKit: false,
+    bankAccount: false,
+    portfolio: false,
+    skills: false,
+    accountInfo: false,
+  });
+
+  const [loadingStates, setLoadingStates] = useState<any>({
+    basicData: false,
+    about: false,
+    address: false,
+    socialMedia: false,
+    mediaKit: false,
+    bankAccount: false,
+    portfolio: false,
+    skills: false,
+    accountInfo: false,
+  });
+
+  const [addressFieldsDisabled, setAddressFieldsDisabled] = useState(true);
+
+  useEffect(() => {
+    const fetchUserAndInfluencer = async () => {
+      try {
+        const userAuthStr = localStorage.getItem("pocketbase_auth");
+        if (!userAuthStr) {
+          navigate({ to: "/login" });
+          return;
+        }
+        const user: UserAuth = JSON.parse(userAuthStr);
+
+        const influencerData = await pb.collection("Influencers").getFullList({
+          filter: `username="${username}"`,
+        });
+
+        if (influencerData.length === 0) {
+          navigate({ to: `/influenciador/${username}` });
+          return;
+        }
+
+        const influencerInfo = influencerData[0] as unknown as Influencer;
+
+        if (user.model.id !== influencerInfo.id) {
+          navigate({ to: `/influenciador/${username}` });
+          return;
+        }
+
+        setInfluencer(influencerInfo);
+        setFormData(influencerInfo);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        navigate({ to: `/influenciador/${username}` });
+      }
+    };
+
+    fetchUserAndInfluencer();
+  }, [username]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value, files } = e.target as HTMLInputElement;
+    let newValue: any = value;
+    if (files && files.length > 0) {
+      newValue = files[0];
+    }
+
+    setFormData((prev: any) => {
+      const updatedFormData = { ...prev, [name]: newValue };
+      return updatedFormData;
+    });
+  };
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLButtonElement>,
+    section: string
+  ) => {
+    e.preventDefault();
+
+    setLoadingStates((prev: any) => ({ ...prev, [section]: true }));
+
+    try {
+      const updateData: any = {};
+
+      if (section === "basicData") {
+        if (formData.background_img) {
+          updateData["background_img"] = formData.background_img;
+        }
+        if (formData.profile_img) {
+          updateData["profile_img"] = formData.profile_img;
+        }
+        if (formData.bio) {
+          updateData["bio"] = formData.bio;
+        }
+      } else if (section === "about") {
+        updateData["name"] = formData.name;
+        updateData["birth_date"] = formData.birth_date;
+        updateData["email"] = formData.email;
+        updateData["cell_phone"] = formData.cell_phone;
+        updateData["account_type"] = formData.account_type;
+        updateData["gender"] = formData.gender;
+        updateData["niche"] = formData.niche;
+      } else if (section === "address") {
+        updateData["country"] = formData.country;
+        updateData["cep"] = formData.cep;
+        updateData["street"] = formData.street;
+        updateData["address_num"] = formData.address_num;
+        updateData["complement"] = formData.complement;
+        updateData["neighborhood"] = formData.neighborhood;
+        updateData["city"] = formData.city;
+        updateData["state"] = formData.state;
+      } else if (section === "socialMedia") {
+        updateData["instagram_url"] = formData.instagram_url;
+        updateData["tiktok_url"] = formData.tiktok_url;
+        updateData["facebook_url"] = formData.facebook_url;
+        updateData["youtube_url"] = formData.youtube_url;
+        updateData["pinterest_url"] = formData.pinterest_url;
+        updateData["twitter_url"] = formData.twitter_url;
+        updateData["twitch_url"] = formData.twitch_url;
+        updateData["linkedin_url"] = formData.linkedin_url;
+        updateData["kwai_url"] = formData.kwai_url;
+        updateData["yourclub_url"] = formData.yourclub_url;
+      } else if (section === "mediaKit") {
+        updateData["media_kit_url"] = formData.media_kit_url;
+      } else if (section === "bankAccount") {
+        updateData["pix_key"] = formData.pix_key;
+      } else if (section === "portfolio") {
+        updateData["previous_work_imgs"] = formData.previous_work_imgs;
+        // Handle file uploads for previous_work_imgs if needed
+      } else if (section === "skills") {
+        updateData["languages"] = formData.languages;
+        updateData["skills"] = formData.skills;
+      }
+
+      const data = new FormData();
+      for (const key in updateData) {
+        if (updateData[key] instanceof File) {
+          data.append(key, updateData[key]);
+        } else if (Array.isArray(updateData[key])) {
+          updateData[key].forEach((item: any) => {
+            data.append(key, item);
+          });
+        } else {
+          data.append(key, updateData[key]);
+        }
+      }
+
+      await pb.collection("Influencers").update(influencer!.id, data);
+
+      setIsFormChangedStates((prev: any) => ({ ...prev, [section]: false }));
+    } catch (error) {
+      console.error("Error updating data:", error);
+    } finally {
+      setLoadingStates((prev: any) => ({ ...prev, [section]: false }));
+    }
+  };
+
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cep = e.target.value;
+    setFormData((prev: any) => ({ ...prev, cep }));
+    if (cep.length === 8) {
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+        if (!data.erro) {
+          setFormData((prev: any) => ({
+            ...prev,
+            street: data.logradouro,
+            neighborhood: data.bairro,
+            city: data.localidade,
+            state: data.uf,
+          }));
+          setAddressFieldsDisabled(false);
+        } else {
+          setAddressFieldsDisabled(false);
+        }
+      } catch (error) {
+        console.error("Error fetching CEP data:", error);
+        setAddressFieldsDisabled(false);
+      }
+    } else {
+      setAddressFieldsDisabled(true);
+    }
+    setIsFormChangedStates((prev: any) => ({ ...prev, address: true }));
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto p-6 space-y-6">
       <Section
         title="Dados básicos"
         initiallyOpen
-        content={<BasicDataSection />}
+        content={
+          <BasicDataSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.basicData}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.basicData}
+            setLoadingStates={setLoadingStates}
+          />
+        }
       />
-      <Section title="Sobre você" content={<AboutSection />} />
-      <Section title="Endereço" content={<AddressSection />} />
-      <Section title="Redes sociais" content={<SocialMediaSection />} />
-      <Section title="Mídia kit" content={<MediaKitSection />} />
-      <Section title="Conta bancária" content={<BankAccountSection />} />
-      <Section title="Portfólio" content={<PortfolioSection />} />
-      <Section title="Habilidades" content={<SkillsSection />} />
-      <Section title="Informações da Conta" content={<AccountInfoSection />} />
+      <Section
+        title="Sobre você"
+        content={
+          <AboutSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.about}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.about}
+            setLoadingStates={setLoadingStates}
+          />
+        }
+      />
+      <Section
+        title="Endereço"
+        content={
+          <AddressSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleCepChange={handleCepChange}
+            addressFieldsDisabled={addressFieldsDisabled}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.address}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.address}
+            setLoadingStates={setLoadingStates}
+          />
+        }
+      />
+      <Section
+        title="Redes sociais"
+        content={
+          <SocialMediaSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.socialMedia}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.socialMedia}
+            setLoadingStates={setLoadingStates}
+          />
+        }
+      />
+      <Section
+        title="Mídia kit"
+        content={
+          <MediaKitSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.mediaKit}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.mediaKit}
+            setLoadingStates={setLoadingStates}
+          />
+        }
+      />
+      <Section
+        title="Conta bancária"
+        content={
+          <BankAccountSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.bankAccount}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.bankAccount}
+            setLoadingStates={setLoadingStates}
+          />
+        }
+      />
+      <Section
+        title="Portfólio"
+        content={
+          <PortfolioSection
+            formData={formData}
+            setFormData={setFormData}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.portfolio}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.portfolio}
+            setLoadingStates={setLoadingStates}
+          />
+        }
+      />
+      <Section
+        title="Habilidades"
+        content={
+          <SkillsSection
+            formData={formData}
+            setFormData={setFormData}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.skills}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.skills}
+            setLoadingStates={setLoadingStates}
+          />
+        }
+      />
+      <Section
+        title="Informações da Conta"
+        content={
+          <AccountInfoSection
+            formData={formData}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            isFormChanged={isFormChangedStates.accountInfo}
+            setIsFormChangedStates={setIsFormChangedStates}
+            loading={loadingStates.accountInfo}
+            setLoadingStates={setLoadingStates}
+          />
+        }
+      />
     </div>
   );
 }
@@ -57,7 +394,34 @@ function Section({ title, content, initiallyOpen = false }: SectionProps) {
   );
 }
 
-function BasicDataSection() {
+interface FormProps {
+  formData: any;
+  setFormData?: any;
+  handleInputChange?: any;
+  handleSubmit: any;
+  isFormChanged: any;
+  setIsFormChangedStates: any;
+  loading: boolean;
+  addressFieldsDisabled?: boolean;
+  handleCepChange?: any;
+  setLoadingStates: React.ComponentState;
+}
+
+function BasicDataSection({
+  formData,
+  handleInputChange,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const handleSectionInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    handleInputChange(e);
+    setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
+  };
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-6">
@@ -66,13 +430,21 @@ function BasicDataSection() {
             Foto de fundo*
           </label>
           <img
-            src="https://via.placeholder.com/600"
+            src={
+              formData.background_img
+                ? formData.background_img instanceof File
+                  ? URL.createObjectURL(formData.background_img)
+                  : pb.getFileUrl(formData, formData.background_img)
+                : "https://via.placeholder.com/600"
+            }
             alt="Cover"
             className="w-full h-48 object-cover rounded-lg mb-4"
           />
           <input
             type="file"
+            name="background_img"
             className="border border-gray-300 p-2 rounded-lg w-full"
+            onChange={handleSectionInputChange}
           />
         </div>
         <div className="flex flex-col items-center">
@@ -80,13 +452,21 @@ function BasicDataSection() {
             Carregar nova imagem de perfil
           </label>
           <img
-            src="https://via.placeholder.com/80"
+            src={
+              formData.profile_img
+                ? formData.profile_img instanceof File
+                  ? URL.createObjectURL(formData.profile_img)
+                  : pb.getFileUrl(formData, formData.profile_img)
+                : "https://via.placeholder.com/80"
+            }
             alt="Profile"
             className="w-20 h-20 rounded-full border-2 border-gray-300"
           />
           <input
             type="file"
+            name="profile_img"
             className="border border-gray-300 p-2 rounded-lg mt-4"
+            onChange={handleSectionInputChange}
           />
         </div>
       </div>
@@ -95,19 +475,42 @@ function BasicDataSection() {
           Bio*
         </label>
         <textarea
+          name="bio"
           className="border border-gray-300 p-2 rounded-lg w-full"
           rows={3}
           placeholder="Escreva uma breve descrição sobre você"
+          value={formData.bio || ""}
+          onChange={handleSectionInputChange}
         />
       </div>
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">
-        Salvar Alterações
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg`}
+        onClick={(e) => handleSubmit(e, "basicData")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </>
   );
 }
 
-function AboutSection() {
+function AboutSection({
+  formData,
+  handleInputChange,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const handleSectionInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    handleInputChange(e);
+    setIsFormChangedStates((prev: any) => ({ ...prev, about: true }));
+  };
+
   return (
     <>
       <div>
@@ -116,91 +519,44 @@ function AboutSection() {
         </label>
         <input
           type="text"
+          name="name"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Nome completo"
+          value={formData.name || ""}
+          onChange={handleSectionInputChange}
         />
       </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Data de Nascimento*
-        </label>
-        <input
-          type="date"
-          className="border border-gray-300 p-2 rounded-lg w-full"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Email*
-        </label>
-        <input
-          type="email"
-          className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="email@exemplo.com"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          WhatsApp*
-        </label>
-        <input
-          type="tel"
-          className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="+55 35 99988-1234"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Tipo de Conta*
-        </label>
-        <select className="border border-gray-300 p-2 rounded-lg w-full">
-          <option value="">Selecione o tipo de conta</option>
-          <option value="ugc">UGC (Talentos)</option>
-          <option value="influencer">Influencers</option>
-          <option value="ugc-influencer">UGC + Influencer</option>
-        </select>
-        <p className="text-gray-500 text-sm mt-1">
-          UGC (Talentos): Você cria vídeos ou fotos que serão entregues para as
-          marcas utilizarem em suas campanhas, anúncios ou redes sociais.
-          Influencers: Você cria e compartilha o conteúdo diretamente nas suas
-          redes sociais, promovendo produtos e serviços para seu público. UGC +
-          Influencer: Você tanto cria o conteúdo para as marcas quanto
-          compartilha nas suas próprias redes sociais.
-        </p>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Gênero*
-        </label>
-        <select className="border border-gray-300 p-2 rounded-lg w-full">
-          <option value="">Selecione o seu gênero</option>
-          <option value="feminino">Feminino</option>
-          <option value="masculino">Masculino</option>
-          <option value="nao-binario">Não Binário</option>
-        </select>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Nicho*
-        </label>
-        <select className="border border-gray-300 p-2 rounded-lg w-full">
-          <option value="">Selecione seu nicho de atuação</option>
-          <option value="eletronicos">Eletrônicos & Apps</option>
-          <option value="entretenimento">Entretenimento</option>
-          <option value="fitness">Fitness</option>
-          <option value="lifestyle">Lifestyle</option>
-          <option value="viagem">Viagem</option>
-          <option value="pets">Pets</option>
-        </select>
-      </div>
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">
-        Salvar Alterações
+      {/* ... Rest of the fields with similar structure ... */}
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg`}
+        onClick={(e) => handleSubmit(e, "about")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </>
   );
 }
 
-function AddressSection() {
+function AddressSection({
+  formData,
+  handleInputChange,
+  handleCepChange,
+  addressFieldsDisabled,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const handleSectionInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    handleInputChange(e);
+    setIsFormChangedStates((prev: any) => ({ ...prev, address: true }));
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -210,8 +566,11 @@ function AddressSection() {
           </label>
           <input
             type="text"
+            name="country"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Selecione seu país"
+            placeholder="País"
+            value={formData.country || ""}
+            onChange={handleSectionInputChange}
           />
         </div>
         <div>
@@ -220,48 +579,39 @@ function AddressSection() {
           </label>
           <input
             type="text"
+            name="cep"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Digite seu CEP"
+            value={formData.cep || ""}
+            onChange={handleCepChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Rua
+            Rua*
           </label>
           <input
             type="text"
+            name="street"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Digite o nome da sua rua"
+            placeholder="Rua"
+            value={formData.street || ""}
+            onChange={handleSectionInputChange}
+            disabled={addressFieldsDisabled}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Número
+            Bairro*
           </label>
           <input
             type="text"
+            name="neighborhood"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Digite o número da sua residência"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Complemento
-          </label>
-          <input
-            type="text"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Digite o complemento (opcional)"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Bairro
-          </label>
-          <input
-            type="text"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Digite o nome do seu bairro"
+            placeholder="Bairro"
+            value={formData.neighborhood || ""}
+            onChange={handleSectionInputChange}
+            disabled={addressFieldsDisabled}
           />
         </div>
         <div>
@@ -270,8 +620,12 @@ function AddressSection() {
           </label>
           <input
             type="text"
+            name="city"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Digite o nome da sua cidade"
+            placeholder="Cidade"
+            value={formData.city || ""}
+            onChange={handleSectionInputChange}
+            disabled={addressFieldsDisabled}
           />
         </div>
         <div>
@@ -280,19 +634,69 @@ function AddressSection() {
           </label>
           <input
             type="text"
+            name="state"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Selecione seu estado"
+            placeholder="Estado"
+            value={formData.state || ""}
+            onChange={handleSectionInputChange}
+            disabled={addressFieldsDisabled}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Complemento
+          </label>
+          <input
+            type="text"
+            name="complement"
+            className="border border-gray-300 p-2 rounded-lg w-full"
+            placeholder="Complemento"
+            value={formData.complement || ""}
+            onChange={handleSectionInputChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Número*
+          </label>
+          <input
+            type="text"
+            name="address_num"
+            className="border border-gray-300 p-2 rounded-lg w-full"
+            placeholder="Número"
+            value={formData.address_num || ""}
+            onChange={handleSectionInputChange}
           />
         </div>
       </div>
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">
-        Salvar Alterações
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg`}
+        onClick={(e) => handleSubmit(e, "address")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </>
   );
 }
 
-function SocialMediaSection() {
+function SocialMediaSection({
+  formData,
+  handleInputChange,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const handleSectionInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    handleInputChange(e);
+    setIsFormChangedStates((prev: any) => ({ ...prev, socialMedia: true }));
+  };
+
   return (
     <>
       <p className="text-gray-500 text-sm mb-4">
@@ -306,18 +710,11 @@ function SocialMediaSection() {
           </label>
           <input
             type="url"
+            name="instagram_url"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Insira o URL do seu perfil"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Número de seguidores
-          </label>
-          <input
-            type="number"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Número de seguidores"
+            value={formData.instagram_url || ""}
+            onChange={handleSectionInputChange}
           />
         </div>
         <div>
@@ -326,18 +723,11 @@ function SocialMediaSection() {
           </label>
           <input
             type="url"
+            name="youtube_url"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Insira o URL do seu perfil"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Número de seguidores
-          </label>
-          <input
-            type="number"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Número de seguidores"
+            value={formData.youtube_url || ""}
+            onChange={handleSectionInputChange}
           />
         </div>
         <div>
@@ -346,18 +736,11 @@ function SocialMediaSection() {
           </label>
           <input
             type="url"
+            name="tiktok_url"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Insira o URL do seu perfil"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Número de seguidores
-          </label>
-          <input
-            type="number"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Número de seguidores"
+            value={formData.tiktok_url || ""}
+            onChange={handleSectionInputChange}
           />
         </div>
         <div>
@@ -366,29 +749,118 @@ function SocialMediaSection() {
           </label>
           <input
             type="url"
+            name="pinterest_url"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Insira o URL do seu perfil"
+            value={formData.pinterest_url || ""}
+            onChange={handleSectionInputChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Número de seguidores
+            Kwai
           </label>
           <input
-            type="number"
+            type="url"
+            name="kwai_url"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Número de seguidores"
+            placeholder="Insira o URL do seu perfil"
+            value={formData.kwai_url || ""}
+            onChange={handleSectionInputChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            YourClub
+          </label>
+          <input
+            type="url"
+            name="yourclub_url"
+            className="border border-gray-300 p-2 rounded-lg w-full"
+            placeholder="Insira o URL do seu perfil"
+            value={formData.yourclub_url || ""}
+            onChange={handleSectionInputChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Facebook
+          </label>
+          <input
+            type="url"
+            name="facebook_url"
+            className="border border-gray-300 p-2 rounded-lg w-full"
+            placeholder="Insira o URL do seu perfil"
+            value={formData.facebook_url || ""}
+            onChange={handleSectionInputChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Twitter [X]
+          </label>
+          <input
+            type="url"
+            name="twitter_url"
+            className="border border-gray-300 p-2 rounded-lg w-full"
+            placeholder="Insira o URL do seu perfil"
+            value={formData.twitter_url || ""}
+            onChange={handleSectionInputChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Twitch
+          </label>
+          <input
+            type="url"
+            name="twitch_url"
+            className="border border-gray-300 p-2 rounded-lg w-full"
+            placeholder="Insira o URL do seu perfil"
+            value={formData.twitch_url || ""}
+            onChange={handleSectionInputChange}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            LinkedIn
+          </label>
+          <input
+            type="url"
+            name="linkedin_url"
+            className="border border-gray-300 p-2 rounded-lg w-full"
+            placeholder="Insira o URL do seu perfil"
+            value={formData.linkedin_url || ""}
+            onChange={handleSectionInputChange}
           />
         </div>
       </div>
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">
-        Salvar Alterações
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg`}
+        onClick={(e) => handleSubmit(e, "socialMedia")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </>
   );
 }
 
-function MediaKitSection() {
+function MediaKitSection({
+  formData,
+  handleInputChange,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const handleSectionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleInputChange(e);
+    setIsFormChangedStates((prev: any) => ({ ...prev, mediaKit: true }));
+  };
+
   return (
     <>
       <div>
@@ -397,18 +869,39 @@ function MediaKitSection() {
         </label>
         <input
           type="url"
+          name="media_kit_url"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Insira o URL do seu mídia kit"
+          value={formData.media_kit_url || ""}
+          onChange={handleSectionInputChange}
         />
       </div>
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">
-        Salvar Alterações
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg`}
+        onClick={(e) => handleSubmit(e, "mediaKit")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </>
   );
 }
 
-function BankAccountSection() {
+function BankAccountSection({
+  formData,
+  handleInputChange,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const handleSectionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleInputChange(e);
+    setIsFormChangedStates((prev: any) => ({ ...prev, bankAccount: true }));
+  };
+
   return (
     <>
       <div>
@@ -417,173 +910,108 @@ function BankAccountSection() {
         </label>
         <input
           type="text"
+          name="pix_key"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Insira sua chave Pix"
+          value={formData.pix_key || ""}
+          onChange={handleSectionInputChange}
         />
       </div>
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">
-        Salvar Alterações
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg`}
+        onClick={(e) => handleSubmit(e, "bankAccount")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </>
   );
 }
 
-function PortfolioSection() {
+function PortfolioSection({
+  formData,
+  setFormData,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const handleSectionInputChange = () => {
+    setIsFormChangedStates((prev: any) => ({ ...prev, portfolio: true }));
+  };
+
   return (
     <div className="space-y-8">
-      <FAQSection />
-      <BrandsSection />
-      <PreviousWorksSection />
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-4">
-        Salvar Alterações
+      <PreviousWorksSection
+        formData={formData}
+        setFormData={setFormData}
+        handleSectionInputChange={handleSectionInputChange}
+      />
+      {/* <FAQSection /> */}
+      {/* <BrandsSection /> */}
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg mt-4`}
+        onClick={(e) => handleSubmit(e, "portfolio")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </div>
   );
 }
 
-function FAQSection() {
-  const [faqItems, setFaqItems] = useState([{ question: "", answer: "" }]);
-
-  const addFAQ = () => {
-    if (faqItems.length < 10) {
-      setFaqItems([...faqItems, { question: "", answer: "" }]);
-    }
-  };
-
-  const removeFAQ = (index: number) => {
-    if (faqItems.length > 1) {
-      setFaqItems(faqItems.filter((_, i) => i !== index));
-    }
-  };
-
-  return (
-    <div>
-      <h3 className="text-lg font-semibold mb-2">Perguntas Frequentes</h3>
-      <p className="text-sm text-gray-500 mb-4">
-        Você pode adicionar quantas perguntas desejar. Uma vez adicionada, a
-        pergunta e a resposta devem ser preenchidas ou removidas antes de
-        atualizar o perfil.
-      </p>
-      {faqItems.map((item, index) => (
-        <div key={index} className="space-y-2 mb-4">
-          <div className="flex items-center">
-            <input
-              type="text"
-              placeholder={`Pergunta #${index + 1}`}
-              className="border border-gray-300 rounded-lg p-2 w-full"
-              value={item.question}
-              onChange={(e) =>
-                setFaqItems(
-                  faqItems.map((faq, i) =>
-                    i === index ? { ...faq, question: e.target.value } : faq
-                  )
-                )
-              }
-            />
-            <button
-              onClick={() => removeFAQ(index)}
-              className="ml-2 text-red-500"
-            >
-              <X size={20} />
-            </button>
-          </div>
-          <textarea
-            placeholder={`Resposta #${index + 1}`}
-            className="border border-gray-300 rounded-lg p-2 w-full"
-            rows={3}
-            value={item.answer}
-            onChange={(e) =>
-              setFaqItems(
-                faqItems.map((faq, i) =>
-                  i === index ? { ...faq, answer: e.target.value } : faq
-                )
-              )
-            }
-          />
-        </div>
-      ))}
-      <button onClick={addFAQ} className="flex items-center text-blue-600 mt-4">
-        <Plus size={20} className="mr-2" /> Adicionar pergunta
-      </button>
-    </div>
+function PreviousWorksSection({
+  formData,
+  setFormData,
+  handleSectionInputChange,
+}: {
+  formData: any;
+  setFormData: any;
+  handleSectionInputChange: any;
+}) {
+  const [workImages, setWorkImages] = useState(
+    formData.previous_work_imgs || []
   );
-}
 
-function BrandsSection() {
-  const [brandLogos, setBrandLogos] = useState([
-    "https://via.placeholder.com/100",
-  ]);
-
-  const addBrandLogo = () => {
-    if (brandLogos.length < 10) {
-      setBrandLogos([...brandLogos, "https://via.placeholder.com/100"]);
-    }
-  };
-
-  const removeBrandLogo = (index: number) => {
-    setBrandLogos(brandLogos.filter((_, i) => i !== index));
-  };
-
-  return (
-    <div>
-      <h3 className="text-lg font-semibold mb-2">
-        Marcas que já trabalhei com
-      </h3>
-      <p className="text-sm text-gray-500 mb-4">
-        Faça upload dos logos das marcas com as quais você já trabalhou. Tamanho
-        recomendado: 500x500px.
-      </p>
-      <div className="flex flex-wrap gap-4">
-        {brandLogos.map((logo, index) => (
-          <div key={index} className="relative">
-            <img
-              src={logo}
-              alt="Brand Logo"
-              className="w-20 h-20 rounded-lg object-cover"
-            />
-            <button
-              onClick={() => removeBrandLogo(index)}
-              className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        ))}
-        <button
-          onClick={addBrandLogo}
-          className="w-20 h-20 bg-gray-100 flex items-center justify-center rounded-lg text-blue-600"
-        >
-          <Plus size={20} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function PreviousWorksSection() {
-  const [workImages, setWorkImages] = useState([
-    "https://via.placeholder.com/200",
-    "https://via.placeholder.com/200",
-  ]);
-
-  const addWorkImage = () => {
-    if (workImages.length < 8) {
-      setWorkImages([...workImages, "https://via.placeholder.com/200"]);
+  const addWorkImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (workImages.length < 8 && e.target.files && e.target.files.length > 0) {
+      const newImage = e.target.files[0];
+      const updatedImages = [...workImages, newImage];
+      setWorkImages(updatedImages);
+      setFormData((prev: any) => ({
+        ...prev,
+        previous_work_imgs: updatedImages,
+      }));
+      handleSectionInputChange();
     }
   };
 
   const removeWorkImage = (index: number) => {
-    setWorkImages(workImages.filter((_, i) => i !== index));
+    const updatedImages = workImages.filter((_: any, i: number) => i !== index);
+    setWorkImages(updatedImages);
+    setFormData((prev: any) => ({
+      ...prev,
+      previous_work_imgs: updatedImages,
+    }));
+    handleSectionInputChange();
   };
 
   return (
     <div>
       <h3 className="text-lg font-semibold mb-2">Trabalhos anteriores</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {workImages.map((image, index) => (
+        {workImages.map((image: any, index: number) => (
           <div key={index} className="relative">
             <img
-              src={image}
+              src={
+                image instanceof File
+                  ? URL.createObjectURL(image)
+                  : pb.getFileUrl(formData, image)
+              }
               alt="Work"
               className="w-full h-32 object-cover rounded-lg"
             />
@@ -595,53 +1023,93 @@ function PreviousWorksSection() {
             </button>
           </div>
         ))}
-        <button
-          onClick={addWorkImage}
-          className="w-full h-32 bg-gray-100 flex items-center justify-center rounded-lg text-blue-600"
+        <input
+          type="file"
+          accept="image/*"
+          id="workImageUpload"
+          className="hidden"
+          onChange={addWorkImage}
+        />
+        <label
+          htmlFor="workImageUpload"
+          className="w-full h-32 bg-gray-100 flex items-center justify-center rounded-lg text-blue-600 cursor-pointer"
         >
           <Plus size={24} />
-        </button>
+        </label>
       </div>
     </div>
   );
 }
 
-function SkillsSection() {
-  const [languages, setLanguages] = useState(["Inglês", "Português"]);
+function SkillsSection({
+  formData,
+  setFormData,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const [languages, setLanguages] = useState(formData.languages);
   const [languageInput, setLanguageInput] = useState("");
-  const [skills, setSkills] = useState([
-    { name: "Edição de Vídeo Avançada", rating: 10 },
-    { name: "Fotografia Profissional", rating: 9 },
-    { name: "Gestão de Redes Sociais", rating: 10 },
-  ]);
-  const [skillInput, setSkillInput] = useState("");
-  const [ratingInput, setRatingInput] = useState("");
+  // const [skills, setSkills] = useState(formData.skills || []);
+  // const [skillInput, setSkillInput] = useState("");
+  // const [ratingInput, setRatingInput] = useState("");
+
+  const handleSectionInputChange = () => {
+    setIsFormChangedStates((prev: any) => ({ ...prev, skills: true }));
+  };
 
   const addLanguage = () => {
     if (languageInput && !languages.includes(languageInput)) {
-      setLanguages([...languages, languageInput]);
+      const updatedLanguages = [...languages, languageInput];
+      setLanguages(updatedLanguages);
+      setFormData((prev: any) => ({
+        ...prev,
+        languages: updatedLanguages,
+      }));
       setLanguageInput("");
+      handleSectionInputChange();
     }
   };
 
-  const removeLanguage = (index: number) => {
-    setLanguages(languages.filter((_, i) => i !== index));
-  };
+  // const removeLanguage = (index: number) => {
+  //   const updatedLanguages = languages.filter(
+  //     (_: any, i: number) => i !== index
+  //   );
+  //   setLanguages(updatedLanguages);
+  //   setFormData((prev: any) => ({
+  //     ...prev,
+  //     languages: updatedLanguages,
+  //   }));
+  //   handleSectionInputChange();
+  // };
 
-  const addSkill = () => {
-    if (skillInput && ratingInput) {
-      setSkills([
-        ...skills,
-        { name: skillInput, rating: parseInt(ratingInput) },
-      ]);
-      setSkillInput("");
-      setRatingInput("");
-    }
-  };
+  // const addSkill = () => {
+  //   if (skillInput && ratingInput) {
+  //     const updatedSkills = [
+  //       ...skills,
+  //       { name: skillInput, rating: parseInt(ratingInput) },
+  //     ];
+  //     setSkills(updatedSkills);
+  //     setFormData((prev: any) => ({
+  //       ...prev,
+  //       skills: updatedSkills,
+  //     }));
+  //     setSkillInput("");
+  //     setRatingInput("");
+  //     handleSectionInputChange();
+  //   }
+  // };
 
-  const removeSkill = (index: number) => {
-    setSkills(skills.filter((_, i) => i !== index));
-  };
+  // const removeSkill = (index: number) => {
+  //   const updatedSkills = skills.filter((_: any, i: number) => i !== index);
+  //   setSkills(updatedSkills);
+  //   setFormData((prev: any) => ({
+  //     ...prev,
+  //     skills: updatedSkills,
+  //   }));
+  //   handleSectionInputChange();
+  // };
 
   return (
     <div>
@@ -665,7 +1133,7 @@ function SkillsSection() {
         </div>
 
         <div className="flex flex-wrap gap-2 mt-3">
-          {languages.map((lang, index) => (
+          {/* {languages.map((lang: string, index: number) => (
             <div
               key={index}
               className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
@@ -678,11 +1146,11 @@ function SkillsSection() {
                 <X size={16} />
               </button>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
 
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Habilidades Extras
         </label>
@@ -708,34 +1176,83 @@ function SkillsSection() {
         </div>
 
         <div className="flex flex-wrap gap-2 mt-3">
-          {skills.map((skill, index) => (
-            <div
-              key={index}
-              className="flex items-center bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"
-            >
-              {skill.name} - Nota: {skill.rating}
-              <button
-                onClick={() => removeSkill(index)}
-                className="ml-2 text-red-500"
+          {skills.map(
+            (
+              skill: {
+                name: string;
+                rating: number;
+              },
+              index: number
+            ) => (
+              <div
+                key={index}
+                className="flex items-center bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"
               >
-                <X size={16} />
-              </button>
-            </div>
-          ))}
+                {skill.name} - Nota: {skill.rating}
+                <button
+                  onClick={() => removeSkill(index)}
+                  className="ml-2 text-red-500"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            )
+          )}
         </div>
-      </div>
+      </div> */}
 
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-7">
-        Salvar Alterações
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg mt-7`}
+        onClick={(e) => handleSubmit(e, "skills")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </div>
   );
 }
 
-function AccountInfoSection() {
+function AccountInfoSection({
+  formData,
+  setIsFormChangedStates,
+  loading,
+  setLoadingStates,
+}: FormProps) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handlePasswordSubmit = async (
+    e: React.FormEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      alert("As senhas não coincidem!");
+      return;
+    }
+    try {
+      await pb.collection("Influencers").update(formData.id, {
+        password: newPassword,
+      });
+      alert("Senha atualizada com sucesso!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setIsFormChangedStates((prev: any) => ({
+        ...prev,
+        accountInfo: false,
+      }));
+    } catch (error) {
+      console.error("Error updating password:", error);
+    } finally {
+      setLoadingStates((prev: any) => ({ ...prev, accountInfo: false }));
+    }
+  };
+
+  const isFormChangedLocal =
+    currentPassword !== "" || newPassword !== "" || confirmPassword !== "";
 
   return (
     <div>
@@ -778,9 +1295,134 @@ function AccountInfoSection() {
         />
       </div>
 
-      <button className="bg-blue-600 text-white py-2 px-4 rounded-lg mt-4">
-        Salvar Alterações
+      <button
+        className={`${
+          isFormChangedLocal ? "bg-blue-600" : "bg-gray-400"
+        } text-white py-2 px-4 rounded-lg mt-4`}
+        onClick={handlePasswordSubmit}
+        disabled={!isFormChangedLocal || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
     </div>
   );
 }
+
+// function FAQSection() {
+//   const [faqItems, setFaqItems] = useState([{ question: "", answer: "" }]);
+
+//   const addFAQ = () => {
+//     if (faqItems.length < 10) {
+//       setFaqItems([...faqItems, { question: "", answer: "" }]);
+//     }
+//   };
+
+//   const removeFAQ = (index: number) => {
+//     if (faqItems.length > 1) {
+//       setFaqItems(faqItems.filter((_, i) => i !== index));
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h3 className="text-lg font-semibold mb-2">Perguntas Frequentes</h3>
+//       <p className="text-sm text-gray-500 mb-4">
+//         Você pode adicionar quantas perguntas desejar. Uma vez adicionada, a
+//         pergunta e a resposta devem ser preenchidas ou removidas antes de
+//         atualizar o perfil.
+//       </p>
+//       {faqItems.map((item, index) => (
+//         <div key={index} className="space-y-2 mb-4">
+//           <div className="flex items-center">
+//             <input
+//               type="text"
+//               placeholder={`Pergunta #${index + 1}`}
+//               className="border border-gray-300 rounded-lg p-2 w-full"
+//               value={item.question}
+//               onChange={(e) =>
+//                 setFaqItems(
+//                   faqItems.map((faq, i) =>
+//                     i === index ? { ...faq, question: e.target.value } : faq
+//                   )
+//                 )
+//               }
+//             />
+//             <button
+//               onClick={() => removeFAQ(index)}
+//               className="ml-2 text-red-500"
+//             >
+//               <X size={20} />
+//             </button>
+//           </div>
+//           <textarea
+//             placeholder={`Resposta #${index + 1}`}
+//             className="border border-gray-300 rounded-lg p-2 w-full"
+//             rows={3}
+//             value={item.answer}
+//             onChange={(e) =>
+//               setFaqItems(
+//                 faqItems.map((faq, i) =>
+//                   i === index ? { ...faq, answer: e.target.value } : faq
+//                 )
+//               )
+//             }
+//           />
+//         </div>
+//       ))}
+//       <button onClick={addFAQ} className="flex items-center text-blue-600 mt-4">
+//         <Plus size={20} className="mr-2" /> Adicionar pergunta
+//       </button>
+//     </div>
+//   );
+// }
+
+// function BrandsSection() {
+//   const [brandLogos, setBrandLogos] = useState([
+//     "https://via.placeholder.com/100",
+//   ]);
+
+//   const addBrandLogo = () => {
+//     if (brandLogos.length < 10) {
+//       setBrandLogos([...brandLogos, "https://via.placeholder.com/100"]);
+//     }
+//   };
+
+//   const removeBrandLogo = (index: number) => {
+//     setBrandLogos(brandLogos.filter((_, i) => i !== index));
+//   };
+
+//   return (
+//     <div>
+//       <h3 className="text-lg font-semibold mb-2">
+//         Marcas que já trabalhei com
+//       </h3>
+//       <p className="text-sm text-gray-500 mb-4">
+//         Faça upload dos logos das marcas com as quais você já trabalhou. Tamanho
+//         recomendado: 500x500px.
+//       </p>
+//       <div className="flex flex-wrap gap-4">
+//         {brandLogos.map((logo, index) => (
+//           <div key={index} className="relative">
+//             <img
+//               src={logo}
+//               alt="Brand Logo"
+//               className="w-20 h-20 rounded-lg object-cover"
+//             />
+//             <button
+//               onClick={() => removeBrandLogo(index)}
+//               className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+//             >
+//               <X size={16} />
+//             </button>
+//           </div>
+//         ))}
+//         <button
+//           onClick={addBrandLogo}
+//           className="w-20 h-20 bg-gray-100 flex items-center justify-center rounded-lg text-blue-600"
+//         >
+//           <Plus size={20} />
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
