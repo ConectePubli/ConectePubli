@@ -69,7 +69,7 @@ function Page() {
 
       <FilterSection />
 
-      <div className="mt-6 w-full overflow-x-auto max-w-[90dvw]">
+      <div className="mt-6 w-full overflow-x-auto max-w-[90vw] sm-plus:max-w-[calc(90vw)] md:max-w-[calc(90vw-12rem)] lg:max-w-[calc(100dvw)]">
         <CampaignsTable />
       </div>
       <div className="flex justify-between items-center mt-4">

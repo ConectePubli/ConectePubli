@@ -1,7 +1,7 @@
 import { Niche } from "./Niche";
 
 export interface Brand {
-  address_num?: number;
+  address_num?: string;
   cover_img?: string;
   bio?: string;
   cell_phone: string;
