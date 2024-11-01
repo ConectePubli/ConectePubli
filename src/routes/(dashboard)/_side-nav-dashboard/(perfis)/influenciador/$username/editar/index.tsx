@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { createFileRoute, useNavigate, useMatch } from "@tanstack/react-router";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CaretDown, CaretUp, Plus, X } from "phosphor-react";
 import pb from "@/lib/pb";
 import { UserAuth } from "@/types/UserAuth";
 import { Influencer } from "@/types/Influencer";
 import Spinner from "@/components/ui/Spinner";
+import { Niche } from "@/types/Niche";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/editar/"
@@ -24,7 +25,7 @@ function InfluencerEditProfilePage() {
   });
 
   const [influencer, setInfluencer] = useState<Influencer | null>(null);
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<Influencer>();
   const [loading, setLoading] = useState(true);
 
   // State to manage isFormChanged and loading per section
@@ -66,8 +67,10 @@ function InfluencerEditProfilePage() {
 
         const influencerData = await pb.collection("Influencers").getFullList({
           filter: `username="${username}"`,
+          expand: "niche",
         });
 
+        console.log(influencerData);
         if (influencerData.length === 0) {
           navigate({ to: `/influenciador/${username}` });
           return;
@@ -117,79 +120,82 @@ function InfluencerEditProfilePage() {
 
     setLoadingStates((prev: any) => ({ ...prev, [section]: true }));
 
-    try {
-      const updateData: any = {};
+    if (formData) {
+      try {
+        const updateData: any = {};
 
-      if (section === "basicData") {
-        if (formData.background_img) {
-          updateData["background_img"] = formData.background_img;
+        if (section === "basicData") {
+          if (formData.background_img) {
+            updateData["background_img"] = formData.background_img;
+          }
+          if (formData.profile_img) {
+            updateData["profile_img"] = formData.profile_img;
+          }
+          if (formData.bio) {
+            updateData["bio"] = formData.bio;
+          }
+         if (formData.niche) {
+           updateData["niche"] = formData.niche; // Já é um array de IDs
+         }
+        } else if (section === "about") {
+          updateData["name"] = formData.name;
+          updateData["birth_date"] = formData.birth_date;
+          updateData["email"] = formData.email;
+          updateData["cell_phone"] = formData.cell_phone;
+          updateData["account_type"] = formData.account_type;
+          updateData["gender"] = formData.gender;
+          updateData["niche"] = formData.niche;
+        } else if (section === "address") {
+          updateData["country"] = formData.country;
+          updateData["cep"] = formData.cep;
+          updateData["street"] = formData.street;
+          updateData["address_num"] = formData.address_num;
+          updateData["complement"] = formData.complement;
+          updateData["neighborhood"] = formData.neighborhood;
+          updateData["city"] = formData.city;
+          updateData["state"] = formData.state;
+        } else if (section === "socialMedia") {
+          updateData["instagram_url"] = formData.instagram_url;
+          updateData["tiktok_url"] = formData.tiktok_url;
+          updateData["facebook_url"] = formData.facebook_url;
+          updateData["youtube_url"] = formData.youtube_url;
+          updateData["pinterest_url"] = formData.pinterest_url;
+          updateData["twitter_url"] = formData.twitter_url;
+          updateData["twitch_url"] = formData.twitch_url;
+          updateData["linkedin_url"] = formData.linkedin_url;
+          updateData["kwai_url"] = formData.kwai_url;
+          updateData["yourclub_url"] = formData.yourclub_url;
+        } else if (section === "mediaKit") {
+          updateData["media_kit_url"] = formData.media_kit_url;
+        } else if (section === "bankAccount") {
+          updateData["pix_key"] = formData.pix_key;
+        } else if (section === "portfolio") {
+          updateData["previous_work_imgs"] = formData.previous_work_imgs;
+        } else if (section === "skills") {
+          updateData["languages"] = formData.languages;
         }
-        if (formData.profile_img) {
-          updateData["profile_img"] = formData.profile_img;
+
+        const data = new FormData();
+        for (const key in updateData) {
+          if (updateData[key] instanceof File) {
+            data.append(key, updateData[key]);
+          } else if (Array.isArray(updateData[key])) {
+            updateData[key].forEach((item: any) => {
+              data.append(key, item);
+            });
+          } else {
+            data.append(key, updateData[key]);
+          }
         }
-        if (formData.bio) {
-          updateData["bio"] = formData.bio;
-        }
-      } else if (section === "about") {
-        updateData["name"] = formData.name;
-        updateData["birth_date"] = formData.birth_date;
-        updateData["email"] = formData.email;
-        updateData["cell_phone"] = formData.cell_phone;
-        updateData["account_type"] = formData.account_type;
-        updateData["gender"] = formData.gender;
-        updateData["niche"] = formData.niche;
-      } else if (section === "address") {
-        updateData["country"] = formData.country;
-        updateData["cep"] = formData.cep;
-        updateData["street"] = formData.street;
-        updateData["address_num"] = formData.address_num;
-        updateData["complement"] = formData.complement;
-        updateData["neighborhood"] = formData.neighborhood;
-        updateData["city"] = formData.city;
-        updateData["state"] = formData.state;
-      } else if (section === "socialMedia") {
-        updateData["instagram_url"] = formData.instagram_url;
-        updateData["tiktok_url"] = formData.tiktok_url;
-        updateData["facebook_url"] = formData.facebook_url;
-        updateData["youtube_url"] = formData.youtube_url;
-        updateData["pinterest_url"] = formData.pinterest_url;
-        updateData["twitter_url"] = formData.twitter_url;
-        updateData["twitch_url"] = formData.twitch_url;
-        updateData["linkedin_url"] = formData.linkedin_url;
-        updateData["kwai_url"] = formData.kwai_url;
-        updateData["yourclub_url"] = formData.yourclub_url;
-      } else if (section === "mediaKit") {
-        updateData["media_kit_url"] = formData.media_kit_url;
-      } else if (section === "bankAccount") {
-        updateData["pix_key"] = formData.pix_key;
-      } else if (section === "portfolio") {
-        updateData["previous_work_imgs"] = formData.previous_work_imgs;
-        // Handle file uploads for previous_work_imgs if needed
-      } else if (section === "skills") {
-        updateData["languages"] = formData.languages;
-        updateData["skills"] = formData.skills;
+
+        await pb.collection("Influencers").update(influencer!.id, data);
+
+        setIsFormChangedStates((prev: any) => ({ ...prev, [section]: false }));
+      } catch (error) {
+        console.error("Error updating data:", error);
+      } finally {
+        setLoadingStates((prev: any) => ({ ...prev, [section]: false }));
       }
-
-      const data = new FormData();
-      for (const key in updateData) {
-        if (updateData[key] instanceof File) {
-          data.append(key, updateData[key]);
-        } else if (Array.isArray(updateData[key])) {
-          updateData[key].forEach((item: any) => {
-            data.append(key, item);
-          });
-        } else {
-          data.append(key, updateData[key]);
-        }
-      }
-
-      await pb.collection("Influencers").update(influencer!.id, data);
-
-      setIsFormChangedStates((prev: any) => ({ ...prev, [section]: false }));
-    } catch (error) {
-      console.error("Error updating data:", error);
-    } finally {
-      setLoadingStates((prev: any) => ({ ...prev, [section]: false }));
     }
   };
 
@@ -232,146 +238,120 @@ function InfluencerEditProfilePage() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <Section
-        title="Dados básicos"
-        initiallyOpen
-        content={
-          <BasicDataSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.basicData}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.basicData}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
-      <Section
-        title="Sobre você"
-        content={
-          <AboutSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.about}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.about}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
-      <Section
-        title="Endereço"
-        content={
-          <AddressSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleCepChange={handleCepChange}
-            addressFieldsDisabled={addressFieldsDisabled}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.address}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.address}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
-      <Section
-        title="Redes sociais"
-        content={
-          <SocialMediaSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.socialMedia}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.socialMedia}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
-      <Section
-        title="Mídia kit"
-        content={
-          <MediaKitSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.mediaKit}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.mediaKit}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
-      <Section
-        title="Conta bancária"
-        content={
-          <BankAccountSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.bankAccount}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.bankAccount}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
-      <Section
-        title="Portfólio"
-        content={
-          <PortfolioSection
-            formData={formData}
-            setFormData={setFormData}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.portfolio}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.portfolio}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
-      <Section
-        title="Habilidades"
-        content={
-          <SkillsSection
-            formData={formData}
-            setFormData={setFormData}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.skills}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.skills}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
-      <Section
-        title="Informações da Conta"
-        content={
-          <AccountInfoSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-            isFormChanged={isFormChangedStates.accountInfo}
-            setIsFormChangedStates={setIsFormChangedStates}
-            loading={loadingStates.accountInfo}
-            setLoadingStates={setLoadingStates}
-          />
-        }
-      />
+      <Section title="Dados básicos" initiallyOpen>
+        <BasicDataSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.basicData}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.basicData}
+          setLoadingStates={setLoadingStates}
+          setFormData={setFormData}
+        />
+      </Section>
+      <Section title="Sobre você">
+        <AboutSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.about}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.about}
+          setLoadingStates={setLoadingStates}
+        />
+      </Section>
+
+      <Section title="Endereço">
+        <AddressSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleCepChange={handleCepChange}
+          addressFieldsDisabled={addressFieldsDisabled}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.address}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.address}
+          setLoadingStates={setLoadingStates}
+        />
+      </Section>
+      <Section title="Redes sociais">
+        <SocialMediaSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.socialMedia}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.socialMedia}
+          setLoadingStates={setLoadingStates}
+        />
+      </Section>
+      <Section title="Mídia kit">
+        <MediaKitSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.mediaKit}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.mediaKit}
+          setLoadingStates={setLoadingStates}
+        />
+      </Section>
+      <Section title="Conta bancária">
+        <BankAccountSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.bankAccount}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.bankAccount}
+          setLoadingStates={setLoadingStates}
+        />
+      </Section>
+      <Section title="Portfólio">
+        <PortfolioSection
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.portfolio}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.portfolio}
+          setLoadingStates={setLoadingStates}
+        />
+      </Section>
+      <Section title="Habilidades">
+        <SkillsSection
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.skills}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.skills}
+          setLoadingStates={setLoadingStates}
+        />
+      </Section>
+      <Section title="Informações da Conta">
+        <AccountInfoSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.accountInfo}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.accountInfo}
+          setLoadingStates={setLoadingStates}
+        />
+      </Section>
     </div>
   );
 }
 
 interface SectionProps {
   title: string;
-  content: React.ReactNode;
+  children: React.ReactNode;
   initiallyOpen?: boolean;
 }
 
-function Section({ title, content, initiallyOpen = false }: SectionProps) {
+function Section({ title, children, initiallyOpen = false }: SectionProps) {
   const [isOpen, setIsOpen] = useState(initiallyOpen);
 
   return (
@@ -389,7 +369,7 @@ function Section({ title, content, initiallyOpen = false }: SectionProps) {
         )}
       </div>
 
-      {isOpen && <div className="mt-4 space-y-6 px-5 pb-5">{content}</div>}
+      {isOpen && <div className="mt-4 space-y-6 px-5 pb-5">{children}</div>}
     </div>
   );
 }
@@ -414,11 +394,89 @@ function BasicDataSection({
   isFormChanged,
   setIsFormChangedStates,
   loading,
+  setFormData,
 }: FormProps) {
+  const [nicheInput, setNicheInput] = useState("");
+  const [niches, setNiches] = useState(formData.expand.niche || []);
+  const [suggestedNiches, setSuggestedNiches] = useState<Niche[]>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleSectionInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     handleInputChange(e);
+    setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
+  };
+
+  const fetchNiches = async (query: string) => {
+    if (!query) {
+      setSuggestedNiches([]);
+      setIsDropdownOpen(false);
+      return;
+    }
+    try {
+      const response = await pb.collection("Niches").getFullList({
+        filter: `niche ~ "${query}"`,
+        limit: 10,
+      });
+      setSuggestedNiches(response as unknown as Niche[]);
+      setIsDropdownOpen(response.length > 0);
+    } catch (error) {
+      console.error("Erro ao buscar nichos:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (nicheInput) {
+      fetchNiches(nicheInput);
+    } else {
+      setSuggestedNiches([]);
+      setIsDropdownOpen(false);
+    }
+  }, [nicheInput]);
+
+  const addNiche = (niche: Niche) => {
+    if (!niches.some((n: { id: string }) => n.id === niche.id)) {
+      const updatedNiches = [...niches, niche];
+      setNiches(updatedNiches);
+      setFormData((prev: any) => ({
+        ...prev,
+        niche: updatedNiches.map((n) => n.id),
+      }));
+      setNicheInput("");
+      setSuggestedNiches([]);
+      setIsDropdownOpen(false);
+      setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
+      
+      console.log("atualizou dados")
+    }
+  };
+
+  const removeNiche = (index: number) => {
+    const updatedNiches = niches.filter((_: any, i: number) => i !== index);
+    setNiches(updatedNiches);
+    setFormData((prev: any) => ({
+      ...prev,
+      niche: updatedNiches.map((n: { id: any }) => n.id),
+    }));
+
     setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
   };
 
@@ -483,10 +541,61 @@ function BasicDataSection({
           onChange={handleSectionInputChange}
         />
       </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Nicho
+        </label>
+        <div className="relative" ref={dropdownRef}>
+          <input
+            type="text"
+            placeholder="Digite para buscar nichos"
+            value={nicheInput}
+            onChange={(e) => setNicheInput(e.target.value)}
+            className="border border-gray-300 p-2 rounded-lg w-full"
+          />
+
+          {isDropdownOpen && suggestedNiches.length > 0 && (
+            <div className="absolute bg-white border border-gray-300 rounded-lg mt-1 max-h-40 w-full overflow-y-auto shadow-lg z-10">
+              {suggestedNiches.map((niche) => (
+                <div
+                  key={niche.id}
+                  onClick={() => addNiche(niche)}
+                  className="p-2 hover:bg-blue-100 cursor-pointer"
+                >
+                  {niche.niche}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-2 mt-3">
+          {niches.length > 0 ? (
+            niches.map((niche: Niche, index: number) => (
+              <div
+                key={niche.id}
+                className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+              >
+                {niche.niche}
+                <button
+                  onClick={() => removeNiche(index)}
+                  className="ml-2 text-red-500"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">Nenhum nicho adicionado</p>
+          )}
+        </div>
+      </div>
+
       <button
         className={`${
           isFormChanged ? "bg-blue-600" : "bg-gray-400"
-        } text-white py-2 px-4 rounded-lg`}
+        } text-white py-2 px-4 rounded-lg mt-4`}
         onClick={(e) => handleSubmit(e, "basicData")}
         disabled={!isFormChanged || loading}
       >
@@ -1049,67 +1158,56 @@ function SkillsSection({
   setIsFormChangedStates,
   loading,
 }: FormProps) {
-  const [languages, setLanguages] = useState(formData.languages);
+  // Função para garantir que languages é um array
+  const parseLanguages = (languages: string) => {
+    if (!languages) return [];
+    if (typeof languages === "string") {
+      try {
+        const parsed = JSON.parse(languages);
+        return Array.isArray(parsed) ? parsed : [languages];
+      } catch (e) {
+        console.log(`error parse languages: ${e}`);
+        return [languages];
+      }
+    }
+    return Array.isArray(languages) ? languages : [languages];
+  };
+
+  const [languages, setLanguages] = useState(
+    parseLanguages(formData.languages)
+  );
   const [languageInput, setLanguageInput] = useState("");
-  // const [skills, setSkills] = useState(formData.skills || []);
-  // const [skillInput, setSkillInput] = useState("");
-  // const [ratingInput, setRatingInput] = useState("");
+
+  useEffect(() => {
+    setLanguages(parseLanguages(formData.languages));
+  }, [formData.languages]);
 
   const handleSectionInputChange = () => {
-    setIsFormChangedStates((prev: any) => ({ ...prev, skills: true }));
+    setIsFormChangedStates((prev: FormData) => ({ ...prev, skills: true }));
   };
 
   const addLanguage = () => {
     if (languageInput && !languages.includes(languageInput)) {
       const updatedLanguages = [...languages, languageInput];
       setLanguages(updatedLanguages);
-      setFormData((prev: any) => ({
+      setFormData((prev: FormData) => ({
         ...prev,
-        languages: updatedLanguages,
+        languages: JSON.stringify(updatedLanguages),
       }));
       setLanguageInput("");
       handleSectionInputChange();
     }
   };
 
-  // const removeLanguage = (index: number) => {
-  //   const updatedLanguages = languages.filter(
-  //     (_: any, i: number) => i !== index
-  //   );
-  //   setLanguages(updatedLanguages);
-  //   setFormData((prev: any) => ({
-  //     ...prev,
-  //     languages: updatedLanguages,
-  //   }));
-  //   handleSectionInputChange();
-  // };
-
-  // const addSkill = () => {
-  //   if (skillInput && ratingInput) {
-  //     const updatedSkills = [
-  //       ...skills,
-  //       { name: skillInput, rating: parseInt(ratingInput) },
-  //     ];
-  //     setSkills(updatedSkills);
-  //     setFormData((prev: any) => ({
-  //       ...prev,
-  //       skills: updatedSkills,
-  //     }));
-  //     setSkillInput("");
-  //     setRatingInput("");
-  //     handleSectionInputChange();
-  //   }
-  // };
-
-  // const removeSkill = (index: number) => {
-  //   const updatedSkills = skills.filter((_: any, i: number) => i !== index);
-  //   setSkills(updatedSkills);
-  //   setFormData((prev: any) => ({
-  //     ...prev,
-  //     skills: updatedSkills,
-  //   }));
-  //   handleSectionInputChange();
-  // };
+  const removeLanguage = (index: number) => {
+    const updatedLanguages = languages.filter((_, i) => i !== index);
+    setLanguages(updatedLanguages);
+    setFormData((prev: FormData) => ({
+      ...prev,
+      languages: JSON.stringify(updatedLanguages),
+    }));
+    handleSectionInputChange();
+  };
 
   return (
     <div>
@@ -1133,73 +1231,26 @@ function SkillsSection({
         </div>
 
         <div className="flex flex-wrap gap-2 mt-3">
-          {/* {languages.map((lang: string, index: number) => (
-            <div
-              key={index}
-              className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-            >
-              {lang}
-              <button
-                onClick={() => removeLanguage(index)}
-                className="ml-2 text-red-500"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          ))} */}
-        </div>
-      </div>
-
-      {/* <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Habilidades Extras
-        </label>
-
-        <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Nome"
-            value={skillInput}
-            onChange={(e) => setSkillInput(e.target.value)}
-            className="border border-gray-300 p-2 rounded-lg flex-1"
-          />
-          <input
-            type="number"
-            placeholder="Nota"
-            value={ratingInput}
-            onChange={(e) => setRatingInput(e.target.value)}
-            className="border border-gray-300 p-2 rounded-lg w-24"
-          />
-          <button onClick={addSkill} className="text-blue-600">
-            <Plus size={20} />
-          </button>
-        </div>
-
-        <div className="flex flex-wrap gap-2 mt-3">
-          {skills.map(
-            (
-              skill: {
-                name: string;
-                rating: number;
-              },
-              index: number
-            ) => (
+          {languages.length > 0 ? (
+            languages.map((lang, index) => (
               <div
                 key={index}
-                className="flex items-center bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"
+                className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
               >
-                {skill.name} - Nota: {skill.rating}
+                {lang}
                 <button
-                  onClick={() => removeSkill(index)}
+                  onClick={() => removeLanguage(index)}
                   className="ml-2 text-red-500"
                 >
                   <X size={16} />
                 </button>
               </div>
-            )
+            ))
+          ) : (
+            <p className="text-gray-500">Nenhuma linguagem adicionada</p>
           )}
         </div>
-      </div> */}
+      </div>
 
       <button
         className={`${

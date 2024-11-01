@@ -273,7 +273,10 @@ function InfluencerProfilePage() {
               </p>
               <p className="text-sm text-gray-600 font-medium flex items-center">
                 <Globe className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
-                Idioma: {influencer.languages || "N/A"}
+                Idioma:{" "}
+                {influencer.languages && influencer.languages.length > 0
+                  ? influencer.languages.join(", ")
+                  : "N/A"}{" "}
               </p>
               <p className="text-sm text-gray-600 font-medium  flex items-center">
                 <Hourglass className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
