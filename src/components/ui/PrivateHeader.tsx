@@ -17,7 +17,13 @@ export const PrivateHeader = () => {
       <div className="flex items-center justify-end px-2 md:px-4 w-full">
         {/* Logo (aparece após 340px de width)*/}
         <div className="hidden min-[340px]:block flex-grow">
-          <img src={logo} alt="ConectePubli" className="h-8 md:h-10" />
+          <img
+            src={logo}
+            alt="ConectePubli"
+            className="h-8 md:h-10 cursor-pointer"
+            onClick={() => window.location.replace("/")}
+            draggable={false}
+          />
         </div>
 
         <div className="flex items-center gap-2 md:gap-4">
