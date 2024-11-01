@@ -5,97 +5,125 @@ import { ComboboxStates } from "@/components/ui/ComboboxStates";
 import CustomPhoneInput from "@/components/ui/CustomPhoneInput";
 import DateInput from "@/components/ui/DateInput";
 import ProfileEditDropdown from "@/components/ui/ProfileEditDropdown";
-import StateSelector from "@/components/ui/StateSelector";
+import { BrazilianStates } from "@/data/Brazillian_States";
+import { countries } from "@/data/Countries";
+import { getUserType } from "@/lib/auth";
 import pb from "@/lib/pb";
-import { createFileRoute } from "@tanstack/react-router";
-import { Camera, Upload, User } from "lucide-react";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import PhoneInput from "react-phone-number-input";
+import { Brand } from "@/types/Brand";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import {
+  Camera,
+  LoaderIcon,
+  MessageCircleWarning,
+  Upload,
+  User,
+} from "lucide-react";
+import { ClientResponseError } from "pocketbase";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import MaskedInput from "react-text-mask";
+import { toast } from "sonner";
 
 interface Option {
   value: string;
   label: string;
 }
 
-const brazilianStates = [
-  { name: "Acre", abbr: "AC" },
-  { name: "Alagoas", abbr: "AL" },
-  { name: "Amapá", abbr: "AP" },
-  { name: "Amazonas", abbr: "AM" },
-  { name: "Bahia", abbr: "BA" },
-  { name: "Ceará", abbr: "CE" },
-  { name: "Distrito Federal", abbr: "DF" },
-  { name: "Espírito Santo", abbr: "ES" },
-  { name: "Goiás", abbr: "GO" },
-  { name: "Maranhão", abbr: "MA" },
-  { name: "Mato Grosso", abbr: "MT" },
-  { name: "Mato Grosso do Sul", abbr: "MS" },
-  { name: "Minas Gerais", abbr: "MG" },
-  { name: "Pará", abbr: "PA" },
-  { name: "Paraíba", abbr: "PB" },
-  { name: "Paraná", abbr: "PR" },
-  { name: "Pernambuco", abbr: "PE" },
-  { name: "Piauí", abbr: "PI" },
-  { name: "Rio de Janeiro", abbr: "RJ" },
-  { name: "Rio Grande do Norte", abbr: "RN" },
-  { name: "Rio Grande do Sul", abbr: "RS" },
-  { name: "Rondônia", abbr: "RO" },
-  { name: "Roraima", abbr: "RR" },
-  { name: "Santa Catarina", abbr: "SC" },
-  { name: "São Paulo", abbr: "SP" },
-  { name: "Sergipe", abbr: "SE" },
-  { name: "Tocantins", abbr: "TO" },
-];
-
-const countries = [
-  { name: "Brasil", abbr: "BR" },
-  { name: "Estados Unidos", abbr: "US" },
-  { name: "Canadá", abbr: "CA" },
-  { name: "Argentina", abbr: "AR" },
-  { name: "México", abbr: "MX" },
-  // TODO: ADD TODOS PAÍSES
+const socialMediaFields: Array<keyof Brand> = [
+  "instagram_url",
+  "facebook_url",
+  "twitter_url",
+  "linkedin_url",
+  "youtube_url",
+  "tiktok_url",
+  "yourclub_url",
+  "pinterest_url",
+  "kwai_url",
+  "twitch_url",
 ];
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/editar/"
 )({
   component: Page,
+  beforeLoad: async ({ params }) => {
+    if (!(await getUserType())) {
+      throw redirect({
+        to: "/login123new",
+      });
+    }
+    const { userName } = params;
+    if (userName !== pb.authStore.model?.username) {
+      throw redirect({
+        to: "../",
+      });
+    }
+  },
 });
 
-// Componente Page
 function Page() {
-  const [personalInfo, setPersonalInfo] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
+  const [userData, setUserData] = useState<Partial<Brand> | null>(null);
+  const [originalData, setOriginalData] = useState<Partial<Brand> | null>(null);
   const [niches, setNiches] = useState<Option[]>([]);
   const [isLoadingNiches, setIsLoadingNiches] = useState(true);
   const [nichesError, setNichesError] = useState<string | null>(null);
-  const [cepValue, setCepValue] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [savingStates, setSavingStates] = useState({
+    basicData: false,
+    aboutYou: false,
+    address: false,
+    socialMedia: false,
+    bankInfo: false,
+    accountInfo: false,
+  });
+  const [currentPassword, setCurrentPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
+  const [selectedProfileImageFile, setSelectedProfileImageFile] =
+    useState<File | null>(null);
+  const [selectedCoverImageFile, setSelectedCoverImageFile] =
+    useState<File | null>(null);
 
-  const handleCEPChange = (e: { target: { value: any } }) => {
-    const value = e.target.value;
-    setCepValue(value);
+  const profileImageUrl = pb.authStore.model?.profile_img
+    ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model.collectionName}/${pb.authStore.model.id}/${pb.authStore.model.profile_img}`
+    : null;
+  const coverImageUrl = pb.authStore.model?.cover_img
+    ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model.collectionName}/${pb.authStore.model.id}/${pb.authStore.model.cover_img}`
+    : null;
 
-    // Validate CEP when fully entered
-    if (value.length === 9) {
-      // Remove the hyphen for validation or API requests
-      const numericCEP = value.replace("-", "");
+  // Verificar se as seções estão completas para marcação visual
+  const isUserDataComplete = userData?.bio ? true : false;
+  const isAboutYouComplete =
+    userData?.name &&
+    userData?.opening_date &&
+    userData?.company_register &&
+    userData?.email &&
+    userData?.cell_phone &&
+    userData?.niche
+      ? true
+      : false;
+  const isAddressInfoComplete =
+    userData?.country &&
+    userData?.cep &&
+    userData?.street &&
+    userData?.city &&
+    userData?.state
+      ? true
+      : false;
+  const isAtLeastOneFilled = useMemo(() => {
+    return socialMediaFields.some(
+      (field) => userData && userData[field]?.toString().trim() !== ""
+    );
+  }, [userData]);
+  const isSocialMediaComplete = isAtLeastOneFilled || false;
+  const isBankAccountComplete = userData?.pix_key ? true : false;
 
-      // Example validation: Check if all characters are digits
-      if (/^\d{8}$/.test(numericCEP)) {
-        // Valid CEP - proceed with API call or other actions
-        console.log("Valid CEP:", numericCEP);
-      } else {
-        // Invalid CEP - show an error message or handle accordingly
-        console.error("Invalid CEP");
-      }
+  useEffect(() => {
+    if (pb.authStore.model) {
+      setUserData(pb.authStore.model);
+      setOriginalData(pb.authStore.model);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const fetchNiches = async () => {
@@ -112,11 +140,6 @@ function Page() {
 
         setNiches(formattedNiches);
         setIsLoadingNiches(false);
-
-        // Set selected niches after niches are loaded
-        if (pb.authStore.model?.niche) {
-          setSelectedNiches(pb.authStore.model.niche);
-        }
       } catch (error) {
         console.error("Erro ao buscar nichos:", error);
         setNichesError(
@@ -129,26 +152,417 @@ function Page() {
     fetchNiches();
   }, []);
 
-  const [selectedProfileImageFile, setSelectedProfileImageFile] =
-    useState<File | null>(null);
-  const [selectedCoverImageFile, setSelectedCoverImageFile] =
-    useState<File | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedNiches, setSelectedNiches] = useState<string[]>([]);
-  const [selectedState, setSelectedState] = useState<string | null>(
-    pb.authStore.model?.state || null
-  );
+  const formatToE164 = (number: string | undefined) => {
+    if (typeof number !== "string" || number.trim() === "") return "";
+    const phoneNumber = parsePhoneNumber(number, "BR");
+    return phoneNumber ? phoneNumber.format("E.164") : number;
+  };
 
-  const isPersonalInfoComplete =
-    personalInfo.name !== "" && personalInfo.email !== "";
+  const handleCEPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
 
-  const profileImageUrl = pb.authStore.model?.profile_img
-    ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model.collectionName}/${pb.authStore.model.id}/${pb.authStore.model.profile_img}`
-    : null;
+    const numericCEP = value.replace(/\D/g, "");
 
-  const coverImageUrl = pb.authStore.model?.cover_img
-    ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model.collectionName}/${pb.authStore.model.id}/${pb.authStore.model.cover_img}`
-    : null;
+    setUserData((prev) => (prev ? { ...prev, cep: numericCEP } : prev));
+
+    if (numericCEP.length === 8) {
+      if (/^\d{8}$/.test(numericCEP)) {
+        // Futuramente podemos add validation para CEP via API aqui
+      } else {
+        console.error("CEP inválido");
+      }
+    }
+  };
+
+  const toggleSaving = (
+    section: keyof typeof savingStates,
+    isLoading: boolean
+  ) => {
+    setSavingStates((prevState) => ({
+      ...prevState,
+      [section]: isLoading,
+    }));
+  };
+
+  function getModifiedFields<T extends object>(
+    original: Partial<T>,
+    current: Partial<T>,
+    fieldsToCompare: (keyof T)[]
+  ): Partial<T> {
+    const modified: Partial<T> = {};
+
+    fieldsToCompare.forEach((key) => {
+      const originalValue = original[key];
+      const currentValue = current[key];
+
+      if (originalValue instanceof Date && currentValue instanceof Date) {
+        if (originalValue.getTime() !== currentValue.getTime()) {
+          modified[key] = currentValue as T[keyof T];
+        }
+      } else if (Array.isArray(originalValue) && Array.isArray(currentValue)) {
+        const originalArray = originalValue as unknown[];
+        const currentArray = currentValue as unknown[];
+        if (
+          originalArray.length !== currentArray.length ||
+          !originalArray.every((item, index) => item === currentArray[index])
+        ) {
+          modified[key] = currentValue as T[keyof T];
+        }
+      } else if (originalValue !== currentValue) {
+        modified[key] = currentValue as T[keyof T];
+      }
+    });
+
+    return modified;
+  }
+
+  const saveBasicData = async () => {
+    if (!userData || !originalData) {
+      return;
+    }
+
+    try {
+      toggleSaving("basicData", true);
+
+      const modifiedFields = getModifiedFields<Brand>(originalData, userData, [
+        "bio",
+      ]);
+
+      if (
+        Object.keys(modifiedFields).length === 0 &&
+        !selectedProfileImageFile &&
+        !selectedCoverImageFile
+      ) {
+        alert("Nenhuma alteração detectada para salvar.");
+        return;
+      }
+
+      const formData = new FormData();
+
+      Object.entries(modifiedFields).forEach(([key, value]) => {
+        if (value !== undefined && key !== "id") {
+          formData.append(key, value as string);
+        }
+      });
+
+      if (selectedProfileImageFile) {
+        formData.append("profile_img", selectedProfileImageFile);
+      }
+
+      if (selectedCoverImageFile) {
+        formData.append("cover_img", selectedCoverImageFile);
+      }
+
+      await pb.collection("brands").update(pb.authStore.model?.id, formData);
+
+      const updatedUserData = { ...originalData, ...modifiedFields };
+      setUserData(updatedUserData);
+      setOriginalData(updatedUserData);
+
+      toast.success("Dados pessoais salvos com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar dados pessoais:", error);
+      toast.error("Erro ao salvar dados pessoais. Tente novamente.");
+    } finally {
+      toggleSaving("basicData", false);
+    }
+  };
+
+  const saveAboutYou = async () => {
+    if (!userData || !originalData) {
+      return;
+    }
+
+    try {
+      toggleSaving("aboutYou", true);
+
+      const modifiedFields = getModifiedFields<Brand>(originalData, userData, [
+        "name",
+        "opening_date",
+        "company_register",
+        "email",
+        "cell_phone",
+        "web_site",
+        "niche",
+      ]);
+
+      if (Object.keys(modifiedFields).length === 0) {
+        return;
+      }
+
+      const formData = new FormData();
+
+      Object.entries(modifiedFields).forEach(([key, value]) => {
+        if (value !== undefined && key !== "id") {
+          if (key === "niche" && Array.isArray(value)) {
+            value.forEach((nicheId) => {
+              formData.append("niche", nicheId);
+            });
+          } else if (value instanceof Date) {
+            const formattedDate = value.toISOString().split("T")[0];
+            formData.append(key, formattedDate);
+          } else {
+            if (value) {
+              formData.append(key, value ? value.toString() : "");
+            }
+          }
+        }
+      });
+
+      await pb.collection("brands").update(pb.authStore.model?.id, formData);
+
+      const updatedUserData = { ...originalData, ...modifiedFields };
+      setUserData(updatedUserData);
+      setOriginalData(updatedUserData);
+
+      toast.success("Dados 'Sobre você' salvos com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar dados da seção 'Sobre você':", error);
+      toast.error(
+        "Erro ao salvar dados da seção 'Sobre você'. Tente novamente."
+      );
+    } finally {
+      toggleSaving("aboutYou", false);
+    }
+  };
+
+  const saveAddressInfo = async () => {
+    if (!userData || !originalData) {
+      return;
+    }
+
+    try {
+      toggleSaving("address", true);
+
+      const modifiedFields = getModifiedFields<Brand>(originalData, userData, [
+        "country",
+        "cep",
+        "street",
+        "address_num",
+        "complement",
+        "neighborhood",
+        "city",
+        "state",
+      ]);
+
+      if (Object.keys(modifiedFields).length === 0) {
+        return;
+      }
+
+      const formData = new FormData();
+
+      // Adicionar os campos modificados ao FormData
+      Object.entries(modifiedFields).forEach(([key, value]) => {
+        if (value !== undefined && key !== "id") {
+          if (value) {
+            formData.append(key, value ? value.toString() : "");
+          }
+        }
+      });
+
+      await pb.collection("brands").update(pb.authStore.model?.id, formData);
+
+      const updatedUserData = { ...originalData, ...modifiedFields };
+      setUserData(updatedUserData);
+      setOriginalData(updatedUserData);
+
+      toast.success("Endereço salvo com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar dados da seção 'Endereço':", error);
+      toast.error("Erro ao salvar dados da seção 'Endereço'. Tente novamente.");
+    } finally {
+      toggleSaving("address", false);
+    }
+  };
+
+  const saveSocialMedia = async () => {
+    if (!userData || !originalData) {
+      return;
+    }
+
+    const socialMediaFields: Array<keyof Brand> = [
+      "instagram_url",
+      "facebook_url",
+      "twitter_url",
+      "linkedin_url",
+      "youtube_url",
+      "tiktok_url",
+      "yourclub_url",
+      "pinterest_url",
+      "kwai_url",
+      "twitch_url",
+    ];
+
+    const isAtLeastOneFilled = socialMediaFields.some(
+      (field) => userData[field]?.toString().trim() !== ""
+    );
+
+    if (!isAtLeastOneFilled) {
+      toast.info("Por favor, preencha pelo menos uma rede social.");
+      return;
+    }
+
+    try {
+      toggleSaving("socialMedia", true);
+      const modifiedFields = getModifiedFields<Brand>(
+        originalData,
+        userData,
+        socialMediaFields
+      );
+
+      if (Object.keys(modifiedFields).length === 0) {
+        return;
+      }
+
+      const formData = new FormData();
+
+      Object.entries(modifiedFields).forEach(([key, value]) => {
+        if (value !== undefined && key !== "id") {
+          if (value !== null) {
+            if (value !== undefined && value !== null && key !== "id") {
+              formData.append(key, value ? value.toString() : "");
+            }
+          }
+        }
+      });
+
+      await pb.collection("brands").update(pb.authStore.model?.id, formData);
+
+      const updatedUserData = { ...originalData, ...modifiedFields };
+      setUserData(updatedUserData);
+      setOriginalData(updatedUserData);
+
+      toast.success("Redes sociais salvas com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar dados da seção 'Redes sociais':", error);
+      alert("Erro ao salvar dados da seção 'Redes sociais'. Tente novamente.");
+    } finally {
+      toggleSaving("socialMedia", false);
+    }
+  };
+
+  const saveBankAccount = async () => {
+    if (!userData || !originalData) {
+      alert("Dados do usuário não estão disponíveis.");
+      return;
+    }
+
+    try {
+      toggleSaving("bankInfo", true);
+      const modifiedFields = getModifiedFields<Brand>(originalData, userData, [
+        "pix_key",
+      ]);
+
+      if (Object.keys(modifiedFields).length === 0) {
+        return;
+      }
+
+      const formData = new FormData();
+
+      Object.entries(modifiedFields).forEach(([key, value]) => {
+        if (value !== undefined && key !== "id") {
+          formData.append(key, value?.toString() || "");
+        }
+      });
+
+      await pb.collection("brands").update(pb.authStore.model?.id, formData);
+
+      const updatedUserData = { ...originalData, ...modifiedFields };
+      setUserData(updatedUserData);
+      setOriginalData(updatedUserData);
+
+      toast.success("Conta bancária salva com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar dados da seção 'Conta bancária':", error);
+      toast.error(
+        "Erro ao salvar dados da seção 'Conta bancária'. Tente novamente."
+      );
+    } finally {
+      toggleSaving("bankInfo", false);
+    }
+  };
+
+  const saveAccountInfo = async () => {
+    // Validação dos campos
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      toast.error("Por favor, preencha todos os campos de senha.");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      toast.error("A nova senha e a confirmação não coincidem.");
+      return;
+    }
+
+    // (Opcional) Adicionar validações de complexidade de senha
+    if (newPassword.length < 8) {
+      toast.info("A nova senha deve ter pelo menos 8 caracteres.");
+      return;
+    }
+
+    try {
+      toggleSaving("accountInfo", true);
+      await pb.collection("brands").update(pb.authStore.model?.id, {
+        oldPassword: currentPassword,
+        password: newPassword,
+        passwordConfirm: confirmNewPassword,
+      });
+      toast.success(
+        <div className="flex items-center gap-2">
+          <User className="text-green-500 text-xl" />
+          <span className="font-semibold">
+            Senha atualizada com sucesso! Faça o login novamente.
+          </span>
+        </div>,
+        {
+          style: {
+            border: "2px solid #10B981",
+            color: "#10B981",
+            background: "#ECFDF5",
+          },
+          duration: 5000,
+          position: "top-center",
+        }
+      );
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
+    } catch (error) {
+      const err = error as ClientResponseError;
+      console.error("Erro ao atualizar a senha:", error);
+
+      // Verificar se o erro é devido a senha incorreta
+      if (err.data && err.data.message) {
+        if (
+          err.data.data.oldPassword.code === "validation_invalid_old_password"
+        ) {
+          toast.error(
+            <div className="flex items-center gap-2">
+              <MessageCircleWarning className="text-red-500 text-xl" />
+              <span className="font-semibold">Senha atual incorreta.</span>
+              <p className="text-sm">Por favor, verifique e tente novamente.</p>
+            </div>,
+            {
+              style: {
+                border: "2px solid #EF4444",
+                color: "#EF4444",
+                background: "#FFEBEB",
+              },
+              duration: 5000,
+              position: "top-center",
+            }
+          );
+        }
+      } else {
+        alert("Erro ao atualizar a senha. Por favor, tente novamente.");
+      }
+    } finally {
+      toggleSaving("accountInfo", false);
+    }
+  };
 
   return (
     <div className="flex flex-col max-w-[100dvw] mb-12 space-y-4">
@@ -156,7 +570,7 @@ function Page() {
       <div className="mt-1" />
       <ProfileEditDropdown
         sectionName="Dados básicos"
-        isComplete={isPersonalInfoComplete}
+        isComplete={isUserDataComplete}
       >
         <div className="space-y-4">
           <ProfileImageSelector
@@ -181,24 +595,42 @@ function Page() {
             <textarea
               className="w-full h-24 p-3 border border-gray-300 rounded-md mt-1"
               placeholder="Escreva uma breve descrição sobre a empresa."
+              value={userData?.bio || ""}
+              onChange={(event) =>
+                setUserData({ ...userData, bio: event.target.value })
+              }
             />
           </div>
 
           <button
             type="button"
-            className="text-white mb-4 font-semibold mt-3 text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
-            onClick={() => {
-              alert("Salvando alterações...");
-            }}
+            className={`text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2 ${
+              isUserDataComplete
+                ? "hover:shadow-lg hover:bg-[#103c8f]"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+            onClick={saveBasicData}
+            disabled={!isUserDataComplete || savingStates.basicData}
           >
-            Salvar Alterações
+            {savingStates.basicData ? (
+              <span className="flex items-center gap-2">
+                <LoaderIcon className="animate-spin h-5 w-5" />
+                Salvando...
+              </span>
+            ) : (
+              "Salvar Alterações"
+            )}
           </button>
         </div>
       </ProfileEditDropdown>
 
       {/* Sobre você */}
-      <ProfileEditDropdown sectionName="Sobre você" isComplete={false}>
+      <ProfileEditDropdown
+        sectionName="Sobre você"
+        isComplete={isAboutYouComplete}
+      >
         <div className="space-y-4 mt-4">
+          {/* Nome da Empresa */}
           <div>
             <div className="flex flex-row items-center">
               <h2 className="text-base font-semibold">Nome da Empresa</h2>
@@ -208,34 +640,48 @@ function Page() {
               type="text"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500"
               placeholder="Nome da empresa"
-              value={personalInfo.name}
+              value={userData?.name || ""}
               onChange={(event) =>
-                setPersonalInfo({ ...personalInfo, name: event.target.value })
+                setUserData({ ...userData, name: event.target.value })
               }
             />
           </div>
 
-          <DateInput
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
-          />
-
+          {/* Data de Fundação */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-base font-semibold">Registro da empresa</h2>
+              <h2 className="text-base font-semibold">Data de Abertura</h2>
+              <p className="text-[#10438F] text-lg">*</p>
+            </div>
+            <DateInput
+              selectedDate={userData?.opening_date || null}
+              onDateChange={(date) =>
+                setUserData({ ...userData, opening_date: date })
+              }
+            />
+          </div>
+
+          {/* Registro da Empresa */}
+          <div>
+            <div className="flex flex-row items-center">
+              <h2 className="text-base font-semibold">Registro da Empresa</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
               type="text"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500"
               placeholder="Insira o CNPJ ou o endereço fiscal no exterior"
-              value={personalInfo.email}
+              value={userData?.company_register || ""}
               onChange={(event) =>
-                setPersonalInfo({ ...personalInfo, email: event.target.value })
+                setUserData({
+                  ...userData,
+                  company_register: event.target.value,
+                })
               }
             />
           </div>
 
+          {/* Email */}
           <div>
             <div className="flex flex-row items-center">
               <h2 className="text-base font-semibold">Email</h2>
@@ -245,45 +691,48 @@ function Page() {
               type="email"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
               placeholder="Email da empresa"
-              value={personalInfo.email}
+              value={userData?.email || ""}
               onChange={(event) =>
-                setPersonalInfo({ ...personalInfo, email: event.target.value })
+                setUserData({ ...userData, email: event.target.value })
               }
             />
           </div>
 
+          {/* Whatsapp/Telefone */}
           <div>
             <div className="flex flex-row items-center">
               <h2 className="text-base font-semibold">Whatsapp/Telefone</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <PhoneInput
-              value={personalInfo.phone}
+              value={formatToE164(userData?.cell_phone || "")}
               onChange={(value: string | undefined) =>
-                setPersonalInfo({ ...personalInfo, phone: value || "" })
+                setUserData({ ...userData, cell_phone: value || "" })
               }
               defaultCountry="BR"
               inputComponent={CustomPhoneInput}
+              limitMaxLength={true}
               className={`w-full p-3 border border-gray-300 rounded-md mt-1 focus:outline-none focus:ring-2  focus:ring-[#10438F] focus:border-transparent`}
             />
           </div>
 
+          {/* Website */}
           <div>
             <div className="flex flex-row items-center">
               <h2 className="text-base font-semibold">Website</h2>
-              <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
-              type="email"
+              type="url"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
               placeholder="Insira a URL do website da empresa"
-              value={personalInfo.email}
+              value={userData?.web_site || ""}
               onChange={(event) =>
-                setPersonalInfo({ ...personalInfo, email: event.target.value })
+                setUserData({ ...userData, web_site: event.target.value })
               }
             />
           </div>
 
+          {/* Nicho */}
           <div>
             <div className="flex flex-row items-center">
               <h2 className="text-base font-semibold">Nicho</h2>
@@ -302,20 +751,23 @@ function Page() {
               <>
                 <ComboboxNiches
                   niches={niches}
-                  selectedNiches={selectedNiches}
-                  setSelectedNiches={setSelectedNiches}
+                  selectedNiches={userData?.niche || []}
+                  setSelectedNiches={(selected) =>
+                    setUserData({ ...userData, niche: selected })
+                  }
                 />
 
                 <div className="mt-2 flex flex-wrap gap-2 mb-8 ">
-                  {selectedNiches.map((value) => (
+                  {userData?.niche?.map((value) => (
                     <Button
                       key={value}
                       variant="blue"
-                      className="flex items-center gap-2sm:max-w-sm"
+                      className="flex items-center gap-2 sm:max-w-sm"
                       onClick={() =>
-                        setSelectedNiches(
-                          selectedNiches.filter((v) => v !== value)
-                        )
+                        setUserData({
+                          ...userData,
+                          niche: userData.niche?.filter((f) => f !== value),
+                        })
                       }
                     >
                       <span className="flex-1 min-w-0 truncate">
@@ -329,20 +781,34 @@ function Page() {
             )}
           </div>
 
+          {/* Botão de Salvar Alterações */}
           <button
             type="button"
-            className="text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
-            onClick={() => {
-              alert("Salvando alterações...");
-            }}
+            className={`text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2 ${
+              isAboutYouComplete
+                ? "hover:shadow-lg hover:bg-[#103c8f]"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+            onClick={saveAboutYou}
+            disabled={!isAboutYouComplete || savingStates.aboutYou}
           >
-            Salvar Alterações
+            {savingStates.aboutYou ? (
+              <span className="flex items-center gap-2">
+                <LoaderIcon className="animate-spin h-5 w-5" />
+                Salvando...
+              </span>
+            ) : (
+              "Salvar Alterações"
+            )}
           </button>
         </div>
       </ProfileEditDropdown>
 
       {/* Endereço */}
-      <ProfileEditDropdown sectionName="Endereço" isComplete={false}>
+      <ProfileEditDropdown
+        sectionName="Endereço"
+        isComplete={isAddressInfoComplete}
+      >
         <div className="flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0">
           {/* Campo de País */}
           <div className="flex-1">
@@ -353,8 +819,10 @@ function Page() {
               </div>
               <ComboboxCountries
                 countries={countries}
-                selectedCountry={selectedCountry}
-                setSelectedCountry={setSelectedCountry}
+                selectedCountry={userData?.country || null}
+                setSelectedCountry={(country) =>
+                  setUserData({ ...userData, country })
+                }
               />
             </div>
           </div>
@@ -367,7 +835,7 @@ function Page() {
             </div>
             <MaskedInput
               mask={[/\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/]}
-              value={cepValue}
+              value={userData?.cep || ""}
               onChange={handleCEPChange}
               placeholder="Digite o CEP"
               className="pr-10 w-full p-3 border rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500 focus-visible:ring-0 focus:ring-0 focus:border-black focus:border-2 border-gray-300"
@@ -381,12 +849,14 @@ function Page() {
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Digite o nome da rua"
-            value={personalInfo.email}
+            value={userData?.street || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, street: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -396,13 +866,21 @@ function Page() {
             <h2 className="text-base font-semibold">Número</h2>
           </div>
           <input
-            type="email"
+            type="number"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Digite o número da residência"
-            value={personalInfo.email}
-            onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
-            }
+            value={userData?.address_num || ""}
+            onChange={(event) => {
+              const value = event.target.value;
+              setUserData((prev) =>
+                prev
+                  ? {
+                      ...prev,
+                      address_num: value !== "" ? Number(value) : undefined,
+                    }
+                  : prev
+              );
+            }}
           />
         </div>
 
@@ -411,12 +889,14 @@ function Page() {
             <h2 className="text-base font-semibold">Complemento</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Digite o complemento (opcional)"
-            value={personalInfo.email}
+            value={userData?.complement || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, complement: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -426,12 +906,14 @@ function Page() {
             <h2 className="text-base font-semibold">Bairro</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Digite o nome do bairro"
-            value={personalInfo.email}
+            value={userData?.neighborhood || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, neighborhood: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -442,12 +924,14 @@ function Page() {
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
-            type="email"
+            type="text" // Corrigido para "text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Digite o nome da cidade"
-            value={personalInfo.email}
+            value={userData?.city || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, city: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -459,26 +943,41 @@ function Page() {
           </div>
           <div className="mb-6 mt-1">
             <ComboboxStates
-              states={brazilianStates}
-              selectedState={selectedState}
-              setSelectedState={setSelectedState}
+              states={BrazilianStates}
+              selectedState={userData?.state}
+              setSelectedState={(state) =>
+                setUserData({ ...userData, state: state })
+              }
             />
           </div>
         </div>
 
         <button
           type="button"
-          className="text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
-          onClick={() => {
-            alert("Salvando alterações...");
-          }}
+          className={`text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2 ${
+            isAddressInfoComplete
+              ? "hover:shadow-lg hover:bg-[#103c8f]"
+              : "opacity-50 cursor-not-allowed"
+          }`}
+          onClick={saveAddressInfo}
+          disabled={!isAddressInfoComplete || savingStates.address}
         >
-          Salvar Alterações
+          {savingStates.address ? (
+            <span className="flex items-center gap-2">
+              <LoaderIcon className="animate-spin h-5 w-5" />
+              Salvando...
+            </span>
+          ) : (
+            "Salvar Alterações"
+          )}
         </button>
       </ProfileEditDropdown>
 
       {/* Redes sociais */}
-      <ProfileEditDropdown sectionName="Redes sociais" isComplete={false}>
+      <ProfileEditDropdown
+        sectionName="Redes sociais"
+        isComplete={isSocialMediaComplete}
+      >
         <p className="text-sm mt-3 font-semibold text-zinc-700">
           Preencha pelo menos uma rede social. Embora todas sejam opcionais, é
           necessário que pelo menos um campo esteja preenchido.
@@ -489,12 +988,14 @@ function Page() {
             <h2 className="text-base font-semibold">Instagram</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://instagram.com/usuario"
-            value={personalInfo.email}
+            value={userData?.instagram_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, instagram_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -504,12 +1005,14 @@ function Page() {
             <h2 className="text-base font-semibold">Facebook</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://facebook.com/usuario"
-            value={personalInfo.email}
+            value={userData?.facebook_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, facebook_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -519,12 +1022,14 @@ function Page() {
             <h2 className="text-base font-semibold">Twitter [X]</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://twitter.com/usuario"
-            value={personalInfo.email}
+            value={userData?.twitter_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, twitter_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -534,12 +1039,14 @@ function Page() {
             <h2 className="text-base font-semibold">LinkedIn</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://linkedin.com/in/usuario"
-            value={personalInfo.email}
+            value={userData?.linkedin_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, linkedin_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -549,12 +1056,14 @@ function Page() {
             <h2 className="text-base font-semibold">Youtube</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://youtube.com/c/usuario"
-            value={personalInfo.email}
+            value={userData?.youtube_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, youtube_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -564,12 +1073,14 @@ function Page() {
             <h2 className="text-base font-semibold">TikTok</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://tiktok.com/@usuario"
-            value={personalInfo.email}
+            value={userData?.tiktok_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, tiktok_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -579,12 +1090,14 @@ function Page() {
             <h2 className="text-base font-semibold">YourClub</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://pinterest.com/usuario"
-            value={personalInfo.email}
+            placeholder="https://yourclub.com/usuario"
+            value={userData?.yourclub_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, yourclub_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -594,12 +1107,14 @@ function Page() {
             <h2 className="text-base font-semibold">Pinterest</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://pinterest.com/usuario"
-            value={personalInfo.email}
+            value={userData?.pinterest_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, pinterest_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -609,12 +1124,14 @@ function Page() {
             <h2 className="text-base font-semibold">Kwai</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://kwai.com/@usuario"
-            value={personalInfo.email}
+            value={userData?.kwai_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, kwai_url: event.target.value } : prev
+              )
             }
           />
         </div>
@@ -624,29 +1141,44 @@ function Page() {
             <h2 className="text-base font-semibold">TwitchTV</h2>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="https://twitch.tv/usuario"
-            value={personalInfo.email}
+            value={userData?.twitch_url || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData((prev) =>
+                prev ? { ...prev, twitch_url: event.target.value } : prev
+              )
             }
           />
         </div>
 
         <button
           type="button"
-          className="text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
-          onClick={() => {
-            alert("Salvando alterações...");
-          }}
+          className={`text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2 ${
+            isAtLeastOneFilled
+              ? "hover:shadow-lg hover:bg-[#103c8f]"
+              : "opacity-50 cursor-not-allowed"
+          }`}
+          onClick={saveSocialMedia}
+          disabled={!isAtLeastOneFilled || savingStates.socialMedia}
         >
-          Salvar Alterações
+          {savingStates.socialMedia ? (
+            <span className="flex items-center gap-2">
+              <LoaderIcon className="animate-spin h-5 w-5" />
+              Salvando...
+            </span>
+          ) : (
+            "Salvar Alterações"
+          )}
         </button>
       </ProfileEditDropdown>
 
       {/* Conta bancária */}
-      <ProfileEditDropdown sectionName="Conta bancária" isComplete={false}>
+      <ProfileEditDropdown
+        sectionName="Conta bancária"
+        isComplete={isBankAccountComplete}
+      >
         <p className="text-sm mt-3 font-semibold text-zinc-700">
           Para facilitar o processo de reembolso, caso a campanha expire com
           vagas não preenchidas ou você decida interromper a campanha, forneça
@@ -660,18 +1192,38 @@ function Page() {
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
-            type="email"
+            type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Insira sua chave Pix"
-            value={personalInfo.email}
+            value={userData?.pix_key || ""}
             onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
+              setUserData({ ...userData, pix_key: event.target.value })
             }
           />
         </div>
+
+        <button
+          type="button"
+          className={`text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2 ${
+            isAtLeastOneFilled
+              ? "hover:shadow-lg hover:bg-[#103c8f]"
+              : "opacity-50 cursor-not-allowed"
+          }`}
+          onClick={saveBankAccount}
+          disabled={!isAtLeastOneFilled || savingStates.bankInfo}
+        >
+          {savingStates.bankInfo ? (
+            <span className="flex items-center gap-2">
+              <LoaderIcon className="animate-spin h-5 w-5" />
+              Salvando...
+            </span>
+          ) : (
+            "Salvar Alterações"
+          )}
+        </button>
       </ProfileEditDropdown>
 
-      {/* Senha */}
+      {/* Config conta */}
       <ProfileEditDropdown
         sectionName="Informações da Conta"
         isComplete={false}
@@ -681,13 +1233,11 @@ function Page() {
             <h2 className="text-base font-semibold">Senha Atual</h2>
           </div>
           <input
-            type="email"
+            type="password"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Digite sua senha atual"
-            value={personalInfo.email}
-            onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
-            }
+            value={currentPassword}
+            onChange={(event) => setCurrentPassword(event.target.value)}
           />
         </div>
 
@@ -696,13 +1246,11 @@ function Page() {
             <h2 className="text-base font-semibold">Nova Senha</h2>
           </div>
           <input
-            type="email"
+            type="password"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Digite sua nova senha"
-            value={personalInfo.email}
-            onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
-            }
+            value={newPassword}
+            onChange={(event) => setNewPassword(event.target.value)}
           />
         </div>
 
@@ -711,24 +1259,32 @@ function Page() {
             <h2 className="text-base font-semibold">Confirmar Nova Senha</h2>
           </div>
           <input
-            type="email"
+            type="password"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
             placeholder="Confirme sua nova senha"
-            value={personalInfo.email}
-            onChange={(event) =>
-              setPersonalInfo({ ...personalInfo, email: event.target.value })
-            }
+            value={confirmNewPassword}
+            onChange={(event) => setConfirmNewPassword(event.target.value)}
           />
         </div>
 
         <button
           type="button"
-          className="text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
-          onClick={() => {
-            alert("Salvando alterações...");
-          }}
+          className={`text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2 ${
+            currentPassword && newPassword && confirmNewPassword
+              ? "hover:shadow-lg hover:bg-[#103c8f]"
+              : "opacity-50 cursor-not-allowed"
+          }`}
+          onClick={saveAccountInfo}
+          disabled={savingStates.accountInfo}
         >
-          Salvar Alterações
+          {savingStates.accountInfo ? (
+            <span className="flex items-center gap-2">
+              <LoaderIcon className="animate-spin h-5 w-5" />
+              Salvando...
+            </span>
+          ) : (
+            "Salvar Alterações"
+          )}
         </button>
       </ProfileEditDropdown>
     </div>

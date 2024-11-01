@@ -26,8 +26,8 @@ interface Niche {
 
 type ComboboxNichesProps = {
   niches: Niche[];
-  selectedNiches: string[];
-  setSelectedNiches: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedNiches?: string[];
+  setSelectedNiches: (selectedNiches: string[] | undefined) => void;
 };
 
 export function ComboboxNiches({
@@ -46,7 +46,7 @@ export function ComboboxNiches({
           aria-expanded={open}
           className="w-full justify-between truncate h-12 max-sm-medium:max-w-[80dvw]"
         >
-          {selectedNiches.length > 0
+          {selectedNiches && selectedNiches.length > 0
             ? selectedNiches
                 .map((value) => {
                   const niche = niches.find((niche) => niche.value === value);
@@ -75,21 +75,27 @@ export function ComboboxNiches({
                     if (!selectedNiche) return;
                     const currentValue = selectedNiche.value;
 
-                    if (selectedNiches.includes(currentValue)) {
+                    if (
+                      selectedNiches &&
+                      selectedNiches.includes(currentValue)
+                    ) {
                       setSelectedNiches(
                         selectedNiches.filter(
                           (value: string) => value !== currentValue
                         )
                       );
                     } else {
-                      setSelectedNiches([...selectedNiches, currentValue]);
+                      setSelectedNiches([
+                        ...(selectedNiches || []),
+                        currentValue,
+                      ]);
                     }
                   }}
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      selectedNiches.includes(niche.value)
+                      (selectedNiches || []).includes(niche.value)
                         ? "opacity-100"
                         : "opacity-0"
                     )}

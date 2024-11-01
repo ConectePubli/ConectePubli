@@ -27,7 +27,7 @@ interface Country {
 interface ComboboxCountriesProps {
   countries: Country[];
   selectedCountry: string | null;
-  setSelectedCountry: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedCountry: (country: string | null) => void;
 }
 
 export function ComboboxCountries({

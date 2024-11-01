@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import FilterSection from "@/components/ui/FilterSectionCampaign";
 import CampaignsTable from "@/components/ui/CampaignsTable";
 import { useCampaignStore } from "@/store/useCampaignStore";
@@ -27,9 +27,27 @@ export const Route = createFileRoute(
 });
 
 function Page() {
-  const { fetchCampaigns, statusFilter, campaignGoalFilter, searchTerm, page } =
-    useCampaignStore();
+  const {
+    fetchCampaigns,
+    statusFilter,
+    campaignGoalFilter,
+    searchTerm,
+    page,
+    totalPages,
+    setPage,
+  } = useCampaignStore();
 
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
   useEffect(() => {
     fetchCampaigns();
   }, [fetchCampaigns, statusFilter, campaignGoalFilter, searchTerm, page]);
@@ -53,6 +71,38 @@ function Page() {
 
       <div className="mt-6 w-full overflow-x-auto max-w-[90dvw]">
         <CampaignsTable />
+      </div>
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={handlePreviousPage}
+          disabled={page === 1 || page === 0}
+          className={`flex items-center px-4 py-2 rounded-lg ${
+            page === 1
+              ? "bg-gray-200 cursor-not-allowed"
+              : "bg-[#10438F] text-white"
+          }`}
+        >
+          <ChevronLeft className="h-5 w-5" />
+          Anterior
+        </button>
+        <div className="flex items-center flex-row gap-1">
+          <p className="hidden sm-plus:block">Página </p>
+          <span>
+            {totalPages === 0 ? 0 : page} de {totalPages}
+          </span>
+        </div>
+        <button
+          onClick={handleNextPage}
+          disabled={page === totalPages || page === 0 || totalPages === 0}
+          className={`flex items-center px-4 py-2 rounded-lg ${
+            page === totalPages
+              ? "bg-gray-200 cursor-not-allowed"
+              : "bg-[#10438F] text-white"
+          }`}
+        >
+          Próxima
+          <ChevronRight className="h-5 w-5" />
+        </button>
       </div>
     </div>
   );

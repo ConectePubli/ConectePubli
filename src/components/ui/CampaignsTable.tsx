@@ -1,22 +1,8 @@
 import { useCampaignStore } from "@/store/useCampaignStore";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 
 const CampaignsTable: React.FC = () => {
-  const { campaigns, page, totalPages, setPage, isLoading, error } =
-    useCampaignStore();
-
-  const handlePreviousPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
+  const { campaigns, isLoading, error } = useCampaignStore();
 
   return (
     <div>
@@ -136,37 +122,6 @@ const CampaignsTable: React.FC = () => {
           )}
         </tbody>
       </table>
-
-      {/* Controles de Paginação */}
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={handlePreviousPage}
-          disabled={page === 1 || page === 0}
-          className={`flex items-center px-4 py-2 rounded-lg ${
-            page === 1
-              ? "bg-gray-200 cursor-not-allowed"
-              : "bg-[#10438F] text-white"
-          }`}
-        >
-          <ChevronLeft className="h-5 w-5" />
-          Anterior
-        </button>
-        <span>
-          Página {totalPages === 0 ? 0 : page} de {totalPages}
-        </span>
-        <button
-          onClick={handleNextPage}
-          disabled={page === totalPages || page === 0 || totalPages === 0}
-          className={`flex items-center px-4 py-2 rounded-lg ${
-            page === totalPages
-              ? "bg-gray-200 cursor-not-allowed"
-              : "bg-[#10438F] text-white"
-          }`}
-        >
-          Próxima
-          <ChevronRight className="h-5 w-5" />
-        </button>
-      </div>
     </div>
   );
 };
