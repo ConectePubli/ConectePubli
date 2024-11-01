@@ -3,6 +3,7 @@ import { Link, Outlet } from "@tanstack/react-router";
 import { Folder, LayoutGrid, Users, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSheetStore } from "@/store/useDashSheetStore";
+import pb from "@/lib/pb";
 
 export const Route = createFileRoute("/(dashboard)/_side-nav-dashboard")({
   component: SideNavDashboard,
@@ -16,7 +17,10 @@ export function SideNavDashboard() {
         <ul className="space-y-4">
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link to="/dashboard" className="flex items-center gap-2">
+              <Link
+                to={`${`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`}`}
+                className="flex items-center gap-2"
+              >
                 <Folder className="w-6 h-6" />
                 Minhas Participações
               </Link>
@@ -81,7 +85,10 @@ const Sheet = () => {
         <ul className="space-y-4">
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link to="/dashboard" className="flex items-center gap-2">
+              <Link
+                to={`${`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`}`}
+                className="flex items-center gap-2"
+              >
                 <Folder className="w-6 h-6" />
                 Minhas Participações
               </Link>
