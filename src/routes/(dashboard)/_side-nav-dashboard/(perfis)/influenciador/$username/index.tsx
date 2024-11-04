@@ -292,23 +292,22 @@ function InfluencerProfilePage() {
               {influencer.bio}
             </p>
 
-            {influencer.expand && influencer.expand.niche && (
-              <div className="mt-4">
-                <div className="flex flex-wrap gap-2">
-                  {influencer.expand.niche.map((niche: Niche) => {
-                    return (
+            {Array.isArray(influencer.expand?.niche) &&
+              influencer.expand.niche.length > 0 && (
+                <div className="mt-4">
+                  <div className="flex flex-wrap gap-2">
+                    {influencer.expand.niche.map((niche: Niche) => (
                       <span
                         className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
                         key={niche.id}
                       >
                         {niche.niche}
                       </span>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-
+              )}
+              
             {/* <div className="mt-6">
               <h4 className="text-lg font-semibold mb-2">Minhas Habilidades</h4>
               <div className="flex flex-wrap gap-2">
