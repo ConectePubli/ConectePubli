@@ -78,7 +78,7 @@ function Page() {
         <img
           src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.cover_img}`}
           alt="capa"
-          className="w-full h-64 object-cover bg-[#10438F]"
+          className="w-full max-w-full h-64 object-cover bg-[#10438F] mx-auto"
         />
       ) : (
         <div className="w-full h-64 bg-[#10438F]" />
@@ -107,7 +107,9 @@ function Page() {
               />
               Marca
             </p>
-            <h1 className="text-xl font-bold">{brand?.name || "..."}</h1>
+            <h1 className="text-xl font-bold break-words break-all">
+              {brand?.name || "..."}
+            </h1>
           </div>
         </div>
 
@@ -125,7 +127,8 @@ function Page() {
             <Link className="text-black mr-2" size={16} />
             <a
               className="text-[#10438F] font-semibold text-md hover:underline"
-              href="https://www.elevatevisionarycreations.com"
+              href={brand.web_site}
+              target="_blank"
             >
               {brand.web_site}
             </a>
@@ -133,7 +136,7 @@ function Page() {
         )}
 
         {/* REDES SOCIAIS*/}
-        <div className="flex flex-wrap gap-2 mt-2 px-4">
+        <div className="flex flex-wrap gap-2 mt-2 px-2 sm-medium:gap-2 sm-medium:px-4">
           {SocialNetworks.map((network) => {
             const url = network.url(brand);
             if (!url) return null;
@@ -144,12 +147,12 @@ function Page() {
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center border border-[#10438F] text-[#10438F] px-3 py-2 text-md rounded-md font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200"
+                className="flex items-center border border-[#10438F] text-[#10438F] px-2 py-1 text-sm sm-medium:text-base rounded-md font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200 sm-medium:px-3 sm-medium:py-2 sm-medium:text-md"
               >
                 <img
                   src={network.icon}
                   alt={`Ícone do ${network.name}`}
-                  className="w-5 h-5 mr-2"
+                  className="w-4 h-4 mr-1 sm-medium:w-5 sm-medium:h-5 sm-medium:mr-2"
                 />
                 {network.name}
               </a>
@@ -188,7 +191,7 @@ function Page() {
         {/* BIOGRAFIA*/}
         <div className="mt-4 px-4">
           <h2 className="text-lg font-bold">Biografia</h2>
-          <p className="text-black text-md mt-2">
+          <p className="text-black text-md mt-2 break-all">
             {brand?.bio || "Biografia não informada."}
           </p>
         </div>
@@ -201,7 +204,7 @@ function Page() {
               className="bg-[#10438F] cursor-default text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200"
               title={tag.niche}
             >
-              <span className="truncate max-w-[120px]">#{tag.niche}</span>{" "}
+              <span className="">#{tag.niche}</span>{" "}
             </button>
           ))}
         </div>

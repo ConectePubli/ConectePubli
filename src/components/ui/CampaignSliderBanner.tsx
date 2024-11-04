@@ -1,8 +1,8 @@
 // src/components/ui/CampaignSliderBanner.tsx
 import React from "react";
 import { User } from "lucide-react";
-import InstagramIcon from "@/assets/icons/instagram.svg";
-import FacebookIcon from "@/assets/icons/facebook.svg";
+import InstagramIcon from "@/assets/icons/brands/instagram.svg";
+import FacebookIcon from "@/assets/icons/brands/facebook.svg";
 import CalendarIcon from "@/assets/icons/calendar.svg";
 import TagIcon from "@/assets/icons/tag.svg";
 import CoinsIcon from "@/assets/icons/coins.svg";

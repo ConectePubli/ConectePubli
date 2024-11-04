@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, Circle, CheckCircle } from "lucide-react";
+import { ChevronDown, Circle, CheckCircle, Settings } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -11,12 +11,16 @@ interface ProfileEditDropdownProps {
   sectionName: string;
   children: React.ReactNode;
   isComplete: boolean;
+  showProgress?: boolean;
+  isConfig?: boolean;
 }
 
 export default function Component({
   sectionName,
   children,
   isComplete = false,
+  showProgress = true,
+  isConfig = false,
 }: ProfileEditDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,11 +32,16 @@ export default function Component({
           className={`flex w-full items-center justify-between p-3 py-6 sm:p-6 ${isOpen ? "rounded-b-none" : "rounded-md"} bg-gray-100`}
         >
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {isComplete ? (
-              <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
-            ) : (
-              <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
+            {isConfig && (
+              <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
             )}
+            {showProgress &&
+              (isComplete ? (
+                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
+              ) : (
+                <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
+              ))}
+
             <span className="text-base sm:text-lg font-medium truncate">
               {sectionName}
             </span>

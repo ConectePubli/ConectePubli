@@ -44,17 +44,19 @@ export function ComboboxNiches({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between truncate h-12 max-sm-medium:max-w-[80dvw]"
+          className="w-full justify-between truncate h-12 flex items-center overflow-hidden md:max-w-[calc(100vw-350px)]"
         >
-          {selectedNiches && selectedNiches.length > 0
-            ? selectedNiches
-                .map((value) => {
-                  const niche = niches.find((niche) => niche.value === value);
-                  return niche ? niche.label : "";
-                })
-                .filter((label) => label !== "")
-                .join(", ")
-            : "Selecione os nichos..."}
+          <span className="flex-1 min-w-0 truncate text-ellipsis">
+            {selectedNiches && selectedNiches.length > 0
+              ? selectedNiches
+                  .map((value) => {
+                    const niche = niches.find((niche) => niche.value === value);
+                    return niche ? niche.label : "";
+                  })
+                  .filter((label) => label !== "")
+                  .join(", ")
+              : "Selecione os nichos..."}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
