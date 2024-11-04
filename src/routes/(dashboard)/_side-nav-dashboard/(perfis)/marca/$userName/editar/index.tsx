@@ -91,17 +91,25 @@ function Page() {
     ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model.collectionName}/${pb.authStore.model.id}/${pb.authStore.model.cover_img}`
     : null;
 
+  const [profileImageUrlLocal, setProfileImageUrlLocal] = useState<
+    string | null
+  >(profileImageUrl);
+  const [coverImageUrlLocal, setCoverImageUrlLocal] = useState<string | null>(
+    coverImageUrl
+  );
+
   // Verificar se as seções estão completas para marcação visual
   const isUserDataComplete = userData?.bio ? true : false;
-  const isAboutYouComplete =
+  const isAboutYouComplete = !!(
     userData?.name &&
     userData?.opening_date &&
     userData?.company_register &&
     userData?.email &&
     userData?.cell_phone &&
-    userData?.niche
-      ? true
-      : false;
+    userData?.niche &&
+    userData?.niche?.length > 0
+  );
+
   const isAddressInfoComplete =
     userData?.country &&
     userData?.cep &&
@@ -247,10 +255,12 @@ function Page() {
 
       if (selectedProfileImageFile) {
         formData.append("profile_img", selectedProfileImageFile);
+        setProfileImageUrlLocal(URL.createObjectURL(selectedProfileImageFile));
       }
 
       if (selectedCoverImageFile) {
         formData.append("cover_img", selectedCoverImageFile);
+        setCoverImageUrlLocal(URL.createObjectURL(selectedCoverImageFile));
       }
 
       await pb.collection("brands").update(pb.authStore.model?.id, formData);
@@ -260,9 +270,22 @@ function Page() {
       setOriginalData(updatedUserData);
 
       toast.success("Dados pessoais salvos com sucesso!");
-    } catch (error) {
-      console.error("Erro ao salvar dados pessoais:", error);
-      toast.error("Erro ao salvar dados pessoais. Tente novamente.");
+    } catch (e) {
+      const error = e as ClientResponseError;
+      console.error("Erro ao salvar dados pessoais:", error.data);
+      if (error.data.data?.cover_img?.code === "validation_file_size_limit") {
+        toast.error(
+          "O tamanho da capa excede o limite permitido. Por favor, tente novamente com um arquivo menor."
+        );
+      } else if (
+        error.data.data?.profile_img?.code === "validation_file_size_limit"
+      ) {
+        toast.error(
+          "O tamanho da imagem de perfil excede o limite permitido. Por favor, tente novamente com um arquivo menor."
+        );
+      } else {
+        toast.error("Erro ao salvar dados pessoais. Tente novamente.");
+      }
     } finally {
       toggleSaving("basicData", false);
     }
@@ -574,7 +597,7 @@ function Page() {
       >
         <div className="space-y-4">
           <ProfileImageSelector
-            defaultImageUrl={profileImageUrl}
+            defaultImageUrl={profileImageUrlLocal}
             onImageChange={(file) => setSelectedProfileImageFile(file)}
           />
           <p className="text-sm mt-3 font-semibold text-zinc-700">
@@ -582,7 +605,7 @@ function Page() {
           </p>
 
           <CoverImageSelector
-            defaultCoverImageUrl={coverImageUrl}
+            defaultCoverImageUrl={coverImageUrlLocal}
             onCoverImageChange={(file) => setSelectedCoverImageFile(file)}
           />
 
@@ -596,6 +619,7 @@ function Page() {
               className="w-full h-24 p-3 border border-gray-300 rounded-md mt-1"
               placeholder="Escreva uma breve descrição sobre a empresa."
               value={userData?.bio || ""}
+              maxLength={500}
               onChange={(event) =>
                 setUserData({ ...userData, bio: event.target.value })
               }
@@ -641,6 +665,7 @@ function Page() {
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500"
               placeholder="Nome da empresa"
               value={userData?.name || ""}
+              maxLength={65}
               onChange={(event) =>
                 setUserData({ ...userData, name: event.target.value })
               }
@@ -757,7 +782,7 @@ function Page() {
                   }
                 />
 
-                <div className="mt-2 flex flex-wrap gap-2 mb-8 ">
+                <div className="mt-2 flex flex-wrap gap-2 mb-8">
                   {userData?.niche?.map((value) => (
                     <Button
                       key={value}
@@ -1227,6 +1252,8 @@ function Page() {
       <ProfileEditDropdown
         sectionName="Informações da Conta"
         isComplete={false}
+        showProgress={false}
+        isConfig={true}
       >
         <div>
           <div className="flex flex-row items-center mt-4">
@@ -1303,6 +1330,10 @@ const ProfileImageSelector: React.FC<ProfileImageSelectorProps> = ({
   const [image, setImage] = useState<string | null>(defaultImageUrl);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [objectUrl, setObjectUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    setImage(defaultImageUrl);
+  }, [defaultImageUrl]);
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -1435,7 +1466,7 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
         <h2 className="text-lg font-semibold">Foto de fundo</h2>
         <p className="text-sm text-zinc-700 mt-1">
           Escolha uma foto de fundo para o perfil. Tamanho recomendado: 1500 x
-          600 para garantir melhor qualidade.
+          256 para garantir melhor qualidade. Tamanho máximo permitido: 5MB.
         </p>
 
         <button
