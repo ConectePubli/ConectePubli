@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import CampaignCard from "@/components/ui/CampaignCard";
 import Spinner from "@/components/ui/Spinner";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
@@ -8,11 +8,25 @@ import { Campaign } from "@/types/Campaign";
 import pb from "@/lib/pb";
 import { UserAuth } from "@/types/UserAuth";
 import { Filter } from "lucide-react";
+import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-influencer/"
 )({
   component: Page,
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    if (!userType) {
+      throw redirect({
+        to: "/login123new",
+      });
+    } else if (userType !== "Influencers") {
+      throw redirect({
+        to: "/dashboard",
+      });
+    }
+  },
 });
 
 function Page() {
