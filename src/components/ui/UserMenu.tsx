@@ -52,7 +52,7 @@ export function UserMenu() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mr-8">
           <p className="px-4 py-2 text-sm text-muted-foreground">
-            Olá, {pb.authStore.model?.username}!
+            Olá{pb.authStore.model?.name ? `, ${pb.authStore.model.name}!` : "!"}
           </p>
           <DropdownMenuItem
             onSelect={() => {
