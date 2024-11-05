@@ -17,6 +17,7 @@ import { Brand } from "@/types/Brand";
 import { Campaign } from "@/types/Campaign";
 import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
+import { CampaignParticipation } from "@/types/Campaign_Participations";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
@@ -38,7 +39,14 @@ export const Route = createFileRoute(
           filter: `brand="${brandData.id}"`,
         })) || [];
 
-      return { brandData, campaignsData };
+      const campaignsParticipationsData =
+        (await pb
+          .collection("Campaigns_Participations")
+          .getFullList<CampaignParticipation>({
+            expand: "Campaign,Influencer",
+          })) || [];
+
+      return { brandData, campaignsData, campaignsParticipationsData };
     } catch (error) {
       if (error instanceof ClientResponseError) {
         if (error.status === 404) {
@@ -60,9 +68,48 @@ export const Route = createFileRoute(
 });
 
 function Page() {
-  const { brandData, campaignsData } = useLoaderData({ from: Route.id });
+  const { brandData, campaignsData, campaignsParticipationsData } =
+    useLoaderData({ from: Route.id });
   const brand = brandData as Brand;
   const campaigns = campaignsData as Campaign[];
+  const campaignParticipations =
+    campaignsParticipationsData as CampaignParticipation[];
+
+  const calculateOpenJobs = (
+    campaigns: Campaign[],
+    participations: CampaignParticipation[]
+  ): Campaign[] => {
+    const participationCountMap: { [key: string]: number } = {};
+
+    participations.forEach((participation) => {
+      const campaignId = participation.Campaign;
+      // Considere apenas status que ocupam vagas abertas
+      if (
+        participation.status === "waiting" ||
+        participation.status === "approved"
+      ) {
+        if (participationCountMap[campaignId]) {
+          participationCountMap[campaignId] += 1;
+        } else {
+          participationCountMap[campaignId] = 1;
+        }
+      }
+    });
+
+    return campaigns.map((campaign) => {
+      const ocupadas = participationCountMap[campaign.id] || 0;
+      const vagasRestantes = (campaign.open_jobs || 0) - ocupadas;
+      return {
+        ...campaign,
+        vagasRestantes: vagasRestantes >= 0 ? vagasRestantes : 0,
+      };
+    });
+  };
+
+  const campaignsWithOpenJobs = calculateOpenJobs(
+    campaigns,
+    campaignParticipations
+  );
 
   const navigate = useNavigate();
 
@@ -70,9 +117,6 @@ function Page() {
     const parts = [brand.city, brand.state, brand.country].filter(Boolean);
     return parts.length > 0 ? parts.join(", ") : "Localização não informada";
   };
-
-  console.log("dados da marca: ", brand);
-  console.log("campanhas da marca: ", campaigns);
 
   return (
     <div className="flex p-0 flex-col">
@@ -184,8 +228,8 @@ function Page() {
         <div className="border mt-5 mb-4" />
 
         {/* CAMPANHAS*/}
-        <div className="mt-2 w-full max-w-[99dvw]">
-          <CampaignSlider campaigns={campaigns} />
+        <div className="mt-2 w-full max-w-[99dvw] md:max-w-[calc(100vw-250px)]">
+          <CampaignSlider campaigns={campaignsWithOpenJobs} />
         </div>
 
         <div className="border mt-5 mb-4" />

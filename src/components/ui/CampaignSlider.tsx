@@ -1,5 +1,5 @@
 // src/components/ui/CampaignSlider.tsx
-import React, { useRef, useCallback, useEffect } from "react";
+import React, { useRef, useCallback, useEffect, useState } from "react";
 import ArrowLeft from "@/assets/icons/arrow-left.svg";
 import ArrowRight from "@/assets/icons/arrow-right.svg";
 import { Campaign } from "@/types/Campaign";
@@ -24,7 +24,27 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
     console.log("Clique na campanha", id); //TODO
   }, []);
 
-  // Handler para o movimento do ponteiro
+  const [campaignWidth, setCampaignWidth] = useState(0);
+
+  useEffect(() => {
+    const firstCampaign = document.getElementById("first-campaign-banner");
+    if (firstCampaign) {
+      setCampaignWidth(firstCampaign.clientWidth + 16);
+    }
+
+    const handleResize = () => {
+      if (firstCampaign) {
+        setCampaignWidth(firstCampaign.clientWidth + 16);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [campaigns]);
+
   const handlePointerMove = useCallback(
     (e: PointerEvent) => {
       if (!sliderRef.current) return;
@@ -32,7 +52,6 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
       const x = e.clientX;
       const walk = x - startX.current;
 
-      // Detecta se o movimento excede o limiar para considerar como arraste
       if (!isDragging.current && Math.abs(walk) > dragThreshold) {
         isDragging.current = true;
       }
@@ -94,25 +113,24 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
     [handlePointerMove, handlePointerUp]
   );
 
+  // Handlers de scroll atualizados
   const scrollLeftHandler = useCallback(() => {
-    if (sliderRef.current) {
-      const sliderWidth = sliderRef.current.clientWidth;
+    if (sliderRef.current && campaignWidth > 0) {
       sliderRef.current.scrollBy({
-        left: -sliderWidth,
+        left: -campaignWidth,
         behavior: "smooth",
       });
     }
-  }, []);
+  }, [campaignWidth]);
 
   const scrollRightHandler = useCallback(() => {
-    if (sliderRef.current) {
-      const sliderWidth = sliderRef.current.clientWidth;
+    if (sliderRef.current && campaignWidth > 0) {
       sliderRef.current.scrollBy({
-        left: sliderWidth,
+        left: campaignWidth,
         behavior: "smooth",
       });
     }
-  }, []);
+  }, [campaignWidth]);
 
   useEffect(() => {
     return () => {
@@ -125,20 +143,20 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
     <div>
       <div className="flex justify-between items-center mb-2 max-w-[98vw]">
         <p className="text-lg font-bold pl-4">Campanhas</p>
-        <div className="flex items-center gap-4 px-4">
+        <div className="flex items-center gap-4 px-4 select-none">
           <button
             onClick={scrollLeftHandler}
             className="w-5 h-5 cursor-pointer"
             aria-label="Scroll Esquerda"
           >
-            <img src={ArrowLeft} alt="Scroll Esquerda" />
+            <img src={ArrowLeft} alt="Scroll Esquerda" draggable={false} />
           </button>
           <button
             onClick={scrollRightHandler}
             className="w-5 h-5 cursor-pointer"
             aria-label="Scroll Direita"
           >
-            <img src={ArrowRight} alt="Scroll Direita" />
+            <img src={ArrowRight} alt="Scroll Direita" draggable={false} />
           </button>
         </div>
       </div>

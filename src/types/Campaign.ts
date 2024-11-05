@@ -18,6 +18,7 @@ export interface Campaign {
   updated: Date;
   collectionId: string;
   collectionName: string;
+  vagasRestantes?: number;
   expand?: {
     campaigns_participations_via_Campaign?: CampaignParticipation[];
   };
