@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UserAuth } from "@/types/UserAuth";
 import { createFileRoute, useMatch, useNavigate } from "@tanstack/react-router";
-import { MapPin, Globe, User } from "lucide-react";
+import { MapPin, Globe } from "lucide-react";
 import { Hourglass, GenderIntersex } from "phosphor-react";
 import { useEffect, useState } from "react";
 import SocialNetworks from "@/types/SocialNetworks";
@@ -15,6 +15,7 @@ import LocationPin from "@/assets/icons/location-pin.svg";
 import EditIcon from "@/assets/icons/edit.svg";
 import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
+import CompanyIcon from "@/assets/icons/company.svg";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/"
