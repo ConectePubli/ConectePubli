@@ -397,7 +397,7 @@ function BasicDataSection({
   setFormData,
 }: FormProps) {
   const [nicheInput, setNicheInput] = useState("");
-  const [niches, setNiches] = useState(formData.expand.niche || []);
+  const [niches, setNiches] = useState(formData?.expand?.niche || []);
   const [suggestedNiches, setSuggestedNiches] = useState<Niche[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
