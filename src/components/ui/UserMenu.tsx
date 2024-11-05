@@ -21,6 +21,7 @@ import {
 import { useRouter } from "@tanstack/react-router";
 import pb from "@/lib/pb";
 import { LayoutDashboard } from "lucide-react";
+import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -38,24 +39,15 @@ export function UserMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar>
-            {pb.authStore.model?.profile_img && (
-              <>
-                <AvatarImage
-                  src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model?.collectionName}/${pb.authStore.model?.id}/${pb.authStore.model?.profile_img}?thumb=40x40`}
-                  alt="Avatar"
-                  className="cursor-pointer"
-                />
-                <AvatarFallback className="cursor-pointer">
-                  {userLetter}
-                </AvatarFallback>
-              </>
-            )}
-
-            {!pb.authStore.model?.profile_img && (
-              <AvatarFallback className="cursor-pointer">
-                {userLetter}
-              </AvatarFallback>
-            )}
+            <AvatarImage
+              src={
+                pb.authStore.model?.profile_img
+                  ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model.collectionName}/${pb.authStore.model.id}/${pb.authStore.model.profile_img}?thumb=40x40`
+                  : ProfilePlaceholder
+              }
+              alt="Avatar"
+              className="cursor-pointer"
+            />
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mr-8">

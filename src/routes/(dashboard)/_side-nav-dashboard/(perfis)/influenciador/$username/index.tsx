@@ -17,9 +17,11 @@ import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/ui/Spinner";
 import { Influencer } from "@/types/Influencer";
 import { Niche } from "@/types/Niche";
-import CompanyIcon from "@/assets/icons/company.svg";
+import MegaphoneIcon from "@/assets/icons/megaphone.svg";
 import LocationPin from "@/assets/icons/location-pin.svg";
 import EditIcon from "@/assets/icons/edit.svg";
+import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
+import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/",
@@ -163,36 +165,34 @@ function InfluencerProfilePage() {
   return (
     <div className="flex p-0 flex-col">
       {/* COVER IMAGE */}
-      {influencer.background_img ? (
-        <img
-          src={pb.getFileUrl(influencer, influencer.background_img)}
-          alt="Cover Image"
-          className="w-full max-w-full h-64 object-cover mx-auto" // Styling from A
-        />
-      ) : (
-        <div className="w-full h-64 bg-[#10438F]" /> // Fallback background color from A
-      )}
+      <img
+        src={
+          influencer.background_img
+            ? pb.getFileUrl(influencer, influencer.background_img)
+            : BackgroundPlaceholder
+        }
+        alt="Cover Image"
+        className="w-full max-w-full h-64 object-cover mx-auto"
+      />
 
       <div className="px-2 sm-medium:px-4">
         {/* PROFILE IMAGE */}
         <div className="flex flex-row items-center mt-4">
-          {influencer.profile_img ? (
-            <img
-              src={pb.getFileUrl(influencer, influencer.profile_img)}
-              alt={influencer.full_name}
-              className="w-20 h-20 rounded-[100%] object-cover" // Styling from A
-            />
-          ) : (
-            <div className="w-20 h-20 rounded-[100%] bg-gray-300 flex items-center justify-center">
-              <User color="#fff" size={20} />
-            </div>
-          )}
+          <img
+            src={
+              influencer.profile_img
+                ? pb.getFileUrl(influencer, influencer.profile_img)
+                : ProfilePlaceholder
+            }
+            alt={influencer.full_name || "Profile Image"}
+            className="w-20 h-20 rounded-[100%] object-cover"
+          />
 
           {/* BASIC INFO */}
           <div className="ml-3">
             <p className="text-gray-500 text-sm font-bold flex flex-row items-center">
               <img
-                src={CompanyIcon}
+                src={MegaphoneIcon}
                 alt="company icon"
                 className="w-3 h-3 mr-1"
               />{" "}
@@ -225,7 +225,9 @@ function InfluencerProfilePage() {
               className="w-5 h-5 mr-1"
             />
             <p className="text-orange-600 font-bold text-md truncate max-w-xs">
-              {influencer.city}, {influencer.state}, {influencer.country}
+              {[influencer.city, influencer.state, influencer.country]
+                .filter(Boolean)
+                .join(", ")}
             </p>
           </div>
         )}
@@ -255,40 +257,36 @@ function InfluencerProfilePage() {
           })}
         </div>
 
-        <div className="flex gap-3 flex-wrap">
+        <div className="flex gap-3 flex-wrap items-center">
           {/* MEDIA KIT LINK */}
-          <div className="mt-4  sm-medium:gap-2">
-            {influencer.media_kit_url && (
-              <a
-                href={influencer.media_kit_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
-                  Acessar mídia kit
-                </button>
-              </a>
-            )}
-          </div>
+          {influencer.media_kit_url && (
+            <a
+              href={influencer.media_kit_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+                Acessar mídia kit
+              </button>
+            </a>
+          )}
 
           {/* EDIT BUTTON */}
           {userLogged?.model.id.includes(influencer.id) && (
-            <div className="flex mt-4">
-              <button
-                className="text-white font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-lg shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
-                onClick={() =>
-                  navigate({ to: `/influenciador/${username}/editar` })
-                }
-              >
-                <img
-                  src={EditIcon}
-                  alt="company icon"
-                  className="w-4 h-4 text-white fill-current"
-                  style={{ filter: "brightness(0) invert(1)" }}
-                />
-                Editar Perfil
-              </button>
-            </div>
+            <button
+              className="text-white font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-lg shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
+              onClick={() =>
+                navigate({ to: `/influenciador/${username}/editar` })
+              }
+            >
+              <img
+                src={EditIcon}
+                alt="company icon"
+                className="w-4 h-4 text-white fill-current"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+              Editar Perfil
+            </button>
           )}
         </div>
       </div>
