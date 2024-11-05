@@ -21,8 +21,10 @@ export function SideNavDashboard() {
                 to={`${`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`}`}
                 className="flex items-center gap-2"
               >
-                <Folder className="w-6 h-6" />
-                Minhas Participações
+                <Folder className="w-6 h-6" /> Minhas{" "}
+                {pb.authStore.model?.collectionName === "Brands"
+                  ? "Campanhas"
+                  : "Participações"}
               </Link>
             </Button>
           </li>
@@ -90,7 +92,10 @@ const Sheet = () => {
                 className="flex items-center gap-2"
               >
                 <Folder className="w-6 h-6" />
-                Minhas Campanhas
+                Minhas{" "}
+                {pb.authStore.model?.collectionName === "Brands"
+                  ? "Campanhas"
+                  : "Participações"}
               </Link>
             </Button>
           </li>
