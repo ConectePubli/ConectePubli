@@ -20,7 +20,7 @@ export const PrivateHeader = () => {
           <div className="hidden min-[340px]:block flex-grow">
             <img
               src={logo}
-              alt="ConectePubli"
+              alt="Conecte Publi"
               className="h-8 md:h-10 cursor-pointer"
               onClick={() => window.location.replace("/")}
               draggable={false}
