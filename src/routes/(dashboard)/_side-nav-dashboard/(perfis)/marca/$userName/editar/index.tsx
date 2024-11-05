@@ -1117,7 +1117,7 @@ function Page() {
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://yourclub.com/usuario"
+            placeholder="https://yourclub.io/usuario"
             value={userData?.yourclub_url || ""}
             onChange={(event) =>
               setUserData((prev) =>
@@ -1230,12 +1230,12 @@ function Page() {
         <button
           type="button"
           className={`text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2 ${
-            isAtLeastOneFilled
+            isBankAccountComplete
               ? "hover:shadow-lg hover:bg-[#103c8f]"
               : "opacity-50 cursor-not-allowed"
           }`}
           onClick={saveBankAccount}
-          disabled={!isAtLeastOneFilled || savingStates.bankInfo}
+          disabled={!isBankAccountComplete || savingStates.bankInfo}
         >
           {savingStates.bankInfo ? (
             <span className="flex items-center gap-2">
