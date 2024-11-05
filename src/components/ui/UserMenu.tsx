@@ -62,7 +62,7 @@ export function UserMenu() {
                 });
               }
             }}
-            className="hover:bg-black"
+            className="hover:bg-black cursor-pointer"
           >
             <LayoutDashboard className="mr-2 inline-block h-5 w-5" />
             Dashboard
@@ -75,7 +75,7 @@ export function UserMenu() {
                 });
               }
             }}
-            className="hover:bg-black"
+            className="hover:bg-black cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +94,7 @@ export function UserMenu() {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={() => setOpen(true)}
-            className="text-black"
+            className="text-black cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
