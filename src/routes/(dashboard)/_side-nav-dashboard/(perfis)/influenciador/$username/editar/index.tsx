@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { createFileRoute, useNavigate, useMatch } from "@tanstack/react-router";
 import React, { useState, useEffect, useRef } from "react";
-import { CaretDown, CaretUp, Plus, X } from "phosphor-react";
+import { CaretDown, CaretUp, Image, Plus, User, X } from "phosphor-react";
 import pb from "@/lib/pb";
 import { UserAuth } from "@/types/UserAuth";
 import { Influencer } from "@/types/Influencer";
 import Spinner from "@/components/ui/Spinner";
 import { Niche } from "@/types/Niche";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/editar/"
@@ -118,6 +121,121 @@ function InfluencerEditProfilePage() {
   ) => {
     e.preventDefault();
 
+    // Define campos obrigatórios por seção
+    const requiredFields: { [key: string]: string[] } = {
+      basicData: ["background_img", "bio"],
+      about: [
+        "name",
+        "birth_date",
+        "email",
+        "cell_phone",
+        "account_type",
+        "gender",
+      ],
+      address: [
+        "country",
+        "cep",
+        "street",
+        "neighborhood",
+        "city",
+        "state",
+        "address_num",
+      ],
+      socialMedia: ["At least one social media field"],
+      bankAccount: ["pix_key"],
+    };
+
+    // Função para validar campos
+    const validateFields = () => {
+      const missingFields: string[] = [];
+
+      if (formData) {
+        if (section !== "portfolio") {
+          if (section === "socialMedia") {
+            const socialFields = [
+              "instagram_url",
+              "tiktok_url",
+              "facebook_url",
+              "youtube_url",
+              "pinterest_url",
+              "twitter_url",
+              "twitch_url",
+              "linkedin_url",
+              "kwai_url",
+              "yourclub_url",
+            ];
+            const hasAtLeastOne = socialFields.some(
+              //@ts-expect-error
+              (field) => formData[field] && formData[field].trim() !== ""
+            );
+            if (!hasAtLeastOne) {
+              missingFields.push(
+                "Pelo menos uma rede social deve ser preenchida."
+              );
+            }
+          } else {
+            requiredFields[section].forEach((field) => {
+              if (
+                //@ts-expect-error
+                !formData[field] ||
+                //@ts-expect-error
+                (typeof formData[field] === "string" &&
+                  //@ts-expect-error
+                  formData[field].trim() === "")
+              ) {
+                const fieldNames: { [key: string]: string } = {
+                  background_img: "Foto de fundo",
+                  bio: "Bio",
+                  name: "Nome Completo",
+                  birth_date: "Data de Nascimento",
+                  email: "Email",
+                  cell_phone: "Telefone Celular",
+                  account_type: "Tipo de Conta",
+                  gender: "Gênero",
+                  country: "País",
+                  cep: "CEP",
+                  street: "Rua",
+                  neighborhood: "Bairro",
+                  city: "Cidade",
+                  state: "Estado",
+                  address_num: "Número",
+                  pix_key: "Chave Pix",
+                };
+                missingFields.push(fieldNames[field] || field);
+              }
+            });
+          }
+        }
+      }
+
+      return missingFields;
+    };
+
+    const missingFields = validateFields();
+
+    if (missingFields.length > 0) {
+      toast.warning(
+        <div>
+          <strong>Campos Obrigatórios:</strong>
+          <ul className="list-disc list-inside">
+            {missingFields.map((field, index) => (
+              <li key={index}>{field}</li>
+            ))}
+          </ul>
+        </div>,
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      return;
+    }
+
     setLoadingStates((prev: any) => ({ ...prev, [section]: true }));
 
     if (formData) {
@@ -134,9 +252,9 @@ function InfluencerEditProfilePage() {
           if (formData.bio) {
             updateData["bio"] = formData.bio;
           }
-         if (formData.niche) {
-           updateData["niche"] = formData.niche; // Já é um array de IDs
-         }
+          if (formData.niche) {
+            updateData["niche"] = formData.niche;
+          }
         } else if (section === "about") {
           updateData["name"] = formData.name;
           updateData["birth_date"] = formData.birth_date;
@@ -144,7 +262,6 @@ function InfluencerEditProfilePage() {
           updateData["cell_phone"] = formData.cell_phone;
           updateData["account_type"] = formData.account_type;
           updateData["gender"] = formData.gender;
-          updateData["niche"] = formData.niche;
         } else if (section === "address") {
           updateData["country"] = formData.country;
           updateData["cep"] = formData.cep;
@@ -341,6 +458,8 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
+
+      <ToastContainer />
     </div>
   );
 }
@@ -464,8 +583,8 @@ function BasicDataSection({
       setSuggestedNiches([]);
       setIsDropdownOpen(false);
       setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
-      
-      console.log("atualizou dados")
+
+      console.log("atualizou dados");
     }
   };
 
@@ -487,17 +606,24 @@ function BasicDataSection({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Foto de fundo*
           </label>
-          <img
-            src={
-              formData.background_img
-                ? formData.background_img instanceof File
-                  ? URL.createObjectURL(formData.background_img)
-                  : pb.getFileUrl(formData, formData.background_img)
-                : "https://via.placeholder.com/600"
-            }
-            alt="Cover"
-            className="w-full h-48 object-cover rounded-lg mb-4"
-          />
+          {formData.background_img ? (
+            <img
+              src={
+                formData.background_img
+                  ? formData.background_img instanceof File
+                    ? URL.createObjectURL(formData.background_img)
+                    : pb.getFileUrl(formData, formData.background_img)
+                  : "https://via.placeholder.com/600"
+              }
+              alt="Cover"
+              className="w-full h-48 object-cover rounded-lg mb-4"
+            />
+          ) : (
+            <div className="w-full h-48 object-cover rounded-lg mb-4 bg-gray-300 flex items-center justify-center">
+              <Image size={40} color="#fff" />
+            </div>
+          )}
+
           <input
             type="file"
             name="background_img"
@@ -509,17 +635,23 @@ function BasicDataSection({
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Carregar nova imagem de perfil
           </label>
-          <img
-            src={
-              formData.profile_img
-                ? formData.profile_img instanceof File
-                  ? URL.createObjectURL(formData.profile_img)
-                  : pb.getFileUrl(formData, formData.profile_img)
-                : "https://via.placeholder.com/80"
-            }
-            alt="Profile"
-            className="w-20 h-20 rounded-full border-2 border-gray-300"
-          />
+          {formData.profile_img ? (
+            <img
+              src={
+                formData.profile_img
+                  ? formData.profile_img instanceof File
+                    ? URL.createObjectURL(formData.profile_img)
+                    : pb.getFileUrl(formData, formData.profile_img)
+                  : "https://via.placeholder.com/80"
+              }
+              alt="Profile"
+              className="w-20 h-20 rounded-full border-2 border-gray-300"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-full border-2 bg-gray-300 flex items-center justify-center">
+              <User size={22} color="#fff" />
+            </div>
+          )}
           <input
             type="file"
             name="profile_img"
@@ -635,11 +767,108 @@ function AboutSection({
           onChange={handleSectionInputChange}
         />
       </div>
-      {/* ... Rest of the fields with similar structure ... */}
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Data de Nascimento*
+        </label>
+        <input
+          type="date"
+          name="birth_date"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder="DD/MM/AAAA"
+          value={formData.birth_date || ""}
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Email*
+        </label>
+        <input
+          type="email"
+          name="email"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder="Email"
+          value={formData.email || ""}
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Whatsapp*
+        </label>
+        <input
+          type="tel"
+          name="cell_phone"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder="Número do Whatsapp"
+          value={formData.cell_phone || ""}
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Tipo de Conta*
+        </label>
+        <select
+          name="account_type"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          value={formData.account_type || ""}
+          onChange={handleSectionInputChange}
+        >
+          <option value="" disabled>
+            Selecione o tipo de conta
+          </option>
+          <option value="UGC">UGC (Talentos)</option>
+          <option value="Influencers">
+            Influenciadores (Nano, Micro e Macro)
+          </option>
+          <option value="UGC+Influencers">UGC + Influenciador</option>
+        </select>
+        <p className="text-sm text-gray-500 mt-2">
+          <strong>UGC (Talentos):</strong> Você cria vídeos ou fotos que serão
+          entregues para as marcas utilizarem em suas campanhas, anúncios ou
+          redes sociais.
+          <br />
+          <strong>
+            Influencers (Nano, Micro e Macro influenciadores):
+          </strong>{" "}
+          Você cria e compartilha o conteúdo diretamente nas suas redes sociais,
+          promovendo produtos e serviços para seu público.
+          <br />
+          <strong>UGC + Influenciador:</strong> Você tanto cria o conteúdo para
+          as marcas utilizarem quanto compartilha esse conteúdo nas suas
+          próprias redes sociais, atuando nas duas frentes.
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Gênero*
+        </label>
+        <select
+          name="gender"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          value={formData.gender || ""}
+          onChange={handleSectionInputChange}
+        >
+          <option value="" disabled>
+            Selecione o seu gênero
+          </option>
+          <option value="male">Masculino</option>
+          <option value="female">Feminino</option>
+          <option value="non_binary">Não binário</option>
+        </select>
+      </div>
+
       <button
         className={`${
           isFormChanged ? "bg-blue-600" : "bg-gray-400"
-        } text-white py-2 px-4 rounded-lg`}
+        } text-white py-2 px-4 rounded-lg mt-4`}
         onClick={(e) => handleSubmit(e, "about")}
         disabled={!isFormChanged || loading}
       >
@@ -653,7 +882,6 @@ function AddressSection({
   formData,
   handleInputChange,
   handleCepChange,
-  addressFieldsDisabled,
   handleSubmit,
   isFormChanged,
   setIsFormChangedStates,
@@ -706,7 +934,6 @@ function AddressSection({
             placeholder="Rua"
             value={formData.street || ""}
             onChange={handleSectionInputChange}
-            disabled={addressFieldsDisabled}
           />
         </div>
         <div>
@@ -720,7 +947,6 @@ function AddressSection({
             placeholder="Bairro"
             value={formData.neighborhood || ""}
             onChange={handleSectionInputChange}
-            disabled={addressFieldsDisabled}
           />
         </div>
         <div>
@@ -734,7 +960,6 @@ function AddressSection({
             placeholder="Cidade"
             value={formData.city || ""}
             onChange={handleSectionInputChange}
-            disabled={addressFieldsDisabled}
           />
         </div>
         <div>
@@ -748,7 +973,6 @@ function AddressSection({
             placeholder="Estado"
             value={formData.state || ""}
             onChange={handleSectionInputChange}
-            disabled={addressFieldsDisabled}
           />
         </div>
         <div>
@@ -1087,7 +1311,7 @@ function PreviousWorksSection({
   );
 
   const addWorkImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (workImages.length < 8 && e.target.files && e.target.files.length > 0) {
+    if (e.target.files && e.target.files.length > 0) {
       const newImage = e.target.files[0];
       const updatedImages = [...workImages, newImage];
       setWorkImages(updatedImages);

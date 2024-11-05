@@ -2,7 +2,7 @@
 import { UserAuth } from "@/types/UserAuth";
 import { createFileRoute, useMatch, useNavigate } from "@tanstack/react-router";
 import { MapPin, Globe, User } from "lucide-react";
-import { Hourglass, GenderIntersex } from "phosphor-react";
+import { Hourglass, GenderIntersex, Image } from "phosphor-react";
 import { useEffect, useState } from "react";
 import SocialNetworks from "@/types/SocialNetworks";
 import pb from "@/lib/pb";
@@ -160,10 +160,12 @@ function InfluencerProfilePage() {
         <img
           src={pb.getFileUrl(influencer, influencer.background_img)}
           alt="Cover Image"
-          className="w-full max-w-full h-64 object-cover mx-auto" // Styling from A
+          className="w-full max-w-full h-64 object-cover mx-auto"
         />
       ) : (
-        <div className="w-full h-64 bg-[#10438F]" /> // Fallback background color from A
+        <div className="w-full h-64 bg-[#10438F] flex items-center justify-center">
+          <Image color="#fff" size={40} />
+        </div>
       )}
 
       <div className="px-2 sm-medium:px-4">
@@ -173,7 +175,7 @@ function InfluencerProfilePage() {
             <img
               src={pb.getFileUrl(influencer, influencer.profile_img)}
               alt={influencer.full_name}
-              className="w-20 h-20 rounded-[100%] object-cover" // Styling from A
+              className="w-20 h-20 rounded-[100%] object-cover" 
             />
           ) : (
             <div className="w-20 h-20 rounded-[100%] bg-gray-300 flex items-center justify-center">
