@@ -11,7 +11,7 @@ export const HeroSection: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-16 flex flex-col md:flex-row items-center justify-between bg-white">
+    <section className="py-16 flex flex-col md:flex-row gap-8 items-center justify-between mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl px-4">
       <div className="flex-1 space-y-4">
         <h1 className="text-4xl font-bold">
           Conexão digital entre marcas e influenciadores

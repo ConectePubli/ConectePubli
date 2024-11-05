@@ -1,22 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UserAuth } from "@/types/UserAuth";
 import { createFileRoute, useMatch, useNavigate } from "@tanstack/react-router";
 import { MapPin, Globe, User } from "lucide-react";
-import {
-  InstagramLogo,
-  TiktokLogo,
-  FacebookLogo,
-  Hourglass,
-  GenderIntersex,
-  Image,
-  Tag,
-} from "phosphor-react";
+import { Hourglass, GenderIntersex } from "phosphor-react";
 import { useEffect, useState } from "react";
-
+import SocialNetworks from "@/types/SocialNetworks";
 import pb from "@/lib/pb";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/ui/Spinner";
 import { Influencer } from "@/types/Influencer";
 import { Niche } from "@/types/Niche";
+import MegaphoneIcon from "@/assets/icons/megaphone.svg";
+import LocationPin from "@/assets/icons/location-pin.svg";
+import EditIcon from "@/assets/icons/edit.svg";
+import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
+import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/"
@@ -158,223 +156,228 @@ function InfluencerProfilePage() {
   }
 
   return (
-    <div>
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <div className="relative">
-          {influencer.background_img ? (
-            <img
-              src={pb.getFileUrl(influencer, influencer.background_img)}
-              alt="Cover Image"
-              className="w-full h-48 object-cover"
-            />
-          ) : (
-            <div className="w-full h-48 bg-gray-300 flex items-center-justify-center">
-              <Image size={40} color="#fff" />
-            </div>
-          )}
+    <div className="flex p-0 flex-col">
+      {/* COVER IMAGE */}
+      <img
+        src={
+          influencer.background_img
+            ? pb.getFileUrl(influencer, influencer.background_img)
+            : BackgroundPlaceholder
+        }
+        alt="Cover Image"
+        className="w-full max-w-full h-64 object-cover mx-auto"
+      />
 
-          {influencer.profile_img ? (
-            <div className="absolute left-6 bottom-0 transform translate-y-1/2">
+      <div className="px-2 sm-medium:px-4">
+        {/* PROFILE IMAGE */}
+        <div className="flex flex-row items-center mt-4">
+          <img
+            src={
+              influencer.profile_img
+                ? pb.getFileUrl(influencer, influencer.profile_img)
+                : ProfilePlaceholder
+            }
+            alt={influencer.full_name || "Profile Image"}
+            className="w-20 h-20 rounded-[100%] object-cover"
+          />
+
+          {/* BASIC INFO */}
+          <div className="ml-3">
+            <p className="text-gray-500 text-sm font-bold flex flex-row items-center">
               <img
-                src={pb.getFileUrl(influencer, influencer.profile_img)}
-                alt={influencer.full_name}
-                className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
-              />
-            </div>
-          ) : (
-            <div className="absolute left-6 bottom-0 transform translate-y-1/2 bg-gray-300 flex items-center justify-center">
-              <User color="#fff" size={20} />
-            </div>
-          )}
+                src={MegaphoneIcon}
+                alt="company icon"
+                className="w-3 h-3 mr-1"
+              />{" "}
+              Influencer
+            </p>
+            <h1 className="text-xl font-bold break-words break-all">
+              {influencer.name || "..."}
+            </h1>
+          </div>
         </div>
 
-        <div className="px-6 py-12">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h2 className="text-2xl font-medium mb-2">{influencer.name} </h2>
-              <p className="text-sm text-orange-500 flex items-center mb-1">
-                <MapPin className="inline-block w-4 h-4 text-orange-500 mr-1" />
-                {influencer.city}, {influencer.state}, {influencer.country}{" "}
-              </p>
-              <p className="text-sm text-gray-600 flex items-center">
-                <Tag className="mr-1 w-4 h-4" /> {influencer.account_type}{" "}
-              </p>
-            </div>
-            <div className="flex space-x-2">
-              {influencer.instagram_url && (
-                <a
-                  href={influencer.instagram_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <button className="bg-blue-600 text-white px-3 py-1 rounded-full hover:bg-blue-700 transition flex items-center">
-                    <InstagramLogo className="inline-block w-5 h-5 mr-1" />{" "}
-                    Instagram
-                  </button>
-                </a>
-              )}
-              {influencer.tiktok_url && (
-                <a
-                  href={influencer.tiktok_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <button className="bg-gray-900 text-white px-3 py-1 rounded-full hover:bg-gray-800 transition">
-                    <TiktokLogo className="inline-block w-5 h-5" /> Tiktok
-                  </button>
-                </a>
-              )}
-              {influencer.facebook_url && (
-                <a
-                  href={influencer.facebook_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <button className="bg-blue-500 text-white px-3 py-1 rounded-full hover:bg-blue-600 transition">
-                    <FacebookLogo className="inline-block w-5 h-5" /> Facebook
-                  </button>
-                </a>
-              )}
-            </div>
-          </div>
+        {/* TYPE */}
+        {influencer.account_type && (
+          <p className="text-gray-500 text-sm font-bold flex flex-row items-center">
+            <img
+              src={CompanyIcon}
+              alt="company icon"
+              className="w-3 h-3 mr-1"
+            />{" "}
+            {influencer.account_type}
+          </p>
+        )}
 
-          <div className="flex justify-between mb-4">
-            {influencer.media_kit_url && (
+        {/* LOCATION */}
+        {(influencer.city || influencer.state || influencer.country) && (
+          <div className="flex flex-row items-center mt-3">
+            <img
+              src={LocationPin}
+              alt="location pin"
+              className="w-5 h-5 mr-1"
+            />
+            <p className="text-orange-600 font-bold text-md truncate max-w-xs">
+              {[influencer.city, influencer.state, influencer.country]
+                .filter(Boolean)
+                .join(", ")}
+            </p>
+          </div>
+        )}
+
+        {/* SOCIAL LINKS */}
+        <div className="flex flex-wrap gap-2 mt-2 sm-medium:gap-2">
+          {SocialNetworks.map((network) => {
+            const url = network.url(influencer as any);
+            if (!url) return null;
+
+            return (
               <a
-                href={influencer.media_kit_url}
+                key={network.name}
+                href={url}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="flex items-center border border-[#10438F] text-[#10438F] px-2 py-1 text-sm sm-medium:text-base rounded-md font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200 sm-medium:px-3 sm-medium:py-2 sm-medium:text-md"
               >
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
-                  Acessar mídia kit
-                </button>
+                <img
+                  src={network.icon}
+                  alt={`Ícone do ${network.name}`}
+                  className="w-4 h-4 mr-1 sm-medium:w-5 sm-medium:h-5 sm-medium:mr-2"
+                />
+                {network.name}
               </a>
-            )}
+            );
+          })}
+        </div>
 
-            {userLogged?.model.id.includes(influencer.id) && (
-              <button
-                className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-200 transition"
-                onClick={() =>
-                  navigate({ to: `/influenciador/${username}/editar` })
-                }
-              >
-                Editar Perfil
+        <div className="flex gap-3 flex-wrap items-center">
+          {/* MEDIA KIT LINK */}
+          {influencer.media_kit_url && (
+            <a
+              href={influencer.media_kit_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
+                Acessar mídia kit
               </button>
-            )}
-          </div>
+            </a>
+          )}
 
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Biografia</h3>
-
-            <div className="flex items-center gap-4 flex-wrap mb-1">
-              <p className="text-sm text-gray-600 font-medium flex items-center">
-                <MapPin className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
-                {influencer.country}, {influencer.state}
-              </p>
-              <p className="text-sm text-gray-600 font-medium flex items-center">
-                <Globe className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
-                Idioma:{" "}
-                {influencer.languages && influencer.languages.length > 0
-                  ? influencer.languages.join(", ")
-                  : "N/A"}{" "}
-              </p>
-              <p className="text-sm text-gray-600 font-medium  flex items-center">
-                <Hourglass className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
-                Idade: {calculateAge(influencer.birth_date)}
-              </p>
-              <p className="text-sm text-gray-600 font-medium  flex items-center">
-                <GenderIntersex className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
-                {returnGender(influencer.gender)}
-              </p>
-            </div>
-
-            <p className="text-base text-black leading-relaxed">
-              {influencer.bio}
-            </p>
-
-            {Array.isArray(influencer.expand?.niche) &&
-              influencer.expand.niche.length > 0 && (
-                <div className="mt-4">
-                  <div className="flex flex-wrap gap-2">
-                    {influencer.expand.niche.map((niche: Niche) => (
-                      <span
-                        className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                        key={niche.id}
-                      >
-                        {niche.niche}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-            {/* <div className="mt-6">
-              <h4 className="text-lg font-semibold mb-2">Minhas Habilidades</h4>
-              <div className="flex flex-wrap gap-2">
-                {influencer.skills &&
-                  influencer.skills.map((skill, index) => (
-                    <span
-                      key={index}
-                      className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm"
-                    >
-                      {skill.name} (nota {skill.rating})
-                    </span>
-                  ))}
-              </div>
-            </div> */}
-
-            {/* <div className="mt-6">
-              <h4 className="text-lg font-semibold mb-2">
-                Marcas que já trabalhei com
-              </h4>
-            </div> */}
-
-            <div className="mt-6 border-t-2 p-2">
-              <h4 className="text-lg font-semibold mb-2">Portfólio</h4>
-              {influencer.previous_work_imgs &&
-              influencer.previous_work_imgs.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                  {influencer.previous_work_imgs.map((img, index) => (
-                    <img
-                      key={index}
-                      src={pb.getFileUrl(influencer, img)}
-                      alt={`Portfolio ${index}`}
-                      className="w-full h-[500px] rounded-md object-cover"
-                    />
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500">Nenhuma imagem no portfólio.</p>
-              )}
-            </div>
-
-            {/* <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-2">FAQ</h3>
-              <div>
-                {faqs.map((faq, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-100 mb-2 p-4 rounded-lg cursor-pointer"
-                    onClick={() => toggleFAQ(index)}
-                  >
-                    <div className="flex justify-between items-center">
-                      <p className="text-sm font-semibold">{faq.question}</p>
-                      <ChevronDown
-                        className={`transition-transform duration-300 ${
-                          openFAQ === index ? "transform rotate-180" : ""
-                        }`}
-                      />
-                    </div>
-                    {openFAQ === index && (
-                      <p className="text-sm mt-2 text-gray-600">{faq.answer}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div> */}
-          </div>
+          {/* EDIT BUTTON */}
+          {userLogged?.model.id.includes(influencer.id) && (
+            <button
+              className="text-white font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-lg shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
+              onClick={() =>
+                navigate({ to: `/influenciador/${username}/editar` })
+              }
+            >
+              <img
+                src={EditIcon}
+                alt="company icon"
+                className="w-4 h-4 text-white fill-current"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+              Editar Perfil
+            </button>
+          )}
         </div>
       </div>
+
+      <hr className="border my-4" />
+
+      <div className="px-2 sm-medium:px-4">
+        <h3 className="text-lg font-semibold mb-2">Biografia</h3>
+
+        <div className="flex items-center gap-4 flex-wrap mb-1">
+          {/* COUNTRY AND STATE */}
+          {(influencer.country || influencer.state) && (
+            <p className="text-sm text-gray-600 font-medium flex items-center">
+              <MapPin className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
+              {influencer.country}
+              {influencer.state ? `, ${influencer.state}` : ""}
+            </p>
+          )}
+
+          {/* LANGUAGES */}
+          {influencer.languages && influencer.languages.length > 0 && (
+            <p className="text-sm text-gray-600 font-medium flex items-center">
+              <Globe className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
+              Idioma: {influencer.languages.join(", ")}
+            </p>
+          )}
+
+          {/* AGE */}
+          {influencer.birth_date && (
+            <p className="text-sm text-gray-600 font-medium flex items-center">
+              <Hourglass className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
+              Idade: {calculateAge(influencer.birth_date)}
+            </p>
+          )}
+
+          {/* GENDER */}
+          {influencer.gender && (
+            <p className="text-sm text-gray-600 font-medium flex items-center">
+              <GenderIntersex className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
+              {returnGender(influencer.gender)}
+            </p>
+          )}
+        </div>
+
+        {/* BIO */}
+        {influencer.bio ? (
+          <p className="text-base text-black leading-relaxed">
+            {influencer.bio}
+          </p>
+        ) : (
+          <p className="text-gray-500">
+            Este usuário ainda não adicionou uma biografia.
+          </p>
+        )}
+
+        {/* HASHTAGS */}
+        {Array.isArray(influencer.expand?.niche) &&
+          influencer.expand.niche.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {influencer.expand.niche.map((niche: Niche, index) => (
+                <button
+                  key={index}
+                  className="bg-[#10438F] cursor-default text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200"
+                  title={niche.niche}
+                >
+                  <span>#{niche.niche}</span>
+                </button>
+              ))}
+            </div>
+          )}
+      </div>
+
+      <hr className="border my-4" />
+
+      <div className="px-2 sm-medium:px-4">
+        <h4 className="text-lg font-semibold mb-2">Portfólio</h4>
+        {/* PORTFOLIO IMAGES */}
+        {influencer.previous_work_imgs &&
+        influencer.previous_work_imgs.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            {influencer.previous_work_imgs.map((img, index) => (
+              <img
+                key={index}
+                src={pb.getFileUrl(influencer, img)}
+                alt={`Portfolio ${index}`}
+                className="w-full h-[500px] rounded-md object-cover"
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">
+            Este usuário ainda não adicionou nenhum trabalho ao portfólio.
+          </p>
+        )}{" "}
+        {/* No fallback message */}
+      </div>
+
+      <div className="mt-12" />
     </div>
   );
 }
