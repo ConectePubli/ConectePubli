@@ -90,7 +90,7 @@ const Sheet = () => {
                 className="flex items-center gap-2"
               >
                 <Folder className="w-6 h-6" />
-                Minhas Participações
+                Minhas Campanhas
               </Link>
             </Button>
           </li>
