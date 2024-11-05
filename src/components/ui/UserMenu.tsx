@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +27,6 @@ export function UserMenu() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const userName = pb.authStore.model?.username;
-  const userLetter = pb.authStore.model?.username?.charAt(0).toUpperCase();
 
   const handleLogout = () => {
     setOpen(false);
@@ -42,7 +41,7 @@ export function UserMenu() {
             <AvatarImage
               src={
                 pb.authStore.model?.profile_img
-                  ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model.collectionName}/${pb.authStore.model.id}/${pb.authStore.model.profile_img}?thumb=40x40`
+                  ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model?.collectionName}/${pb.authStore.model?.id}/${pb.authStore.model?.profile_img}?thumb=40x40`
                   : ProfilePlaceholder
               }
               alt="Avatar"
@@ -52,7 +51,8 @@ export function UserMenu() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mr-8">
           <p className="px-4 py-2 text-sm text-muted-foreground">
-            Olá{pb.authStore.model?.name ? `, ${pb.authStore.model.name}!` : "!"}
+            Olá
+            {pb.authStore.model?.name ? `, ${pb.authStore.model?.name}!` : "!"}
           </p>
           <DropdownMenuItem
             onSelect={() => {
