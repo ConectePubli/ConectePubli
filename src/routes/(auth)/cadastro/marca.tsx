@@ -132,6 +132,7 @@ function Page() {
                   htmlFor="email"
                 >
                   E-mail de Contato
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
