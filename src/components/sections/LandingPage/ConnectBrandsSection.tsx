@@ -2,8 +2,8 @@ import React from "react";
 
 export const ConnectBrandsSection: React.FC = () => {
   return (
-    <section className="bg-blue-900 py-12 w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
-      <div className="container mx-auto text-center">
+    <section className="bg-blue-900 py-12 relative">
+      <div className="container mx-auto text-center mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl px-4">
         <h2 className="text-3xl font-bold text-white mb-6">
           Conectamos Marcas
         </h2>
