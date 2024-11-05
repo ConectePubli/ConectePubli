@@ -1,91 +1,91 @@
-import { useState, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import CampaignCard from "@/components/ui/CampaignCard";
-import Spinner from "@/components/ui/Spinner";
-import { CampaignParticipation } from "@/types/Campaign_Participations";
-import { Campaign } from "@/types/Campaign";
-import pb from "@/lib/pb";
-import { UserAuth } from "@/types/UserAuth";
-import { Filter } from "lucide-react";
-import { getUserType } from "@/lib/auth";
+import { useState, useEffect } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import CampaignCard from '@/components/ui/CampaignCard'
+import Spinner from '@/components/ui/Spinner'
+import { CampaignParticipation } from '@/types/Campaign_Participations'
+import { Campaign } from '@/types/Campaign'
+import pb from '@/lib/pb'
+import { UserAuth } from '@/types/UserAuth'
+import { Filter } from 'lucide-react'
+import { getUserType } from '@/lib/auth'
 
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/dashboard-influencer/"
+  '/(dashboard)/_side-nav-dashboard/dashboard-influenciador/',
 )({
   component: Page,
   beforeLoad: async () => {
-    const userType = await getUserType();
+    const userType = await getUserType()
 
     if (!userType) {
       throw redirect({
-        to: "/login123new",
-      });
-    } else if (userType !== "Influencers") {
+        to: '/login123new',
+      })
+    } else if (userType !== 'Influencers') {
       throw redirect({
-        to: "/dashboard",
-      });
+        to: '/dashboard',
+      })
     }
   },
-});
+})
 
 function Page() {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [campaigns, setCampaigns] = useState<CampaignParticipation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [campaigns, setCampaigns] = useState<CampaignParticipation[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const fetchCampaignParticipations = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
 
     const user: UserAuth = JSON.parse(
-      localStorage.getItem("pocketbase_auth") as string
-    );
+      localStorage.getItem('pocketbase_auth') as string,
+    )
 
     const records = await pb
-      .collection("Campaigns_Participations")
+      .collection('Campaigns_Participations')
       .getFullList<CampaignParticipation>({
         filter: `Influencer="${user.model.id}"`,
-        expand: "Campaign,Influencer",
-      });
+        expand: 'Campaign,Influencer',
+      })
 
-    setCampaigns(records);
-    setIsLoading(false);
-  };
+    setCampaigns(records)
+    setIsLoading(false)
+  }
 
   const { mutate: getCampaigns } = useMutation({
     mutationFn: async () => {
-      await fetchCampaignParticipations();
+      await fetchCampaignParticipations()
     },
     onError: () => {
-      setCampaigns([]);
-      setIsLoading(false);
+      setCampaigns([])
+      setIsLoading(false)
     },
-  });
+  })
 
   useEffect(() => {
-    getCampaigns();
+    getCampaigns()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   // filter campaigns
   const filteredCampaigns = campaigns.filter((participation) => {
-    const campaign = participation.expand.Campaign as Campaign;
+    const campaign = participation.expand.Campaign as Campaign
     const matchesSearch = campaign.name
       .toLowerCase()
-      .includes(search.toLowerCase());
+      .includes(search.toLowerCase())
     const matchesStatus =
-      statusFilter === "" || participation.status === statusFilter;
+      statusFilter === '' || participation.status === statusFilter
     const matchesType =
-      typeFilter === "" || campaign.objective?.toLowerCase() === typeFilter;
+      typeFilter === '' || campaign.objective?.toLowerCase() === typeFilter
 
-    return matchesSearch && matchesStatus && matchesType;
-  });
+    return matchesSearch && matchesStatus && matchesType
+  })
 
   // control when user filter data
   const hasFiltersApplied =
-    search !== "" || statusFilter !== "" || typeFilter !== "";
+    search !== '' || statusFilter !== '' || typeFilter !== ''
 
   return (
     <div className="mx-auto py-6">
@@ -169,9 +169,9 @@ function Page() {
                 </p>
                 <button
                   onClick={() => {
-                    setSearch("");
-                    setStatusFilter("");
-                    setTypeFilter("");
+                    setSearch('')
+                    setStatusFilter('')
+                    setTypeFilter('')
                   }}
                   className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
                 >
@@ -186,7 +186,7 @@ function Page() {
                 </p>
                 <button
                   onClick={() => {
-                    console.log("to do");
+                    console.log('to do')
                   }}
                   className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
                 >
@@ -209,7 +209,7 @@ function Page() {
         </>
       )}
     </div>
-  );
+  )
 }
 
-export default Page;
+export default Page

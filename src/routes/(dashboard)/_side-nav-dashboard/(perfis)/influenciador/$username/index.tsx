@@ -1,15 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { UserAuth } from "@/types/UserAuth";
 import { createFileRoute, useMatch, useNavigate } from "@tanstack/react-router";
 import { MapPin, Globe, User } from "lucide-react";
-import {
-  InstagramLogo,
-  TiktokLogo,
-  FacebookLogo,
-  Hourglass,
-  GenderIntersex,
-  Image,
-  Tag,
-} from "phosphor-react";
+import { Hourglass, GenderIntersex } from "phosphor-react";
 import { useEffect, useState } from "react";
 import SocialNetworks from "@/types/SocialNetworks";
 import pb from "@/lib/pb";
@@ -24,7 +17,7 @@ import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/",
+  "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/"
 )({
   component: InfluencerProfilePage,
 });
@@ -54,7 +47,7 @@ function InfluencerProfilePage() {
 
   const getUserInfo = async () => {
     const user: UserAuth = JSON.parse(
-      localStorage.getItem("pocketbase_auth") as string,
+      localStorage.getItem("pocketbase_auth") as string
     );
 
     setUserLogged(user);
@@ -235,7 +228,7 @@ function InfluencerProfilePage() {
         {/* SOCIAL LINKS */}
         <div className="flex flex-wrap gap-2 mt-2 sm-medium:gap-2">
           {SocialNetworks.map((network) => {
-            const url = network.url(influencer);
+            const url = network.url(influencer as any);
             if (!url) return null;
 
             return (
