@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -40,12 +40,12 @@ export function UserMenu() {
           <Avatar>
             <AvatarImage
               src={
-                pb.authStore.model?.profile_img
-                  ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model?.collectionName}/${pb.authStore.model?.id}/${pb.authStore.model?.profile_img}?thumb=40x40`
+                pb.authStore?.model?.profile_img
+                  ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore?.model?.collectionName}/${pb.authStore?.model?.id}/${pb.authStore?.model?.profile_img}`
                   : ProfilePlaceholder
               }
               alt="Avatar"
-              className="cursor-pointer"
+              className="cursor-pointer bg-black object-cover"
             />
           </Avatar>
         </DropdownMenuTrigger>
