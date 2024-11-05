@@ -200,8 +200,8 @@ function Page() {
               </Button>
 
               <div className="text-left">
-                <p className="text-sm">
-                  Já tem uma conta?{" "}
+                <p className="text-sm hidden">
+                  Já tem uma conta? (opção escondidade até o pós lançamento){" "}
                   <a href="/login" className="text-customLinkBlue underline">
                     Faça login
                   </a>
