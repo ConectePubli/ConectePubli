@@ -15,9 +15,11 @@ import { ClientResponseError } from "pocketbase";
 import SocialNetworks from "@/types/SocialNetworks";
 import { Brand } from "@/types/Brand";
 import { Campaign } from "@/types/Campaign";
+import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
+import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
+  "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/",
 )({
   loader: async ({ params: { userName } }) => {
     try {
@@ -74,30 +76,30 @@ function Page() {
 
   return (
     <div className="flex p-0 flex-col">
-      {brand?.cover_img ? (
-        <img
-          src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.cover_img}`}
-          alt="capa"
-          className="w-full max-w-full h-64 object-cover mx-auto"
-        />
-      ) : (
-        <div className="w-full h-64 bg-[#10438F]" />
-      )}
+      <img
+        src={
+          brand.cover_img
+            ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.cover_img}`
+            : BackgroundPlaceholder
+        }
+        alt="capa"
+        className="w-full max-w-full h-64 object-cover mx-auto"
+      />
 
       <div>
         {/* BASIC INFO*/}
         <div className="flex flex-row items-center px-4 mt-4">
-          {brand?.profile_img ? (
-            <img
-              src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.profile_img}`}
-              alt="avatar"
-              draggable={false}
-              className="w-20 h-20 rounded-md object-cover"
-            />
-          ) : (
-            <div className="w-20 h-20 rounded-md bg-orange-600" />
-          )}
-
+          <img
+            src={
+              brand?.profile_img
+                ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.profile_img}`
+                : ProfilePlaceholder
+            }
+            alt="avatar"
+            draggable={false}
+            className="w-20 h-20 rounded-md object-cover"
+          />
+          
           <div className="ml-3">
             <p className="text-gray-500 text-sm font-bold flex flex-row items-center">
               <img
