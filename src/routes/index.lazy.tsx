@@ -20,7 +20,7 @@ function Index() {
   const navigate = useNavigate();
 
   return (
-    <div className="container px-10 max-sm:px-5 overflow-hidden">
+    <div className="overflow-hidden">
       <HeroSection />
 
       {/*  <BrandsSection /> */}

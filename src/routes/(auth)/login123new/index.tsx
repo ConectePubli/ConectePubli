@@ -128,27 +128,35 @@ function Page() {
             com marcas e influenciadores.
           </p>
 
-          <div className="flex justify-center mb-6">
-            <button
-              className={`px-4 py-2 text-sm font-semibold ${
-                loginType === "brand"
-                  ? "border-b-2 border-blue-600 text-customLinkBlue"
-                  : "text-gray-600"
-              }`}
-              onClick={() => setLoginType("brand")}
-            >
-              Marca
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-semibold ml-4 ${
-                loginType === "influencer"
-                  ? "border-b-2 border-blue-600 text-customLinkBlue"
-                  : "text-gray-600"
-              }`}
-              onClick={() => setLoginType("influencer")}
-            >
-              Influenciador
-            </button>
+          <div className="mb-6">
+            <div className="flex">
+              <button
+                className={`px-4 py-2 text-sm font-semibold ${
+                  loginType === "brand"
+                    ? "border-b-2 border-blue-600 text-customLinkBlue"
+                    : "text-gray-600"
+                }`}
+                onClick={() => setLoginType("brand")}
+              >
+                Marca
+              </button>
+              <button
+                className={`px-4 py-2 text-sm font-semibold ml-4 ${
+                  loginType === "influencer"
+                    ? "border-b-2 border-blue-600 text-customLinkBlue"
+                    : "text-gray-600"
+                }`}
+                onClick={() => setLoginType("influencer")}
+              >
+                Influenciador
+              </button>
+            </div>
+            <p className="text-sm text-gray-500 mt-4">
+              Lembrete: Certifique-se de selecionar a opção correta (<strong>Marca</strong> ou <strong>Influenciador</strong>).
+              Se você se pré-cadastrou como <strong>Marca</strong>, precisa
+              selecionar essa opção para acessar sua conta; o mesmo vale para{" "}
+              <strong>Influenciadores</strong>.
+            </p>
           </div>
 
           <form className="space-y-6" onSubmit={handleLogin}>
@@ -167,6 +175,13 @@ function Page() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Informe o e-mail"
               />
+
+              {/* Helper Text for Pre-registered Users */}
+              <p className="text-sm text-gray-500 mt-2">
+                Para usuários pré-cadastrados: Ao inserir seu e-mail, será
+                necessário criar uma senha nesta etapa. Caso já tenha completado
+                este processo, entre com a senha existente.
+              </p>
             </div>
 
             <div>

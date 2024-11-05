@@ -66,8 +66,8 @@ function Page() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-2xl font-bold text-center mb-4">
-              Bem-vindo, {name}!
+            <h2 className="text-2xl font-bold text-center mb-4 break-words">
+              Bem-vindo{ name ? `, ${name}` : "" }!
             </h2>
             <p className="text-gray-600 text-center mb-6">
               Seu cadastro foi realizado com sucesso. Em breve liberaremos o
@@ -123,6 +123,7 @@ function Page() {
                   onChange={(e) => setName(e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Digite o nome da sua marca ou empresa"
+                  maxLength={50}
                 />
               </div>
 
@@ -132,6 +133,7 @@ function Page() {
                   htmlFor="email"
                 >
                   E-mail de Contato
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -199,8 +201,8 @@ function Page() {
               </Button>
 
               <div className="text-left">
-                <p className="text-sm">
-                  Já tem uma conta?{" "}
+                <p className="text-sm hidden">
+                  Já tem uma conta? (opção escondidade até o pós lançamento){" "}
                   <a href="/login" className="text-customLinkBlue underline">
                     Faça login
                   </a>

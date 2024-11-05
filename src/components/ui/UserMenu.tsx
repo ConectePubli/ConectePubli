@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,12 +21,12 @@ import {
 import { useRouter } from "@tanstack/react-router";
 import pb from "@/lib/pb";
 import { LayoutDashboard } from "lucide-react";
+import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const userName = pb.authStore.model?.username;
-  const userLetter = pb.authStore.model?.username?.charAt(0).toUpperCase();
 
   const handleLogout = () => {
     setOpen(false);
@@ -38,29 +38,21 @@ export function UserMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar>
-            {pb.authStore.model?.profile_img && (
-              <>
-                <AvatarImage
-                  src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore.model?.collectionName}/${pb.authStore.model?.id}/${pb.authStore.model?.profile_img}?thumb=40x40`}
-                  alt="Avatar"
-                  className="cursor-pointer"
-                />
-                <AvatarFallback className="cursor-pointer">
-                  {userLetter}
-                </AvatarFallback>
-              </>
-            )}
-
-            {!pb.authStore.model?.profile_img && (
-              <AvatarFallback className="cursor-pointer">
-                {userLetter}
-              </AvatarFallback>
-            )}
+            <AvatarImage
+              src={
+                pb.authStore?.model?.profile_img
+                  ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${pb.authStore?.model?.collectionName}/${pb.authStore?.model?.id}/${pb.authStore?.model?.profile_img}`
+                  : ProfilePlaceholder
+              }
+              alt="Avatar"
+              className="cursor-pointer bg-black object-cover"
+            />
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mr-8">
           <p className="px-4 py-2 text-sm text-muted-foreground">
-            Olá, {pb.authStore.model?.username}!
+            Olá
+            {pb.authStore.model?.name ? `, ${pb.authStore.model?.name}!` : "!"}
           </p>
           <DropdownMenuItem
             onSelect={() => {
@@ -70,7 +62,7 @@ export function UserMenu() {
                 });
               }
             }}
-            className="hover:bg-black"
+            className="hover:bg-black cursor-pointer"
           >
             <LayoutDashboard className="mr-2 inline-block h-5 w-5" />
             Dashboard
@@ -83,7 +75,7 @@ export function UserMenu() {
                 });
               }
             }}
-            className="hover:bg-black"
+            className="hover:bg-black cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +94,7 @@ export function UserMenu() {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={() => setOpen(true)}
-            className="text-black"
+            className="text-black cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
