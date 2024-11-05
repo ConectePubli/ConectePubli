@@ -78,7 +78,7 @@ function Page() {
         <img
           src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.cover_img}`}
           alt="capa"
-          className="w-full max-w-full h-64 object-cover bg-[#10438F] mx-auto"
+          className="w-full max-w-full h-64 object-cover mx-auto"
         />
       ) : (
         <div className="w-full h-64 bg-[#10438F]" />
@@ -92,7 +92,7 @@ function Page() {
               src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${brand.collectionName}/${brand.id}/${brand.profile_img}`}
               alt="avatar"
               draggable={false}
-              className="w-20 h-20 rounded-md bg-orange-600 object-cover"
+              className="w-20 h-20 rounded-md object-cover"
             />
           ) : (
             <div className="w-20 h-20 rounded-md bg-orange-600" />
