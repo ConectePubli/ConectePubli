@@ -66,7 +66,7 @@ function Page() {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-2xl font-bold text-center mb-4">
+            <h2 className="text-2xl font-bold text-center mb-4 break-words">
               Bem-vindo{ name ? `, ${name}` : "" }!
             </h2>
 
@@ -126,6 +126,7 @@ function Page() {
                   onChange={(e) => setName(e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Digite o seu nome completo"
+                  maxLength={50}
                 />
               </div>
 
