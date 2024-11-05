@@ -19,7 +19,7 @@ import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/",
+  "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
 )({
   loader: async ({ params: { userName } }) => {
     try {
@@ -99,7 +99,7 @@ function Page() {
             draggable={false}
             className="w-20 h-20 rounded-md object-cover"
           />
-          
+
           <div className="ml-3">
             <p className="text-gray-500 text-sm font-bold flex flex-row items-center">
               <img
@@ -185,7 +185,7 @@ function Page() {
 
         {/* CAMPANHAS*/}
         <div className="mt-2 w-full max-w-[99dvw]">
-          <CampaignSlider campaigns={[]} />
+          <CampaignSlider campaigns={campaigns} />
         </div>
 
         <div className="border mt-5 mb-4" />
