@@ -1,64 +1,49 @@
-import { useState, useEffect } from 'react'
-import { useMutation } from '@tanstack/react-query'
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import CampaignCard from '@/components/ui/CampaignCard'
-import Spinner from '@/components/ui/Spinner'
-import MultiCampaignFilter from '@/components/ui/MultiCampaignFilter'
-import { Campaign } from '@/types/Campaign'
-import pb from '@/lib/pb'
-import { getUserType } from '@/lib/auth'
+import { useEffect, useState } from 'react';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import CampaignCard from '@/components/ui/CampaignCard';
+import Spinner from '@/components/ui/Spinner';
+import MultiCampaignFilter from '@/components/ui/MultiCampaignFilter';
+import { useCampaignStore } from '@/store/useCampaignStore';
+import { getUserType } from '@/lib/auth';
+import Pagination from "@/components/ui/Pagination";
 
 export const Route = createFileRoute(
   '/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/',
 )({
   component: Page,
   beforeLoad: async () => {
-    const userType = await getUserType()
+    const userType = await getUserType();
 
     if (!userType) {
-      throw redirect({
-        to: '/login123new',
-      })
+      throw redirect({ to: '/login123new' });
     } else if (userType !== 'Influencers') {
-      throw redirect({
-        to: '/dashboard',
-      })
+      throw redirect({ to: '/dashboard' });
     }
   },
-})
+});
 
 function Page() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([])
-  const [filteredCampaigns, setFilteredCampaigns] = useState<Campaign[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const {
+    fetchAllCampaigns,
+    campaigns,
+    isLoading,
+    error,
+    page,
+    totalPages,
+    setPage,
+  } = useCampaignStore();
 
-  const fetchAllCampaigns = async () => {
-    setIsLoading(true)
+  const [filteredCampaigns, setFilteredCampaigns] = useState(campaigns);
 
-    const records = await pb
-      .collection('Campaigns')
-      .getFullList<Campaign>({
-        expand: 'Influencer',
-      })
-
-    setCampaigns(records)
-    setIsLoading(false)
-  }
-
-  const { mutate: getCampaigns } = useMutation({
-    mutationFn: async () => {
-      await fetchAllCampaigns()
-    },
-    onError: () => {
-      setCampaigns([])
-      setIsLoading(false)
-    },
-  })
-
+  // Fetch campaigns on load and when `page` changes
   useEffect(() => {
-    getCampaigns()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    fetchAllCampaigns();
+  }, [fetchAllCampaigns, page]);
+
+  // Update filteredCampaigns whenever campaigns change
+  useEffect(() => {
+    setFilteredCampaigns(campaigns);
+  }, [campaigns]);
 
   return (
     <div className="mx-auto py-6 px-4">
@@ -67,6 +52,7 @@ function Page() {
         Explore todas as campanhas disponíveis e inscreva-se nas que mais combinam com o seu perfil.
       </p>
 
+      {/* MultiCampaignFilter receives campaigns and updates filteredCampaigns */}
       <MultiCampaignFilter
         campaigns={campaigns}
         onFilter={setFilteredCampaigns}
@@ -75,18 +61,22 @@ function Page() {
         showCanalFilter={true}
       />
 
+      {/* Loading and error states */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center my-10">
           <Spinner />
           <p className="mt-2 text-gray-600">Carregando...</p>
         </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center my-10">
+          <p className="text-center text-red-600">Erro ao carregar campanhas: {error}</p>
+        </div>
       ) : (
         <>
+          {/* Render filtered campaigns or a message if none are available */}
           {filteredCampaigns.length === 0 ? (
             <div className="flex flex-col items-center justify-center my-10">
-              <p className="text-center text-gray-700 text-base">
-                Não há campanhas disponíveis no momento.
-              </p>
+              <p className="text-center text-gray-700 text-base">Não há campanhas disponíveis no momento.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -97,8 +87,11 @@ function Page() {
           )}
         </>
       )}
+
+      {/* Pagination */}
+      <Pagination page={page} totalPages={totalPages} setPage={setPage} />
     </div>
-  )
+  );
 }
 
-export default Page
+export default Page;

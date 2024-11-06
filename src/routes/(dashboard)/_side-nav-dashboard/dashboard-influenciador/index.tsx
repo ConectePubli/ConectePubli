@@ -1,18 +1,20 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import CampaignCard from '@/components/ui/CampaignCard';
-import Spinner from '@/components/ui/Spinner';
-import { CampaignParticipation } from '@/types/Campaign_Participations';
-import { Campaign } from '@/types/Campaign';
-import pb from '@/lib/pb';
-import { UserAuth } from '@/types/UserAuth';
-import MultiCampaignFilter from '@/components/ui/MultiCampaignFilter';
-import { getUserType } from '@/lib/auth';
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import CampaignCard from "@/components/ui/CampaignCard";
+import Spinner from "@/components/ui/Spinner";
+import { CampaignParticipation } from "@/types/Campaign_Participations";
+import { Campaign } from "@/types/Campaign";
+import pb from "@/lib/pb";
+import { UserAuth } from "@/types/UserAuth";
+import MultiCampaignFilter from "@/components/ui/MultiCampaignFilter";
+import { getUserType } from "@/lib/auth";
+import Pagination from "@/components/ui/Pagination";
+import { useCampaignStore } from "@/store/useCampaignStore";
 
 // Route creation
 export const Route = createFileRoute(
-  '/(dashboard)/_side-nav-dashboard/dashboard-influenciador/'
+  "/(dashboard)/_side-nav-dashboard/dashboard-influenciador/",
 )({
   component: Page,
   beforeLoad: async () => {
@@ -20,76 +22,38 @@ export const Route = createFileRoute(
 
     if (!userType) {
       throw redirect({
-        to: '/login123new',
+        to: "/login123new",
       });
-    } else if (userType !== 'Influencers') {
+    } else if (userType !== "Influencers") {
       throw redirect({
-        to: '/dashboard',
+        to: "/dashboard",
       });
     }
   },
 });
 
 function Page() {
-  const [campaigns, setCampaigns] = useState<CampaignParticipation[]>([]);
-  const [filteredCampaigns, setFilteredCampaigns] = useState<CampaignParticipation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    fetchParticipatingCampaigns,
+    campaigns,
+    isLoading,
+    error,
+    page,
+    totalPages,
+    setPage,
+  } = useCampaignStore();
 
-  // Fetch campaigns from API
-  const fetchCampaignParticipations = async () => {
-    setIsLoading(true);
+  const [filteredCampaigns, setFilteredCampaigns] = useState(campaigns);
 
-    const user: UserAuth = JSON.parse(
-      localStorage.getItem('pocketbase_auth') as string
-    );
-
-    const records = await pb
-      .collection('Campaigns_Participations')
-      .getFullList<CampaignParticipation>({
-        filter: `Influencer="${user.model.id}"`,
-        expand: 'Campaign,Influencer',
-      });
-
-    setCampaigns(records);
-    setIsLoading(false);
-  };
-
-  // Mutation to trigger the fetch function
-  const { mutate: getCampaigns } = useMutation({
-    mutationFn: async () => {
-      await fetchCampaignParticipations();
-    },
-    onError: () => {
-      setCampaigns([]);
-      setIsLoading(false);
-    },
-  });
-
-  // Run the fetch function once on mount
+  // Fetch campaigns on load and when `page` changes
   useEffect(() => {
-    getCampaigns();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchParticipatingCampaigns();
+  }, [fetchParticipatingCampaigns, page]);
 
-  // Memoize the transformed campaigns array to avoid recreating it on every render
-  const transformedCampaigns = useMemo(() => {
-    return campaigns.map((participation) => ({
-      ...participation.expand.Campaign,
-      participantStatus: participation.status, // Add participant status
-    }));
+  // Update filteredCampaigns whenever campaigns change
+  useEffect(() => {
+    setFilteredCampaigns(campaigns);
   }, [campaigns]);
-
-  // Memoize the onFilter function to avoid recreating it on every render
-  const handleFilter = useCallback(
-    (filteredCampaigns) => {
-      setFilteredCampaigns(
-        campaigns.filter((participation) =>
-          filteredCampaigns.some((fc) => fc.id === (participation.expand.Campaign as Campaign).id)
-        )
-      );
-    },
-    [campaigns]
-  );
 
   return (
     <div className="mx-auto py-6 px-4">
@@ -101,8 +65,8 @@ function Page() {
 
       {/* Pass memoized data and functions to MultiCampaignFilter */}
       <MultiCampaignFilter
-        campaigns={transformedCampaigns} // Use memoized campaigns
-        onFilter={handleFilter}          // Use memoized onFilter function
+        campaigns={campaigns}
+        onFilter={setFilteredCampaigns}
         showStatusFilter={true}
         showNichoFilter={false}
         showCanalFilter={false}
@@ -124,7 +88,7 @@ function Page() {
               </p>
               <button
                 onClick={() => {
-                  console.log('to do');
+                  console.log("to do");
                 }}
                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
               >
@@ -133,18 +97,16 @@ function Page() {
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredCampaigns.map((participation) => (
-                <CampaignCard
-                  key={participation.id}
-                  campaign={participation.expand.Campaign as Campaign}
-                  participationStatus={participation.status}
-                  fromMyCampaigns={true}
-                />
+              {filteredCampaigns.map((campaign) => (
+                <CampaignCard key={campaign.id} campaign={campaign} />
               ))}
             </div>
           )}
         </>
       )}
+
+      {/* Pagination */}
+      <Pagination page={page} totalPages={totalPages} setPage={setPage} />
     </div>
   );
 }
