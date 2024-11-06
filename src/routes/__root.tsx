@@ -49,11 +49,11 @@ function LoadingBar({
       delayTimerId.current = setTimeout(() => {
         if (isLoading) {
           setShowBar(true);
-          setProgress(10); // Começa a barra de carregamento com 10%
+          setProgress(10);
 
           intervalId.current = setInterval(() => {
             setProgress((prev) => {
-              if (prev < 90) return prev + 1; // Incrementa até 90%
+              if (prev < 90) return prev + 1;
               return prev;
             });
           }, 100);
@@ -64,7 +64,7 @@ function LoadingBar({
       clearInterval(intervalId.current);
       if (showBar) {
         setProgress(100);
-        setTimeout(() => setShowBar(false), 300); // Remove a barra após 300ms
+        setTimeout(() => setShowBar(false), 300);
       }
     }
 
