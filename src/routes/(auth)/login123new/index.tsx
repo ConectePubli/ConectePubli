@@ -5,6 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import pb from "@/lib/pb";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import logo from "@/assets/logo.svg";
 
 import loginImage from "@/assets/login.svg";
 
@@ -111,17 +113,19 @@ function Page() {
   };
 
   return (
-    <div className="h-[calc(100vh-66px)] flex lg:flex-row flex-col overflow-hidden">
-      <div className="hidden lg:block lg:w-[40%] overflow-hidden">
-        <img
-          src={loginImage}
-          alt="Login Image"
-          className="w-full h-full object-cover object-center"
-        />
-      </div>
+    <div className="grid lg:grid-cols-2 overflow-hidden items-center min-h-screen">
+      <div
+        className="hidden lg:block w-full h-full bg-cover bg-center"
+        style={{ backgroundImage: `url(${loginImage})` }}
+      ></div>
 
-      <div className="w-full lg:w-[60%] flex flex-col items-center bg-white py-8 px-12 lg:py-7 overflow-y-auto max-sm:px-5">
-        <div className="w-full max-w-lg">
+
+      <div className="w-full flex flex-col items-center overflow-y-auto px-4 py-6 lg:p-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2x">
+        <div className="w-full">
+          <Link to="/" className="mb-8 block w-fit">
+            <img src={logo} alt="ConectePubli" className="h-7" />
+          </Link>
+
           <h2 className="text-3xl font-bold mb-4">Bem-vindo de volta!</h2>
           <p className="text-gray-600 mb-6">
             Conecte-se à sua conta e continue construindo parcerias estratégicas
