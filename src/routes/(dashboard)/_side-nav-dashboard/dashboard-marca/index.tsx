@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import FilterSection from "@/components/ui/FilterSectionCampaign";
+import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
 import CampaignsTable from "@/components/ui/CampaignsTable";
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { getUserType } from "@/lib/auth";
+import Pagination from "@/components/ui/Pagination";
 
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/dashboard-marca/"
+  "/(dashboard)/_side-nav-dashboard/dashboard-marca/",
 )({
   component: Page,
   beforeLoad: async () => {
@@ -37,17 +38,6 @@ function Page() {
     setPage,
   } = useCampaignStore();
 
-  const handlePreviousPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
   useEffect(() => {
     fetchCampaigns();
   }, [fetchCampaigns, statusFilter, campaignGoalFilter, searchTerm, page]);
@@ -64,46 +54,16 @@ function Page() {
           console.log("IR PARA TELA DE CRIAR CAMPANHA");
         }}
       >
-        <Plus className="mr-2" /> Criar Campanha
+        <Plus className="mr-2" />Criar Campanha
       </Button>
 
-      <FilterSection />
+      <BrandCampaignFilter />
 
       <div className="mt-6 w-full overflow-x-auto max-w-[90vw] sm-plus:max-w-[calc(90vw)] md:max-w-[calc(90vw-12rem)] lg:max-w-[calc(100dvw)]">
         <CampaignsTable />
       </div>
-      <div className="flex justify-between items-center mt-4">
-        <button
-          onClick={handlePreviousPage}
-          disabled={page === 1 || page === 0}
-          className={`flex items-center px-4 py-2 rounded-lg ${
-            page === 1
-              ? "bg-gray-200 cursor-not-allowed"
-              : "bg-[#10438F] text-white"
-          }`}
-        >
-          <ChevronLeft className="h-5 w-5" />
-          Anterior
-        </button>
-        <div className="flex items-center flex-row gap-1">
-          <p className="hidden sm-plus:block">Página </p>
-          <span>
-            {totalPages === 0 ? 0 : page} de {totalPages}
-          </span>
-        </div>
-        <button
-          onClick={handleNextPage}
-          disabled={page === totalPages || page === 0 || totalPages === 0}
-          className={`flex items-center px-4 py-2 rounded-lg ${
-            page === totalPages
-              ? "bg-gray-200 cursor-not-allowed"
-              : "bg-[#10438F] text-white"
-          }`}
-        >
-          Próxima
-          <ChevronRight className="h-5 w-5" />
-        </button>
-      </div>
+
+      <Pagination page={page} totalPages={totalPages} setPage={setPage} />
     </div>
   );
 }
