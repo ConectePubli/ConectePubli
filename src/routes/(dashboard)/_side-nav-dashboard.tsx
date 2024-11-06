@@ -13,7 +13,7 @@ export function SideNavDashboard() {
   return (
     <div className="flex min-h-screen">
       {/* Desktop Sidebar */}
-      <nav className="hidden md:block w-64 bg-white p-4 shadow-lg">
+      <nav className="hidden md:block w-64 bg-white p-4 border-r-[1px]">
         <ul className="space-y-4">
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
