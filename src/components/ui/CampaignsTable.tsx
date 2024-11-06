@@ -4,6 +4,8 @@ import { format } from "date-fns";
 const CampaignsTable: React.FC = () => {
   const { campaigns, isLoading, error } = useCampaignStore();
 
+  console.log(campaigns)
+
   return (
     <div>
       <table className="w-full bg-white rounded-t-lg border-collapse">
