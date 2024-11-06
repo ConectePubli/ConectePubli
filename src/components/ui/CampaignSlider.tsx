@@ -141,7 +141,7 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-2 max-w-[98vw]">
+      <div className="flex justify-between items-center mb-2 max-w-[97vw]">
         <p className="text-lg font-bold pl-4">Campanhas</p>
         <div className="flex items-center gap-4 px-4 select-none">
           <button
@@ -169,7 +169,7 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
 
       {campaigns.length > 0 && (
         <div
-          className="flex overflow-x-scroll scrollbar-hide active:cursor-grabbing"
+          className="flex overflow-x-scroll scrollbar-hide active:cursor-grabbing md:max-w-[calc(100vw-271px)]"
           ref={sliderRef}
           onPointerDown={handlePointerDown}
         >

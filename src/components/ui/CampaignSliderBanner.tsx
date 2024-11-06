@@ -1,4 +1,3 @@
-// src/components/ui/CampaignSliderBanner.tsx
 import React from "react";
 import { User } from "lucide-react";
 import InstagramIcon from "@/assets/icons/brands/instagram.svg";
@@ -51,7 +50,7 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             {campaign.description}
           </p>
 
-          <div className="flex flex-col md:flex-row md:flex-wrap gap-0 md:gap-4">
+          <div className="flex flex-col md:flex-row md:flex-wrap gap-0 md:gap-4 justify-between">
             <div className="flex flex-row items-center mt-3 gap-2">
               <img
                 src={InstagramIcon}
