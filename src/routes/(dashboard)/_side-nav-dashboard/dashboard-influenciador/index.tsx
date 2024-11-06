@@ -7,7 +7,6 @@ import { CampaignParticipation } from '@/types/Campaign_Participations'
 import { Campaign } from '@/types/Campaign'
 import pb from '@/lib/pb'
 import { UserAuth } from '@/types/UserAuth'
-import { Filter } from 'lucide-react'
 import { getUserType } from '@/lib/auth'
 
 export const Route = createFileRoute(
@@ -95,12 +94,7 @@ function Page() {
         participações.
       </p>
 
-      <div className="bg-gray-100 p-4 rounded-lg mb-6">
-        <div className="flex items-center mb-2">
-          <Filter size={18} className="mr-1" />
-          <p className="text-base font-medium">Filtro</p>
-        </div>
-
+      <div className="mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="w-full">
             <label htmlFor="search" className="sr-only">

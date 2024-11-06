@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { List, Search, ChevronDown } from "lucide-react";
+import { Search, ChevronDown } from "lucide-react";
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { CampaignGoalFilter, StatusFilter } from "@/types/Filters";
 import debounce from "lodash.debounce";
@@ -27,12 +27,7 @@ const FilterSectionCampaign: React.FC = () => {
   };
 
   return (
-    <div className="pt-4 pb-5 px-6 bg-gray-100 rounded-lg mx-auto border border-gray-400 mt-5">
-      <div className="flex items-center space-x-2">
-        <List color="#10438F" />
-        <h2 className="text-lg font-bold justify-center">Filtro</h2>
-      </div>
-
+    <div className="mx-auto mt-5">
       <div className="mt-4 space-y-4 lg:space-y-0 lg:flex lg:space-x-4">
         {/* Campo de Pesquisa */}
         <div className="relative w-full lg:flex-[4]">
