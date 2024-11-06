@@ -59,7 +59,7 @@ export function SideNavDashboard() {
       </nav>
 
       {/* Main Content */}
-      <main className="md:ml-64">
+      <main className="md:ml-64 w-full">
         <Outlet />
       </main>
       <Sheet /> {/* Mobile Sidebar */}
