@@ -31,7 +31,7 @@ export function SideNavDashboard() {
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link
-                to="/dashboard/settings"
+                to="/vitrine-de-campanhas"
                 className="flex items-center gap-2"
               >
                 <LayoutGrid className="w-6 h-6" />
