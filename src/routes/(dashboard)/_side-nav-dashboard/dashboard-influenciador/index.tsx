@@ -1,12 +1,7 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import CampaignCard from "@/components/ui/CampaignCard";
 import Spinner from "@/components/ui/Spinner";
-import { CampaignParticipation } from "@/types/Campaign_Participations";
-import { Campaign } from "@/types/Campaign";
-import pb from "@/lib/pb";
-import { UserAuth } from "@/types/UserAuth";
 import MultiCampaignFilter from "@/components/ui/MultiCampaignFilter";
 import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
@@ -78,6 +73,10 @@ function Page() {
           <Spinner />
           <p className="mt-2 text-gray-600">Carregando...</p>
         </div>
+      ) : error ? (
+          <p className="text-red-500">
+            {error}
+          </p>
       ) : (
         <>
           {filteredCampaigns.length === 0 ? (

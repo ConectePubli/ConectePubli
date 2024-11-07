@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
 import CampaignsTable from "@/components/ui/CampaignsTable";
 import { useCampaignStore } from "@/store/useCampaignStore";

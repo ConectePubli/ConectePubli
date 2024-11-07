@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { List, Search, ChevronDown } from "lucide-react";
+import { Search } from "lucide-react";
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { CampaignGoalFilter, StatusFilter } from "@/types/Filters";
 import debounce from "lodash.debounce";
