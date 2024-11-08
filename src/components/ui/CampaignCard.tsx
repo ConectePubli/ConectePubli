@@ -94,14 +94,15 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
           {/* Social Network Icons */}
           <div className="flex flex-wrap gap-2">
-            {SocialNetworks.map((network) => (
-              <img
-                key={network.name}
-                src={network.icon}
-                alt={`Ícone do ${network.name}`}
-                className="w-4 h-4"
-              />
-            ))}
+            {SocialNetworks.filter((network) => campaign.channels.includes(network.name))
+              .map((network) => (
+                <img
+                  key={network.name}
+                  src={network.icon}
+                  alt={`Icon for ${network.name}`}
+                  className="w-4 h-4"
+                />
+              ))}
           </div>
 
           {/* Date */}
