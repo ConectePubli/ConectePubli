@@ -13,8 +13,8 @@ export function SideNavDashboard() {
   return (
     <div className="flex min-h-screen">
       {/* Desktop Sidebar */}
-      <nav className="hidden md:block w-64 bg-white p-4 shadow-lg">
-        <ul className="space-y-4">
+      <nav className="md:w-64 hidden md:block bg-white border-r border-gray-200 fixed h-full">
+        <ul className="space-y-4 p-4">
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link
@@ -31,7 +31,7 @@ export function SideNavDashboard() {
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link
-                to="/dashboard/settings"
+                to="/vitrine-de-campanhas"
                 className="flex items-center gap-2"
               >
                 <LayoutGrid className="w-6 h-6" />
@@ -57,8 +57,9 @@ export function SideNavDashboard() {
           </li>
         </ul>
       </nav>
+
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="md:ml-64 w-full">
         <Outlet />
       </main>
       <Sheet /> {/* Mobile Sidebar */}

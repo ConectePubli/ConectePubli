@@ -53,7 +53,7 @@ export const HeroSection: React.FC = () => {
         <img
           src={heroImage}
           alt="Pessoa gravando um podcast"
-          className="rounded-lg shadow-lg max-w-full"
+          className="rounded-lg shadow-lg max-w-full w-full"
         />
       </div>
     </section>

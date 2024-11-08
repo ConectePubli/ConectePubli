@@ -3,6 +3,7 @@ import { Campaign } from "@/types/Campaign";
 import { Calendar, User, Tag } from "lucide-react";
 import { Coins, Image } from "phosphor-react";
 import pb from "@/lib/pb";
+import SocialNetworks from "@/types/SocialNetworks";
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -50,13 +51,14 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 
   return (
     <div className="flex flex-col md:flex-row bg-white rounded-lg border-2 h-auto">
-      <div className="w-full md:w-[30%] h-[200px] md:h-[260px]">
+      <div className="w-full hidden md:block md:w-[32%] h-auto">
         {campaign.cover_img ? (
-          <img
-            src={pb.getFileUrl(campaign, campaign.cover_img)}
-            alt={campaign.name}
-            className="w-full h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
-          />
+          <div
+            className="w-full h-full bg-cover bg-center rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
+            style={{
+              backgroundImage: `url(${pb.getFileUrl(campaign, campaign.cover_img)})`,
+            }}
+          ></div>
         ) : (
           <div className="w-full h-full bg-gray-300 flex items-center justify-center rounded-t-lg md:rounded-l-lg md:rounded-tr-none">
             <Image color="#fff" size={40} />
@@ -73,42 +75,69 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             </span>
           </div>
         </div>
+
         <h3 className="text-lg font-bold">{campaign.name}</h3>
 
-        <p className="text-gray-700 mb-3">
-          {campaign.description && campaign.description.length > 250
-            ? `${campaign.description.slice(0, 250)}...`
-            : campaign.description}
+        <p
+          className="text-gray-700 mb-3"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {campaign.description}
         </p>
 
-        <div className="flex justify-end items-center mb-2">
-          <div className="flex items-center gap-2 text-gray-500">
-            <Calendar className="w-5 h-5" />
-            {`${beginningDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`}
+        <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+          {/* Social Network Icons */}
+          <div className="flex flex-wrap gap-2">
+            {SocialNetworks.filter((network) => campaign.channels.includes(network.name))
+              .map((network) => (
+                <img
+                  key={network.name}
+                  src={network.icon}
+                  alt={`Icon for ${network.name}`}
+                  className="w-4 h-4"
+                />
+              ))}
+          </div>
+
+          {/* Date */}
+          <div className="flex justify-end items-center">
+            <div className="flex items-center gap-2 text-gray-500">
+              <Calendar className="w-4 h-4" />
+              {`${beginningDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`}
+            </div>
           </div>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-t-2 pt-2">
-          <div className="flex items-center mb-2 md:mb-0">
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-purple-600 font-semibold">
               <Coins className="w-5 h-5" />
               {`R$${campaign.price}`}/pessoa
             </div>
 
             {!fromMyCampaigns && (
-              <div className="ml-0 md:ml-4 flex items-center gap-2 text-gray-500">
+              <div className="flex items-center gap-2 text-gray-500">
                 <User className="w-5 h-5" />
                 {campaign.open_jobs ?? 0} vagas abertas
               </div>
             )}
           </div>
 
-          <span
-            className="font-semibold"
-            style={{ color: getStatusColor(participationStatus) }}
-          >
-            Status: {readTextStatus(participationStatus)}
-          </span>
+          {/* Only render status if participationStatus is provided */}
+          {participationStatus && (
+            <span
+              className="font-semibold"
+              style={{ color: getStatusColor(participationStatus) }}
+            >
+              Status: {readTextStatus(participationStatus)}
+            </span>
+          )}
         </div>
       </div>
     </div>

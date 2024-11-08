@@ -1,4 +1,3 @@
-// src/components/ui/CampaignSliderBanner.tsx
 import React from "react";
 import { User } from "lucide-react";
 import InstagramIcon from "@/assets/icons/brands/instagram.svg";
@@ -8,6 +7,7 @@ import TagIcon from "@/assets/icons/tag.svg";
 import CoinsIcon from "@/assets/icons/coins.svg";
 import { format } from "date-fns";
 import { Campaign } from "@/types/Campaign";
+import CoverPlaceholder from "@/assets/background-placeholder.webp";
 interface CampaignSliderBannerProps {
   campaign: Campaign;
   isFirst: boolean;
@@ -23,15 +23,21 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
       className={`flex-shrink-0 w-72 sm-medium:w-80 sm-plus:w-96 sm:w-9/12 h-auto mt-1 mr-4 select-none hover:cursor-pointer bg-white ${
         isFirst ? "ml-4" : ""
       }`}
+      id={isFirst ? "first-campaign-banner" : undefined}
     >
       <div className="flex flex-row w-full border border-gray-400 rounded-lg">
         <img
-          src={campaign.cover_img}
+          src={
+            campaign.cover_img
+              ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${campaign.collectionName}/${campaign.id}/${campaign.cover_img}`
+              : CoverPlaceholder
+          }
           alt="campaign"
           draggable={false}
           className="w-[375px] h-[272px] object-cover hidden xl:block rounded-l-lg select-none"
         />
-        <div className="flex flex-col p-4 w-full">
+
+        <div className="flex flex-col p-4 w-full h-[272px]">
           <p className="text-[12px] font-bold flex flex-row items-center text-[#052759]">
             <img src={TagIcon} alt="Edit" className="w-3 h-3 mr-1" />
             {campaign.objective}
@@ -44,7 +50,7 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             {campaign.description}
           </p>
 
-          <div className="flex flex-col md:flex-row md:flex-wrap gap-0 md:gap-4">
+          <div className="flex flex-col md:flex-row md:flex-wrap gap-0 md:gap-4 justify-between">
             <div className="flex flex-row items-center mt-3 gap-2">
               <img
                 src={InstagramIcon}
@@ -87,7 +93,8 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             </p>
 
             <p className="font-semibold flex flex-row items-center">
-              <User className="mr-2" size={16} />4 vagas abertas
+              <User className="mr-2" size={16} />
+              {campaign.vagasRestantes} vagas abertas
             </p>
           </div>
         </div>
