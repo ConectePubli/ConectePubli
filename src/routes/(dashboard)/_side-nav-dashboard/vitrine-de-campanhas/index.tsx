@@ -6,6 +6,7 @@ import MultiCampaignFilter from '@/components/ui/MultiCampaignFilter';
 import { useCampaignStore } from '@/store/useCampaignStore';
 import { getUserType } from '@/lib/auth';
 import Pagination from "@/components/ui/Pagination";
+import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
 
 export const Route = createFileRoute(
   '/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/',
@@ -25,6 +26,10 @@ export const Route = createFileRoute(
 function Page() {
   const {
     fetchAllCampaigns,
+    campaignGoalFilter,
+    searchTerm,
+    channelFilter,
+    nicheFilter,
     campaigns,
     isLoading,
     error,
@@ -33,17 +38,9 @@ function Page() {
     setPage,
   } = useCampaignStore();
 
-  const [filteredCampaigns, setFilteredCampaigns] = useState(campaigns);
-
-  // Fetch campaigns on load and when `page` changes
   useEffect(() => {
     fetchAllCampaigns();
-  }, [fetchAllCampaigns, page]);
-
-  // Update filteredCampaigns whenever campaigns change
-  useEffect(() => {
-    setFilteredCampaigns(campaigns);
-  }, [campaigns]);
+  }, [fetchAllCampaigns, campaignGoalFilter, searchTerm, channelFilter, nicheFilter, page]);
 
   return (
     <div className="mx-auto py-6 px-4">
@@ -52,13 +49,12 @@ function Page() {
         Explore todas as campanhas disponíveis e inscreva-se nas que mais combinam com o seu perfil.
       </p>
 
-      {/* MultiCampaignFilter receives campaigns and updates filteredCampaigns */}
-      <MultiCampaignFilter
-        campaigns={campaigns}
-        onFilter={setFilteredCampaigns}
-        showStatusFilter={false}
-        showNichoFilter={true}
-        showCanalFilter={true}
+      <BrandCampaignFilter
+        showSearch={true}
+        showCampaignGoal={true}
+        showStatus={false}
+        showNiche={true}
+        showChannel={true}
       />
 
       {/* Loading and error states */}
@@ -74,13 +70,13 @@ function Page() {
       ) : (
         <>
           {/* Render filtered campaigns or a message if none are available */}
-          {filteredCampaigns.length === 0 ? (
+          {campaigns.length === 0 ? (
             <div className="flex flex-col items-center justify-center my-10">
               <p className="text-center text-gray-700 text-base">Não há campanhas disponíveis no momento.</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredCampaigns.map((campaign) => (
+              {campaigns.map((campaign) => (
                 <CampaignCard key={campaign.id} campaign={campaign} />
               ))}
             </div>
