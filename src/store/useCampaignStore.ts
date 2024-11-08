@@ -1,6 +1,11 @@
 import pb from "@/lib/pb";
 import { Campaign } from "@/types/Campaign";
-import { CampaignGoalFilter, StatusFilter } from "@/types/Filters";
+import {
+  CampaignGoalFilter,
+  StatusFilter,
+  ChannelFilter,
+  NicheFilter,
+} from "@/types/Filters";
 import { create } from "zustand";
 
 const ITEMS_PER_PAGE = 5;
@@ -8,6 +13,8 @@ const DEFAULT_ERROR_MESSAGE = "Erro ao buscar campanhas";
 const DEFAULT_FILTERS = {
   statusFilter: StatusFilter.All,
   campaignGoalFilter: CampaignGoalFilter.All,
+  channelFilter: ChannelFilter.All,
+  nicheFilter: NicheFilter.All,
   searchTerm: "",
   page: 1,
   totalPages: 1,
@@ -17,6 +24,8 @@ interface CampaignState {
   campaigns: Campaign[];
   statusFilter: StatusFilter;
   campaignGoalFilter: CampaignGoalFilter;
+  channelFilter: ChannelFilter;
+  nicheFilter: NicheFilter;
   searchTerm: string;
   page: number;
   totalPages: number;
@@ -25,6 +34,8 @@ interface CampaignState {
   setCampaigns: (campaigns: Campaign[]) => void;
   setStatusFilter: (status: StatusFilter) => void;
   setCampaignGoalFilter: (goal: CampaignGoalFilter) => void;
+  setChannelFilter: (channel: ChannelFilter) => void;
+  setNicheFilter: (channel: NicheFilter) => void;
   setSearchTerm: (term: string) => void;
   setPage: (page: number) => void;
   setTotalPages: (totalPages: number) => void;
@@ -33,7 +44,8 @@ interface CampaignState {
   fetchParticipatingCampaigns: () => Promise<void>;
 }
 
-const generateFilterString = (filters: string[]): string => filters.join(" && ");
+const generateFilterString = (filters: string[]): string =>
+  filters.join(" && ");
 
 export const useCampaignStore = create<CampaignState>((set, get) => ({
   ...DEFAULT_FILTERS,
@@ -44,6 +56,8 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
   setCampaigns: (campaigns) => set({ campaigns }),
   setStatusFilter: (statusFilter) => set({ statusFilter }),
   setCampaignGoalFilter: (campaignGoalFilter) => set({ campaignGoalFilter }),
+  setChannelFilter: (channelFilter) => set({ channelFilter }),
+  setNicheFilter: (nicheFilter) => set({ nicheFilter }),
   setSearchTerm: (searchTerm) => set({ searchTerm }),
   setPage: (page) => set({ page }),
   setTotalPages: (totalPages) => set({ totalPages }),
@@ -71,14 +85,16 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       }
 
       if (statusFilter) filters.push(`status = "${statusFilter}"`);
-      if (campaignGoalFilter) filters.push(`objective = "${campaignGoalFilter}"`);
+      if (campaignGoalFilter)
+        filters.push(`objective = "${campaignGoalFilter}"`);
       if (searchTerm) filters.push(`name ~ "${searchTerm}"`);
 
-      const result = await pb.collection("campaigns").getList<Campaign>(page, ITEMS_PER_PAGE, {
-        filter: generateFilterString(filters),
-        expand: "campaigns_participations_via_Campaign",
-        sort: "-created",
-      });
+      const result = await pb
+        .collection("campaigns")
+        .getList<Campaign>(page, ITEMS_PER_PAGE, {
+          filter: generateFilterString(filters),
+          sort: "-created",
+        });
 
       setCampaigns(result.items);
       setTotalPages(result.totalPages);
@@ -94,9 +110,10 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
   // Fetch all campaigns without filtering by brand
   fetchAllCampaigns: async () => {
     const {
-      statusFilter,
       campaignGoalFilter,
       searchTerm,
+      channelFilter,
+      nicheFilter,
       page,
       setCampaigns,
       setTotalPages,
@@ -106,15 +123,18 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
     try {
       const filters: string[] = [];
-      if (statusFilter) filters.push(`status = "${statusFilter}"`);
-      if (campaignGoalFilter) filters.push(`objective = "${campaignGoalFilter}"`);
+      if (campaignGoalFilter)
+        filters.push(`objective = "${campaignGoalFilter}"`);
       if (searchTerm) filters.push(`name ~ "${searchTerm}"`);
+      if (channelFilter) filters.push(`channels ~ "${channelFilter}"`);
+      if (nicheFilter) filters.push(`niche ~ "${nicheFilter}"`);
 
-      const result = await pb.collection("campaigns").getList<Campaign>(page, ITEMS_PER_PAGE, {
-        filter: generateFilterString(filters),
-        expand: "campaigns_participations_via_Campaign",
-        sort: "-created",
-      });
+      const result = await pb
+        .collection("campaigns")
+        .getList<Campaign>(page, ITEMS_PER_PAGE, {
+          filter: generateFilterString(filters),
+          sort: "-created",
+        });
 
       setCampaigns(result.items);
       setTotalPages(result.totalPages);
@@ -127,10 +147,9 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
     }
   },
 
-  // Fetch only campaigns where the influencer is participating
+  // Fetch campaigns the influencer is participating on
   fetchParticipatingCampaigns: async () => {
     const {
-      statusFilter,
       campaignGoalFilter,
       searchTerm,
       page,
@@ -142,30 +161,33 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
     try {
       const filters: string[] = [];
+
       const currentInfluencerId = pb.authStore.model?.id;
       if (currentInfluencerId) {
-        filters.push(`Influencer = "${currentInfluencerId}"`);
+        filters.push(`influencer = "${currentInfluencerId}"`);
       } else {
         throw new Error("Influencer ID not found in authentication.");
       }
 
-      if (statusFilter) filters.push(`status = "${statusFilter}"`);
-      if (campaignGoalFilter) filters.push(`objective = "${campaignGoalFilter}"`);
+      if (campaignGoalFilter)
+        filters.push(`objective = "${campaignGoalFilter}"`);
       if (searchTerm) filters.push(`name ~ "${searchTerm}"`);
 
-      const result = await pb.collection("Campaigns_Participations").getList<Campaign>(page, ITEMS_PER_PAGE, {
-        filter: generateFilterString(filters),
-        expand: "Campaign,Influencer",
-        sort: "-created",
-      });
+      const participationsResult = await pb
+        .collection("Campaigns_Participations")
+        .getList(page, ITEMS_PER_PAGE, {
+          filter: generateFilterString(filters),
+          expand: "campaign",
+          sort: "-created",
+        });
 
-      const participatingCampaigns = result.items.map((participation) => ({
-        ...participation.expand.Campaign,
-        participantStatus: participation.status,
+      const mergedCampaigns = participationsResult.items.map((item) => ({
+        ...item.expand.campaign,
+        participantStatus: item.status,
       }));
 
-      setCampaigns(participatingCampaigns);
-      setTotalPages(result.totalPages);
+      setCampaigns(mergedCampaigns);
+      setTotalPages(participationsResult.totalPages);
       set({ isLoading: false });
     } catch (error) {
       set({
