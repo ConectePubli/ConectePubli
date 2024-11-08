@@ -1,82 +1,81 @@
-import { useState, useEffect } from 'react'
-import { Campaign } from '@/types/Campaign'
+import { useState, useEffect, useCallback } from "react";
+import debounce from "lodash.debounce";
+import { Campaign } from "@/types/Campaign";
+import { useCampaignStore } from "@/store/useCampaignStore";
+import SocialNetworks from "@/types/SocialNetworks";
 
 interface MultiCampaignFilterProps {
-  campaigns: Campaign[]
-  onFilter: (filteredCampaigns: Campaign[]) => void
-  showStatusFilter?: boolean // Controls visibility of status filter
-  showNichoFilter?: boolean  // Controls visibility of nicho filter
-  showCanalFilter?: boolean  // Controls visibility of canal filter
+  showStatusFilter?: boolean;
+  showNichoFilter?: boolean;
+  showCanalFilter?: boolean;
 }
 
 export default function MultiCampaignFilter({
-  campaigns,
-  onFilter,
   showStatusFilter = false,
   showNichoFilter = false,
   showCanalFilter = false,
 }: MultiCampaignFilterProps) {
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [typeFilter, setTypeFilter] = useState('')
-  const [nichoFilter, setNichoFilter] = useState('')
-  const [canalFilter, setCanalFilter] = useState('')
+  const {
+    statusFilter,
+    setStatusFilter,
+    campaignGoalFilter,
+    setCampaignGoalFilter,
+    setPage,
+    setSearchTerm,
+    fetchCampaignNiches,
+  } = useCampaignStore();
+
+  const [nichoFilter, setNichoFilter] = useState("");
+  const [canalFilter, setCanalFilter] = useState("");
+  const [nicheOptions, setNicheOptions] = useState([]);
+  const channelOptions = SocialNetworks.map((network) => network.name);
+
+  const debouncedSetSearchTerm = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value);
+      setPage(1);
+    }, 500),
+    []
+  );
 
   useEffect(() => {
-    const filteredCampaigns = campaigns.filter((campaign) => {
-      const matchesSearch = campaign.name
-        .toLowerCase()
-        .includes(search.toLowerCase());
-      const matchesStatus =
-        !showStatusFilter || statusFilter === '' || campaign.participantStatus === statusFilter;
-      const matchesType =
-        typeFilter === '' || campaign.objective?.toLowerCase() === typeFilter;
-      const matchesNicho =
-        nichoFilter === '' || campaign.nicho?.toLowerCase().includes(nichoFilter.toLowerCase());
-      const matchesCanal =
-        canalFilter === '' || campaign.canal?.toLowerCase().includes(canalFilter.toLowerCase());
+    const loadNiches = async () => {
+      const niches = await fetchCampaignNiches();
+      setNicheOptions(niches);
+    };
+    loadNiches();
+  }, [fetchCampaignNiches]);
 
-      return matchesSearch && matchesStatus && matchesType && matchesNicho && matchesCanal;
-    });
-
-    onFilter(filteredCampaigns);
-  }, [
-    search,
-    statusFilter,
-    typeFilter,
-    nichoFilter,
-    canalFilter,
-    campaigns,
-    onFilter,
-    showStatusFilter,
-  ]);
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    debouncedSetSearchTerm(e.target.value);
+  };
 
   return (
     <div className="mb-6">
       <div className="flex flex-col lg:flex-row gap-4">
+        {/* Search Field */}
         <div className="w-full flex flex-col gap-2">
-          <label htmlFor="search" className="">
-            Pesquisar
-          </label>
+          <label htmlFor="search">Pesquisar</label>
           <input
             type="text"
             id="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
             placeholder="Pesquisar pelo nome da campanha"
+            onChange={handleSearchTermChange}
             className="w-full p-2 border border-gray-300 rounded-lg"
           />
         </div>
 
         <div className="flex flex-col md:flex-row w-full gap-4">
+          {/* Campaign Goal Filter */}
           <div className="w-full flex flex-col gap-2">
-            <label htmlFor="type" className="">
-              Categoria
-            </label>
+            <label htmlFor="type">Categoria</label>
             <select
               id="type"
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
+              value={campaignGoalFilter}
+              onChange={(e) => {
+                setCampaignGoalFilter(e.target.value as CampaignGoalFilter);
+                setPage(1);
+              }}
               className="w-full p-2 border border-gray-300 rounded-lg"
             >
               <option value="">Todos</option>
@@ -85,16 +84,17 @@ export default function MultiCampaignFilter({
             </select>
           </div>
 
-          {/* Conditionally render status filter */}
+          {/* Status Filter */}
           {showStatusFilter && (
             <div className="w-full flex flex-col gap-2">
-              <label htmlFor="status" className="">
-                Status da campanha
-              </label>
+              <label htmlFor="status">Status da campanha</label>
               <select
                 id="status"
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value as StatusFilter);
+                  setPage(1);
+                }}
                 className="w-full p-2 border border-gray-300 rounded-lg"
               >
                 <option value="">Todos</option>
@@ -106,41 +106,47 @@ export default function MultiCampaignFilter({
             </div>
           )}
 
-          {/* Conditionally render nicho filter */}
+          {/* Nicho Filter */}
           {showNichoFilter && (
             <div className="w-full flex flex-col gap-2">
-              <label htmlFor="nicho" className="">
-                Nicho
-              </label>
-              <input
-                type="text"
+              <label htmlFor="nicho">Nicho</label>
+              <select
                 id="nicho"
                 value={nichoFilter}
                 onChange={(e) => setNichoFilter(e.target.value)}
-                placeholder="Filtrar por Nicho"
                 className="w-full p-2 border border-gray-300 rounded-lg"
-              />
+              >
+                <option value="">Todos</option>
+                {nicheOptions.map((niche) => (
+                  <option key={niche.id} value={niche.id}>
+                    {niche.name}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
-          {/* Conditionally render canal filter */}
+          {/* Canal Filter */}
           {showCanalFilter && (
             <div className="w-full flex flex-col gap-2">
-              <label htmlFor="canal" className="">
-                Canal
-              </label>
-              <input
-                type="text"
+              <label htmlFor="canal">Canal</label>
+              <select
                 id="canal"
                 value={canalFilter}
                 onChange={(e) => setCanalFilter(e.target.value)}
-                placeholder="Filtrar por Canal"
                 className="w-full p-2 border border-gray-300 rounded-lg"
-              />
+              >
+                <option value="">Todos</option>
+                {channelOptions.map((channel) => (
+                  <option key={channel} value={channel}>
+                    {channel}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
