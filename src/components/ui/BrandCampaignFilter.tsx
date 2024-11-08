@@ -6,6 +6,7 @@ import {
   StatusFilter,
   ChannelFilter,
   NicheFilter,
+  ParticipationStatusFilter
 } from "@/types/Filters";
 import debounce from "lodash.debounce";
 import SocialNetworks from "@/types/SocialNetworks";
@@ -14,6 +15,7 @@ interface BrandCampaignFilterProps {
   showSearch?: boolean;
   showCampaignGoal?: boolean;
   showStatus?: boolean;
+  showParticipationStatus?: boolean;
   showNiche?: boolean;
   showChannel?: boolean;
 }
@@ -22,6 +24,7 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
   showSearch = false,
   showCampaignGoal = false,
   showStatus = false,
+  showParticipationStatus = false,
   showNiche = false,
   showChannel = false,
 }) => {
@@ -30,6 +33,8 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
     setStatusFilter,
     campaignGoalFilter,
     setCampaignGoalFilter,
+    participationStatusFilter,
+    setParticipationStatusFilter,
     setPage,
     setSearchTerm,
     nicheFilter,
@@ -115,6 +120,28 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
                 <option value={StatusFilter.Completed}>Encerrado</option>
                 <option value={StatusFilter.In_Progress}>Em andamento</option>
                 <option value={StatusFilter.Ready}>Pronto para iniciar</option>
+              </select>
+            </div>
+          )}          
+
+          {/* Participation Status Filter */}
+          {showParticipationStatus && (
+            <div className="w-full flex flex-col gap-2">
+              <label htmlFor="participacao">Participação</label>
+              <select
+                id="participacao"
+                value={participationStatusFilter}
+                onChange={(e) => {
+                  setParticipationStatusFilter(e.target.value as ParticipationStatusFilter);
+                  setPage(1);
+                }}
+                className="w-full p-2 border border-gray-300 rounded-lg"
+              >
+                <option value={ParticipationStatusFilter.All}>Todos</option>
+                <option value={ParticipationStatusFilter.Completed}>Trabalho Concluido</option>
+                <option value={ParticipationStatusFilter.Approved}>Trabalho em Progresso</option>
+                <option value={ParticipationStatusFilter.Waiting}>Proposta Pendente</option>
+                <option value={ParticipationStatusFilter.Sold_out}>Vagas Esgotadas</option>
               </select>
             </div>
           )}

@@ -22,13 +22,13 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
   const readTextStatus = (type: string) => {
     switch (type) {
       case "waiting":
-        return "Aguardando";
+        return "Proposta Pendente";
       case "approved":
-        return "Aprovado";
+        return "Trabalho em Progresso";
       case "completed":
-        return "Concluído";
+        return "Trabalho Concluído";
       case "sold_out":
-        return "Vagas esgotadas";
+        return "Vagas Esgotadas";
       default:
         return "";
     }

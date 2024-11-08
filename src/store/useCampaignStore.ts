@@ -5,6 +5,7 @@ import {
   StatusFilter,
   ChannelFilter,
   NicheFilter,
+  ParticipationStatusFilter,
 } from "@/types/Filters";
 import { create } from "zustand";
 
@@ -22,7 +23,8 @@ const DEFAULT_FILTERS = {
 
 interface CampaignState {
   campaigns: Campaign[];
-  statusFilter: StatusFilter;
+  statusFilter: StatusFilter;  
+  participationStatusFilter: ParticipationStatusFilter;
   campaignGoalFilter: CampaignGoalFilter;
   channelFilter: ChannelFilter;
   nicheFilter: NicheFilter;
@@ -32,7 +34,8 @@ interface CampaignState {
   isLoading: boolean;
   error: string | null;
   setCampaigns: (campaigns: Campaign[]) => void;
-  setStatusFilter: (status: StatusFilter) => void;
+  setStatusFilter: (status: StatusFilter) => void;  
+  setParticipationStatusFilter: (status: ParticipationStatusFilter) => void;
   setCampaignGoalFilter: (goal: CampaignGoalFilter) => void;
   setChannelFilter: (channel: ChannelFilter) => void;
   setNicheFilter: (channel: NicheFilter) => void;
@@ -54,7 +57,8 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
   error: null,
 
   setCampaigns: (campaigns) => set({ campaigns }),
-  setStatusFilter: (statusFilter) => set({ statusFilter }),
+  setStatusFilter: (statusFilter) => set({ statusFilter }),  
+  setParticipationStatusFilter: (participationStatusFilter) => set({ participationStatusFilter }),
   setCampaignGoalFilter: (campaignGoalFilter) => set({ campaignGoalFilter }),
   setChannelFilter: (channelFilter) => set({ channelFilter }),
   setNicheFilter: (nicheFilter) => set({ nicheFilter }),
@@ -147,11 +151,12 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
     }
   },
 
-  // Fetch campaigns the influencer is participating on
+  // Fetch campaigns the influencer is participating in
   fetchParticipatingCampaigns: async () => {
     const {
       campaignGoalFilter,
       searchTerm,
+      participationStatusFilter,
       page,
       setCampaigns,
       setTotalPages,
@@ -161,8 +166,8 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
     try {
       const filters: string[] = [];
-
       const currentInfluencerId = pb.authStore.model?.id;
+
       if (currentInfluencerId) {
         filters.push(`influencer = "${currentInfluencerId}"`);
       } else {
@@ -170,8 +175,10 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       }
 
       if (campaignGoalFilter)
-        filters.push(`objective = "${campaignGoalFilter}"`);
-      if (searchTerm) filters.push(`name ~ "${searchTerm}"`);
+        filters.push(`campaign.objective ~ "${campaignGoalFilter}"`);      
+      if (participationStatusFilter)
+        filters.push(`status ~ "${participationStatusFilter}"`);
+      if (searchTerm) filters.push(`campaign.name ~ "${searchTerm}"`);
 
       const participationsResult = await pb
         .collection("Campaigns_Participations")

@@ -8,6 +8,14 @@ export enum StatusFilter {
   Pending = "pending",
 }
 
+export enum ParticipationStatusFilter {
+  All = "",
+  Completed = "completed",
+  Approved = "approved",
+  Sold_out = "sold_out",
+  Waiting = "waiting",
+}
+
 export enum CampaignGoalFilter {
   All = "",
   UGC = "UGC",

@@ -32,6 +32,7 @@ function Page() {
     fetchParticipatingCampaigns,
     campaignGoalFilter,
     searchTerm,
+    participationStatusFilter,
     campaigns,
     isLoading,
     error,
@@ -42,7 +43,7 @@ function Page() {
 
   useEffect(() => {
     fetchParticipatingCampaigns();
-  }, [fetchParticipatingCampaigns, campaignGoalFilter, searchTerm, page]);
+  }, [fetchParticipatingCampaigns, campaignGoalFilter, searchTerm, participationStatusFilter, page]);
 
   return (
     <div className="mx-auto py-6 px-4">
@@ -56,6 +57,7 @@ function Page() {
         showSearch={true}
         showCampaignGoal={true}
         showStatus={false}
+        showParticipationStatus={true}
         showNiche={false}
         showChannel={false}
       />
