@@ -18,14 +18,14 @@ export interface SocialNetwork {
 
 export const SocialNetworks: SocialNetwork[] = [
   {
-    name: "Instagram",
-    icon: InstagramIcon,
-    url: (data: Brand) => data.instagram_url,
+    name: "Twitch",
+    icon: TwitchIcon,
+    url: (data: Brand) => data.twitch_url,
   },
   {
-    name: "TikTok",
-    icon: TiktokIcon,
-    url: (data: Brand) => data.tiktok_url,
+    name: "X",
+    icon: TwitterIcon,
+    url: (data: Brand) => data.twitter_url,
   },
   {
     name: "Facebook",
@@ -33,24 +33,9 @@ export const SocialNetworks: SocialNetwork[] = [
     url: (data: Brand) => data.facebook_url,
   },
   {
-    name: "LinkedIn",
-    icon: LinkedinIcon,
-    url: (data: Brand) => data.linkedin_url,
-  },
-  {
-    name: "Twitter",
-    icon: TwitterIcon,
-    url: (data: Brand) => data.twitter_url,
-  },
-  {
-    name: "YouTube",
-    icon: YoutubeIcon,
-    url: (data: Brand) => data.youtube_url,
-  },
-  {
-    name: "Pinterest",
-    icon: PinterestIcon,
-    url: (data: Brand) => data.pinterest_url,
+    name: "YourClub",
+    icon: YourClubIcon,
+    url: (data: Brand) => data.yourclub_url,
   },
   {
     name: "Kwai",
@@ -58,16 +43,31 @@ export const SocialNetworks: SocialNetwork[] = [
     url: (data: Brand) => data.kwai_url,
   },
   {
-    name: "Twitch",
-    icon: TwitchIcon,
-    url: (data: Brand) => data.twitch_url,
+    name: "Tiktok",
+    icon: TiktokIcon,
+    url: (data: Brand) => data.tiktok_url,
   },
   {
-    name: "YourClub",
-    icon: YourClubIcon,
-    url: (data: Brand) => data.yourclub_url,
+    name: "Pinterest",
+    icon: PinterestIcon,
+    url: (data: Brand) => data.pinterest_url,
   },
-  // adicionar mais redes sociais
+  {
+    name: "LinkedIn",
+    icon: LinkedinIcon,
+    url: (data: Brand) => data.linkedin_url,
+  },
+  {
+    name: "YouTube",
+    icon: YoutubeIcon,
+    url: (data: Brand) => data.youtube_url,
+  },
+  {
+    name: "Instagram",
+    icon: InstagramIcon,
+    url: (data: Brand) => data.instagram_url,
+  },
+  // Additional networks can be added here
 ];
 
 export default SocialNetworks;
