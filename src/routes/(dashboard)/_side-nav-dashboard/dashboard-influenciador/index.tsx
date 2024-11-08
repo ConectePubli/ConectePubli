@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import CampaignCard from "@/components/ui/CampaignCard";
 import Spinner from "@/components/ui/Spinner";
-import MultiCampaignFilter from "@/components/ui/MultiCampaignFilter";
+import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
 import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
 import { useCampaignStore } from "@/store/useCampaignStore";
@@ -30,6 +30,8 @@ export const Route = createFileRoute(
 function Page() {
   const {
     fetchParticipatingCampaigns,
+    campaignGoalFilter,
+    searchTerm,
     campaigns,
     isLoading,
     error,
@@ -38,17 +40,9 @@ function Page() {
     setPage,
   } = useCampaignStore();
 
-  const [filteredCampaigns, setFilteredCampaigns] = useState(campaigns);
-
-  // Fetch campaigns on load and when `page` changes
   useEffect(() => {
     fetchParticipatingCampaigns();
-  }, [fetchParticipatingCampaigns, page]);
-
-  // Update filteredCampaigns whenever campaigns change
-  useEffect(() => {
-    setFilteredCampaigns(campaigns);
-  }, [campaigns]);
+  }, [fetchParticipatingCampaigns, campaignGoalFilter, searchTerm, page]);
 
   return (
     <div className="mx-auto py-6 px-4">
@@ -58,13 +52,12 @@ function Page() {
         participações.
       </p>
 
-      {/* Pass memoized data and functions to MultiCampaignFilter */}
-      <MultiCampaignFilter
-        campaigns={campaigns}
-        onFilter={setFilteredCampaigns}
-        showStatusFilter={true}
-        showNichoFilter={false}
-        showCanalFilter={false}
+      <BrandCampaignFilter
+        showSearch={true}
+        showCampaignGoal={true}
+        showStatus={false}
+        showNiche={false}
+        showChannel={false}
       />
 
       {/* Conditional rendering based on loading and campaign length */}
@@ -79,7 +72,7 @@ function Page() {
           </p>
       ) : (
         <>
-          {filteredCampaigns.length === 0 ? (
+          {campaigns.length === 0 ? (
             <div className="flex flex-col items-center justify-center my-10">
               <p className="text-center text-gray-700 text-base">
                 Você ainda não se inscreveu em nenhuma campanha. Navegue pelas
@@ -96,8 +89,8 @@ function Page() {
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredCampaigns.map((campaign) => (
-                <CampaignCard key={campaign.id} campaign={campaign} />
+              {campaigns.map((campaign) => (
+                <CampaignCard key={campaign.id} campaign={campaign} participationStatus={campaign.participantStatus} fromMyCampaigns={true} />
               ))}
             </div>
           )}
