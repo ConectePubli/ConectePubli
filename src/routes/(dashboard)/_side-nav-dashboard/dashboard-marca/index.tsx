@@ -57,7 +57,13 @@ function Page() {
         <Plus className="mr-2" />Criar Campanha
       </Button>
 
-      <BrandCampaignFilter />
+      <BrandCampaignFilter
+        showSearch={true}
+        showCampaignGoal={true}
+        showStatus={true}
+        showNiche={false}
+        showChannel={false}
+      />
 
       <div className="mt-6 w-full overflow-x-auto max-w-[90vw] sm-plus:max-w-[calc(90vw)] md:max-w-[calc(90vw-12rem)] lg:max-w-[calc(100dvw)]">
         <CampaignsTable />
