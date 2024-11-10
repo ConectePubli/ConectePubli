@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { Search } from "lucide-react";
 import { useCampaignStore } from "@/store/useCampaignStore";
 import {
   CampaignGoalFilter,
   StatusFilter,
   ChannelFilter,
-  NicheFilter,
-  ParticipationStatusFilter
+  ParticipationStatusFilter,
+  NicheFilterType,
+  ChannelFilterType,
 } from "@/types/Filters";
 import debounce from "lodash.debounce";
 import SocialNetworks from "@/types/SocialNetworks";
@@ -41,7 +42,6 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
     setNicheFilter,
     channelFilter,
     setChannelFilter,
-    fetchCampaignNiches,
   } = useCampaignStore();
 
   const debouncedSetSearchTerm = useCallback(
@@ -49,7 +49,7 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
       setSearchTerm(value);
       setPage(1);
     }, 500),
-    [],
+    [setSearchTerm, setPage]
   );
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +122,7 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
                 <option value={StatusFilter.Ready}>Pronto para iniciar</option>
               </select>
             </div>
-          )}          
+          )}
 
           {/* Participation Status Filter */}
           {showParticipationStatus && (
@@ -132,16 +132,26 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
                 id="participacao"
                 value={participationStatusFilter}
                 onChange={(e) => {
-                  setParticipationStatusFilter(e.target.value as ParticipationStatusFilter);
+                  setParticipationStatusFilter(
+                    e.target.value as ParticipationStatusFilter
+                  );
                   setPage(1);
                 }}
                 className="w-full p-2 border border-gray-300 rounded-lg"
               >
                 <option value={ParticipationStatusFilter.All}>Todos</option>
-                <option value={ParticipationStatusFilter.Completed}>Trabalho Concluido</option>
-                <option value={ParticipationStatusFilter.Approved}>Trabalho em Progresso</option>
-                <option value={ParticipationStatusFilter.Waiting}>Proposta Pendente</option>
-                <option value={ParticipationStatusFilter.Sold_out}>Vagas Esgotadas</option>
+                <option value={ParticipationStatusFilter.Completed}>
+                  Trabalho Concluido
+                </option>
+                <option value={ParticipationStatusFilter.Approved}>
+                  Trabalho em Progresso
+                </option>
+                <option value={ParticipationStatusFilter.Waiting}>
+                  Proposta Pendente
+                </option>
+                <option value={ParticipationStatusFilter.Sold_out}>
+                  Vagas Esgotadas
+                </option>
               </select>
             </div>
           )}

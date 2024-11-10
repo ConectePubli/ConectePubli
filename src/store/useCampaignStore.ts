@@ -6,6 +6,8 @@ import {
   ChannelFilter,
   NicheFilter,
   ParticipationStatusFilter,
+  ChannelFilterType,
+  NicheFilterType,
 } from "@/types/Filters";
 import { create } from "zustand";
 
@@ -14,8 +16,9 @@ const DEFAULT_ERROR_MESSAGE = "Erro ao buscar campanhas";
 const DEFAULT_FILTERS = {
   statusFilter: StatusFilter.All,
   campaignGoalFilter: CampaignGoalFilter.All,
-  channelFilter: ChannelFilter.All,
-  nicheFilter: NicheFilter.All,
+  channelFilter: ChannelFilter.All as ChannelFilterType,
+  nicheFilter: NicheFilter.All as NicheFilterType,
+  participationStatusFilter: ParticipationStatusFilter.All,
   searchTerm: "",
   page: 1,
   totalPages: 1,
@@ -23,22 +26,22 @@ const DEFAULT_FILTERS = {
 
 interface CampaignState {
   campaigns: Campaign[];
-  statusFilter: StatusFilter;  
+  statusFilter: StatusFilter;
   participationStatusFilter: ParticipationStatusFilter;
   campaignGoalFilter: CampaignGoalFilter;
-  channelFilter: ChannelFilter;
-  nicheFilter: NicheFilter;
+  channelFilter: ChannelFilterType;
+  nicheFilter: NicheFilterType;
   searchTerm: string;
   page: number;
   totalPages: number;
   isLoading: boolean;
   error: string | null;
   setCampaigns: (campaigns: Campaign[]) => void;
-  setStatusFilter: (status: StatusFilter) => void;  
+  setStatusFilter: (status: StatusFilter) => void;
   setParticipationStatusFilter: (status: ParticipationStatusFilter) => void;
   setCampaignGoalFilter: (goal: CampaignGoalFilter) => void;
-  setChannelFilter: (channel: ChannelFilter) => void;
-  setNicheFilter: (channel: NicheFilter) => void;
+  setChannelFilter: (channel: ChannelFilterType) => void;
+  setNicheFilter: (niche: NicheFilterType) => void;
   setSearchTerm: (term: string) => void;
   setPage: (page: number) => void;
   setTotalPages: (totalPages: number) => void;
@@ -57,8 +60,9 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
   error: null,
 
   setCampaigns: (campaigns) => set({ campaigns }),
-  setStatusFilter: (statusFilter) => set({ statusFilter }),  
-  setParticipationStatusFilter: (participationStatusFilter) => set({ participationStatusFilter }),
+  setStatusFilter: (statusFilter) => set({ statusFilter }),
+  setParticipationStatusFilter: (participationStatusFilter) =>
+    set({ participationStatusFilter }),
   setCampaignGoalFilter: (campaignGoalFilter) => set({ campaignGoalFilter }),
   setChannelFilter: (channelFilter) => set({ channelFilter }),
   setNicheFilter: (nicheFilter) => set({ nicheFilter }),
@@ -175,7 +179,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       }
 
       if (campaignGoalFilter)
-        filters.push(`campaign.objective ~ "${campaignGoalFilter}"`);      
+        filters.push(`campaign.objective ~ "${campaignGoalFilter}"`);
       if (participationStatusFilter)
         filters.push(`status ~ "${participationStatusFilter}"`);
       if (searchTerm) filters.push(`campaign.name ~ "${searchTerm}"`);
@@ -189,8 +193,8 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
         });
 
       const mergedCampaigns = participationsResult.items.map((item) => ({
-        ...item.expand.campaign,
-        participantStatus: item.status,
+        ...item.expand?.campaign,
+        participationStatus: item.status,
       }));
 
       setCampaigns(mergedCampaigns);

@@ -1,11 +1,12 @@
 import { Campaign } from "./Campaign";
 import { Influencer } from "./Influencer";
+import { ParticipationStatusFilter } from "@/types/Filters";
 
 export interface CampaignParticipation {
   id: string;
   Campaign: string;
   Influencer: string;
-  status: "waiting" | "approved" | "completed" | "sold_out";
+  status: ParticipationStatusFilter;
   created: Date;
   updated: Date;
   collectionId: string;

@@ -125,6 +125,8 @@ function InfluencerProfilePage() {
   //   },
   // ];
 
+  const niches = influencer?.expand?.niche || [];
+
   if (mutate.isPending) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -175,7 +177,7 @@ function InfluencerProfilePage() {
             <img
               src={pb.getFileUrl(influencer, influencer.profile_img)}
               alt={influencer.full_name}
-              className="w-20 h-20 rounded-[100%] object-cover" 
+              className="w-20 h-20 rounded-[100%] object-cover"
             />
           ) : (
             <div className="w-20 h-20 rounded-[100%] bg-gray-300 flex items-center justify-center">
@@ -340,20 +342,19 @@ function InfluencerProfilePage() {
         )}
 
         {/* HASHTAGS */}
-        {Array.isArray(influencer.expand?.niche) &&
-          influencer.expand.niche.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-3">
-              {influencer.expand.niche.map((niche: Niche, index) => (
-                <button
-                  key={index}
-                  className="bg-[#10438F] cursor-default text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200"
-                  title={niche.niche}
-                >
-                  <span>#{niche.niche}</span>
-                </button>
-              ))}
-            </div>
-          )}
+        {niches.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {niches.map((niche: Niche, index) => (
+              <button
+                key={index}
+                className="bg-[#10438F] cursor-default text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200"
+                title={niche.niche}
+              >
+                <span>#{niche.niche}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <hr className="border my-4" />

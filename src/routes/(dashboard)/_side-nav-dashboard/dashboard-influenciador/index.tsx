@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import CampaignCard from "@/components/ui/CampaignCard";
 import Spinner from "@/components/ui/Spinner";
@@ -6,10 +6,11 @@ import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
 import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
 import { useCampaignStore } from "@/store/useCampaignStore";
+import { ParticipationStatusFilter } from "@/types/Filters";
 
 // Route creation
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/dashboard-influenciador/",
+  "/(dashboard)/_side-nav-dashboard/dashboard-influenciador/"
 )({
   component: Page,
   beforeLoad: async () => {
@@ -43,7 +44,13 @@ function Page() {
 
   useEffect(() => {
     fetchParticipatingCampaigns();
-  }, [fetchParticipatingCampaigns, campaignGoalFilter, searchTerm, participationStatusFilter, page]);
+  }, [
+    fetchParticipatingCampaigns,
+    campaignGoalFilter,
+    searchTerm,
+    participationStatusFilter,
+    page,
+  ]);
 
   return (
     <div className="mx-auto py-6 px-4">
@@ -69,9 +76,7 @@ function Page() {
           <p className="mt-2 text-gray-600">Carregando...</p>
         </div>
       ) : error ? (
-          <p className="text-red-500">
-            {error}
-          </p>
+        <p className="text-red-500">{error}</p>
       ) : (
         <>
           {campaigns.length === 0 ? (
@@ -92,7 +97,15 @@ function Page() {
           ) : (
             <div className="space-y-4">
               {campaigns.map((campaign) => (
-                <CampaignCard key={campaign.id} campaign={campaign} participationStatus={campaign.participantStatus} fromMyCampaigns={true} />
+                <CampaignCard
+                  key={campaign.id}
+                  campaign={campaign}
+                  participationStatus={
+                    campaign.participationStatus ??
+                    ParticipationStatusFilter.All
+                  }
+                  fromMyCampaigns={true}
+                />
               ))}
             </div>
           )}

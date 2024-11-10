@@ -4,11 +4,12 @@ import { Calendar, User, Tag } from "lucide-react";
 import { Coins, Image } from "phosphor-react";
 import pb from "@/lib/pb";
 import SocialNetworks from "@/types/SocialNetworks";
+import { ParticipationStatusFilter } from "@/types/Filters";
 
 interface CampaignCardProps {
   campaign: Campaign;
-  participationStatus: string;
-  fromMyCampaigns: boolean; // esconde algumas informações
+  participationStatus: ParticipationStatusFilter;
+  fromMyCampaigns: boolean;
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({
@@ -94,15 +95,16 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
           {/* Social Network Icons */}
           <div className="flex flex-wrap gap-2">
-            {SocialNetworks.filter((network) => campaign.channels.includes(network.name))
-              .map((network) => (
-                <img
-                  key={network.name}
-                  src={network.icon}
-                  alt={`Icon for ${network.name}`}
-                  className="w-4 h-4"
-                />
-              ))}
+            {SocialNetworks.filter((network) =>
+              campaign.channels.includes(network.name)
+            ).map((network) => (
+              <img
+                key={network.name}
+                src={network.icon}
+                alt={`Icon for ${network.name}`}
+                className="w-4 h-4"
+              />
+            ))}
           </div>
 
           {/* Date */}

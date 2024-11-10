@@ -1,4 +1,5 @@
 import { CampaignParticipation } from "./Campaign_Participations";
+import { ParticipationStatusFilter } from "@/types/Filters";
 
 export interface Campaign {
   id: string;
@@ -14,11 +15,13 @@ export interface Campaign {
   status: "ready" | "in_progress" | "ended";
   cover_img?: string;
   niche: string[];
+  channels: string[];
   created: Date;
   updated: Date;
   collectionId: string;
   collectionName: string;
   vagasRestantes?: number;
+  participationStatus?: ParticipationStatusFilter;
   expand?: {
     campaigns_participations_via_Campaign?: CampaignParticipation[];
   };
