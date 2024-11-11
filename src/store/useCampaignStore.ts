@@ -87,7 +87,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       const filters: string[] = [];
       const currentBrandId = pb.authStore.model?.id;
       if (currentBrandId) {
-        filters.push(`brand = "${currentBrandId}"`);
+        filters.push(`brand = "${currentBrandId}" && paid=true`);
       } else {
         throw new Error("Brand ID not found in authentication.");
       }
