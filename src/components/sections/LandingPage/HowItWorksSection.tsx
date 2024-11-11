@@ -13,7 +13,7 @@ export const HowItWorksSection: React.FC = () => {
         <FeatureCard
           imageSrc={image1}
           title="Conexão estratégica simplificada"
-          description="A plataforma oferece uma maneira intuitiva de conectar marcas e influenciadores, promovendo campanhas com resultados claros e mensuráveis."
+          description="Nossa plataforma conecta marcas e criadores de conteúdo digital de forma simples e direta."
         />
         <FeatureCard
           imageSrc={image2}
