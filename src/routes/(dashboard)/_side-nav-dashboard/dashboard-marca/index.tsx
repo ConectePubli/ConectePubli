@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
 import CampaignsTable from "@/components/ui/CampaignsTable";
@@ -28,6 +28,8 @@ export const Route = createFileRoute(
 });
 
 function Page() {
+  const navigate = useNavigate();
+
   const {
     fetchCampaigns,
     statusFilter,
@@ -51,7 +53,7 @@ function Page() {
         className="mt-4"
         variant={"blue"}
         onClick={() => {
-          console.log("IR PARA TELA DE CRIAR CAMPANHA");
+          navigate({ to: "/dashboard-marca/criar-campanha/" });
         }}
       >
         <Plus className="mr-2" />Criar Campanha
