@@ -18,6 +18,7 @@ import { Campaign } from "@/types/Campaign";
 import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
+import { formatLocation } from "@/utils/formatLocation";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
@@ -37,6 +38,7 @@ export const Route = createFileRoute(
       const campaignsData =
         (await pb.collection<Campaign>("campaigns").getFullList({
           filter: `brand="${brandData.id}"`,
+          expand: "niche",
         })) || [];
 
       const campaignsParticipationsData =
@@ -112,11 +114,6 @@ function Page() {
   );
 
   const navigate = useNavigate();
-
-  const formatLocation = (brand: Brand): string => {
-    const parts = [brand.city, brand.state, brand.country].filter(Boolean);
-    return parts.length > 0 ? parts.join(", ") : "Localização não informada";
-  };
 
   return (
     <div className="flex p-0 flex-col">
