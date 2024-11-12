@@ -1,22 +1,27 @@
 import { Button } from "@/components/ui/button";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
 import {
-	InstagramLogo,
-	TiktokLogo,
-	YoutubeLogo,
-	PinterestLogo,
-	LinkedinLogo,
-	FacebookLogo,
-	TwitterLogo,
-	TwitchLogo,
-} from "phosphor-react";
+	createFileRoute,
+	useRouter,
+	useNavigate,
+} from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import pb from "@/lib/pb";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import { getUserData } from "@/utils/getUserData";
+import axios from "axios";
 
-// options label
+import FacebookIcon from "@/assets/icons/brands/facebook.svg";
+import InstagramIcon from "@/assets/icons/brands/instagram.svg";
+import KwaiIcon from "@/assets/icons/brands/kwai.svg";
+import LinkedInIcon from "@/assets/icons/brands/linkedin.svg";
+import PinterestIcon from "@/assets/icons/brands/pinterest.svg";
+import TiktokIcon from "@/assets/icons/brands/tiktok.svg";
+import TwitchIcon from "@/assets/icons/brands/twitch.svg";
+import TwitterIcon from "@/assets/icons/brands/twitter.svg";
+import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
+import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
+
 import {
 	objectiveOptions,
 	genderOptions,
@@ -30,17 +35,17 @@ import { Niche } from "@/types/Niche";
 import { Campaign } from "@/types/Campaign";
 
 const channelIcons = {
-	Instagram: <InstagramLogo />,
-	Tiktok: <TiktokLogo />,
-	YouTube: <YoutubeLogo />,
-	Pinterest: <PinterestLogo />,
-	LinkedIn: <LinkedinLogo />,
-	Facebook: <FacebookLogo />,
-	Twitter: <TwitterLogo />,
-	Twitch: <TwitchLogo />,
-	YourClub: null,
-	Kwai: null,
-	X: <TwitterLogo />,
+	Instagram: InstagramIcon,
+	Tiktok: TiktokIcon,
+	YouTube: YouTubeIcon,
+	Pinterest: PinterestIcon,
+	LinkedIn: LinkedInIcon,
+	Facebook: FacebookIcon,
+	Twitter: TwitterIcon,
+	Twitch: TwitchIcon,
+	YourClub: YourClubIcon,
+	Kwai: KwaiIcon,
+	X: TwitterIcon,
 };
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
@@ -49,8 +54,8 @@ const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
 }));
 
 const maxAgeOptions = Array.from({ length: 65 }, (_, i) => ({
-	label: (i + 16).toString(),
-	value: (i + 16).toString(),
+	label: (i + 18).toString(),
+	value: (i + 18).toString(),
 }));
 
 type CampaignData = {
@@ -71,8 +76,8 @@ type CampaignData = {
 		location: string;
 		videoMinDuration: string;
 		videoMaxDuration: string;
-		paidTraffic: boolean;
-		audioFormat: "Música" | "Narração";
+		paidTraffic: boolean | null;
+		audioFormat: "Música" | "Narração" | null;
 	};
 };
 
@@ -94,6 +99,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 	campaignId,
 	initialCampaignData,
 }) => {
+	const navigate = useNavigate();
+
 	const isEditMode = Boolean(campaignId);
 
 	console.log("initialCampaignData:", initialCampaignData);
@@ -117,8 +124,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 			location: "",
 			videoMinDuration: "",
 			videoMaxDuration: "",
-			paidTraffic: false,
-			audioFormat: "Música",
+			paidTraffic: null,
+			audioFormat: null,
 		},
 	});
 
@@ -251,16 +258,46 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
 	useEffect(() => {
 		if (!brandLoading && brandInfo) {
-			console.log("verificar campos");
-			const requiredFields = ["name"];
+			const requiredFields = [
+				"name",
+				"email",
+				"profile_img",
+				"cover_img",
+				"bio",
+				"opening_date",
+				"company_register",
+				"country",
+				"cep",
+				"city",
+				"state",
+				"cell_phone",
+				"pix_key",
+			];
 			const missingFields = requiredFields.filter(
 				(field) => !brandInfo[field],
 			);
 
-			if (missingFields.length > 0) {
+			const hasSomeNetworkMedias =
+				brandInfo.instagram_url !== "" ||
+				brandInfo.youtube_url !== "" ||
+				brandInfo.tiktok_url !== "" ||
+				brandInfo.pinterest_url !== "" ||
+				brandInfo.kwai_url !== "" ||
+				brandInfo.yourclub_url !== "" ||
+				brandInfo.facebook_url !== "" ||
+				brandInfo.twitter_url !== "" ||
+				brandInfo.twitch_url !== "" ||
+				brandInfo.linkedin_url !== "";
+
+			if (
+				missingFields.length > 0 ||
+				(brandInfo.niche && brandInfo.niche.length <= 0) ||
+				!hasSomeNetworkMedias
+			) {
 				const username = user.model.username;
-				console.log("redirecionar para editar");
-				router.navigate({ to: `/marca/${username}/editar` });
+				router.navigate({
+					to: `/marca/${username}/editar?from=CreateCampaign&error=MissingData`,
+				});
 			}
 		}
 	}, [brandLoading, brandInfo, user.model.username, router]);
@@ -307,14 +344,20 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 			"max_video_duration",
 			campaignData.audienceSegmentation.videoMaxDuration,
 		);
-		formData.append(
-			"paid_traffic",
-			campaignData.audienceSegmentation.paidTraffic ? "true" : "false",
-		);
-		formData.append(
-			"audio_format",
-			campaignData.audienceSegmentation.audioFormat,
-		);
+		if (campaignData.audienceSegmentation.paidTraffic) {
+			formData.append(
+				"paid_traffic",
+				campaignData.audienceSegmentation.paidTraffic
+					? "true"
+					: "false",
+			);
+		}
+		if (campaignData.audienceSegmentation.audioFormat) {
+			formData.append(
+				"audio_format",
+				campaignData.audienceSegmentation.audioFormat,
+			);
+		}
 		formData.append("beginning", campaignBudget.startDate);
 		formData.append("end", campaignBudget.endDate);
 
@@ -350,41 +393,35 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 		onSuccess: async (createdCampaign: Campaign) => {
 			if (isEditMode) {
 				toast.success("Campanha atualizada com sucesso!"); // Mensagem para modo de edição
-				console.log(
-					"Campanha atualizada:",
-					createdCampaign.id,
-					createdCampaign.name,
-				);
+				// Redirect to the "aprovar" page using TanStack Router
+				navigate({
+					to: "/dashboard/campanhas/$campaignId/aprovar",
+					params: { campaignId },
+				});
 			} else {
-				toast.success("Campanha criada com sucesso!"); // Mensagem para criação de campanha
+				toast.success("Campanha criada com sucesso!");
 
-				console.log(createdCampaign.id);
-				console.log(createdCampaign.name);
-				console.log(campaignBudget.creatorFee);
-
-				const response = await fetch(
-					"https://conecte-publi.pockethost.io/api/checkout_campaign",
+				const response = await axios.post(
+					`https://conecte-publi.pockethost.io/api/checkout_campaign`,
 					{
-						method: "POST",
+						campaign_id: createdCampaign.id,
+						campaign_name: createdCampaign.name,
+						unit_amount:
+							campaignBudget.influencersCount *
+							campaignBudget.creatorFee *
+							100,
+					},
+					{
 						headers: {
-							"Content-Type": "application/json",
 							Authorization: `Bearer ${user.token}`,
 						},
-						body: JSON.stringify({
-							campaign_id: createdCampaign.id,
-							campaign_name: createdCampaign.name,
-							unit_amount: campaignBudget.creatorFee,
-						}),
 					},
 				);
 
-				console.log("data payment");
-				console.log(response);
-
-				if (response.ok) {
-					const data = await response.json();
-					if (data.payment_url) {
-						window.location.href = data.payment_url;
+				if (response.status === 200) {
+					const link = await response.data.link;
+					if (link) {
+						window.location.href = link;
 					} else {
 						toast.error(
 							"Erro ao iniciar o pagamento. Tente novamente.",
@@ -403,17 +440,59 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 		},
 	});
 
+	const isValidEmail = (email: string) => {
+		const re = /\S+@\S+\.\S+/;
+		return re.test(email);
+	};
+
+	const isValidURL = (url: string) => {
+		try {
+			new URL(url);
+			return true;
+		} catch (e) {
+			console.log(`invalid url ${e}`);
+			return false;
+		}
+	};
+
 	const handleSubmit = () => {
 		const missingFields: string[] = [];
 
+		// Basic Info Section Required Fields
 		if (!campaignData.basicInfo.campaignName)
 			missingFields.push("Nome da Campanha");
+		if (!campaignData.basicInfo.format)
+			missingFields.push("Formato da Campanha");
+		if (!campaignData.basicInfo.coverImage)
+			missingFields.push("Foto de Capa");
+		if (!campaignData.basicInfo.productUrl)
+			missingFields.push("URL do Produto ou Perfil");
+		if (!campaignData.basicInfo.campaignDetails)
+			missingFields.push("Detalhes da Campanha");
+		if (campaignData.basicInfo.disseminationChannels.length === 0)
+			missingFields.push("Canais de Divulgação");
+
+		// Campaign Budget Section Required Fields
+		if (!campaignBudget.startDate)
+			missingFields.push("Data de Início da Campanha");
+		if (!campaignBudget.endDate)
+			missingFields.push("Data de Fim da Campanha");
+		if (
+			!campaignBudget.influencersCount ||
+			campaignBudget.influencersCount <= 0
+		)
+			missingFields.push("Quantidade de Influenciadores");
+		if (!campaignBudget.creatorFee || campaignBudget.creatorFee <= 0)
+			missingFields.push("Valor por Criador");
+
+		// Responsible Info Section Required Fields
 		if (!responsibleInfo.name) missingFields.push("Nome do Responsável");
 		if (!responsibleInfo.email) missingFields.push("Email do Responsável");
 		if (!responsibleInfo.phone)
 			missingFields.push("Telefone do Responsável");
 		if (!responsibleInfo.cpf) missingFields.push("CPF do Responsável");
 
+		// Validate Missing Fields
 		if (missingFields.length > 0) {
 			const message =
 				missingFields.length > 3
@@ -423,6 +502,16 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 					: `Campos obrigatórios não preenchidos: ${missingFields.join(", ")}`;
 
 			toast.warn(message);
+			return;
+		}
+
+		if (!isValidEmail(responsibleInfo.email)) {
+			toast.warn("Email do Responsável é inválido");
+			return;
+		}
+
+		if (!isValidURL(campaignData.basicInfo.productUrl)) {
+			toast.warn("URL do Produto ou Perfil é inválida");
 			return;
 		}
 
@@ -436,6 +525,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 				onChange={(data) =>
 					setCampaignData((prev) => ({ ...prev, basicInfo: data }))
 				}
+				initialCampaignData={initialCampaignData}
 			/>
 
 			<AudienceSegmentationSection
@@ -466,7 +556,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
 			<button
 				onClick={handleSubmit}
-				className="w-[200px] bg-blue-700 text-white py-2 rounded-md mt-6 mb-8"
+				className="w-[200px] bg-[#10438F] text-white py-2 rounded-md mt-6 mb-8"
 				disabled={mutate.isPending}
 			>
 				{mutate.isPending ? "Carregando..." : "Finalizar"}
@@ -480,9 +570,37 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 type BasicInfoSectionProps = {
 	data: CampaignData["basicInfo"];
 	onChange: (data: CampaignData["basicInfo"]) => void;
+	initialCampaignData: { initialCampaignData };
 };
 
-function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
+function BasicInfoSection({
+	data,
+	onChange,
+	initialCampaignData,
+}: BasicInfoSectionProps) {
+	const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+	useEffect(() => {
+		if (typeof data.coverImage === "string") {
+			// If coverImage is a URL string, use it directly
+			const imageUrl = `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${initialCampaignData.collectionId}/${initialCampaignData.id}/${initialCampaignData.cover_img}`;
+			setImagePreviewUrl(imageUrl);
+		} else if (
+			data.coverImage instanceof Blob ||
+			data.coverImage instanceof File
+		) {
+			// If coverImage is a File or Blob, create an ObjectURL
+			const objectUrl = URL.createObjectURL(data.coverImage);
+			setImagePreviewUrl(objectUrl);
+
+			// Clean up the ObjectURL when the component unmounts or coverImage changes
+			return () => URL.revokeObjectURL(objectUrl);
+		} else {
+			// If coverImage is null or another type, clear the preview
+			setImagePreviewUrl(null);
+		}
+	}, [data.coverImage]);
+
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
@@ -501,10 +619,20 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 	};
 
 	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files) {
+		if (e.target.files && e.target.files[0]) {
 			onChange({
 				...data,
 				coverImage: e.target.files[0],
+			});
+		}
+	};
+
+	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+			onChange({
+				...data,
+				coverImage: e.dataTransfer.files[0],
 			});
 		}
 	};
@@ -522,15 +650,14 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 		});
 	};
 
-    console.log("data.coverImage", data.coverImage)
-
 	return (
 		<div className="w-full">
-			<h2 className="text-lg font-medium text-white mb-6 bg-blue-700 py-2 px-5">
+			<h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
 				Informações Básicas da Campanha
 			</h2>
 
-			<div className="grid grid-cols-2 gap-6 mb-6 px-5">
+			{/* Updated grid classes for responsiveness */}
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 px-5">
 				<div>
 					<div className="mb-8">
 						<label className="block mb-2 text-gray-700 font-semibold">
@@ -554,7 +681,7 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 						<label className="block mb-2 text-gray-700 font-semibold">
 							Formato da campanha*
 						</label>
-						<div className="flex space-x-4">
+						<div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
 							{objectiveOptions.map((option) => (
 								<button
 									key={option.value}
@@ -563,7 +690,7 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 									}
 									className={`flex-1 px-4 py-2 border rounded-md ${
 										data.format === option.value
-											? "border-blue-500 text-blue-500"
+											? "border-2 border-blue-500 text-blue-500"
 											: "border-gray-300 text-gray-700"
 									}`}
 								>
@@ -583,23 +710,31 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 					<label className="block mb-2 text-gray-700 font-semibold">
 						Foto de capa*
 					</label>
-					<div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 p-4 rounded-md h-[150px]">
+					<div
+						className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md h-[200px] cursor-pointer overflow-hidden"
+						onClick={() =>
+							document.getElementById("coverImage")?.click()
+						}
+						onDragOver={(e) => e.preventDefault()}
+						onDrop={handleDrop}
+					>
 						<input
 							type="file"
 							onChange={handleImageUpload}
 							className="hidden"
 							id="coverImage"
+							accept="image/*"
 						/>
-						<label
-							htmlFor="coverImage"
-							className="text-blue-500 cursor-pointer"
-						>
-							Carregue ou arraste e solte
-						</label>
-						{data.coverImage && (
-						    <p className="text-gray-600 mt-2">
-						        {typeof data.coverImage === 'string' ? data.coverImage : data.coverImage.name}
-						    </p>
+						{!imagePreviewUrl ? (
+							<p className="text-blue-500">
+								Carregue ou arraste e solte
+							</p>
+						) : (
+							<img
+								src={imagePreviewUrl}
+								alt="Preview"
+								className="w-full h-full object-cover"
+							/>
 						)}
 					</div>
 					<p className="text-gray-500 mt-2 text-sm">
@@ -608,7 +743,7 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 					</p>
 				</div>
 
-				<div className="col-span-2">
+				<div className="col-span-1 md:col-span-2">
 					<label className="block text-gray-700 font-semibold">
 						URL do Produto ou Perfil*
 					</label>
@@ -629,8 +764,8 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 					/>
 				</div>
 
-				<div className="col-span-2">
-					<div className="flex items-center justify-between">
+				<div className="col-span-1 md:col-span-2">
+					<div className="flex flex-col md:flex-row md:items-center md:justify-between">
 						<div>
 							<label className="block text-gray-700 font-semibold">
 								Detalhes da campanha*
@@ -643,7 +778,7 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 							</p>
 						</div>
 
-						<div>
+						<div className="mt-2 md:mt-0">
 							<Button variant={"orange"}>Ver instruções</Button>
 						</div>
 					</div>
@@ -652,12 +787,12 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 						name="campaignDetails"
 						value={data.campaignDetails}
 						onChange={handleInputChange}
-						className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="w-full h-[120px] mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 						placeholder="Inclua as hashtags obrigatórias, chamadas de ação, e qualquer outro detalhe importante que seja necessário para completar a campanha."
 					/>
 				</div>
 
-				<div className="col-span-2">
+				<div className="col-span-1 md:col-span-2">
 					<div className="col-span-2">
 						<label className="block mb-2 text-gray-700 font-semibold">
 							Canais de divulgação*
@@ -672,15 +807,19 @@ function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
 										data.disseminationChannels.includes(
 											channel.value,
 										)
-											? "border-blue-500 text-blue-500"
+											? "border-2 border-blue-500 text-blue-500"
 											: "border-gray-300 text-gray-700"
 									}`}
 								>
-									{
-										channelIcons[
-											channel.value as keyof typeof channelIcons
-										]
-									}{" "}
+									<img
+										src={
+											channelIcons[
+												channel.value as keyof typeof channelIcons
+											]
+										}
+										alt={`${channel.label} icon`}
+										className="w-5 h-5"
+									/>
 									{channel.label}
 								</button>
 							))}
@@ -711,26 +850,24 @@ function AudienceSegmentationSection({
 
 	const dropdownRef = useRef<HTMLDivElement>(null);
 
-useEffect(() => {
-    if (niches && data.niche.length > 0) {
-        // Filter the niche options that are already selected
-        const preSelectedNiches = niches.filter(niche =>
-            data.niche.includes(niche.id)
-        );
-        setSelectedNiches(preSelectedNiches);
-        
-        // Set available niche options by removing the pre-selected ones
-        const availableNiches = niches.filter(
-            niche => !data.niche.includes(niche.id)
-        );
-        setNicheOptions(availableNiches);
-    } else if (niches) {
-        // Set all niches as options if nothing is pre-selected
-        setNicheOptions(niches);
-    }
-}, [niches, data.niche]);
+	useEffect(() => {
+		if (niches && data.niche.length > 0) {
+			// Filter the niche options that are already selected
+			const preSelectedNiches = niches.filter((niche) =>
+				data.niche.includes(niche.id),
+			);
+			setSelectedNiches(preSelectedNiches);
 
-
+			// Set available niche options by removing the pre-selected ones
+			const availableNiches = niches.filter(
+				(niche) => !data.niche.includes(niche.id),
+			);
+			setNicheOptions(availableNiches);
+		} else if (niches) {
+			// Set all niches as options if nothing is pre-selected
+			setNicheOptions(niches);
+		}
+	}, [niches, data.niche]);
 
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
@@ -790,13 +927,39 @@ useEffect(() => {
 		});
 	};
 
+	const [
+		maxVideoDurationOptionsFiltered,
+		setMaxVideoDurationOptionsFiltered,
+	] = useState(maxVideoDurationOptions);
+
+	useEffect(() => {
+		const minDuration = parseInt(data.videoMinDuration, 10);
+
+		if (minDuration) {
+			const filteredOptions = maxVideoDurationOptions.filter(
+				(option) => parseInt(option.value, 10) >= minDuration,
+			);
+			setMaxVideoDurationOptionsFiltered(filteredOptions);
+
+			if (parseInt(data.videoMaxDuration, 10) < minDuration) {
+				onChange({
+					...data,
+					videoMaxDuration: "",
+				});
+			}
+		} else {
+			setMaxVideoDurationOptionsFiltered(maxVideoDurationOptions);
+		}
+	}, [data, data.videoMinDuration, onChange]);
+
 	return (
 		<div className="w-full mt-8">
-			<h2 className="text-lg font-medium text-white mb-6 bg-blue-700 py-2 px-5">
+			<h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
 				Segmentação do Público e Especificações
 			</h2>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-6">
+			{/* Updated grid classes for responsiveness */}
+			<div className="grid grid-cols-1 gap-6 px-5 mb-6">
 				<div className="mb-4 relative">
 					<label className="block mb-2 text-gray-700 font-semibold">
 						Nicho (opcional)
@@ -860,17 +1023,18 @@ useEffect(() => {
 					</p>
 				</div>
 
-				<div className="col-span-1 md:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-6">
-					<div className="col-span-1">
+				{/* Adjusted grid for age and gender */}
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div className="col-span-1 md:col-span-2">
 						<label className="block mb-2 text-gray-700 font-semibold">
 							Idade (opcional)
 						</label>
-						<div className="flex space-x-4">
+						<div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
 							<select
 								name="minAge"
 								value={data.minAge}
 								onChange={handleInputChange}
-								className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 							>
 								<option value="" hidden>
 									Mínimo
@@ -888,19 +1052,28 @@ useEffect(() => {
 								name="maxAge"
 								value={data.maxAge}
 								onChange={handleInputChange}
-								className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+								disabled={!data.minAge}
 							>
 								<option value="" hidden>
 									Máximo
 								</option>
-								{maxAgeOptions.map((option) => (
-									<option
-										key={option.value}
-										value={option.value}
-									>
-										{option.label}
-									</option>
-								))}
+								{maxAgeOptions.map((option) => {
+									if (
+										Number(option.label) >=
+											Number(data.minAge) ||
+										!data.minAge
+									) {
+										return (
+											<option
+												key={option.value}
+												value={option.value}
+											>
+												{option.label}
+											</option>
+										);
+									}
+								})}
 							</select>
 						</div>
 						<p className="text-gray-500 mt-2">
@@ -909,7 +1082,7 @@ useEffect(() => {
 						</p>
 					</div>
 
-					<div className="col-span-1 md:col-span-1">
+					<div className="col-span-1">
 						<label className="block mb-2 text-gray-700 font-semibold">
 							Gênero (opcional)
 						</label>
@@ -978,7 +1151,7 @@ useEffect(() => {
 					</select>
 				</div>
 
-				<div className="col-span-2 grid grid-cols-2 gap-4">
+				<div className="col-span-1 md:col-span-2 gap-0 grid grid-cols-1 md:grid-cols-2 md:gap-4">
 					<div>
 						<label className="block mb-2 text-gray-700 font-semibold">
 							Duração do vídeo (opcional)
@@ -1009,11 +1182,12 @@ useEffect(() => {
 							value={data.videoMaxDuration}
 							onChange={handleInputChange}
 							className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+							disabled={!data.videoMinDuration}
 						>
 							<option value="" hidden>
 								Máximo
 							</option>
-							{maxVideoDurationOptions.map((option) => (
+							{maxVideoDurationOptionsFiltered.map((option) => (
 								<option key={option.value} value={option.value}>
 									{option.label}
 								</option>
@@ -1027,7 +1201,7 @@ useEffect(() => {
 						Pretende utilizar o material para tráfego pago
 						(anúncios)? (opcional)
 					</label>
-					<div className="flex space-x-4">
+					<div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
 						<button
 							type="button"
 							onClick={() =>
@@ -1035,7 +1209,7 @@ useEffect(() => {
 							}
 							className={`flex-1 px-4 py-2 border rounded-md ${
 								data.paidTraffic === false
-									? "border-blue-500 text-blue-500"
+									? "border-2 border-blue-500 text-blue-500"
 									: "border-gray-300 text-gray-700"
 							}`}
 						>
@@ -1048,7 +1222,7 @@ useEffect(() => {
 							}
 							className={`flex-1 px-4 py-2 border rounded-md ${
 								data.paidTraffic === true
-									? "border-blue-500 text-blue-500"
+									? "border-2 border-blue-500 text-blue-500"
 									: "border-gray-300 text-gray-700"
 							}`}
 						>
@@ -1067,7 +1241,7 @@ useEffect(() => {
 					<label className="block mb-2 text-gray-700 font-semibold">
 						Formato do áudio (opcional)
 					</label>
-					<div className="flex space-x-4">
+					<div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
 						<button
 							type="button"
 							onClick={() =>
@@ -1075,7 +1249,7 @@ useEffect(() => {
 							}
 							className={`flex-1 px-4 py-2 border rounded-md ${
 								data.audioFormat === "Música"
-									? "border-blue-500 text-blue-500"
+									? "border-2 border-blue-500 text-blue-500"
 									: "border-gray-300 text-gray-700"
 							}`}
 						>
@@ -1088,7 +1262,7 @@ useEffect(() => {
 							}
 							className={`flex-1 px-4 py-2 border rounded-md ${
 								data.audioFormat === "Narração"
-									? "border-blue-500 text-blue-500"
+									? "border-2 border-blue-500 text-blue-500"
 									: "border-gray-300 text-gray-700"
 							}`}
 						>
@@ -1107,119 +1281,158 @@ useEffect(() => {
 }
 
 type CampaignBudgetSectionProps = {
-    startDate: string;
-    endDate: string;
-    influencersCount: number;
-    creatorFee: number;
-    onChange: (data: CampaignBudget) => void;
-    isEditMode: boolean; // Corrected type from {isEditMode} to boolean
+	startDate: string;
+	endDate: string;
+	influencersCount: number;
+	creatorFee: number;
+	onChange: (data: CampaignBudget) => void;
+	isEditMode: boolean;
 };
 
 function CampaignBudgetSection({
-    startDate,
-    endDate,
-    influencersCount,
-    creatorFee,
-    onChange,
-    isEditMode,
+	startDate,
+	endDate,
+	influencersCount,
+	creatorFee,
+	onChange,
+	isEditMode,
 }: CampaignBudgetSectionProps) {
-	console.log("startDate", startDate)
-	
-    // Helper function to format the date as YYYY-MM-DD
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
-    };
+	const [today, setToday] = useState("");
 
-    const formattedStartDate = startDate ? formatDate(startDate) : "";
-    const formattedEndDate = endDate ? formatDate(endDate) : "";
+	useEffect(() => {
+		const now = new Date();
+		const year = now.getFullYear();
+		const month = String(now.getMonth() + 1).padStart(2, "0");
+		const day = String(now.getDate()).padStart(2, "0");
+		setToday(`${year}-${month}-${day}`);
+	}, []);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        onChange({
-            ...{ startDate, endDate, influencersCount, creatorFee },
-            [name]:
-                name === "influencersCount" || name === "creatorFee"
-                    ? Number(value)
-                    : value,
-        });
-    };
+	// Helper function to format the date as YYYY-MM-DD
+	const formatDate = (dateString: string) => {
+		const date = new Date(dateString);
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, "0");
+		const day = String(date.getDate()).padStart(2, "0");
+		return `${year}-${month}-${day}`;
+	};
 
-    return (
-        <div className="w-full mt-8">
-            <h2 className="text-lg font-medium text-white mb-6 bg-blue-700 py-2 px-5">
-                Período da Campanha e Orçamento
-            </h2>
+	const formatCurrency = (value: number) => {
+		return value.toLocaleString("pt-BR", {
+			style: "currency",
+			currency: "BRL",
+		});
+	};
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-6">
-                <div>
-                    <label className="block mb-2 text-gray-700 font-semibold">
-                        Data de Início*
-                    </label>
-                    <input
-                        type="date"
-                        name="startDate"
-                        value={formattedStartDate}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
 
-                <div>
-                    <label className="block mb-2 text-gray-700 font-semibold">
-                        Fim da Campanha*
-                    </label>
-                    <input
-                        type="date"
-                        name="endDate"
-                        value={formattedEndDate}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-            </div>
+		if (name === "creatorFee") {
+			const digits = value.replace(/\D/g, "");
+			const numberValue = parseFloat(digits) / 100;
+			onChange({
+				...{ startDate, endDate, influencersCount, creatorFee },
+				creatorFee: isNaN(numberValue) ? 0 : numberValue,
+			});
+		} else if (name === "influencersCount") {
+			onChange({
+				...{ startDate, endDate, influencersCount, creatorFee },
+				influencersCount: Number(value),
+			});
+		} else if (name === "startDate") {
+			const newStartDate = formatDate(value);
+			let newEndDate =
+				endDate && endDate < newStartDate ? newStartDate : endDate;
 
-            <div className="px-5 mb-6">
-                <label className="block mb-2 text-gray-700 font-semibold">
-                    Quantos influenciadores você deseja na campanha?*
-                </label>
-                <input
-                    type="number"
-                    name="influencersCount"
-                    value={influencersCount || ""}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Exemplo: 6"
-                    min={0}
-                    disabled={isEditMode} // Disable if isEditMode is true
-                />
-            </div>
+			onChange({
+				startDate: newStartDate,
+				endDate: newEndDate,
+				influencersCount,
+				creatorFee,
+			});
+		} else if (name === "endDate") {
+			onChange({
+				startDate,
+				endDate: formatDate(value),
+				influencersCount,
+				creatorFee,
+			});
+		}
+	};
 
-            <div className="px-5 mb-3">
-                <label className="block mb-2 text-gray-700 font-semibold">
-                    Valor por criador*
-                </label>
-                <input
-                    type="number"
-                    name="creatorFee"
-                    value={creatorFee || ""}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Exemplo: R$500,00"
-                    min={0}
-                    disabled={isEditMode} // Disable if isEditMode is true
-                />
-            </div>
+	return (
+		<div className="w-full mt-8">
+			<h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
+				Período da Campanha e Orçamento
+			</h2>
 
-            <div className="px-5 text-gray-800 font-semibold">
-                Orçamento total da campanha: R$
-                {(influencersCount * creatorFee).toLocaleString("pt-BR")}
-            </div>
-        </div>
-    );
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-6">
+				<div>
+					<label className="block mb-2 text-gray-700 font-semibold">
+						Data de Início*
+					</label>
+					<input
+						type="date"
+						name="startDate"
+						value={startDate ? formatDate(startDate) : ""}
+						onChange={handleInputChange}
+						min={today}
+						className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+					/>
+				</div>
+
+				<div>
+					<label className="block mb-2 text-gray-700 font-semibold">
+						Fim da Campanha*
+					</label>
+					<input
+						type="date"
+						name="endDate"
+						value={endDate ? formatDate(endDate) : ""}
+						onChange={handleInputChange}
+						min={startDate || today}
+						disabled={!startDate}
+						className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+					/>
+				</div>
+			</div>
+
+			<div className="px-5 mb-6">
+				<label className="block mb-2 text-gray-700 font-semibold">
+					Quantos influenciadores você deseja na campanha?*
+				</label>
+				<input
+					type="number"
+					name="influencersCount"
+					value={influencersCount || ""}
+					onChange={handleInputChange}
+					className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+					placeholder="Exemplo: 6"
+					min={0}
+					disabled={isEditMode}
+				/>
+			</div>
+
+			<div className="px-5 mb-3">
+				<label className="block mb-2 text-gray-700 font-semibold">
+					Valor por criador*
+				</label>
+				<input
+					type="text"
+					name="creatorFee"
+					value={creatorFee ? formatCurrency(creatorFee) : ""}
+					onChange={handleInputChange}
+					className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+					placeholder="Exemplo: R$500,00"
+					disabled={isEditMode}
+				/>
+			</div>
+
+			<div className="px-5 text-gray-800 font-semibold">
+				Orçamento total da campanha:{" "}
+				{formatCurrency(influencersCount * creatorFee)}
+			</div>
+		</div>
+	);
 }
 
 const ResponsibleInfoSection: React.FC<{
@@ -1235,18 +1448,42 @@ const ResponsibleInfoSection: React.FC<{
 			.slice(0, 14);
 	};
 
+	const formatPhoneNumber = (value: string) => {
+		let digits = value.replace(/\D/g, "");
+		digits = digits.slice(0, 11);
+
+		if (digits.length > 10) {
+			digits = digits.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+		} else if (digits.length > 6) {
+			digits = digits.replace(/^(\d{2})(\d{4})(\d{0,4})$/, "($1) $2-$3");
+		} else if (digits.length > 2) {
+			digits = digits.replace(/^(\d{2})(\d{0,5})$/, "($1) $2");
+		} else if (digits.length > 0) {
+			digits = digits.replace(/^(\d{0,2})/, "($1");
+		}
+
+		return digits;
+	};
+
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 
+		let newValue = value;
+		if (name === "cpf") {
+			newValue = formatCPF(value);
+		} else if (name === "phone") {
+			newValue = formatPhoneNumber(value);
+		}
+
 		onChange({
 			...data,
-			[name]: name === "cpf" ? formatCPF(value) : value,
+			[name]: newValue,
 		});
 	};
 
 	return (
 		<div className="w-full mt-8">
-			<h2 className="text-lg font-medium text-white mb-6 bg-blue-700 py-2 px-5">
+			<h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
 				Informações do Responsável pela Campanha
 			</h2>
 			<div className="px-5 mb-6">
