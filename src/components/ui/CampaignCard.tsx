@@ -5,6 +5,7 @@ import { Coins, Image } from "phosphor-react";
 import pb from "@/lib/pb";
 import SocialNetworks from "@/types/SocialNetworks";
 import { ParticipationStatusFilter } from "@/types/Filters";
+import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -120,7 +121,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-purple-600 font-semibold">
               <Coins className="w-5 h-5" />
-              {`R$${campaign.price}`}/pessoa
+              {`${formatCentsToCurrency(campaign.price)}`}/pessoa
             </div>
 
             {!fromMyCampaigns && (
