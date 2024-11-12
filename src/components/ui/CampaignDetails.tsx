@@ -60,6 +60,7 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
             ).map((network) => (
               <img
                 key={network.name}
+                title={network.name}
                 src={network.icon}
                 alt={`Icon for ${network.name}`}
                 className="w-5 h-5"

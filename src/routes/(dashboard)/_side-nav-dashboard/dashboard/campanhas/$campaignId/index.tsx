@@ -1,5 +1,6 @@
 import {
   createFileRoute,
+  notFound,
   useLoaderData,
   useNavigate,
 } from "@tanstack/react-router";
@@ -19,6 +20,15 @@ export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
 )({
   component: CampaignPage,
+  errorComponent: () => (
+    <div>
+      Ocorreu um erro ao carregar a página. Por favor, tente novamente mais
+      tarde.
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div>A campanha que você estava procurando foi encerrada ou removida.</div>
+  ),
   loader: async ({ params: { campaignId } }) => {
     try {
       const campaignData = await pb
@@ -27,7 +37,9 @@ export const Route = createFileRoute(
           expand: "niche, brand",
         });
 
-      console.log("aaa", campaignData);
+      if (!campaignData) {
+        throw notFound();
+      }
 
       const campaignParticipationsData = await pb
         .collection<CampaignParticipation>("Campaigns_Participations")
@@ -36,14 +48,10 @@ export const Route = createFileRoute(
           expand: "Campaign,Influencer",
         });
 
-      console.log("bbb", campaignParticipationsData);
-
       return { campaignData, campaignParticipationsData };
     } catch (error) {
-      if (error instanceof ClientResponseError) {
-        if (error.status === 404) {
-          return { error: "not_found" };
-        }
+      if (error instanceof ClientResponseError && error.status === 404) {
+        throw notFound();
       }
       console.error("Error fetching data:", error);
       throw error;
@@ -56,10 +64,6 @@ function CampaignPage() {
     from: Route.id,
   });
   const navigate = useNavigate();
-
-  if (!campaignData) {
-    return <div>Carregando dados da campanha...</div>;
-  }
 
   const campaign = campaignData as Campaign;
   const campaignParticipations =
