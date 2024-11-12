@@ -38,7 +38,12 @@ function Page() {
     page,
     totalPages,
     setPage,
+    resetFilters,
   } = useCampaignStore();
+
+  useEffect(() => {
+    resetFilters(); // Reset filters when the page mounts
+  }, [resetFilters]);
 
   useEffect(() => {
     fetchCampaigns();

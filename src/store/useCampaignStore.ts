@@ -207,4 +207,17 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       });
     }
   },
+
+  // Reset filters to default values
+  resetFilters: () => {
+    set({
+      statusFilter: StatusFilter.All,
+      participationStatusFilter: ParticipationStatusFilter.All,
+      campaignGoalFilter: CampaignGoalFilter.All,
+      channelFilter: ChannelFilter.All,
+      nicheFilter: NicheFilter.All,
+      searchTerm: "",
+      page: 1,
+    });
+  },
 }));
