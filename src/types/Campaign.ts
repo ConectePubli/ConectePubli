@@ -22,7 +22,7 @@ export interface Campaign {
   gender?: string;
   min_age?: number;
   max_age?: number;
-  video_type?: string;
+  audio_format?: string;
   min_video_duration?: string;
   max_video_duration?: string;
   min_followers?: number;

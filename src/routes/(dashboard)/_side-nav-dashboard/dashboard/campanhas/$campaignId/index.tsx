@@ -161,7 +161,7 @@ function CampaignPage() {
           />
 
           <CampaignVideoCharacteristics
-            video_type={campaign.video_type}
+            video_type={campaign.audio_format}
             min_video_duration={campaign.min_video_duration}
             max_video_duration={campaign.max_video_duration}
           />

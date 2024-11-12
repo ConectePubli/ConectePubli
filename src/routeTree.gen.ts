@@ -23,6 +23,7 @@ import { Route as authCadastroMarcaImport } from './routes/(auth)/cadastro/marca
 import { Route as authCadastroInfluenciadorImport } from './routes/(auth)/cadastro/influenciador'
 import { Route as dashboardSideNavDashboardVitrineDeCampanhasIndexImport } from './routes/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/index'
 import { Route as dashboardSideNavDashboardDashboardIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/index'
+import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/index'
 import { Route as dashboardSideNavDashboardDashboardInfluenciadorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-influenciador/index'
 import { Route as dashboardSideNavDashboardDashboardLayoutImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/_layout'
 import { Route as dashboardSideNavDashboardDashboardCriarIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/criar/index'
@@ -113,6 +114,12 @@ const dashboardSideNavDashboardDashboardIndexRoute =
   dashboardSideNavDashboardDashboardIndexImport.update({
     path: '/',
     getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardMarcaIndexRoute =
+  dashboardSideNavDashboardDashboardMarcaIndexImport.update({
+    path: '/dashboard-marca/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
 const dashboardSideNavDashboardDashboardInfluenciadorIndexRoute =
@@ -288,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardDashboardInfluenciadorIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/dashboard-marca/': {
+      id: '/_side-nav-dashboard/dashboard-marca/'
+      path: '/dashboard-marca'
+      fullPath: '/dashboard-marca'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardMarcaIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/dashboard/': {
       id: '/_side-nav-dashboard/dashboard/'
       path: '/'
@@ -423,6 +437,7 @@ const dashboardSideNavDashboardDashboardRouteWithChildren =
 interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardDashboardRoute: typeof dashboardSideNavDashboardDashboardRouteWithChildren
   dashboardSideNavDashboardDashboardInfluenciadorIndexRoute: typeof dashboardSideNavDashboardDashboardInfluenciadorIndexRoute
+  dashboardSideNavDashboardDashboardMarcaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   dashboardSideNavDashboardVitrineDeCampanhasIndexRoute: typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   dashboardSideNavDashboardperfisInfluenciadorUsernameIndexRoute: typeof dashboardSideNavDashboardperfisInfluenciadorUsernameIndexRoute
@@ -437,6 +452,8 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardDashboardRouteWithChildren,
     dashboardSideNavDashboardDashboardInfluenciadorIndexRoute:
       dashboardSideNavDashboardDashboardInfluenciadorIndexRoute,
+    dashboardSideNavDashboardDashboardMarcaIndexRoute:
+      dashboardSideNavDashboardDashboardMarcaIndexRoute,
     dashboardSideNavDashboardVitrineDeCampanhasIndexRoute:
       dashboardSideNavDashboardVitrineDeCampanhasIndexRoute,
     dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute:
@@ -479,6 +496,7 @@ export interface FileRoutesByFullPath {
   '/login123new': typeof authLogin123newIndexRoute
   '/dashboard': typeof dashboardSideNavDashboardDashboardLayoutRoute
   '/dashboard-influenciador': typeof dashboardSideNavDashboardDashboardInfluenciadorIndexRoute
+  '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
@@ -505,6 +523,7 @@ export interface FileRoutesByTo {
   '/login123new': typeof authLogin123newIndexRoute
   '/dashboard': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/dashboard-influenciador': typeof dashboardSideNavDashboardDashboardInfluenciadorIndexRoute
+  '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
@@ -533,6 +552,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/dashboard': typeof dashboardSideNavDashboardDashboardRouteWithChildren
   '/_side-nav-dashboard/dashboard/_layout': typeof dashboardSideNavDashboardDashboardLayoutRoute
   '/_side-nav-dashboard/dashboard-influenciador/': typeof dashboardSideNavDashboardDashboardInfluenciadorIndexRoute
+  '/_side-nav-dashboard/dashboard-marca/': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/_side-nav-dashboard/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/_side-nav-dashboard/vitrine-de-campanhas/': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/_side-nav-dashboard/dashboard-marca/criar-campanha/': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
@@ -561,6 +581,7 @@ export interface FileRouteTypes {
     | '/login123new'
     | '/dashboard'
     | '/dashboard-influenciador'
+    | '/dashboard-marca'
     | '/dashboard/'
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
@@ -586,6 +607,7 @@ export interface FileRouteTypes {
     | '/login123new'
     | '/dashboard'
     | '/dashboard-influenciador'
+    | '/dashboard-marca'
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
     | '/dashboard/campanhas'
@@ -612,6 +634,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/dashboard'
     | '/_side-nav-dashboard/dashboard/_layout'
     | '/_side-nav-dashboard/dashboard-influenciador/'
+    | '/_side-nav-dashboard/dashboard-marca/'
     | '/_side-nav-dashboard/dashboard/'
     | '/_side-nav-dashboard/vitrine-de-campanhas/'
     | '/_side-nav-dashboard/dashboard-marca/criar-campanha/'
@@ -687,6 +710,7 @@ export const routeTree = rootRoute
       "children": [
         "/_side-nav-dashboard/dashboard",
         "/_side-nav-dashboard/dashboard-influenciador/",
+        "/_side-nav-dashboard/dashboard-marca/",
         "/_side-nav-dashboard/vitrine-de-campanhas/",
         "/_side-nav-dashboard/dashboard-marca/criar-campanha/",
         "/_side-nav-dashboard/influenciador/$username/",
@@ -736,6 +760,10 @@ export const routeTree = rootRoute
     },
     "/_side-nav-dashboard/dashboard-influenciador/": {
       "filePath": "(dashboard)/_side-nav-dashboard/dashboard-influenciador/index.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
+    "/_side-nav-dashboard/dashboard-marca/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard-marca/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/dashboard/": {
