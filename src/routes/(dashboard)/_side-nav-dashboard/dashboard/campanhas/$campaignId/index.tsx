@@ -148,7 +148,9 @@ function CampaignPage() {
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-lg shadow-lg border max-xl:mt-4">
             <h2 className="font-bold">Detalhes da Campanha</h2>
-            <p className="text-black mt-2">{campaign.description}</p>
+            <p className="text-black mt-2 break-words">
+              {campaign.description}
+            </p>
           </div>
 
           <CampaignRequirements
