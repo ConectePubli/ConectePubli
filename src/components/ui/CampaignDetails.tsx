@@ -101,7 +101,7 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
         </p>
 
         {/* Botão de Inscrição ou Mensagem de Vagas Esgotadas */}
-        {campaign.id === pb.authStore.model?.id &&
+        {campaign.id !== pb.authStore.model?.id &&
           (vagasRestantes === 0 ? (
             <p className="text-red-500 font-semibold">Vagas esgotadas</p>
           ) : (
