@@ -455,10 +455,10 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     onSuccess: async (createdCampaign: Campaign) => {
       if (isEditMode) {
         toast.success("Campanha atualizada com sucesso!");
-        // navigate({
-        //  to: "/dashboard/campanhas/$campaignId/aprovar",
-        //  params: { campaignId },
-        // });
+        navigate({
+          to: "/dashboard/campanhas/$campaignId/aprovar",
+          params: { campaignId },
+        });
       } else {
         toast.success("Campanha criada com sucesso!");
 
