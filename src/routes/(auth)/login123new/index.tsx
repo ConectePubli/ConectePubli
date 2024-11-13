@@ -14,7 +14,22 @@ import { getUserType } from "@/lib/auth";
 
 interface PreRegister {
   id: string;
+  name: string;
   email: string;
+  cell_phone: string;
+  responsible_name?: string;
+}
+
+interface BaseBody {
+  email: string;
+  name?: string;
+  cell_phone?: string;
+  password: string;
+  passwordConfirm: string;
+}
+
+interface BrandBody extends BaseBody {
+  responsible_name: string;
 }
 
 export const Route = createFileRoute("/(auth)/login123new/")({
@@ -53,7 +68,10 @@ function Page() {
   // Pre registration
   const [dataPreRegister, setDataPreRegister] = useState<PreRegister>({
     id: "",
+    name: "",
     email: "",
+    cell_phone: "",
+    responsible_name: "",
   });
 
   // Mutation for handling login and registration logic
@@ -67,11 +85,29 @@ function Page() {
         if (password.length < 8) {
           throw new Error("A senha deve ter pelo menos 8 caracteres.");
         }
-        await pb.collection(collection).create({
+
+        console.log(dataPreRegister);
+
+        const body: BaseBody | BrandBody = {
           email,
           password,
           passwordConfirm: confirmPassword,
-        });
+        };
+
+        if (dataPreRegister.name) {
+          body.name = dataPreRegister.name;
+        }
+
+        if (dataPreRegister.cell_phone) {
+          body.cell_phone = dataPreRegister.cell_phone;
+        }
+
+        if (collection === "Brands") {
+          (body as BrandBody).responsible_name =
+            dataPreRegister.responsible_name!;
+        }
+
+        await pb.collection(collection).create(body);
         await pb.collection(collection).authWithPassword(email, password);
         const preRegCollection =
           loginType === "brand"
