@@ -1,8 +1,11 @@
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { format } from "date-fns";
+import { useNavigate } from "@tanstack/react-router";
 
 const CampaignsTable: React.FC = () => {
   const { campaigns, isLoading, error } = useCampaignStore();
+
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -43,18 +46,23 @@ const CampaignsTable: React.FC = () => {
                 campaign.expand?.campaigns_participations_via_Campaign || [];
 
               const inscritos = participations.filter(
-                (p) => p.status === "waiting"
+                (p) => p.status === "waiting",
               ).length; // Quantidade de inscritos
 
               const aprovados = participations.filter(
-                (p) => p.status === "approved"
+                (p) => p.status === "approved",
               ).length; // Quantidade de aprovados
 
               return (
                 <tr
                   key={campaign.id}
                   className="border-t border-gray-200 cursor-pointer hover:bg-gray-100"
-                  onClick={() => alert(`Abrir detalhes da ${campaign.id}`)}
+                  onClick={() =>
+                    navigate({
+                      to: "/dashboard/campanhas/$campaignId/aprovar",
+                      params: { campaignId: campaign.id },
+                    })
+                  }
                 >
                   <td className="py-2 px-4 font-semibold">
                     {campaign.name}
@@ -62,7 +70,7 @@ const CampaignsTable: React.FC = () => {
                     <span className="text-xs text-gray-500">
                       {format(
                         new Date(campaign.created),
-                        "dd/MM/yyyy HH:mm:ss"
+                        "dd/MM/yyyy HH:mm:ss",
                       )}
                     </span>
                   </td>

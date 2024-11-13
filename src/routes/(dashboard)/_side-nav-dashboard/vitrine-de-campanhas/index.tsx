@@ -36,7 +36,12 @@ function Page() {
     page,
     totalPages,
     setPage,
+    resetFilters,
   } = useCampaignStore();
+
+  useEffect(() => {
+    resetFilters(); // Reset filters when the page mounts
+  }, [resetFilters]);
 
   useEffect(() => {
     fetchAllCampaigns();
@@ -47,7 +52,7 @@ function Page() {
     channelFilter,
     nicheFilter,
     page,
-  ]);
+  ]);  
 
   return (
     <div className="mx-auto py-6 px-4">

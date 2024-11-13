@@ -21,7 +21,7 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
   const clickThreshold = 150;
 
   const handleBannerClick = useCallback((id: string) => {
-    console.log("Clique na campanha", id); //TODO
+    window.open(`/dashboard/campanhas/${id}`, "_blank");
   }, []);
 
   const [campaignWidth, setCampaignWidth] = useState(0);
@@ -78,20 +78,21 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
 
       if (duration < clickThreshold && Math.abs(walk) < dragThreshold) {
         const element = document.elementFromPoint(e.clientX, e.clientY);
-        let campaignId: string | null = null;
+        let campaignUniqueName: string | null = null;
 
         let el: HTMLElement | null = element as HTMLElement;
 
         while (el && el !== sliderRef.current) {
-          if (el.dataset.campaignId) {
-            campaignId = el.dataset.campaignId;
+          if (el.dataset.campaignUniqueName) {
+            // Alterado para capturar unique_name
+            campaignUniqueName = el.dataset.campaignUniqueName;
             break;
           }
           el = el.parentElement;
         }
 
-        if (campaignId) {
-          handleBannerClick(campaignId);
+        if (campaignUniqueName) {
+          handleBannerClick(campaignUniqueName);
         }
       }
     },

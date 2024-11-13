@@ -1,9 +1,12 @@
 import { CampaignParticipation } from "./Campaign_Participations";
 import { ParticipationStatusFilter } from "@/types/Filters";
+import { Niche } from "./Niche";
+import { Brand } from "./Brand";
 
 export interface Campaign {
   id: string;
   name: string;
+  unique_name: string;
   description?: string;
   price: number;
   paid?: boolean;
@@ -16,6 +19,13 @@ export interface Campaign {
   cover_img?: string;
   niche: string[];
   channels: string[];
+  gender?: string;
+  min_age?: number;
+  max_age?: number;
+  audio_format?: string;
+  min_video_duration?: string;
+  max_video_duration?: string;
+  min_followers?: number;
   created: Date;
   updated: Date;
   collectionId: string;
@@ -24,5 +34,7 @@ export interface Campaign {
   participationStatus?: ParticipationStatusFilter;
   expand?: {
     campaigns_participations_via_Campaign?: CampaignParticipation[];
+    niche?: Niche[];
+    brand?: Brand;
   };
 }

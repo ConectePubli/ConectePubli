@@ -48,6 +48,7 @@ interface CampaignState {
   fetchCampaigns: () => Promise<void>;
   fetchAllCampaigns: () => Promise<void>;
   fetchParticipatingCampaigns: () => Promise<void>;
+  resetFilters: () => void;
 }
 
 const generateFilterString = (filters: string[]): string =>
@@ -87,7 +88,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       const filters: string[] = [];
       const currentBrandId = pb.authStore.model?.id;
       if (currentBrandId) {
-        filters.push(`brand = "${currentBrandId}"`);
+        filters.push(`brand = "${currentBrandId}" && paid=true`);
       } else {
         throw new Error("Brand ID not found in authentication.");
       }
@@ -206,5 +207,18 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
         isLoading: false,
       });
     }
+  },
+
+  // Reset filters to default values
+  resetFilters: () => {
+    set({
+      statusFilter: StatusFilter.All,
+      participationStatusFilter: ParticipationStatusFilter.All,
+      campaignGoalFilter: CampaignGoalFilter.All,
+      channelFilter: ChannelFilter.All as ChannelFilterType,
+      nicheFilter: NicheFilter.All as NicheFilterType,
+      searchTerm: "",
+      page: 1,
+    });
   },
 }));
