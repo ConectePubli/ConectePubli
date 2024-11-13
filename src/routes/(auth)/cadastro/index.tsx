@@ -1,12 +1,28 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
 
 import register from "@/assets/register.svg";
+import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute("/(auth)/cadastro/")({
   component: Page,
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    console.log(userType);
+
+    if (userType === "Brands") {
+      throw redirect({
+        to: "/dashboard-marca",
+      });
+    } else if (userType === "Influencers") {
+      throw redirect({
+        to: "/dashboard-influenciador",
+      });
+    }
+  },
 });
 
 function Page() {

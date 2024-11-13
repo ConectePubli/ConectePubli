@@ -1,23 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UserAuth } from "@/types/UserAuth";
-import { createFileRoute, useMatch, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import {
+  createFileRoute,
+  redirect,
+  useMatch,
+  useNavigate,
+} from "@tanstack/react-router";
 import { MapPin, Globe, User } from "lucide-react";
 import { Hourglass, GenderIntersex, Image } from "phosphor-react";
-import { useEffect, useState } from "react";
-import SocialNetworks from "@/types/SocialNetworks";
-import pb from "@/lib/pb";
 import { useMutation } from "@tanstack/react-query";
+
 import Spinner from "@/components/ui/Spinner";
+
+import { UserAuth } from "@/types/UserAuth";
+import SocialNetworks from "@/types/SocialNetworks";
 import { Influencer } from "@/types/Influencer";
 import { Niche } from "@/types/Niche";
+
 import CompanyIcon from "@/assets/icons/company.svg";
 import LocationPin from "@/assets/icons/location-pin.svg";
 import EditIcon from "@/assets/icons/edit.svg";
+
+import pb from "@/lib/pb";
+import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/"
 )({
   component: InfluencerProfilePage,
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    if (!userType) {
+      throw redirect({
+        to: "/login123new",
+      });
+    }
+  },
 });
 
 function InfluencerProfilePage() {

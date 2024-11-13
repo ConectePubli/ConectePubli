@@ -2,13 +2,15 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
-import pb from "@/lib/pb";
 import { Button } from "@/components/ui/button";
+import { Link, redirect } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
-import { Link } from "@tanstack/react-router";
-import logo from "@/assets/logo.svg";
 
+import logo from "@/assets/logo.svg";
 import loginImage from "@/assets/login.svg";
+
+import pb from "@/lib/pb";
+import { getUserType } from "@/lib/auth";
 
 interface PreRegister {
   id: string;
@@ -17,6 +19,21 @@ interface PreRegister {
 
 export const Route = createFileRoute("/(auth)/login123new/")({
   component: Page,
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    console.log(userType);
+
+    if (userType === "Brands") {
+      throw redirect({
+        to: "/dashboard-marca",
+      });
+    } else if (userType === "Influencers") {
+      throw redirect({
+        to: "/dashboard-influenciador",
+      });
+    }
+  },
 });
 
 function Page() {
@@ -119,7 +136,6 @@ function Page() {
         style={{ backgroundImage: `url(${loginImage})` }}
       ></div>
 
-
       <div className="w-full flex flex-col items-center overflow-y-auto px-4 py-6 lg:p-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2x">
         <div className="w-full">
           <Link to="/" className="mb-8 block w-fit">
@@ -156,9 +172,10 @@ function Page() {
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-4">
-              Lembrete: Certifique-se de selecionar a opção correta (<strong>Marca</strong> ou <strong>Influenciador</strong>).
-              Se você se pré-cadastrou como <strong>Marca</strong>, precisa
-              selecionar essa opção para acessar sua conta; o mesmo vale para{" "}
+              Lembrete: Certifique-se de selecionar a opção correta (
+              <strong>Marca</strong> ou <strong>Influenciador</strong>). Se você
+              se pré-cadastrou como <strong>Marca</strong>, precisa selecionar
+              essa opção para acessar sua conta; o mesmo vale para{" "}
               <strong>Influenciadores</strong>.
             </p>
           </div>
