@@ -463,7 +463,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         if (response.status === 200) {
           const link = await response.data.link;
           if (link) {
-            //window.location.href = link;
+            window.location.href = link;
           } else {
             toast.error("Erro ao iniciar o pagamento. Tente novamente.");
           }
