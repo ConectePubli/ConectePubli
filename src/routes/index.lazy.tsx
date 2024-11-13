@@ -31,7 +31,7 @@ function Index() {
         imageSrc={brand}
         title="Para Marcas"
         description={
-          <>
+          <div className="space-y-1">
             <p>
               <strong>Sem taxa no pagamento para influenciadores</strong> -
               Realize campanhas e pague os influenciadores sem custo adicional
@@ -39,10 +39,20 @@ function Index() {
             </p>
             <p>
               <strong>Anúncios de Campanhas</strong> - Publique suas campanhas
-              na plataforma, permitindo que influenciadores se candidatem às
-              oportunidades mais alinhadas ao seu negócio.
+              na plataforma para que influenciadores se candidatem a
+              oportunidades alinhadas ao seu negócio.
             </p>
-          </>
+            <p>
+              <strong>Criadores Alinhados com sua Marca</strong> - Encontre
+              influenciadores de acordo com os objetivos, estilo e público da
+              sua marca, garantindo parcerias estratégicas e eficazes.
+            </p>
+            <p>
+              <strong>Pagamento Facilitado </strong> - Com o ConectePay
+              integrado, realize pagamentos de forma rápida e segura diretamente
+              pela plataforma.
+            </p>
+          </div>
         }
         buttonLabel="Pré Cadastro de Marcas"
         buttonVariant="blue"
@@ -53,17 +63,23 @@ function Index() {
         imageSrc={influencers}
         title="Para Influenciadores"
         description={
-          <>
+          <div className="space-y-2">
+            <p>
+              <strong>Plataforma de Oportunidades</strong> - Descubra uma
+              variedade de jobs exclusivos para monetizar seu conteúdo, com
+              entregáveis e pagamentos claros.
+            </p>
             <p>
               <strong>Campanhas</strong> - Candidate-se a quantas campanhas
-              publicitárias quiser com entregáveis e pagamentos claros.
+              publicitárias quiser, encontrando parcerias alinhadas ao seu
+              estilo e público.
             </p>
             <p>
               <strong>Recebimento facilitado</strong> - Com o ConectePay
-              integrado, influenciadores recebem seus pagamentos de forma rápida
-              e segura, sem complicações.
+              integrado, receba seus pagamentos de forma fácil e segura, sem
+              complicações.
             </p>
-          </>
+          </div>
         }
         buttonLabel="Pré Cadastro de Influenciadores"
         buttonVariant="orange"
