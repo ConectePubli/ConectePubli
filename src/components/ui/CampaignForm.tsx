@@ -613,13 +613,17 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         onChange={setResponsibleInfo}
       />
 
-      <button
-        onClick={handleSubmit}
-        className="w-[200px] bg-[#10438F] text-white py-2 rounded-md mt-6 mb-8"
-        disabled={mutate.isPending}
-      >
-        {mutate.isPending ? "Carregando..." : "Finalizar"}
-      </button>
+      <div className="px-5 w-full">
+        <button
+          onClick={handleSubmit}
+          className="w-[200px] bg-[#10438F] text-white py-2 rounded-md mt-6 mb-8 w-full"
+          disabled={mutate.isPending}
+        >
+          {mutate.isPending
+            ? "Carregando..."
+            : "Concluir e prosseguir para o pagamento"}
+        </button>
+      </div>
 
       <ToastContainer />
     </div>
@@ -857,105 +861,138 @@ function BasicInfoSection({
         <ModalInfoCampaign isOpen={isModalOpen} onClose={closeModal}>
           <div className="p-4 max-sm:px-2 max-sm:py-4">
             <h1 className="text-xl font-bold mb-4">
-              Normas para Inserção de Campanhas UGC na Plataforma
+              Normas para Campanhas UGC e IGC na Plataforma Conecte Publi
             </h1>
             <div className="max-h-[70vh]">
               <h2 className="text-lg font-semibold mt-4 mb-2">
-                1. Instruções Claras para os Conteúdos:
+                1. Instruções para o Conteúdo:
               </h2>
               <p className="mb-2">
-                Objetivo da Campanha: Certifique-se de que o objetivo principal
-                da campanha seja mencionado, como aumento de visibilidade de
-                marca, geração de vendas, engajamento, lançamento de produto,
-                etc.
+                Objetivo da Campanha: Certifique-se de que o propósito da
+                campanha esteja claramente indicado – seja para aumentar a
+                visibilidade da marca, gerar vendas, promover engajamento,
+                lançar um produto, etc. Quando os criadores compreendem o
+                objetivo, eles podem ajustar o conteúdo para refletir melhor
+                essas metas.
               </p>
               <p className="mb-2">
-                Diretrizes de Formato: Especifique o tipo de conteúdo desejado
-                (ex: vídeo, foto, carrossel de imagens), além de detalhes
-                técnicos como resolução e orientações para o formato (ex:
+                Diretrizes de Formato: Especifique o tipo de conteúdo que deseja
+                (como vídeo, foto, ou carrossel de imagens), além dos detalhes
+                técnicos, incluindo resolução e orientação (por exemplo:
                 vertical 9:16 para stories ou reels, horizontal 16:9 para
                 YouTube).
               </p>
               <p className="mb-2">
-                Estilo e Estética: Forneça uma descrição do tom e estilo
-                esperados para o conteúdo. Exemplos visuais ajudam a ilustrar o
-                estilo desejado.
+                Estilo e Estética: Descreva o tom e o estilo esperados para o
+                conteúdo, seja ele mais leve, humorístico, inspirador ou
+                informativo. Exemplos visuais são úteis para ilustrar o estilo
+                desejado.
               </p>
               <p className="mb-2">
-                Tempo de Duração do Conteúdo: Defina a duração ideal dos vídeos,
-                especialmente considerando a plataforma em que serão postados.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                2. Referências de Vídeos e Estéticas:
-              </h2>
-              <p className="mb-2">
-                Inclua links de referências visuais, exemplo de vídeos ou
-                campanhas anteriores, além de informações visuais da marca.
+                Duração do Conteúdo: Defina o tempo ideal dos vídeos,
+                especialmente considerando a plataforma de publicação. Exemplo:
+                vídeos de até 60 segundos para reels e TikTok, stories de 15
+                segundos.
               </p>
 
               <h2 className="text-lg font-semibold mt-4 mb-2">
-                3. Instruções de Narração, Som e Ambiente:
+                2. Referências Visuais e Estéticas:
               </h2>
               <p className="mb-2">
-                Indique se o vídeo deve ter narração, legendas ou ser gravado em
-                ambiente específico.
+                Exemplos e Links de Inspiração: Inclua links de vídeos ou
+                campanhas anteriores para reduzir possíveis interpretações
+                equivocadas.
+              </p>
+              <p className="mb-2">
+                Diretrizes de Branding: Certifique-se de que os criadores tenham
+                acesso à identidade visual da marca, incluindo paleta de cores e
+                logotipo.
               </p>
 
               <h2 className="text-lg font-semibold mt-4 mb-2">
-                4. Frases ou Informações Específicas no Conteúdo:
+                3. Instruções de Narração, Áudio e Ambiente:
               </h2>
               <p className="mb-2">
-                Defina frases ou hashtags obrigatórias e qualquer marcação de
-                perfil necessária.
+                Narração ou Música de Fundo: Indique se o vídeo precisa de
+                narração, falas diretas ou se pode ter apenas uma trilha de
+                fundo.
+              </p>
+              <p className="mb-2">
+                Legendas e Diálogos: Especifique se o vídeo deve incluir
+                legendas para melhorar a acessibilidade.
+              </p>
+              <p className="mb-2">
+                Ambiente de Gravação: Informe se a gravação deve ser feita em
+                local interno ou externo.
               </p>
 
               <h2 className="text-lg font-semibold mt-4 mb-2">
-                5. Aprovação de Roteiros:
+                4. Frases e Informações Específicas no Conteúdo:
               </h2>
               <p className="mb-2">
-                Incentive os criadores a enviar um roteiro ou esboço antes da
-                produção final para ajustes prévios.
+                Orientações sobre Texto: Indique se há frases específicas ou
+                informações essenciais que devem ser mencionadas.
+              </p>
+              <p className="mb-2">
+                Hashtags e Marcação de Perfis: Informe as hashtags ou perfis que
+                devem ser mencionados ou marcados.
               </p>
 
               <h2 className="text-lg font-semibold mt-4 mb-2">
-                6. Processo de Aprovação e Ajustes:
+                5. Aprovação do Roteiro:
               </h2>
               <p className="mb-2">
-                Defina prazos claros para aprovação e ajuste de conteúdo,
-                incluindo a quantidade de rodadas de feedback.
+                Envio Prévio do Roteiro: Recomende o envio de um roteiro para
+                revisão antes da produção.
+              </p>
+              <p className="mb-2">
+                Feedback Estruturado: Ofereça um retorno claro sobre o que
+                manter ou ajustar.
               </p>
 
               <h2 className="text-lg font-semibold mt-4 mb-2">
-                7. Prazos de Pagamento:
+                6. Processo de Aprovação e Revisões:
               </h2>
               <p className="mb-2">
-                Especifique a data máxima para pagamento dos criadores,
-                considerando a aprovação final do conteúdo.
+                Prazos de Aprovação: Estabeleça um prazo para a aprovação dos
+                conteúdos enviados.
+              </p>
+              <p className="mb-2">
+                Solicitação de Ajustes: Defina o número de rodadas de ajustes
+                permitidas, com prazos específicos.
               </p>
 
               <h2 className="text-lg font-semibold mt-4 mb-2">
-                8. Cronograma de Entregas e Publicação:
+                7. Condições de Pagamento:
               </h2>
               <p className="mb-2">
-                Defina prazos para a entrega de rascunhos, versões finais e
-                publicação dos conteúdos.
+                Pagamento somente para quem finalizar o escopo pedido, caso
+                contrário, a plataforma não fará o repasse e devolverá para a
+                marca.
+              </p>
+
+              <h2 className="text-lg font-semibold mt-4 mb-2">
+                8. Cronograma de Entrega e Publicação:
+              </h2>
+              <p className="mb-2">
+                Prazos de Entrega: Defina datas específicas para envio de
+                rascunhos, versões finais e publicação.
               </p>
 
               <h2 className="text-lg font-semibold mt-4 mb-2">
                 9. Direitos de Uso e Propriedade Intelectual:
               </h2>
               <p className="mb-2">
-                Estabeleça os termos de uso dos conteúdos gerados e quais
-                plataformas podem utilizá-los.
+                Licenciamento de Conteúdo: Esclareça os termos de uso e as
+                plataformas onde o conteúdo será veiculado.
               </p>
 
               <h2 className="text-lg font-semibold mt-4 mb-2">
                 10. Resolução de Conflitos e Contingências:
               </h2>
-              <p className=" pb-5">
-                Inclua cláusulas para resolver situações como falhas técnicas e
-                indisponibilidade do criador.
+              <p className="pb-5">
+                Cláusulas de Contingência: Inclua disposições para imprevistos,
+                como problemas técnicos ou indisponibilidade.
               </p>
             </div>
           </div>
