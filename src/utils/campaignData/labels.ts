@@ -69,6 +69,10 @@ export const minVideoDurationOptions = [
 ];
 
 export const maxVideoDurationOptions = [
+  { label: "15 segundos", value: "15 segundos" },
+  { label: "30 segundos", value: "30 segundos" },
+  { label: "45 segundos", value: "45 segundos" },
+  { label: "1 minuto", value: "1 minuto" },
   { label: "2 minutos", value: "2 minutos" },
   { label: "3 minutos", value: "3 minutos" },
   { label: "4 minutos", value: "4 minutos" },
