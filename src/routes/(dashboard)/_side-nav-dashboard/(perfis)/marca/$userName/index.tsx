@@ -1,6 +1,7 @@
 import {
   createFileRoute,
   notFound,
+  redirect,
   useLoaderData,
   useNavigate,
 } from "@tanstack/react-router";
@@ -19,10 +20,20 @@ import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { formatLocation } from "@/utils/formatLocation";
+import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
 )({
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    if (!userType) {
+      throw redirect({
+        to: "/login123new",
+      });
+    }
+  },
   loader: async ({ params: { userName } }) => {
     try {
       const brandData = await pb

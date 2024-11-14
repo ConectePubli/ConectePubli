@@ -16,6 +16,10 @@ export const Route = createFileRoute(
       throw redirect({
         to: "/login123new",
       });
+    } else if (userType !== "Brands") {
+      throw redirect({
+        to: "/dashboard",
+      });
     }
   },
 });

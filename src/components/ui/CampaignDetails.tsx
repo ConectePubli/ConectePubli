@@ -105,7 +105,19 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
           (vagasRestantes === 0 ? (
             <p className="text-red-500 font-semibold">Vagas esgotadas</p>
           ) : (
-            <button className="bg-[#10438F] hover:bg-[#10438F]/90 text-white px-4 py-2 rounded-md mt-2 font-bold">
+            <button
+              className={`bg-[#10438F] text-white px-4 py-2 rounded-md mt-2 font-bold ${
+                pb.authStore.model?.collectionName === "Brands"
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-[#10438F]/90"
+              }`}
+              disabled={pb.authStore.model?.collectionName === "Brands"}
+              onClick={() => {
+                if (pb.authStore.model?.collectionName !== "Brands") {
+                  // LOGICA DE INSCRIÇÃO
+                }
+              }}
+            >
               Inscrever-se
             </button>
           ))}
