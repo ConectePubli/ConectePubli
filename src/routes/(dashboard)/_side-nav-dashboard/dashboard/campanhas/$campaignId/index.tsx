@@ -88,7 +88,7 @@ function CampaignPage() {
 
     participations.forEach((participation) => {
       if (
-        participation.status === "waiting" ||
+        // participation.status === "waiting" || NÃO CONSIDERAR WAITING
         participation.status === "approved"
       ) {
         ocupadas += 1;
@@ -141,6 +141,7 @@ function CampaignPage() {
         <div className="space-y-4">
           <CampaignDetails
             campaign={campaign}
+            campaignParticipations={campaignParticipations}
             vagasRestantes={campaignWithOpenJobs.vagasRestantes}
             pb={pb}
             timeAgo={timeAgo}

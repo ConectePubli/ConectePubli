@@ -95,10 +95,9 @@ function Page() {
     const participationCountMap: { [key: string]: number } = {};
 
     participations.forEach((participation) => {
-      const campaignId = participation.Campaign;
-      // Considere apenas status que ocupam vagas abertas
+      const campaignId = participation.campaign;
       if (
-        participation.status === "waiting" ||
+        // participation.status === "waiting" || NÃO CONSIDERAR QUANDO TIVER WAITING
         participation.status === "approved"
       ) {
         if (participationCountMap[campaignId]) {

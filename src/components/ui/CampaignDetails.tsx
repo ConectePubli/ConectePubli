@@ -8,9 +8,12 @@ import { Campaign } from "@/types/Campaign";
 import SocialNetworks from "@/types/SocialNetworks";
 import Client from "pocketbase";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import { CampaignParticipation } from "@/types/Campaign_Participations";
+import CampaignSubscribeButton from "./CampaignSubscribeButton";
 
 interface CampaignDetailsProps {
   campaign: Campaign;
+  campaignParticipations: CampaignParticipation[];
   vagasRestantes: number | undefined;
   pb: Client;
   timeAgo: (date: Date) => string;
@@ -19,7 +22,7 @@ interface CampaignDetailsProps {
 const CampaignDetails: React.FC<CampaignDetailsProps> = ({
   campaign,
   vagasRestantes,
-  pb,
+  campaignParticipations,
   timeAgo,
 }) => {
   // Verifica se há pelo menos um detalhe para exibir
@@ -101,26 +104,11 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
         </p>
 
         {/* Botão de Inscrição ou Mensagem de Vagas Esgotadas */}
-        {campaign.id !== pb.authStore.model?.id &&
-          (vagasRestantes === 0 ? (
-            <p className="text-red-500 font-semibold">Vagas esgotadas</p>
-          ) : (
-            <button
-              className={`bg-[#10438F] text-white px-4 py-2 rounded-md mt-2 font-bold ${
-                pb.authStore.model?.collectionName === "Brands"
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-[#10438F]/90"
-              }`}
-              disabled={pb.authStore.model?.collectionName === "Brands"}
-              onClick={() => {
-                if (pb.authStore.model?.collectionName !== "Brands") {
-                  // LOGICA DE INSCRIÇÃO
-                }
-              }}
-            >
-              Inscrever-se
-            </button>
-          ))}
+        <CampaignSubscribeButton
+          campaign={campaign}
+          campaignParticipations={campaignParticipations}
+          vagasRestantes={vagasRestantes}
+        />
       </div>
     </div>
   );
