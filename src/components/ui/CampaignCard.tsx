@@ -6,6 +6,7 @@ import pb from "@/lib/pb";
 import SocialNetworks from "@/types/SocialNetworks";
 import { ParticipationStatusFilter } from "@/types/Filters";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import { Link } from "@tanstack/react-router";
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -52,7 +53,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row bg-white rounded-lg border-2 h-auto">
+    <Link
+      to="/dashboard/campanhas/$campaignName"
+      params={{ campaignName: campaign.unique_name }}
+      className="flex flex-col md:flex-row bg-white rounded-lg border-2 h-auto"
+    >
       <div className="w-full hidden md:block md:w-[32%] h-auto">
         {campaign.cover_img ? (
           <div
@@ -97,7 +102,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           {/* Social Network Icons */}
           <div className="flex flex-wrap gap-2">
             {SocialNetworks.filter((network) =>
-              campaign.channels.includes(network.name)
+              campaign.channels.includes(network.name),
             ).map((network) => (
               <img
                 key={network.name}
@@ -143,7 +148,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
