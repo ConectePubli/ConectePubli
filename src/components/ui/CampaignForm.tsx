@@ -144,6 +144,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
   // Prefill form data in edit mode
   useEffect(() => {
+    console.log(initialCampaignData);
     if (isEditMode && initialCampaignData) {
       setCampaignData({
         basicInfo: {
@@ -163,8 +164,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           location: initialCampaignData.locality || "",
           videoMinDuration: initialCampaignData.min_video_duration || "",
           videoMaxDuration: initialCampaignData.max_video_duration || "",
-          paidTraffic: initialCampaignData.paid || false,
-          audioFormat: "Música",
+          paidTraffic: initialCampaignData.paid_traffic || null,
+          audioFormat: initialCampaignData.audio_format || null,
         },
       });
 
@@ -183,71 +184,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       });
     }
   }, [isEditMode, initialCampaignData]);
-
-  // Update campaign function (for edit mode)
-  const updateCampaign = async (): Promise<Campaign> => {
-    if (!campaignId) {
-      throw new Error("Campaing ID not found");
-    }
-
-    const formData = new FormData();
-    formData.append("name", campaignData.basicInfo.campaignName);
-    if (campaignData.basicInfo.coverImage) {
-      formData.append("cover_img", campaignData.basicInfo.coverImage);
-    }
-    formData.append("objective", campaignData.basicInfo.format);
-    formData.append("product_url", campaignData.basicInfo.productUrl);
-    formData.append("description", campaignData.basicInfo.campaignDetails);
-    if (Array.isArray(campaignData.basicInfo.disseminationChannels)) {
-      campaignData.basicInfo.disseminationChannels.forEach((channel) => {
-        formData.append("channels", channel);
-      });
-    } else {
-      formData.append("channels", campaignData.basicInfo.disseminationChannels);
-    }
-    campaignData.audienceSegmentation.niche.forEach((nicheId) => {
-      formData.append("niche", nicheId);
-    });
-    formData.append("min_age", campaignData.audienceSegmentation.minAge);
-    formData.append("max_age", campaignData.audienceSegmentation.maxAge);
-    formData.append("gender", campaignData.audienceSegmentation.gender);
-    formData.append(
-      "min_followers",
-      campaignData.audienceSegmentation.minFollowers
-    );
-    if (Array.isArray(campaignData.audienceSegmentation.location)) {
-      campaignData.audienceSegmentation.location.forEach((locate) => {
-        formData.append("locality", locate);
-      });
-    } else {
-      formData.append("locality", campaignData.audienceSegmentation.location);
-    }
-    formData.append(
-      "min_video_duration",
-      campaignData.audienceSegmentation.videoMinDuration
-    );
-    formData.append(
-      "max_video_duration",
-      campaignData.audienceSegmentation.videoMaxDuration
-    );
-    formData.append(
-      "paid_traffic",
-      campaignData.audienceSegmentation.paidTraffic ? "true" : "false"
-    );
-    formData.append("beginning", campaignBudget.startDate as string);
-    formData.append("end", campaignBudget.endDate as string);
-    formData.append("open_jobs", campaignBudget.influencersCount.toString());
-    formData.append("price", campaignBudget.creatorFee.toString());
-    formData.append("responsible_name", responsibleInfo.name);
-    formData.append("responsible_email", responsibleInfo.email);
-    formData.append(
-      "responsible_phone",
-      responsibleInfo.phone.replace(/\D/g, "")
-    );
-    formData.append("responsible_cpf", responsibleInfo.cpf);
-
-    return await pb.collection("Campaigns").update(campaignId, formData);
-  };
 
   const { data: niches, isLoading: nichesLoading } = useQuery<Niche[]>({
     queryKey: ["niches"],
@@ -311,7 +247,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
   const generateUniqueName = (
     baseName: string,
-    existingNames: string[]
+    existingNames: string[],
   ): string => {
     let uniqueName = "";
     let isUnique = false;
@@ -327,40 +263,26 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     return uniqueName;
   };
 
-  const createCampaign = async (): Promise<Campaign> => {
-    const formData = new FormData();
-
-    if (!user.model.id) {
-      toast.error(
-        "Erro ao processar informação, por favor realize o login novamente"
-      );
-      throw new Error("User ID is missing");
-    }
-
-    const existingUniqueNames: string[] = await pb
-      .collection("Campaigns")
-      .getFullList<Campaign>({ fields: "unique_name" })
-      .then((campaigns) => campaigns.map((c) => c.unique_name));
-
-    const baseName = campaignData.basicInfo.campaignName
-      .toLowerCase()
-      .replace(/\s+/g, "_")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-
-    const uniqueName = generateUniqueName(baseName, existingUniqueNames);
-
-    formData.append("brand", user.model.id || "");
+  // Helper function to populate shared fields
+  const populateCampaignFormData = (
+    formData: FormData,
+    campaignData: CampaignData,
+    campaignBudget: CampaignBudget,
+    responsibleInfo: ResponsibleInfo,
+    userId: string | undefined,
+  ) => {
+    if (userId) formData.append("brand", userId);
     formData.append("status", "ready");
 
     formData.append("name", campaignData.basicInfo.campaignName);
-    formData.append("unique_name", uniqueName);
     if (campaignData.basicInfo.coverImage) {
       formData.append("cover_img", campaignData.basicInfo.coverImage);
     }
     formData.append("objective", campaignData.basicInfo.format);
     formData.append("product_url", campaignData.basicInfo.productUrl);
     formData.append("description", campaignData.basicInfo.campaignDetails);
+
+    // Dissemination channels
     if (Array.isArray(campaignData.basicInfo.disseminationChannels)) {
       campaignData.basicInfo.disseminationChannels.forEach((channel) => {
         formData.append("channels", channel);
@@ -368,16 +290,24 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     } else {
       formData.append("channels", campaignData.basicInfo.disseminationChannels);
     }
-    campaignData.audienceSegmentation.niche.forEach((nicheId) => {
-      formData.append("niche", nicheId);
-    });
+
+    // Audience segmentation
+    if (campaignData.audienceSegmentation.niche.length === 0) {
+      // Ensure backend knows this field is empty
+      formData.append("niche", "");
+    } else {
+      campaignData.audienceSegmentation.niche.forEach((nicheId) => {
+        formData.append("niche", nicheId);
+      });
+    }
     formData.append("min_age", campaignData.audienceSegmentation.minAge);
     formData.append("max_age", campaignData.audienceSegmentation.maxAge);
     formData.append("gender", campaignData.audienceSegmentation.gender);
     formData.append(
       "min_followers",
-      campaignData.audienceSegmentation.minFollowers
+      campaignData.audienceSegmentation.minFollowers,
     );
+
     if (Array.isArray(campaignData.audienceSegmentation.location)) {
       campaignData.audienceSegmentation.location.forEach((locate) => {
         formData.append("locality", locate);
@@ -385,52 +315,139 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     } else {
       formData.append("locality", campaignData.audienceSegmentation.location);
     }
+
     formData.append(
       "min_video_duration",
-      campaignData.audienceSegmentation.videoMinDuration
+      campaignData.audienceSegmentation.videoMinDuration,
     );
     formData.append(
       "max_video_duration",
-      campaignData.audienceSegmentation.videoMaxDuration
+      campaignData.audienceSegmentation.videoMaxDuration,
     );
-    if (campaignData.audienceSegmentation.paidTraffic) {
-      formData.append(
-        "paid_traffic",
-        campaignData.audienceSegmentation.paidTraffic ? "true" : "false"
-      );
-    }
-    if (campaignData.audienceSegmentation.audioFormat) {
-      formData.append(
-        "audio_format",
-        campaignData.audienceSegmentation.audioFormat
-      );
-    }
+    formData.append(
+      "paid_traffic",
+      campaignData.audienceSegmentation.paidTraffic ? "true" : "false",
+    );
+    formData.append(
+      "audio_format",
+      campaignData.audienceSegmentation.audioFormat || "",
+    );
+
+    // Campaign budget
     formData.append("beginning", campaignBudget.startDate as string);
     formData.append("end", campaignBudget.endDate as string);
-
-    formData.append(
-      "max_subscriptions",
-      campaignBudget.influencersCount.toString()
-    );
     formData.append("open_jobs", campaignBudget.influencersCount.toString());
     formData.append(
       "price",
-      (campaignBudget.influencersCount * campaignBudget.creatorFee).toString()
+      (campaignBudget.influencersCount * campaignBudget.creatorFee).toString(),
     );
-    formData.append("paid", "false");
+
+    // Responsible info
     formData.append("responsible_name", responsibleInfo.name);
     formData.append("responsible_email", responsibleInfo.email);
     formData.append(
       "responsible_phone",
-      responsibleInfo.phone.replace(/\D/g, "")
+      responsibleInfo.phone.replace(/\D/g, ""),
     );
     formData.append("responsible_cpf", responsibleInfo.cpf);
+  };
+
+  // Helper function to prepare form data and handle unique name logic
+  const prepareCampaignFormData = async (
+    formData: FormData,
+    user: User,
+    campaignData: CampaignData,
+    campaignBudget: Budget,
+    responsibleInfo: Info,
+    isNew: boolean,
+    currentUniqueName?: string,
+  ): Promise<void> => {
+    if (!user.model.id) {
+      toast.error(
+        "Erro ao processar informação, por favor realize o login novamente",
+      );
+      throw new Error("User ID is missing");
+    }
+
+    // Fetch existing unique names only if we're creating or changing the name
+    let uniqueName = currentUniqueName;
+    if (
+      isNew ||
+      !currentUniqueName ||
+      campaignData.basicInfo.campaignName !==
+        currentUniqueName.replace(/_/g, " ")
+    ) {
+      const existingUniqueNames: string[] = await pb
+        .collection("Campaigns")
+        .getFullList<Campaign>({ fields: "unique_name" })
+        .then((campaigns) => campaigns.map((c) => c.unique_name));
+
+      const baseName = campaignData.basicInfo.campaignName
+        .toLowerCase()
+        .replace(/\s+/g, "_")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+      uniqueName = generateUniqueName(baseName, existingUniqueNames);
+    }
+
+    formData.append("unique_name", uniqueName);
+
+    // Populate the rest of the form data
+    populateCampaignFormData(
+      formData,
+      campaignData,
+      campaignBudget,
+      responsibleInfo,
+      isNew ? user.model.id : undefined,
+    );
+  };
+
+  // Create campaign function
+  const createCampaign = async (): Promise<Campaign> => {
+    const formData = new FormData();
+    await prepareCampaignFormData(
+      formData,
+      user,
+      campaignData,
+      campaignBudget,
+      responsibleInfo,
+      true,
+    );
+
+    formData.append("paid", "false");
 
     const createdCampaign: Campaign = await pb
       .collection("Campaigns")
       .create(formData);
-
     return createdCampaign;
+  };
+
+  // Update campaign function
+  const updateCampaign = async (): Promise<Campaign> => {
+    if (!campaignId) {
+      throw new Error("Campaign ID not found");
+    }
+
+    const formData = new FormData();
+
+    // Fetch current campaign data to get the existing unique name
+    const currentCampaign = await pb
+      .collection("Campaigns")
+      .getOne<Campaign>(campaignId);
+    const currentUniqueName = currentCampaign.unique_name;
+
+    await prepareCampaignFormData(
+      formData,
+      user,
+      campaignData,
+      campaignBudget,
+      responsibleInfo,
+      false,
+      currentUniqueName,
+    );
+
+    return await pb.collection("Campaigns").update(campaignId, formData);
   };
 
   const mutate = useMutation<Campaign, Error, void>({
@@ -457,7 +474,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             headers: {
               Authorization: `Bearer ${user.token}`,
             },
-          }
+          },
         );
 
         if (response.status === 200) {
@@ -651,7 +668,7 @@ function BasicInfoSection({
   }, [data.coverImage, isEditMode, initialCampaignData]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     onChange({
@@ -1002,13 +1019,13 @@ function AudienceSegmentationSection({
     if (niches && data.niche.length > 0) {
       // Filter the niche options that are already selected
       const preSelectedNiches = niches.filter((niche) =>
-        data.niche.includes(niche.id)
+        data.niche.includes(niche.id),
       );
       setSelectedNiches(preSelectedNiches);
 
       // Set available niche options by removing the pre-selected ones
       const availableNiches = niches.filter(
-        (niche) => !data.niche.includes(niche.id)
+        (niche) => !data.niche.includes(niche.id),
       );
       setNicheOptions(availableNiches);
     } else if (niches) {
@@ -1056,7 +1073,7 @@ function AudienceSegmentationSection({
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     onChange({
@@ -1067,7 +1084,7 @@ function AudienceSegmentationSection({
 
   const handleToggleChange = (
     field: "paidTraffic" | "audioFormat",
-    value: unknown
+    value: unknown,
   ) => {
     onChange({
       ...data,
@@ -1083,7 +1100,7 @@ function AudienceSegmentationSection({
 
     if (minDuration && !data.videoMinDuration.includes("segundos")) {
       const filteredOptions = maxVideoDurationOptions.filter(
-        (option) => parseInt(option.value, 10) >= minDuration
+        (option) => parseInt(option.value, 10) >= minDuration,
       );
       setMaxVideoDurationOptionsFiltered(filteredOptions);
 
@@ -1431,20 +1448,22 @@ function CampaignBudgetSection({
     setToday(`${year}-${month}-${day}`);
   }, []);
 
-  // Helper function to format the date as YYYY-MM-DD
-  const formatDate = (dateValue: string | Date) => {
+  // Helper function to format the date as "yyyy-MM-dd"
+  const formatDate = (dateValue) => {
     if (!dateValue) return "";
+    let date;
     if (typeof dateValue === "string") {
-      // Assume que dateValue já está no formato 'YYYY-MM-DD'
-      return dateValue;
+      date = new Date(dateValue);
     } else if (dateValue instanceof Date) {
-      const year = dateValue.getFullYear();
-      const month = String(dateValue.getMonth() + 1).padStart(2, "0");
-      const day = String(dateValue.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
+      date = dateValue;
     } else {
       return "";
     }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   const formatCurrency = (value: number) => {
@@ -1511,7 +1530,7 @@ function CampaignBudgetSection({
           <input
             type="date"
             name="startDate"
-            value={(startDate as string) || ""}
+            value={startDate ? formatDate(startDate as string) : ""}
             onChange={handleInputChange}
             min={today}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -1573,7 +1592,7 @@ function CampaignBudgetSection({
         {formatCurrency(influencersCount * creatorFee)}
       </div>
 
-      <p className="px-5 mt-2 text-gray-500">
+      <p className={`px-5 mt-2 text-gray-500 ${isEditMode ? "hidden" : ""}`}>
         Ao finalizar a criação da campanha, você será direcionado para o
         processo de pagamento referente ao orçamento total calculado acima.
       </p>

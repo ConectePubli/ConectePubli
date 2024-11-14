@@ -1,6 +1,7 @@
 import {
   createFileRoute,
   notFound,
+  redirect,
   useLoaderData,
   useNavigate,
 } from "@tanstack/react-router";
@@ -15,6 +16,7 @@ import CampaignRequirements from "@/components/ui/CampaignRequirements";
 import CampaignVideoCharacteristics from "@/components/ui/CampaignVideoCharacteristics";
 import CampaignDetails from "@/components/ui/CampaignDetails";
 import CampaignBrandProfile from "@/components/ui/CampaignBrandProfile";
+import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
@@ -29,6 +31,15 @@ export const Route = createFileRoute(
   notFoundComponent: () => (
     <div>A campanha que você estava procurando foi encerrada ou removida.</div>
   ),
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    if (!userType) {
+      throw redirect({
+        to: "/login123new",
+      });
+    }
+  },
   loader: async ({ params: { campaignId } }) => {
     try {
       const campaignData = await pb
