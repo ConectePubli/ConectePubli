@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
 
-import register from "@/assets/register.svg";
+import register from "@/assets/register.webp";
 import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute("/(auth)/cadastro/")({

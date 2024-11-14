@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
-import heroImage from "@/assets/hero-image.svg";
+import heroImage from "@/assets/hero-image.webp";
 
 //import adImage from "@/assets/ad_example.jpg";
 
@@ -51,7 +51,7 @@ export const HeroSection: React.FC = () => {
         </div> */}
       </div>
 
-      <div className="flex justify-end flex-1 mt-8 md:mt-0 md:ml-0">
+      <div className="flex justify-end flex-1 mt-8 md:mt-0 md:ml-0 md:hidden xl:flex">
         <img
           src={heroImage}
           alt="Pessoa gravando um podcast"

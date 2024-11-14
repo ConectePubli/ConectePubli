@@ -25,13 +25,13 @@ export const SectionInfo: React.FC<SectionInfoProps> = ({
       <div
         className={`flex flex-col ${
           reverse ? "lg:flex-row-reverse" : "lg:flex-row"
-        } items-center gap-6`}
+        } gap-6`}
       >
-        <div className="w-full lg:w-[40%]">
+        <div className="w-full md:w-[50%] lg:w-[40%]">
           <img
             src={imageSrc}
             alt={title}
-            className="rounded-lg shadow-lg w-full h-80 object-cover"
+            className="rounded-lg shadow-lg w-full h-auto object-cover"
           />
         </div>
 

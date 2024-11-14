@@ -3,8 +3,8 @@ import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
-import connect1 from "@/assets/connect1.svg";
-import connect2 from "@/assets/connect2.svg";
+import connect1 from "@/assets/connect1.webp";
+import connect2 from "@/assets/connect2.webp";
 
 export const ConnectSection: React.FC = () => {
   const navigate = useNavigate();
@@ -15,15 +15,15 @@ export const ConnectSection: React.FC = () => {
         <img
           src={connect1}
           alt="Influencer 1"
-          className="rounded-lg shadow-lg w-full h-64 object-cover"
+          className="rounded-lg shadow-lg w-[300px] xl:w-[400px] hidden lg:block h-auto object-cover"
         />
         <img
           src={connect2}
           alt="Influencer 2"
-          className="rounded-lg shadow-lg w-full h-64 object-cover"
+          className="rounded-lg shadow-lg w-[300px] xl:w-[400px] hidden lg:block h-auto object-cover"
         />
 
-        <div className="w-full text-center lg:text-left">
+        <div className="w-full">
           <h2 className="text-3xl font-bold mb-4">Conecte-se!</h2>
           <p className="text-gray-700 mb-4">
             Ao se cadastrar no pré-lançamento, você garante acesso prioritário a
@@ -41,6 +41,7 @@ export const ConnectSection: React.FC = () => {
             </Button> */}
             <Button
               variant="blue"
+              className="w-fit"
               size="lg"
               onClick={() => navigate({ to: "/cadastro" })}
             >

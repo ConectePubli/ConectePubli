@@ -1,7 +1,7 @@
 import React from "react";
-import image1 from "@/assets/how-it-works1.svg";
-import image2 from "@/assets/how-it-works2.svg";
-import image3 from "@/assets/how-it-works3.svg";
+import image1 from "@/assets/how-it-works1.webp";
+import image2 from "@/assets/how-it-works2.webp";
+import image3 from "@/assets/how-it-works3.webp";
 
 import { FeatureCard } from "@/components/LandingPage/FeaturesCard/FeaturesCard";
 
