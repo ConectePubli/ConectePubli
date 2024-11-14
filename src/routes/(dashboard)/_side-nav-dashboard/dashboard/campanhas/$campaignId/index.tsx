@@ -19,7 +19,7 @@ import CampaignBrandProfile from "@/components/ui/CampaignBrandProfile";
 import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
+  "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/",
 )({
   component: CampaignPage,
   errorComponent: () => (
@@ -82,7 +82,7 @@ function CampaignPage() {
 
   const calculateOpenJobs = (
     campaign: Campaign,
-    participations: CampaignParticipation[]
+    participations: CampaignParticipation[],
   ): Campaign => {
     let ocupadas = 0;
 
@@ -104,7 +104,7 @@ function CampaignPage() {
 
   const campaignWithOpenJobs = calculateOpenJobs(
     campaign,
-    campaignParticipations
+    campaignParticipations,
   );
 
   const genderMap = {
@@ -163,6 +163,26 @@ function CampaignPage() {
             <p className="text-black mt-2 break-words">
               {campaign.description}
             </p>
+
+            {/* External Link */}
+            <p className="mt-4 flex flex-wrap gap-2 font-medium">
+              Link Relevante da Campanha:
+              <a
+                href={campaign.product_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600"
+              >
+                {campaign.product_url}
+              </a>
+            </p>
+
+            {/* Warning Message */}
+            <p className="text-yellow-600 font-semibold mt-4">
+              Atenção: Todas as interações e pagamentos desta campanha estão
+              protegidos pelo nosso sistema de garantia. Evite contato fora da
+              plataforma para garantir sua segurança e o pagamento integral.
+            </p>
           </div>
 
           <CampaignRequirements
@@ -179,6 +199,23 @@ function CampaignPage() {
             min_video_duration={campaign.min_video_duration}
             max_video_duration={campaign.max_video_duration}
           />
+
+          <div className="bg-white p-4 rounded-lg shadow-lg border max-xl:mt-4">
+            {/* Compartilhamento nas redes sociais */}
+            <h2 className="font-bold mb-2">Trafego da Campanha</h2>
+
+            {!campaign.paid_traffic && (
+              <p className="text-black">
+                Compartilhado nas redes sociais da marca de forma orgânica
+              </p>
+            )}
+
+            {campaign.paid_traffic && (
+              <p className="text-black">
+                Compartilhado nas redes sociais da marca com tráfego pago
+              </p>
+            )}
+          </div>
 
           <div className="xl:hidden mt-4">
             <CampaignBrandProfile
