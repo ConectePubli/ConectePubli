@@ -89,7 +89,8 @@ function CampaignPage() {
     participations.forEach((participation) => {
       if (
         // participation.status === "waiting" || NÃO CONSIDERAR WAITING
-        participation.status === "approved"
+        participation.status === "approved" ||
+        participation.status === "completed"
       ) {
         ocupadas += 1;
       }

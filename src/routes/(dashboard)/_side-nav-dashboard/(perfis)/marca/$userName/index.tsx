@@ -98,7 +98,8 @@ function Page() {
       const campaignId = participation.campaign;
       if (
         // participation.status === "waiting" || NÃO CONSIDERAR QUANDO TIVER WAITING
-        participation.status === "approved"
+        participation.status === "approved" ||
+        participation.status === "completed"
       ) {
         if (participationCountMap[campaignId]) {
           participationCountMap[campaignId] += 1;

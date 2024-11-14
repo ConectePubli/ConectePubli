@@ -3,7 +3,7 @@ import { Campaign } from "@/types/Campaign";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useState, useEffect } from "react";
-import { Influencer } from "@/types/Influencer"; // Assegure-se de importar a interface correta
+import { Influencer } from "@/types/Influencer";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog"; // Ajuste o caminho conforme necessário
+} from "@/components/ui/dialog";
 import { AuthModel, ClientResponseError } from "pocketbase";
 import { toast } from "sonner";
 import { ParticipationStatusFilter } from "@/types/Filters";
@@ -25,7 +25,6 @@ interface CampaignSubscribeButtonProps {
 const isProfileComplete = (user: AuthModel): boolean => {
   if (!user) return false;
 
-  // Verificar todos os campos obrigatórios
   const requiredFieldsFilled =
     Boolean(user.name) &&
     Boolean(user.username) &&
@@ -45,7 +44,6 @@ const isProfileComplete = (user: AuthModel): boolean => {
     Boolean(user.cep) &&
     Boolean(user.pix_key);
 
-  // Verificar se pelo menos um campo de rede social está preenchido
   const socialFieldsFilled =
     Boolean(user.instagram_url) ||
     Boolean(user.facebook_url) ||
@@ -61,7 +59,6 @@ const isProfileComplete = (user: AuthModel): boolean => {
   return requiredFieldsFilled && socialFieldsFilled;
 };
 
-// Exemplo de um Spinner simples
 const Spinner: React.FC = () => (
   <svg
     className="animate-spin h-5 w-5 mr-2 text-white"
@@ -96,9 +93,8 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
   );
   const isBrand = user?.collectionName === "Brands";
   const isVagasEsgotadas = vagasRestantes === 0;
-  const isOwner = campaign.id === user?.id; // Verifica se o usuário é o dono da campanha
+  const isOwner = campaign.id === user?.id;
 
-  // Estados para o modal e carregamento
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [contentIdea, setContentIdea] = useState("");
   const [isContractAccepted, setIsContractAccepted] = useState(false);
@@ -111,7 +107,13 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
     setLocalCampaignParticipations(campaignParticipations);
   }, [campaignParticipations]);
 
-  // Função para verificar se o usuário está inscrito
+  useEffect(() => {
+    const unsubscribe = pb.authStore.onChange(() => {
+      setUser(pb.authStore.model as Influencer | null);
+    });
+    return () => unsubscribe();
+  }, []);
+
   const isUserRegistered = (): boolean => {
     if (!user) return false;
     return localCampaignParticipations.some(
@@ -120,15 +122,6 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
     );
   };
 
-  // Atualizar o estado do usuário quando o authStore muda
-  useEffect(() => {
-    const unsubscribe = pb.authStore.onChange(() => {
-      setUser(pb.authStore.model as Influencer | null);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  // Funções para navegação e ações
   const navigateToCompleteProfile = (): void => {
     if (user?.collectionName === "Influencers") {
       navigate({ to: `/influenciador/${user.username}/editar` });
@@ -190,37 +183,48 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
     if (!user) return;
     setIsLoadingCancel(true);
     try {
-      await pb
-        .collection<CampaignParticipation>("Campaigns_Participations")
-        .delete(
-          localCampaignParticipations.find((p) => p.influencer === user.id)
-            ?.id || ""
-        );
-
-      toast.success("Inscrição cancelada com sucesso!");
-
-      setLocalCampaignParticipations(
-        localCampaignParticipations.filter((p) => p.influencer !== user.id)
+      const participation = localCampaignParticipations.find(
+        (p) => p.influencer === user.id
       );
+      if (participation) {
+        await pb
+          .collection<CampaignParticipation>("Campaigns_Participations")
+          .delete(participation.id!);
+
+        toast.success("Inscrição cancelada com sucesso!");
+
+        setLocalCampaignParticipations(
+          localCampaignParticipations.filter((p) => p.influencer !== user.id)
+        );
+      }
     } catch (error) {
       console.error("Erro ao cancelar inscrição:", error);
       toast.error(
         "Ocorreu um erro ao tentar cancelar a inscrição. Tente novamente."
       );
     } finally {
-      setIsLoadingCancel(false); // Finalizar o estado de carregamento
+      setIsLoadingCancel(false);
     }
   };
 
-  // Determine o estado atual do botão
+  const userParticipation = user
+    ? localCampaignParticipations.find((p) => p.influencer === user.id)
+    : null;
+
   let buttonText: string = "Inscrever-se";
   let isDisabled: boolean =
-    isBrand || (!isUserRegistered && isVagasEsgotadas) || isOwner;
+    isBrand || (!isUserRegistered() && isVagasEsgotadas) || isOwner;
   let onClickHandler: () => void = () => setIsModalOpen(true);
 
-  if (isUserRegistered()) {
-    buttonText = isLoadingCancel ? "Cancelando..." : "Cancelar Inscrição";
-    onClickHandler = handleCancelarInscricao;
+  if (userParticipation) {
+    if (userParticipation.status === "approved") {
+      buttonText = "Aprovado pela marca";
+      isDisabled = true;
+      onClickHandler = () => {};
+    } else if (userParticipation.status === "waiting") {
+      buttonText = isLoadingCancel ? "Cancelando..." : "Cancelar Inscrição";
+      onClickHandler = handleCancelarInscricao;
+    }
   } else if (
     !isProfileComplete(user) &&
     user?.collectionName === "Influencers"
@@ -241,6 +245,7 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
     <>
       {!isBrand &&
         !isProfileComplete(user) &&
+        !isVagasEsgotadas &&
         user?.collectionName === "Influencers" && (
           <p className="text-[#942A2A] font-semibold">
             Complete seu perfil para se inscrever
@@ -253,9 +258,11 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
               buttonText === "Cancelar Inscrição" ||
               buttonText === "Cancelando..."
                 ? "bg-white border-[#942A2A] text-[#942A2A] hover:bg-[#942A2A] hover:text-white"
-                : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
+                : buttonText === "Aprovado pela marca"
+                  ? "bg-green-500 text-white cursor-default"
+                  : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
             } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
-            disabled={isDisabled || isLoadingCancel}
+            disabled={isDisabled}
             onClick={onClickHandler}
           >
             {isLoadingCancel && <Spinner />}
@@ -335,12 +342,13 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
           )}
         </>
       ) : (
-        !isUserRegistered() && (
+        !isUserRegistered() ||
+        (isUserRegistered() && userParticipation?.status === "sold_out" && (
           <p className="text-[#942A2A] font-semibold">
-            As vagas para esta campanha estão preenchidas. Fique atento para
-            novas oportunidades em breve!
+            $
+            {`As vagas para esta campanha estão preenchidas. Agradecemos seu interesse ${isUserRegistered() && "e participação"}! Fique de olho nas próximas oportunidades que lançaremos em breve.`}
           </p>
-        )
+        ))
       )}
     </>
   );
