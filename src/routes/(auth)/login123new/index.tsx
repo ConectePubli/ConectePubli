@@ -7,7 +7,7 @@ import { Link, redirect } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 
 import logo from "@/assets/logo.svg";
-import loginImage from "@/assets/login.svg";
+import loginImage from "@/assets/login.webp";
 
 import pb from "@/lib/pb";
 import { getUserType } from "@/lib/auth";

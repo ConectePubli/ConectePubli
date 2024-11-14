@@ -8,8 +8,8 @@ import { SectionInfo } from "@/components/sections/LandingPage/SectionInfo";
 import { ConnectSection } from "@/components/sections/LandingPage/ConnectSection";
 
 import { Footer } from "@/components/sections/LandingPage/Footer";
-import brand from "@/assets/brand.svg";
-import influencers from "@/assets/influencers.svg";
+import brand from "@/assets/brand.webp";
+import influencers from "@/assets/influencers.webp";
 import { ConnectBrandsSection } from "@/components/sections/LandingPage/ConnectBrandsSection";
 
 export const Route = createLazyFileRoute("/")({

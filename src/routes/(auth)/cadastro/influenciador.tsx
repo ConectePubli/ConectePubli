@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
 
-import register_influencer from "@/assets/register-influencer.svg";
+import register_influencer from "@/assets/register-influencer.webp";
 
 import pb from "@/lib/pb";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
