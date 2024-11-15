@@ -9,7 +9,7 @@ import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
 
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/dashboard-marca/",
+  "/(dashboard)/_side-nav-dashboard/dashboard-marca/"
 )({
   component: Page,
   beforeLoad: async () => {
@@ -42,7 +42,7 @@ function Page() {
   } = useCampaignStore();
 
   useEffect(() => {
-    resetFilters(); // Reset filters when the page mounts
+    resetFilters();
   }, [resetFilters]);
 
   useEffect(() => {
@@ -61,7 +61,8 @@ function Page() {
           navigate({ to: "/dashboard-marca/criar-campanha/" });
         }}
       >
-        <Plus className="mr-2" />Criar Campanha
+        <Plus className="mr-2" />
+        Criar Campanha
       </Button>
 
       <BrandCampaignFilter

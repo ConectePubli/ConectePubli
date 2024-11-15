@@ -547,6 +547,24 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     if (!responsibleInfo.phone) missingFields.push("Telefone do Responsável");
     if (!responsibleInfo.cpf) missingFields.push("CPF do Responsável");
 
+    if (campaignData.audienceSegmentation.paidTraffic === null) {
+      missingFields.push("Tráfego Pago");
+    }
+
+    if (
+      campaignData.audienceSegmentation.videoMinDuration &&
+      !campaignData.audienceSegmentation.videoMaxDuration
+    ) {
+      missingFields.push("Duração máxima do vídeo");
+    }
+
+    if (
+      campaignData.audienceSegmentation.minAge &&
+      !campaignData.audienceSegmentation.maxAge
+    ) {
+      missingFields.push("Idade máxima");
+    }
+
     // Validate Missing Fields
     if (missingFields.length > 0) {
       const message =
@@ -1063,6 +1081,18 @@ function AudienceSegmentationSection({
   const nicheDropdownRef = useRef<HTMLDivElement>(null);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
 
+  const convertDurationToSeconds = (duration: string): number => {
+    const [value, unit] = duration.split(" ");
+    const numericValue = parseInt(value, 10);
+
+    if (unit.startsWith("segundo")) {
+      return numericValue; // segundos
+    } else if (unit.startsWith("minuto")) {
+      return numericValue * 60; // minutos para segundos
+    }
+    return 0;
+  };
+
   useEffect(() => {
     if (niches && data.niche.length > 0) {
       const preSelectedNiches = niches.filter((niche) =>
@@ -1171,19 +1201,31 @@ function AudienceSegmentationSection({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    onChange({
+
+    const updatedData = {
       ...data,
       [name]: value,
-    });
+    };
+
+    if (name === "minAge" && value === "") {
+      updatedData.maxAge = "";
+    }
+
+    if (name === "videoMinDuration" && value === "") {
+      updatedData.videoMaxDuration = "";
+    }
+
+    onChange(updatedData);
   };
 
   const handleToggleChange = (
-    field: "paidTraffic" | "audioFormat",
-    value: unknown
+    field: "audioFormat" | "paidTraffic",
+    value: boolean | string
   ) => {
+    const newValue = data[field] === value ? null : value;
     onChange({
       ...data,
-      [field]: value,
+      [field]: newValue,
     });
   };
 
@@ -1191,24 +1233,35 @@ function AudienceSegmentationSection({
     useState(maxVideoDurationOptions);
 
   useEffect(() => {
-    const minDuration = parseInt(data.videoMinDuration, 10);
-
-    if (minDuration && !data.videoMinDuration.includes("segundos")) {
-      const filteredOptions = maxVideoDurationOptions.filter(
-        (option) => parseInt(option.value, 10) >= minDuration
+    if (data.videoMinDuration) {
+      const minDurationSeconds = convertDurationToSeconds(
+        data.videoMinDuration
       );
-      setMaxVideoDurationOptionsFiltered(filteredOptions);
 
-      if (parseInt(data.videoMaxDuration, 10) < minDuration) {
-        onChange({
-          ...data,
-          videoMaxDuration: "",
-        });
+      // Filtrar as opções de duração máxima com base na duração mínima
+      const filteredMaxOptions = maxVideoDurationOptions.filter((option) => {
+        const optionDuration = convertDurationToSeconds(option.value);
+        return optionDuration >= minDurationSeconds;
+      });
+
+      setMaxVideoDurationOptionsFiltered(filteredMaxOptions);
+
+      // Verificar se a duração máxima atual é menor que a mínima selecionada
+      if (data.videoMaxDuration) {
+        const currentMaxDuration = convertDurationToSeconds(
+          data.videoMaxDuration
+        );
+        if (currentMaxDuration < minDurationSeconds) {
+          onChange({
+            ...data,
+            videoMaxDuration: "", // Resetar o valor máximo
+          });
+        }
       }
     } else {
       setMaxVideoDurationOptionsFiltered(maxVideoDurationOptions);
     }
-  }, [data, data.videoMinDuration, onChange]);
+  }, [data.videoMinDuration, data.videoMaxDuration, onChange, data]);
 
   return (
     <div className="w-full mt-8">
@@ -1293,6 +1346,9 @@ function AudienceSegmentationSection({
                 <option value="" hidden>
                   Mínimo
                 </option>
+
+                {data.minAge && <option value="">Desmarcar</option>}
+
                 {minAgeOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -1341,6 +1397,9 @@ function AudienceSegmentationSection({
               <option value="" hidden>
                 Selecionar gênero
               </option>
+
+              {data.gender && <option value="">Desmarcar</option>}
+
               {genderOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -1366,6 +1425,9 @@ function AudienceSegmentationSection({
             <option value="" hidden>
               Selecionar mínimo de seguidores
             </option>
+
+            {data.minFollowers && <option value="">Desmarcar</option>}
+
             {minFollowersOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -1444,6 +1506,9 @@ function AudienceSegmentationSection({
               <option value="" hidden>
                 Mínimo
               </option>
+
+              {data.videoMinDuration && <option value="">Desmarcar</option>}
+
               {minVideoDurationOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -1477,8 +1542,7 @@ function AudienceSegmentationSection({
 
         <div>
           <label className="block mb-2 text-gray-700 font-semibold">
-            Pretende utilizar o material para tráfego pago (anúncios)?
-            (opcional)
+            Pretende utilizar o material para tráfego pago (anúncios)?*
           </label>
           <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
             <button
