@@ -55,25 +55,23 @@ function Page() {
   const mutation = useMutation({
     mutationFn: async () => {
       if (!termsAccepted) {
+        setErrorMessage("Você deve aceitar os termos e condições.");
         throw new Error("Você deve aceitar os termos e condições.");
       }
 
       if (!validateEmail(formData.email)) {
+        setErrorMessage("O e-mail inserido não é válido.");
         throw new Error("O e-mail inserido não é válido.");
       }
 
-      let existingEmail;
-
       try {
-        existingEmail = await pb
+        await pb
           .collection("Brands_Pre_Registration")
           .getFirstListItem(`email="${formData.email}"`);
-      } catch (e) {
-        console.log(`not found email already exists: ${e}`);
-      }
-
-      if (existingEmail) {
+        setErrorMessage("Este e-mail já está pré-registrado.");
         throw new Error("Este e-mail já está pré-registrado.");
+      } catch (e) {
+        console.error("Erro ao verificar e-mail:", e);
       }
 
       const data = {
@@ -83,21 +81,14 @@ function Page() {
         cell_phone: formData.phone.replace(/\D/g, ""),
       };
 
-      await pb
-        .collection("Brands_Pre_Registration")
-        .create(data)
-        .catch((err) => {
-          console.log(err);
-        });
+      await pb.collection("Brands_Pre_Registration").create(data);
     },
     onSuccess: () => {
       setShowModal(true);
+      setErrorMessage("");
     },
     onError: (error) => {
       console.log(error);
-      setErrorMessage(
-        error.message || "Ocorreu um erro ao fazer o pré-cadastro."
-      );
     },
   });
 
@@ -131,7 +122,6 @@ function Page() {
               onClick={() => {
                 setShowModal(false);
                 setFormData({
-                  ...formData,
                   name: "",
                   email: "",
                   responsible_name: "",
@@ -167,13 +157,13 @@ function Page() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-700"
-                htmlFor="marca"
+                htmlFor="brandName"
               >
                 Nome da Marca/Empresa
               </label>
               <input
                 type="text"
-                id="marca"
+                id="brandName"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -187,13 +177,13 @@ function Page() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-700"
-                htmlFor="marca"
+                htmlFor="responsibleName"
               >
                 Nome do Responsável
               </label>
               <input
                 type="text"
-                id="marca"
+                id="responsibleName"
                 value={formData.responsible_name}
                 onChange={(e) =>
                   setFormData({ ...formData, responsible_name: e.target.value })
@@ -221,6 +211,7 @@ function Page() {
                 }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Informe o e-mail de contato da empresa"
+                required
               />
             </div>
 
@@ -289,7 +280,7 @@ function Page() {
 
             <div className="text-left">
               <p className="text-sm hidden">
-                Já tem uma conta? (opção escondidade até o pós lançamento){" "}
+                Já tem uma conta? (opção escondida até o pós lançamento){" "}
                 <a href="/login" className="text-customLinkBlue underline">
                   Faça login
                 </a>
@@ -312,3 +303,5 @@ function Page() {
     </div>
   );
 }
+
+export default Page;

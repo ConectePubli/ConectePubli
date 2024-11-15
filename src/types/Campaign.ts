@@ -24,7 +24,7 @@ export interface Campaign {
   min_age?: number;
   max_age?: number;
   min_followers?: number;
-  locality: string | string[];
+  locality: string[];
   min_video_duration?: string;
   max_video_duration?: string;
   channels: string | string[];

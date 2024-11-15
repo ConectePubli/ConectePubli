@@ -33,9 +33,12 @@ export const Route = createFileRoute("/(auth)/cadastro/influenciador")({
 
 function Page() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
+
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -43,34 +46,45 @@ function Page() {
   const mutation = useMutation({
     mutationFn: async () => {
       if (!termsAccepted) {
+        setErrorMessage("Você deve aceitar os termos e condições.");
         throw new Error("Você deve aceitar os termos e condições.");
       }
 
-      if (!validateEmail(email)) {
+      if (!validateEmail(formData.email)) {
+        setErrorMessage("O e-mail inserido não é válido.");
         throw new Error("O e-mail inserido não é válido.");
       }
 
+      try {
+        await pb
+          .collection("Influencers_Pre_Registration")
+          .getFirstListItem(`email="${formData.email}"`);
+        setErrorMessage("Este e-mail já está pré-registrado.");
+        throw new Error("Este e-mail já está pré-registrado.");
+      } catch (e) {
+        console.error("Erro ao verificar e-mail:", e);
+      }
+
       const data = {
-        name,
-        email,
-        cell_phone: phone.replace(/\D/g, ""),
+        name: formData.name,
+        email: formData.email,
+        cell_phone: formData.phone.replace(/\D/g, ""),
       };
 
       await pb.collection("Influencers_Pre_Registration").create(data);
     },
     onSuccess: () => {
       setShowModal(true);
+      setErrorMessage("");
     },
     onError: (error) => {
-      setErrorMessage(
-        error.message || "Ocorreu um erro ao fazer o pré-cadastro."
-      );
+      console.log(error);
     },
   });
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedPhone = formatPhoneNumber(e.target.value);
-    setPhone(formattedPhone);
+    setFormData({ ...formData, phone: formattedPhone });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,11 +94,12 @@ function Page() {
 
   return (
     <div className="relative">
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-2xl font-bold text-center mb-4 break-words">
-              Bem-vindo{name ? `, ${name}` : ""}!
+              Bem-vindo{formData.name ? `, ${formData.name}` : ""}!
             </h2>
 
             <p className="text-gray-600 text-center mb-6">
@@ -97,9 +112,11 @@ function Page() {
               className="w-full"
               onClick={() => {
                 setShowModal(false);
-                setName("");
-                setEmail("");
-                setPhone("");
+                setFormData({
+                  name: "",
+                  email: "",
+                  phone: "",
+                });
                 setTermsAccepted(false);
               }}
             >
@@ -132,15 +149,17 @@ function Page() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-700"
-                htmlFor="nome"
+                htmlFor="influencerName"
               >
                 Nome Completo
               </label>
               <input
                 type="text"
-                id="nome"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                id="influencerName"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Digite o seu nome completo"
                 maxLength={50}
@@ -150,32 +169,35 @@ function Page() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-700"
-                htmlFor="email"
+                htmlFor="influencerEmail"
               >
                 E-mail de Contato
                 <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="influencerEmail"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Informe o e-mail de contato"
+                required
               />
             </div>
 
             <div>
               <label
                 className="block text-sm font-medium text-gray-700"
-                htmlFor="telefone"
+                htmlFor="influencerPhone"
               >
                 Número de Celular/Whatsapp
               </label>
               <input
                 type="tel"
-                id="telefone"
-                value={phone}
+                id="influencerPhone"
+                value={formData.phone}
                 onChange={handlePhoneChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="(XX) XXXXX-XXXX"
@@ -186,28 +208,39 @@ function Page() {
             <div className="flex items-start">
               <input
                 type="checkbox"
-                id="termos"
+                id="influencerTerms"
                 checked={termsAccepted}
                 onChange={() => setTermsAccepted(!termsAccepted)}
                 className="h-4 w-4 text-customLinkBlue border-gray-300 rounded focus:ring-blue-500"
+                required
               />
               <label
-                htmlFor="termos"
+                htmlFor="influencerTerms"
                 className="ml-2 block text-sm text-gray-900"
               >
                 Eu aceito os{" "}
-                <a href="#" className="text-customLinkBlue underline">
+                <a
+                  className="text-customLinkBlue underline cursor-pointer"
+                  onClick={() => navigate({ to: "/termos" })}
+                >
                   termos de uso
                 </a>{" "}
                 e a{" "}
-                <a href="#" className="text-customLinkBlue underline">
+                <a
+                  className="text-customLinkBlue underline cursor-pointer"
+                  onClick={() => navigate({ to: "/privacidade" })}
+                >
                   política de privacidade
                 </a>
                 .
               </label>
             </div>
 
-            {mutation.isError && <p className="text-red-500">{errorMessage}</p>}
+            {mutation.isError && (
+              <p className="text-red-500" style={{ fontSize: "0.92rem" }}>
+                {errorMessage}
+              </p>
+            )}
 
             <Button
               variant="orange"
@@ -222,7 +255,7 @@ function Page() {
 
             <div className="text-left">
               <p className="text-sm hidden">
-                Já tem uma conta? (opção escondidade até o pós lançamento){" "}
+                Já tem uma conta? (opção escondida até o pós lançamento){" "}
                 <a href="/login" className="text-customLinkBlue underline">
                   Faça login
                 </a>
@@ -231,8 +264,7 @@ function Page() {
               <p className="text-sm mt-1">
                 É uma marca? Acesse o{" "}
                 <a
-                  href="#"
-                  className="text-customLinkBlue underline"
+                  className="text-customLinkBlue underline cursor-pointer"
                   onClick={() => navigate({ to: "/cadastro/marca" })}
                 >
                   formulário de cadastro para marcas
@@ -246,3 +278,5 @@ function Page() {
     </div>
   );
 }
+
+export default Page;

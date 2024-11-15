@@ -1,10 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/termos/")({
   component: TermosDeUso,
 });
 
 function TermosDeUso() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="max-w-3xl mx-auto p-6 text-gray-800">
       <h1 className="text-2xl font-bold mb-4">

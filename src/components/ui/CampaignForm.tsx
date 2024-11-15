@@ -70,7 +70,7 @@ interface CampaignData {
     maxAge: string;
     gender: string;
     minFollowers: string;
-    location: string | string[];
+    location: string[];
     videoMinDuration: string;
     videoMaxDuration: string;
     paidTraffic: boolean | null;
@@ -120,7 +120,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       maxAge: "",
       gender: "",
       minFollowers: "",
-      location: "",
+      location: [],
       videoMinDuration: "",
       videoMaxDuration: "",
       paidTraffic: null,
@@ -161,7 +161,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           maxAge: initialCampaignData.max_age?.toString() || "",
           gender: initialCampaignData.gender || "",
           minFollowers: initialCampaignData.min_followers?.toString() || "",
-          location: initialCampaignData.locality || "",
+          location: initialCampaignData.locality || [],
           videoMinDuration: initialCampaignData.min_video_duration || "",
           videoMaxDuration: initialCampaignData.max_video_duration || "",
           paidTraffic: initialCampaignData.paid_traffic || null,
@@ -1050,36 +1050,59 @@ function AudienceSegmentationSection({
 }: AudienceSegmentationSectionProps) {
   const [nicheOptions, setNicheOptions] = useState<Niche[]>([]);
   const [selectedNiches, setSelectedNiches] = useState<Niche[]>([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  // locate
+  const [locationOptions, setLocationOptions] = useState(localityOptions);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>(
+    data.location
+  );
+
+  const [nicheDropdownOpen, setNicheDropdownOpen] = useState(false);
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+
+  const nicheDropdownRef = useRef<HTMLDivElement>(null);
+  const locationDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (niches && data.niche.length > 0) {
-      // Filter the niche options that are already selected
       const preSelectedNiches = niches.filter((niche) =>
         data.niche.includes(niche.id)
       );
       setSelectedNiches(preSelectedNiches);
 
-      // Set available niche options by removing the pre-selected ones
       const availableNiches = niches.filter(
         (niche) => !data.niche.includes(niche.id)
       );
       setNicheOptions(availableNiches);
     } else if (niches) {
-      // Set all niches as options if nothing is pre-selected
       setNicheOptions(niches);
     }
   }, [niches, data.niche]);
 
   useEffect(() => {
+    if (locationOptions && data.location.length > 0) {
+      const availableLocations = localityOptions.filter(
+        (loc) => !data.location.includes(loc.value)
+      );
+      setLocationOptions(availableLocations);
+    } else {
+      setLocationOptions(localityOptions);
+    }
+  }, [data.location, locationOptions]);
+
+  useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        nicheDropdownRef.current &&
+        !nicheDropdownRef.current.contains(event.target as Node)
       ) {
-        setDropdownOpen(false);
+        setNicheDropdownOpen(false);
+      }
+      if (
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target as Node)
+      ) {
+        setLocationDropdownOpen(false);
       }
     }
 
@@ -1107,8 +1130,41 @@ function AudienceSegmentationSection({
     });
   };
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+  const handleLocationSelect = (locate: { label: string; value: string }) => {
+    setSelectedLocations([...selectedLocations, locate.value]);
+    setLocationOptions(
+      locationOptions.filter((loc) => loc.value !== locate.value)
+    );
+    onChange({
+      ...data,
+      location: [...data.location, locate.value],
+    });
+  };
+
+  const handleLocationRemove = (locateValue: string) => {
+    setSelectedLocations(
+      selectedLocations.filter((loc) => loc !== locateValue)
+    );
+    const removedLocation = localityOptions.find(
+      (loc) => loc.value === locateValue
+    );
+    if (removedLocation) {
+      setLocationOptions([...locationOptions, removedLocation]);
+    }
+    onChange({
+      ...data,
+      location: data.location.filter((loc) => loc !== locateValue),
+    });
+  };
+
+  const toggleNicheDropdown = () => {
+    setNicheDropdownOpen((prev) => !prev);
+    setLocationDropdownOpen(false); // Fecha o outro dropdown se estiver aberto
+  };
+
+  const toggleLocationDropdown = () => {
+    setLocationDropdownOpen((prev) => !prev);
+    setNicheDropdownOpen(false); // Fecha o outro dropdown se estiver aberto
   };
 
   const handleInputChange = (
@@ -1166,17 +1222,17 @@ function AudienceSegmentationSection({
           <label className="block mb-2 text-gray-700 font-semibold">
             Nicho (opcional)
           </label>
-          <div className="relative" ref={dropdownRef}>
+          <div className="relative" ref={nicheDropdownRef}>
             <button
               type="button"
-              onClick={toggleDropdown}
+              onClick={toggleNicheDropdown}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
             >
               {selectedNiches.length > 0
                 ? `${selectedNiches.length} nicho(s) selecionado(s)`
                 : "Selecionar nichos"}
             </button>
-            {dropdownOpen && (
+            {nicheDropdownOpen && (
               <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-auto">
                 {nichesLoading ? (
                   <div className="px-4 py-2">Carregando...</div>
@@ -1318,25 +1374,60 @@ function AudienceSegmentationSection({
           </select>
         </div>
 
-        <div>
+        <div className="mb-4 relative">
           <label className="block mb-2 text-gray-700 font-semibold">
             Localidade (opcional)
           </label>
-          <select
-            name="location"
-            value={data.location}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" hidden>
-              Selecionar localidade
-            </option>
-            {localityOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
+          <div className="relative" ref={locationDropdownRef}>
+            <button
+              type="button"
+              onClick={toggleLocationDropdown}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
+            >
+              {selectedLocations.length > 0
+                ? `${selectedLocations.length} localidade(s) selecionada(s)`
+                : "Selecionar localidade"}
+            </button>
+            {locationDropdownOpen && (
+              <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-auto">
+                {locationOptions.length > 0 ? (
+                  locationOptions.map((locate) => (
+                    <div
+                      key={locate.value}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleLocationSelect(locate)}
+                    >
+                      {locate.label}
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-4 py-2 text-gray-500">
+                    Todas as localidades foram selecionadas
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {selectedLocations.map((locate) => (
+              <span
+                key={locate}
+                className="flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full"
+              >
+                {locate}
+                <button
+                  type="button"
+                  className="ml-2 text-blue-500"
+                  onClick={() => handleLocationRemove(locate)}
+                >
+                  x
+                </button>
+              </span>
             ))}
-          </select>
+          </div>
+          <p className="text-gray-500 mt-2">
+            Escolha quais localidades os influenciadores devem estar.
+          </p>
         </div>
 
         <div className="col-span-1 md:col-span-2 gap-0 grid grid-cols-1 md:grid-cols-2 md:gap-4">
