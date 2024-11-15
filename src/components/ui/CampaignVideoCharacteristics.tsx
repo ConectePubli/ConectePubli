@@ -1,7 +1,7 @@
 import React from "react";
 
 interface CampaignVideoCharacteristicsProps {
-  video_type?: string;
+  video_type?: "Música" | "Narração" | null | undefined;
   min_video_duration?: string;
   max_video_duration?: string;
 }

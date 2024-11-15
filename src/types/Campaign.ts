@@ -4,6 +4,7 @@ import { Niche } from "./Niche";
 import { Brand } from "./Brand";
 
 export interface Campaign {
+  paid_traffic: boolean | null;
   id: string;
   unique_name: string;
   name: string;
@@ -31,7 +32,7 @@ export interface Campaign {
   responsible_email: string;
   responsible_phone: number;
   responsible_cpf: string;
-  audio_format?: string;
+  audio_format?: "Música" | "Narração" | null | undefined;
   product_url: string;
   created: Date;
   updated: Date;

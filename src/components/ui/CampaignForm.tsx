@@ -247,7 +247,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
   const generateUniqueName = (
     baseName: string,
-    existingNames: string[],
+    existingNames: string[]
   ): string => {
     let uniqueName = "";
     let isUnique = false;
@@ -269,7 +269,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     campaignData: CampaignData,
     campaignBudget: CampaignBudget,
     responsibleInfo: ResponsibleInfo,
-    userId: string | undefined,
+    userId: string | undefined
   ) => {
     if (userId) formData.append("brand", userId);
     formData.append("status", "ready");
@@ -305,7 +305,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     formData.append("gender", campaignData.audienceSegmentation.gender);
     formData.append(
       "min_followers",
-      campaignData.audienceSegmentation.minFollowers,
+      campaignData.audienceSegmentation.minFollowers
     );
 
     if (Array.isArray(campaignData.audienceSegmentation.location)) {
@@ -318,19 +318,19 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
     formData.append(
       "min_video_duration",
-      campaignData.audienceSegmentation.videoMinDuration,
+      campaignData.audienceSegmentation.videoMinDuration
     );
     formData.append(
       "max_video_duration",
-      campaignData.audienceSegmentation.videoMaxDuration,
+      campaignData.audienceSegmentation.videoMaxDuration
     );
     formData.append(
       "paid_traffic",
-      campaignData.audienceSegmentation.paidTraffic ? "true" : "false",
+      campaignData.audienceSegmentation.paidTraffic ? "true" : "false"
     );
     formData.append(
       "audio_format",
-      campaignData.audienceSegmentation.audioFormat || "",
+      campaignData.audienceSegmentation.audioFormat || ""
     );
 
     // Campaign budget
@@ -339,7 +339,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     formData.append("open_jobs", campaignBudget.influencersCount.toString());
     formData.append(
       "price",
-      (campaignBudget.influencersCount * campaignBudget.creatorFee).toString(),
+      (campaignBudget.influencersCount * campaignBudget.creatorFee).toString()
     );
 
     // Responsible info
@@ -347,7 +347,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     formData.append("responsible_email", responsibleInfo.email);
     formData.append(
       "responsible_phone",
-      responsibleInfo.phone.replace(/\D/g, ""),
+      responsibleInfo.phone.replace(/\D/g, "")
     );
     formData.append("responsible_cpf", responsibleInfo.cpf);
   };
@@ -355,16 +355,16 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   // Helper function to prepare form data and handle unique name logic
   const prepareCampaignFormData = async (
     formData: FormData,
-    user: User,
+    user: ReturnType<typeof getUserData>,
     campaignData: CampaignData,
-    campaignBudget: Budget,
-    responsibleInfo: Info,
+    campaignBudget: CampaignBudget,
+    responsibleInfo: ResponsibleInfo,
     isNew: boolean,
-    currentUniqueName?: string,
+    currentUniqueName?: string
   ): Promise<void> => {
     if (!user.model.id) {
       toast.error(
-        "Erro ao processar informação, por favor realize o login novamente",
+        "Erro ao processar informação, por favor realize o login novamente"
       );
       throw new Error("User ID is missing");
     }
@@ -391,7 +391,9 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       uniqueName = generateUniqueName(baseName, existingUniqueNames);
     }
 
-    formData.append("unique_name", uniqueName);
+    if (uniqueName) {
+      formData.append("unique_name", uniqueName);
+    }
 
     // Populate the rest of the form data
     populateCampaignFormData(
@@ -399,7 +401,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       campaignData,
       campaignBudget,
       responsibleInfo,
-      isNew ? user.model.id : undefined,
+      isNew ? user.model.id : undefined
     );
   };
 
@@ -412,7 +414,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       campaignData,
       campaignBudget,
       responsibleInfo,
-      true,
+      true
     );
 
     formData.append("paid", "false");
@@ -444,7 +446,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       campaignBudget,
       responsibleInfo,
       false,
-      currentUniqueName,
+      currentUniqueName
     );
 
     return await pb.collection("Campaigns").update(campaignId, formData);
@@ -474,7 +476,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             headers: {
               Authorization: `Bearer ${user.token}`,
             },
-          },
+          }
         );
 
         if (response.status === 200) {
@@ -672,7 +674,7 @@ function BasicInfoSection({
   }, [data.coverImage, isEditMode, initialCampaignData]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     onChange({
@@ -1056,13 +1058,13 @@ function AudienceSegmentationSection({
     if (niches && data.niche.length > 0) {
       // Filter the niche options that are already selected
       const preSelectedNiches = niches.filter((niche) =>
-        data.niche.includes(niche.id),
+        data.niche.includes(niche.id)
       );
       setSelectedNiches(preSelectedNiches);
 
       // Set available niche options by removing the pre-selected ones
       const availableNiches = niches.filter(
-        (niche) => !data.niche.includes(niche.id),
+        (niche) => !data.niche.includes(niche.id)
       );
       setNicheOptions(availableNiches);
     } else if (niches) {
@@ -1110,7 +1112,7 @@ function AudienceSegmentationSection({
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     onChange({
@@ -1121,7 +1123,7 @@ function AudienceSegmentationSection({
 
   const handleToggleChange = (
     field: "paidTraffic" | "audioFormat",
-    value: unknown,
+    value: unknown
   ) => {
     onChange({
       ...data,
@@ -1137,7 +1139,7 @@ function AudienceSegmentationSection({
 
     if (minDuration && !data.videoMinDuration.includes("segundos")) {
       const filteredOptions = maxVideoDurationOptions.filter(
-        (option) => parseInt(option.value, 10) >= minDuration,
+        (option) => parseInt(option.value, 10) >= minDuration
       );
       setMaxVideoDurationOptionsFiltered(filteredOptions);
 
@@ -1486,7 +1488,7 @@ function CampaignBudgetSection({
   }, []);
 
   // Helper function to format the date as "yyyy-MM-dd"
-  const formatDate = (dateValue) => {
+  const formatDate = (dateValue: string | number | Date) => {
     if (!dateValue) return "";
     let date;
     if (typeof dateValue === "string") {
