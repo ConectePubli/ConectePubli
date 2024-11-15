@@ -3,6 +3,7 @@ import {
   createRootRouteWithContext,
   Outlet,
   useRouterState,
+  useLocation,
 } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
@@ -16,24 +17,37 @@ export const Route = createRootRouteWithContext()({
 
 function RootPage() {
   const status = useRouterState({ select: (s) => s.status });
+  const location = useLocation();
+  const currentPath = location.pathname;
 
-  // Immediately determine if the header should be shown
-  const currentPath = window?.location.pathname;
-  const isAuthPage =
-    currentPath.includes("/cadastro") || currentPath.includes("/login");
-  const showHeader = !isAuthPage;
+  const publicRoutes = [
+    "/",
+    "/cadastro",
+    "/termos",
+    "/privacidade",
+    "/esquecer-senha",
+  ];
+
+  const isPublicRoute = publicRoutes.includes(currentPath);
 
   return (
     <div>
       <LoadingBar isLoading={status === "pending"} delay={300} />
 
-      {/* Conditionally render the header based on showHeader */}
-      {showHeader &&
-        (pb.authStore.isAuthRecord ? <PrivateHeader /> : <PublicHeader />)}
+      {/* Renderiza PublicHeader sempre que for uma rota pública */}
+      {/* Caso contrário, renderiza PrivateHeader se estiver autenticado, ou PublicHeader */}
+      {isPublicRoute ? (
+        <PublicHeader />
+      ) : pb.authStore.isAuthRecord ? (
+        <PrivateHeader />
+      ) : (
+        <PublicHeader />
+      )}
 
       <Outlet />
       <Toaster />
 
+      {/* Exibe as Devtools apenas se não estiver no domínio principal */}
       {window.location.hostname !== "conectepubli.com" && (
         <TanStackRouterDevtools />
       )}
@@ -87,7 +101,7 @@ function LoadingBar({
     <>
       {showBar && (
         <div
-          className="z-100 absolute left-0 top-0 h-1 bg-[##E34105] transition-all"
+          className="z-100 absolute left-0 top-0 h-1 bg-[#E34105] transition-all"
           style={{ width: `${progress}%` }}
         ></div>
       )}

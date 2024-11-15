@@ -14,6 +14,7 @@ export const HowItWorksSection: React.FC = () => {
           imageSrc={image1}
           title="Conexão estratégica simplificada"
           description="Nossa plataforma conecta marcas e criadores de conteúdo digital de forma simples e direta."
+          carousel
         />
         <FeatureCard
           imageSrc={image2}

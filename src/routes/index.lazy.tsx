@@ -6,6 +6,7 @@ import { HeroSection } from "@/components/sections/LandingPage/HeroSection";
 import { HowItWorksSection } from "@/components/sections/LandingPage/HowItWorksSection";
 import { SectionInfo } from "@/components/sections/LandingPage/SectionInfo";
 import { ConnectSection } from "@/components/sections/LandingPage/ConnectSection";
+import TestimonialSection from "@/components/sections/LandingPage/TestimonialSection";
 
 import { Footer } from "@/components/sections/LandingPage/Footer";
 import brand from "@/assets/brand.webp";
@@ -90,6 +91,8 @@ function Index() {
       <ConnectBrandsSection />
 
       <ConnectSection />
+
+      <TestimonialSection />
 
       <Footer />
 
