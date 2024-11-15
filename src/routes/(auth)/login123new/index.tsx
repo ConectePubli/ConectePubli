@@ -2,19 +2,53 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
-import pb from "@/lib/pb";
 import { Button } from "@/components/ui/button";
+import { Link, redirect } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 
-import loginImage from "@/assets/login.svg";
+import logo from "@/assets/logo.svg";
+import loginImage from "@/assets/login.webp";
+
+import pb from "@/lib/pb";
+import { getUserType } from "@/lib/auth";
 
 interface PreRegister {
   id: string;
+  name: string;
   email: string;
+  cell_phone: string;
+  responsible_name?: string;
+}
+
+interface BaseBody {
+  email: string;
+  name?: string;
+  cell_phone?: string;
+  password: string;
+  passwordConfirm: string;
+}
+
+interface BrandBody extends BaseBody {
+  responsible_name: string;
 }
 
 export const Route = createFileRoute("/(auth)/login123new/")({
   component: Page,
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    console.log(userType);
+
+    if (userType === "Brands") {
+      throw redirect({
+        to: "/dashboard-marca",
+      });
+    } else if (userType === "Influencers") {
+      throw redirect({
+        to: "/dashboard-influenciador",
+      });
+    }
+  },
 });
 
 function Page() {
@@ -34,7 +68,10 @@ function Page() {
   // Pre registration
   const [dataPreRegister, setDataPreRegister] = useState<PreRegister>({
     id: "",
+    name: "",
     email: "",
+    cell_phone: "",
+    responsible_name: "",
   });
 
   // Mutation for handling login and registration logic
@@ -48,11 +85,29 @@ function Page() {
         if (password.length < 8) {
           throw new Error("A senha deve ter pelo menos 8 caracteres.");
         }
-        await pb.collection(collection).create({
+
+        console.log(dataPreRegister);
+
+        const body: BaseBody | BrandBody = {
           email,
           password,
           passwordConfirm: confirmPassword,
-        });
+        };
+
+        if (dataPreRegister.name) {
+          body.name = dataPreRegister.name;
+        }
+
+        if (dataPreRegister.cell_phone) {
+          body.cell_phone = dataPreRegister.cell_phone;
+        }
+
+        if (collection === "Brands") {
+          (body as BrandBody).responsible_name =
+            dataPreRegister.responsible_name!;
+        }
+
+        await pb.collection(collection).create(body);
         await pb.collection(collection).authWithPassword(email, password);
         const preRegCollection =
           loginType === "brand"
@@ -111,17 +166,18 @@ function Page() {
   };
 
   return (
-    <div className="h-[calc(100vh-66px)] flex lg:flex-row flex-col overflow-hidden">
-      <div className="hidden lg:block lg:w-[40%] overflow-hidden">
-        <img
-          src={loginImage}
-          alt="Login Image"
-          className="w-full h-full object-cover object-center"
-        />
-      </div>
+    <div className="grid lg:grid-cols-2 overflow-hidden items-center min-h-screen">
+      <div
+        className="hidden lg:block w-full h-full bg-cover bg-center"
+        style={{ backgroundImage: `url(${loginImage})` }}
+      ></div>
 
-      <div className="w-full lg:w-[60%] flex flex-col items-center bg-white py-8 px-12 lg:py-7 overflow-y-auto max-sm:px-5">
-        <div className="w-full max-w-lg">
+      <div className="w-full flex flex-col items-center overflow-y-auto px-4 py-6 lg:p-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2x">
+        <div className="w-full">
+          <Link to="/" className="mb-8 block w-fit">
+            <img src={logo} alt="ConectePubli" className="h-7" />
+          </Link>
+
           <h2 className="text-3xl font-bold mb-4">Bem-vindo de volta!</h2>
           <p className="text-gray-600 mb-6">
             Conecte-se à sua conta e continue construindo parcerias estratégicas
@@ -152,9 +208,10 @@ function Page() {
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-4">
-              Lembrete: Certifique-se de selecionar a opção correta (<strong>Marca</strong> ou <strong>Influenciador</strong>).
-              Se você se pré-cadastrou como <strong>Marca</strong>, precisa
-              selecionar essa opção para acessar sua conta; o mesmo vale para{" "}
+              Lembrete: Certifique-se de selecionar a opção correta (
+              <strong>Marca</strong> ou <strong>Influenciador</strong>). Se você
+              se pré-cadastrou como <strong>Marca</strong>, precisa selecionar
+              essa opção para acessar sua conta; o mesmo vale para{" "}
               <strong>Influenciadores</strong>.
             </p>
           </div>

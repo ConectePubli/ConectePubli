@@ -1,7 +1,7 @@
 import React from "react";
-import image1 from "@/assets/how-it-works1.svg";
-import image2 from "@/assets/how-it-works2.svg";
-import image3 from "@/assets/how-it-works3.svg";
+import image1 from "@/assets/how-it-works1.webp";
+import image2 from "@/assets/how-it-works2.webp";
+import image3 from "@/assets/how-it-works3.webp";
 
 import { FeatureCard } from "@/components/LandingPage/FeaturesCard/FeaturesCard";
 
@@ -13,7 +13,7 @@ export const HowItWorksSection: React.FC = () => {
         <FeatureCard
           imageSrc={image1}
           title="Conexão estratégica simplificada"
-          description="A plataforma oferece uma maneira intuitiva de conectar marcas e influenciadores, promovendo campanhas com resultados claros e mensuráveis."
+          description="Nossa plataforma conecta marcas e criadores de conteúdo digital de forma simples e direta."
         />
         <FeatureCard
           imageSrc={image2}

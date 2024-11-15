@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link, Outlet } from "@tanstack/react-router";
-import { Folder, LayoutGrid, Users, MessageCircle } from "lucide-react";
+import { Folder, LayoutGrid, Users, MessageCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSheetStore } from "@/store/useDashSheetStore";
 import pb from "@/lib/pb";
@@ -10,11 +10,13 @@ export const Route = createFileRoute("/(dashboard)/_side-nav-dashboard")({
 });
 
 export function SideNavDashboard() {
+  const isBrand = pb.authStore.model?.collectionName === "Brands";
+
   return (
     <div className="flex min-h-screen">
       {/* Desktop Sidebar */}
-      <nav className="hidden md:block w-64 bg-white p-4 shadow-lg">
-        <ul className="space-y-4">
+      <nav className="md:w-64 hidden md:block bg-white border-r border-gray-200 fixed h-full">
+        <ul className="space-y-4 p-4">
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link
@@ -28,37 +30,54 @@ export function SideNavDashboard() {
               </Link>
             </Button>
           </li>
+          {/* Conditionally render Vitrine de Campanhas for non-brand users */}
+          {!isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-campanhas"
+                  className="flex items-center gap-2"
+                >
+                  <LayoutGrid className="w-6 h-6" />
+                  Vitrine de Campanhas
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {/* Conditionally render "Criar Campanha" for brands */}
+          {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/dashboard-marca/criar-campanha"
+                  className="flex items-center gap-2"
+                >
+                  <Plus className="w-6 h-6" />
+                  Criar Campanha
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {/* WhatsApp Support Link */}
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link
-                to="/dashboard/settings"
+              <a
+                href="https://api.whatsapp.com/send?phone=5511913185849"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2"
               >
-                <LayoutGrid className="w-6 h-6" />
-                Vitrine de Campanhas
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link to="/dashboard/profile" className="flex items-center gap-2">
-                <Users className="w-6 h-6" />
-                Vitrine de Creators
-              </Link>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link to="/dashboard/support" className="flex items-center gap-2">
                 <MessageCircle className="w-6 h-6" />
                 Suporte/Whatsapp
-              </Link>
+              </a>
             </Button>
           </li>
         </ul>
       </nav>
       {/* Main Content */}
-      <main className="flex-1">
+      <main className="md:ml-64 w-full">
         <Outlet />
       </main>
       <Sheet /> {/* Mobile Sidebar */}

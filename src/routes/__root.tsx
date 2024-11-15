@@ -17,10 +17,17 @@ export const Route = createRootRouteWithContext()({
 function RootPage() {
   const status = useRouterState({ select: (s) => s.status });
 
+  // Immediately determine if the header should be shown
+  const currentPath = window?.location.pathname;
+  const isAuthPage = currentPath.includes("/cadastro") || currentPath.includes("/login");
+  const showHeader = !isAuthPage;
+
   return (
     <div>
       <LoadingBar isLoading={status === "pending"} delay={300} />
-      {pb.authStore.isAuthRecord ? <PrivateHeader /> : <PublicHeader />}
+
+      {/* Conditionally render the header based on showHeader */}
+      {showHeader && (pb.authStore.isAuthRecord ? <PrivateHeader /> : <PublicHeader />)}
 
       <Outlet />
       <Toaster />

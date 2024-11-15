@@ -1,6 +1,7 @@
 import {
   createFileRoute,
   notFound,
+  redirect,
   useLoaderData,
   useNavigate,
 } from "@tanstack/react-router";
@@ -17,10 +18,22 @@ import { Brand } from "@/types/Brand";
 import { Campaign } from "@/types/Campaign";
 import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
+import { CampaignParticipation } from "@/types/Campaign_Participations";
+import { formatLocation } from "@/utils/formatLocation";
+import { getUserType } from "@/lib/auth";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
 )({
+  beforeLoad: async () => {
+    const userType = await getUserType();
+
+    if (!userType) {
+      throw redirect({
+        to: "/login123new",
+      });
+    }
+  },
   loader: async ({ params: { userName } }) => {
     try {
       const brandData = await pb
@@ -36,9 +49,17 @@ export const Route = createFileRoute(
       const campaignsData =
         (await pb.collection<Campaign>("campaigns").getFullList({
           filter: `brand="${brandData.id}"`,
+          expand: "niche",
         })) || [];
 
-      return { brandData, campaignsData };
+      const campaignsParticipationsData =
+        (await pb
+          .collection("Campaigns_Participations")
+          .getFullList<CampaignParticipation>({
+            expand: "Campaign,Influencer",
+          })) || [];
+
+      return { brandData, campaignsData, campaignsParticipationsData };
     } catch (error) {
       if (error instanceof ClientResponseError) {
         if (error.status === 404) {
@@ -60,19 +81,50 @@ export const Route = createFileRoute(
 });
 
 function Page() {
-  const { brandData, campaignsData } = useLoaderData({ from: Route.id });
+  const { brandData, campaignsData, campaignsParticipationsData } =
+    useLoaderData({ from: Route.id });
   const brand = brandData as Brand;
   const campaigns = campaignsData as Campaign[];
+  const campaignParticipations =
+    campaignsParticipationsData as CampaignParticipation[];
 
-  const navigate = useNavigate();
+  const calculateOpenJobs = (
+    campaigns: Campaign[],
+    participations: CampaignParticipation[]
+  ): Campaign[] => {
+    const participationCountMap: { [key: string]: number } = {};
 
-  const formatLocation = (brand: Brand): string => {
-    const parts = [brand.city, brand.state, brand.country].filter(Boolean);
-    return parts.length > 0 ? parts.join(", ") : "Localização não informada";
+    participations.forEach((participation) => {
+      const campaignId = participation.campaign;
+      if (
+        // participation.status === "waiting" || NÃO CONSIDERAR QUANDO TIVER WAITING
+        participation.status === "approved" ||
+        participation.status === "completed"
+      ) {
+        if (participationCountMap[campaignId]) {
+          participationCountMap[campaignId] += 1;
+        } else {
+          participationCountMap[campaignId] = 1;
+        }
+      }
+    });
+
+    return campaigns.map((campaign) => {
+      const ocupadas = participationCountMap[campaign.id] || 0;
+      const vagasRestantes = (campaign.open_jobs || 0) - ocupadas;
+      return {
+        ...campaign,
+        vagasRestantes: vagasRestantes >= 0 ? vagasRestantes : 0,
+      };
+    });
   };
 
-  console.log("dados da marca: ", brand);
-  console.log("campanhas da marca: ", campaigns);
+  const campaignsWithOpenJobs = calculateOpenJobs(
+    campaigns,
+    campaignParticipations
+  );
+
+  const navigate = useNavigate();
 
   return (
     <div className="flex p-0 flex-col">
@@ -184,8 +236,8 @@ function Page() {
         <div className="border mt-5 mb-4" />
 
         {/* CAMPANHAS*/}
-        <div className="mt-2 w-full max-w-[99dvw]">
-          <CampaignSlider campaigns={campaigns} />
+        <div className="mt-2 w-full max-w-[99dvw] md:max-w-[calc(100vw-250px)]">
+          <CampaignSlider campaigns={campaignsWithOpenJobs} />
         </div>
 
         <div className="border mt-5 mb-4" />

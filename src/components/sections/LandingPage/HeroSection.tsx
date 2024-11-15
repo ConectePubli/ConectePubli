@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 
-import heroImage from "@/assets/hero-image.svg";
+import heroImage from "@/assets/hero-image.webp";
 
 //import adImage from "@/assets/ad_example.jpg";
 
@@ -14,12 +14,14 @@ export const HeroSection: React.FC = () => {
     <section className="py-16 flex flex-col md:flex-row gap-8 items-center justify-between mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl px-4">
       <div className="flex-1 space-y-4">
         <h1 className="text-4xl font-bold">
-          Conexão digital entre marcas e influenciadores
+          Conexão digital direta entre marcas e influenciadores
         </h1>
         <p className="text-lg text-gray-700">
-          ConectePubli é a plataforma ideal para conectar marcas e
-          influenciadores em parcerias estratégicas, impulsionando campanhas
-          digitais e gerando resultados reais de forma simples e eficiente.
+          Somos uma plataforma inovadora que conecta diretamente marcas e
+          criadores de conteúdo digital. Com alta tecnologia, simplificamos todo
+          o processo para ambos os lados, proporcionando parcerias mais
+          eficientes e resultados reais. Somos a revolução no marketing de
+          influência e conteúdo!
         </p>
 
         <div className="flex gap-4">
@@ -49,11 +51,11 @@ export const HeroSection: React.FC = () => {
         </div> */}
       </div>
 
-      <div className="flex justify-end flex-1 mt-8 md:mt-0 md:ml-0">
+      <div className="flex justify-end flex-1 mt-8 md:mt-0 md:ml-0 md:hidden xl:flex">
         <img
           src={heroImage}
           alt="Pessoa gravando um podcast"
-          className="rounded-lg shadow-lg max-w-full"
+          className="rounded-lg shadow-lg max-w-full w-full"
         />
       </div>
     </section>

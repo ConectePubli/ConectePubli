@@ -24,6 +24,8 @@ import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import MaskedInput from "react-text-mask";
 import { toast } from "sonner";
+import { useRouter } from "@tanstack/react-router";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 
 interface Option {
   value: string;
@@ -125,6 +127,29 @@ function Page() {
   }, [userData]);
   const isSocialMediaComplete = isAtLeastOneFilled || false;
   const isBankAccountComplete = userData?.pix_key ? true : false;
+
+  // show info to user fill necessary fields intented to create campaign
+  const [showNotice, setShowNotice] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+
+    if (
+      searchParams.has("from") &&
+      searchParams.get("from") === "CreateCampaign" &&
+      searchParams.has("error") &&
+      searchParams.get("error") === "MissingData"
+    ) {
+      setShowNotice(true);
+      router.navigate({
+        search: undefined,
+        replace: true,
+      });
+    } else {
+      setShowNotice(false);
+    }
+  }, [router]);
 
   useEffect(() => {
     if (pb.authStore.model) {
@@ -586,6 +611,35 @@ function Page() {
       toggleSaving("accountInfo", false);
     }
   };
+
+  if (showNotice) {
+    return (
+      <div className="min-h-screen min-w-full flex flex-col justify-center items-center relative max-sm:px-4">
+        <div className="absolute top-4 left-4">
+          <button
+            onClick={() => router.navigate({ to: "/dashboard" })}
+            className="flex items-center text-blue-500"
+          >
+            <ArrowLeft className="mr-1" />
+            Voltar
+          </button>
+        </div>
+        <div className="bg-white p-8 rounded shadow-md text-center rounded-md border-2 border-gray-300">
+          <AlertTriangle className="text-yellow-500 mx-auto mb-4" size={48} />
+          <h2 className="text-lg font-semibold mb-4">
+            Preencha os dados do perfil para criar sua primeira campanha
+          </h2>
+          <Button
+            variant={"blue"}
+            onClick={() => setShowNotice(false)}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Preencher Perfil
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col max-w-[100dvw] mb-12 space-y-4">

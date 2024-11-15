@@ -6,9 +6,14 @@ import { UserMenu } from "./UserMenu";
 export const PrivateHeader = () => {
   const { openSheet } = useSheetStore();
 
+  // Check if the route is the landing page
+  const isLandingPage = window?.location.pathname === "/";
+
   return (
-    <header className="bg-white border-b-[1px]">
-      <div className="h-[65px] flex items-center mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl px-4">
+    <header className="bg-white border-b-[1px] sticky top-0 z-[1]">
+      <div className={`h-[65px] flex items-center px-4 ${
+          isLandingPage ? "mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl" : ""
+        }`}>
         <div className="pr-2 md:p-4 md:hidden flex items-center justify-start">
           <button className="focus:outline-none pr-2" onClick={openSheet}>
             <AlignJustify size={25} />

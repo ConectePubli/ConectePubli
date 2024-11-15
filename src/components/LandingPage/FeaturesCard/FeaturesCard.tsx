@@ -13,7 +13,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
 }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <img src={imageSrc} alt={title} className="w-full h-56 object-cover" />
+      <img src={imageSrc} alt={title} className="w-full h-80 sm:h-auto object-cover" />
       <div className="px-4 py-6">
         <h3 className="text-xl font-semibold">{title}</h3>
         <p className="text-gray-600 mt-2">{description}</p>
