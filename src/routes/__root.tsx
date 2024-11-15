@@ -19,7 +19,8 @@ function RootPage() {
 
   // Immediately determine if the header should be shown
   const currentPath = window?.location.pathname;
-  const isAuthPage = currentPath.includes("/cadastro") || currentPath.includes("/login");
+  const isAuthPage =
+    currentPath.includes("/cadastro") || currentPath.includes("/login");
   const showHeader = !isAuthPage;
 
   return (
@@ -27,12 +28,13 @@ function RootPage() {
       <LoadingBar isLoading={status === "pending"} delay={300} />
 
       {/* Conditionally render the header based on showHeader */}
-      {showHeader && (pb.authStore.isAuthRecord ? <PrivateHeader /> : <PublicHeader />)}
+      {showHeader &&
+        (pb.authStore.isAuthRecord ? <PrivateHeader /> : <PublicHeader />)}
 
       <Outlet />
       <Toaster />
 
-      {window.location.hostname !== "conectepubli.com.br" && (
+      {window.location.hostname !== "conectepubli.com" && (
         <TanStackRouterDevtools />
       )}
     </div>
