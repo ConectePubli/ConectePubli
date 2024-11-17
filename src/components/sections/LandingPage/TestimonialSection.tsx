@@ -3,7 +3,7 @@
 import React from "react";
 import Testimonial from "@/components/LandingPage/Testimonial/Testimonial";
 
-import mundo_marketing from "@/assets/mundo-marketing.jpg";
+import mundo_marketing from "@/assets/influencers.jpeg";
 import valor_business from "@/assets/valor-business.jpg"
 
 const testimonials = [
