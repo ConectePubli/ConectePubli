@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e
+set -x
+
+# Redireciona a saída para o arquivo deploy.log
+exec > >(tee -i deploy.log)
+exec 2>&1
+
+echo "Iniciando o processo de deploy..."
+
+git pull origin main
+# npm install
+
+echo "Gerando a build"
+npm run build
+
+echo "Executando 'npm run dev' para gerar rotas e capturando logs..."
+npm run dev > dev.log 2>&1 &
+DEV_PID=$!
+
+# Função para verificar se as rotas foram geradas
+check_routes() {
+    grep -q "Rotas geradas com sucesso" dev.log
+}
+
+echo "Aguardando a geração das rotas..."
+
+TIMEOUT=10
+INTERVAL=2
+elapsed=0
+
+while [ $elapsed -lt $TIMEOUT ]; do
+    if check_routes; then
+        echo "Rotas geradas com sucesso."
+        break
+    fi
+    sleep $INTERVAL
+    elapsed=$((elapsed + INTERVAL))
+done
+
+if [ $elapsed -ge $TIMEOUT ]; then
+    echo "Tempo limite atingido. Encerrando 'npm run dev'..."
+fi
+
+kill $DEV_PID
+sleep 5
+
+sudo rm -rf /var/www/conectepubli.com/*
+sudo mv dist/* /var/www/conectepubli.com/
+
+echo "Deploy concluído com sucesso!"
