@@ -4,28 +4,17 @@ import TagIcon from "@/assets/icons/tag.svg";
 import Coins from "@/assets/icons/coins.svg";
 import UserIcon from "@/assets/icons/user.svg";
 import Calendar from "@/assets/icons/calendar.svg";
-import { Campaign } from "@/types/Campaign";
 import SocialNetworks from "@/types/SocialNetworks";
-import Client from "pocketbase";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
-import { CampaignParticipation } from "@/types/Campaign_Participations";
 import CampaignSubscribeButton from "./CampaignSubscribeButton";
+import { timeAgo } from "@/utils/timeAgo";
+import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
 
-interface CampaignDetailsProps {
-  campaign: Campaign;
-  campaignParticipations: CampaignParticipation[];
-  vagasRestantes: number | undefined;
-  pb: Client;
-  timeAgo: (date: Date) => string;
-}
+const CampaignDetails: React.FC = () => {
+  const { campaign } = useIndividualCampaignStore();
 
-const CampaignDetails: React.FC<CampaignDetailsProps> = ({
-  campaign,
-  vagasRestantes,
-  campaignParticipations,
-  timeAgo,
-}) => {
-  // Verifica se há pelo menos um detalhe para exibir
+  if (!campaign) return null;
+
   const hasDetails =
     Boolean(campaign.created) ||
     Boolean(campaign.objective) ||
@@ -33,7 +22,7 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
     Boolean(campaign.beginning) ||
     Boolean(campaign.end) ||
     Boolean(campaign.price) ||
-    Boolean(vagasRestantes);
+    Boolean(campaign.vagasRestantes);
 
   if (!hasDetails) return null;
 
@@ -100,15 +89,11 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({
         {/* Vagas Restantes */}
         <p className="flex flex-row items-center font-semibold text-black">
           <img src={UserIcon} alt="User" className="w-4 h-4 mr-2" />
-          Vagas: {vagasRestantes}
+          Vagas: {campaign.vagasRestantes}
         </p>
 
         {/* Botão de Inscrição ou Mensagem de Vagas Esgotadas */}
-        <CampaignSubscribeButton
-          campaign={campaign}
-          campaignParticipations={campaignParticipations}
-          vagasRestantes={vagasRestantes}
-        />
+        <CampaignSubscribeButton />
       </div>
     </div>
   );
