@@ -1,5 +1,4 @@
 import pb from "@/lib/pb";
-import { Campaign } from "@/types/Campaign";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useState, useEffect } from "react";
@@ -15,12 +14,7 @@ import {
 import { AuthModel, ClientResponseError } from "pocketbase";
 import { toast } from "sonner";
 import { ParticipationStatusFilter } from "@/types/Filters";
-
-interface CampaignSubscribeButtonProps {
-  campaign: Campaign;
-  campaignParticipations: CampaignParticipation[];
-  vagasRestantes: number | undefined;
-}
+import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
 
 const isProfileComplete = (user: AuthModel): boolean => {
   if (!user) return false;
@@ -82,30 +76,27 @@ const Spinner: React.FC = () => (
   </svg>
 );
 
-const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
-  campaign,
-  campaignParticipations,
-  vagasRestantes,
-}) => {
+const CampaignSubscribeButton: React.FC = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<Influencer | null>(
     pb.authStore.model as Influencer | null
   );
+  const {
+    campaign,
+    campaignParticipations,
+    addParticipation,
+    removeParticipation,
+  } = useIndividualCampaignStore();
+  const vagasRestantes = campaign?.vagasRestantes;
   const isBrand = user?.collectionName === "Brands";
   const isVagasEsgotadas = vagasRestantes === 0;
-  const isOwner = campaign.id === user?.id;
+  const isOwner = campaign?.id === user?.id;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [contentIdea, setContentIdea] = useState("");
   const [isContractAccepted, setIsContractAccepted] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const [isLoadingCancel, setIsLoadingCancel] = useState(false);
-  const [localCampaignParticipations, setLocalCampaignParticipations] =
-    useState<CampaignParticipation[]>(campaignParticipations);
-
-  useEffect(() => {
-    setLocalCampaignParticipations(campaignParticipations);
-  }, [campaignParticipations]);
 
   useEffect(() => {
     const unsubscribe = pb.authStore.onChange(() => {
@@ -115,8 +106,8 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
   }, []);
 
   const isUserRegistered = (): boolean => {
-    if (!user) return false;
-    return localCampaignParticipations.some(
+    if (!user || !campaignParticipations) return false;
+    return campaignParticipations.some(
       (participation: CampaignParticipation) =>
         participation.influencer === user.id
     );
@@ -134,32 +125,15 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
     if (!user) return;
     setIsLoadingSubmit(true);
     try {
-      const res = await pb
-        .collection<CampaignParticipation>("Campaigns_Participations")
-        .create({
-          campaign: campaign.id,
-          influencer: user.id,
-          status: "waiting",
-          description: contentIdea,
-        });
+      await addParticipation({
+        campaign: campaign!.id,
+        influencer: user.id,
+        status: ParticipationStatusFilter.Waiting,
+        description: contentIdea,
+      });
 
       toast.success("Inscrição realizada com sucesso!");
       setIsModalOpen(false);
-      console.log(localCampaignParticipations);
-      setLocalCampaignParticipations([
-        ...localCampaignParticipations,
-        {
-          campaign: campaign.id,
-          collectionId: res.collectionId,
-          collectionName: res.collectionName,
-          created: res.created,
-          id: res.id,
-          updated: res.updated,
-          influencer: user.id,
-          status: ParticipationStatusFilter.Waiting,
-          description: contentIdea,
-        },
-      ]);
     } catch (error) {
       const err = error as ClientResponseError;
       if (
@@ -183,19 +157,13 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
     if (!user) return;
     setIsLoadingCancel(true);
     try {
-      const participation = localCampaignParticipations.find(
+      const participation = campaignParticipations.find(
         (p) => p.influencer === user.id
       );
       if (participation) {
-        await pb
-          .collection<CampaignParticipation>("Campaigns_Participations")
-          .delete(participation.id!);
+        removeParticipation(participation.id!);
 
         toast.success("Inscrição cancelada com sucesso!");
-
-        setLocalCampaignParticipations(
-          localCampaignParticipations.filter((p) => p.influencer !== user.id)
-        );
       }
     } catch (error) {
       console.error("Erro ao cancelar inscrição:", error);
@@ -208,7 +176,7 @@ const CampaignSubscribeButton: React.FC<CampaignSubscribeButtonProps> = ({
   };
 
   const userParticipation = user
-    ? localCampaignParticipations.find((p) => p.influencer === user.id)
+    ? campaignParticipations.find((p) => p.influencer === user.id)
     : null;
 
   let buttonText: string = "Inscrever-se";

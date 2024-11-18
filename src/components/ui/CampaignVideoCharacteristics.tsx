@@ -1,17 +1,18 @@
 import React from "react";
+import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
 
-interface CampaignVideoCharacteristicsProps {
-  video_type?: "Música" | "Narração" | null | undefined;
-  min_video_duration?: string;
-  max_video_duration?: string;
-}
+const CampaignVideoCharacteristics: React.FC = () => {
+  const { campaign } = useIndividualCampaignStore();
 
-const CampaignVideoCharacteristics: React.FC<
-  CampaignVideoCharacteristicsProps
-> = ({ video_type, min_video_duration, max_video_duration }) => {
+  if (!campaign) {
+    return null;
+  }
+
+  const { audio_format, min_video_duration, max_video_duration } = campaign;
+
   // Verifica se pelo menos uma característica está presente
   const hasVideoCharacteristics =
-    Boolean(video_type) ||
+    Boolean(audio_format) ||
     Boolean(min_video_duration) ||
     Boolean(max_video_duration);
 
@@ -22,8 +23,8 @@ const CampaignVideoCharacteristics: React.FC<
       <h2 className="font-bold">Características do Vídeo</h2>
       <div className="flex flex-col gap-2 mt-2">
         {/* Tipo de Vídeo */}
-        {video_type && (
-          <p className="text-black">Tipo de vídeo: {video_type}</p>
+        {audio_format && (
+          <p className="text-black">Tipo de vídeo: {audio_format}</p>
         )}
 
         {/* Duração Mínima */}

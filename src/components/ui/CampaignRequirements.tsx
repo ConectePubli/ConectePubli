@@ -1,37 +1,29 @@
 import React from "react";
+import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
+import { genderMap } from "@/utils/genderMap";
 
 interface Niche {
   id: string;
   niche: string;
 }
 
-interface CampaignRequirementsProps {
-  gender?: string;
-  min_age?: number;
-  max_age?: number;
-  min_followers?: number;
-  niches?: Niche[];
-  genderMap: { [key: string]: string };
-  locality?: string[];
-}
+const CampaignRequirements: React.FC = () => {
+  const { campaign } = useIndividualCampaignStore();
 
-const CampaignRequirements: React.FC<CampaignRequirementsProps> = ({
-  gender,
-  min_age,
-  max_age,
-  min_followers,
-  niches,
-  genderMap,
-  locality,
-}) => {
+  if (!campaign) {
+    return null;
+  }
+
+  const { gender, min_age, max_age, min_followers, expand } = campaign;
+  const niches: Niche[] | undefined = expand?.niche;
+
   // Verifique se existem requisitos
   const hasRequirements =
     Boolean(gender) ||
     Boolean(min_age) ||
     Boolean(max_age) ||
     Boolean(min_followers) ||
-    (niches && niches?.length > 0) ||
-    (locality && locality?.length > 0);
+    (niches && niches.length > 0);
 
   if (!hasRequirements) return null;
 
@@ -76,14 +68,6 @@ const CampaignRequirements: React.FC<CampaignRequirementsProps> = ({
               ))}
             </div>
           </>
-        )}
-
-        {/* Locality */}
-        {locality && locality.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            <p>Localidades permitidas:</p>
-            <p>{locality.join(", ")}</p> {/* Display as a comma-separated string */}
-          </div>
         )}
       </div>
     </div>
