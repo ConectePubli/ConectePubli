@@ -1,19 +1,80 @@
-import { createFileRoute } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  notFound,
+  useLoaderData,
+  redirect,
+} from "@tanstack/react-router";
+import pb from "@/lib/pb";
+import { ClientResponseError } from "pocketbase";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute(
-  '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar',
+  "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar"
 )({
-  component: () => (
-    <div className="flex flex-col gap-4 p-4">
-      <h1 className="font-bold text-xl">Aqui seria a tela de administração da campanha</h1>
+  loader: async ({ params: { campaignId } }) => {
+    try {
+      const campaignData = await pb
+        .collection("Campaigns")
+        .getFirstListItem(`id="${campaignId}"`);
 
-      <p>Não planejo colocar nada aqui no momento como uma lôgica de conseguir os dados da campanha pois seria melhor deixar isso para quem estiver com a US dessa tela no fúturo já que seria mais fácil do que seguir o meu côdigo (que é bem ruim)</p>
+      const currentBrandId = pb.authStore.model?.id;
+      if (!currentBrandId) {
+        throw redirect({ to: "/login" });
+      }
 
-      <p>Para testar a edição: http://localhost:5173/dashboard/campanhas/id da campanha/editar</p>
+      if (!campaignData) {
+        throw notFound();
+      }
 
-      <p>Exemplo: http://localhost:5173/dashboard/campanhas/2qyy2t1tstoth27/editar - Para encontrar o ID é só olhar na URL dessa tela ou ir na Pocketbase. Também é póssivel trocar a URL de "aprovar" para "editar", pois também funciona</p>
+      if (campaignData.brand !== currentBrandId) {
+        throw redirect({ to: "/dashboard" });
+      }
 
-      <span className="font-medium">Nota adicional: Não é póssivel editar a campanha de outro usuário então tem que ser a sua própria. Também o ideal seria só deixar editavel se a campanha não ter pessoas inscritas inicialmente, mais isso vem depois já que vai dificultar os testes de começo já que eu coloco várias campanhas no meu nome atrávez da Pocketbase e seria bem estranho tentar acessar um ID que deveria funcionar mais não funciona magicamente pois eu me inscrevi nela sem a sua permissão</span>
+      return { campaignData };
+    } catch (error) {
+      if (error instanceof ClientResponseError && error.status === 404) {
+        return { error: "not_found" };
+      }
+      console.error("Error fetching campaign data:", error);
+      throw error;
+    }
+  },
+  component: Page,
+  errorComponent: () => (
+    <div>
+      Ocorreu um erro ao carregar essa página. Não se preocupe, estamos
+      trabalhando para resolvê-lo!
     </div>
   ),
-})
+  notFoundComponent: () => <div>Campanha não encontrada</div>,
+});
+
+function Page() {
+  const { campaignData, error } = useLoaderData({ from: Route.id });
+
+  const navigate = useNavigate();
+
+  if (error === "not_found") {
+    return <div>Campanha não encontrada</div>;
+  }
+
+  return (
+    <div className="flex flex-col gap-4 p-4">
+      <h1 className="font-bold text-xl">
+        Tela de administração da campanha. Recomendo deletar esse côdigo todo quando for fazer essa US pois talvez seja mais fácil do que seguir esse côdigo como base.
+      </h1>
+      <div>
+        <strong>ID da Campanha:</strong> {campaignData.id}
+      </div>
+      <div>
+        <strong>Nome da Campanha:</strong> {campaignData.name || "N/A"}
+      </div>
+      <Button className="mt-4 w-fit" variant={"orange"} onClick={() => {
+          navigate({ to: `/dashboard/campanhas/${campaignData.id}/editar` });
+        }}>
+        Editar Campanha
+      </Button>
+    </div>
+  );
+}
