@@ -43,14 +43,16 @@ const CampaignsTable: React.FC = () => {
           ) : campaigns.length > 0 ? (
             campaigns.map((campaign) => {
               const participations =
-                campaign.expand?.campaigns_participations_via_Campaign || [];
+                campaign.expand?.Campaigns_Participations_via_campaign || [];
+
+              console.log("participations", participations);
 
               const inscritos = participations.filter(
-                (p) => p.status === "waiting",
+                (p) => p.status === "waiting"
               ).length; // Quantidade de inscritos
 
               const aprovados = participations.filter(
-                (p) => p.status === "approved",
+                (p) => p.status === "approved"
               ).length; // Quantidade de aprovados
 
               return (
@@ -70,7 +72,7 @@ const CampaignsTable: React.FC = () => {
                     <span className="text-xs text-gray-500">
                       {format(
                         new Date(campaign.created),
-                        "dd/MM/yyyy HH:mm:ss",
+                        "dd/MM/yyyy HH:mm:ss"
                       )}
                     </span>
                   </td>

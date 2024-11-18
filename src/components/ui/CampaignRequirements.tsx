@@ -14,7 +14,8 @@ const CampaignRequirements: React.FC = () => {
     return null;
   }
 
-  const { gender, min_age, max_age, min_followers, expand } = campaign;
+  const { gender, min_age, max_age, min_followers, expand, locality } =
+    campaign;
   const niches: Niche[] | undefined = expand?.niche;
 
   // Verifique se existem requisitos
@@ -35,21 +36,25 @@ const CampaignRequirements: React.FC = () => {
         {gender && <p>Gênero: {genderMap[gender]}</p>}
 
         {/* Idade Mínima */}
-        {min_age !== undefined && min_age !== null && (
-          <p>Idade mínima: {min_age}</p>
-        )}
+        {min_age && <p>Idade mínima: {min_age}</p>}
 
         {/* Idade Máxima */}
-        {max_age !== undefined && max_age !== null && (
-          <p>Idade máxima: {max_age}</p>
-        )}
+        {max_age && <p>Idade máxima: {max_age}</p>}
 
         {/* Mínimo de Seguidores */}
-        {min_followers !== undefined && min_followers !== null && (
+        {min_followers && (
           <p>
             Mínimo de seguidores:{" "}
             {Number(min_followers).toLocaleString("pt-BR")}
           </p>
+        )}
+
+        {/* Localidades */}
+        {locality && locality?.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <p>Localidades permitidas:</p>
+            <p>{locality.join(", ")}</p>
+          </div>
         )}
 
         {/* Nichos */}

@@ -44,9 +44,12 @@ export const Route = createFileRoute(
     try {
       const campaignData = await pb
         .collection<Campaign>("campaigns")
-        .getFirstListItem<Campaign>(`unique_name="${campaignId}"`, {
-          expand: "niche, brand",
-        });
+        .getFirstListItem<Campaign>(
+          `unique_name="${campaignId}" && paid=true`,
+          {
+            expand: "niche, brand",
+          }
+        );
 
       if (!campaignData) {
         throw notFound();

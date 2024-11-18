@@ -102,6 +102,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
         .collection("campaigns")
         .getList<Campaign>(page, ITEMS_PER_PAGE, {
           filter: generateFilterString(filters),
+          expand: "Campaigns_Participations_via_campaign",
           sort: "-created",
         });
 
