@@ -28,22 +28,30 @@ function RootPage() {
     "/esquecer-senha",
   ];
 
+  // Define routes without any header
+  const isNoHeaderRoute =
+    currentPath.includes("login") || currentPath.includes("cadastro");
+
   const isPublicRoute = publicRoutes.includes(currentPath);
 
   return (
     <div>
       <LoadingBar isLoading={status === "pending"} delay={300} />
 
-      {/* Renderiza PublicHeader sempre que for uma rota pública */}
-      {/* Caso contrário, renderiza PrivateHeader se estiver autenticado, ou PublicHeader */}
-      {isPublicRoute ? (
-        <PublicHeader />
-      ) : pb.authStore.isAuthRecord ? (
-        <PrivateHeader />
-      ) : (
-        <PublicHeader />
+      {/* Render no header for specific routes */}
+      {!isNoHeaderRoute && (
+        <>
+          {/* Renderiza PublicHeader sempre que for uma rota pública */}
+          {/* Caso contrário, renderiza PrivateHeader se estiver autenticado, ou PublicHeader */}
+          {isPublicRoute ? (
+            <PublicHeader />
+          ) : pb.authStore.isAuthRecord ? (
+            <PrivateHeader />
+          ) : (
+            <PublicHeader />
+          )}
+        </>
       )}
-
       <Outlet />
       <Toaster />
 
