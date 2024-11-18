@@ -12,6 +12,7 @@ interface CampaignRequirementsProps {
   min_followers?: number;
   niches?: Niche[];
   genderMap: { [key: string]: string };
+  locality?: string[];
 }
 
 const CampaignRequirements: React.FC<CampaignRequirementsProps> = ({
@@ -21,6 +22,7 @@ const CampaignRequirements: React.FC<CampaignRequirementsProps> = ({
   min_followers,
   niches,
   genderMap,
+  locality,
 }) => {
   // Verifique se existem requisitos
   const hasRequirements =
@@ -28,7 +30,8 @@ const CampaignRequirements: React.FC<CampaignRequirementsProps> = ({
     Boolean(min_age) ||
     Boolean(max_age) ||
     Boolean(min_followers) ||
-    (niches && niches?.length > 0);
+    (niches && niches?.length > 0) ||
+    (locality && locality?.length > 0);
 
   if (!hasRequirements) return null;
 
@@ -73,6 +76,14 @@ const CampaignRequirements: React.FC<CampaignRequirementsProps> = ({
               ))}
             </div>
           </>
+        )}
+
+        {/* Locality */}
+        {locality && locality.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <p>Localidades permitidas:</p>
+            <p>{locality.join(", ")}</p> {/* Display as a comma-separated string */}
+          </div>
         )}
       </div>
     </div>

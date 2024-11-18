@@ -114,6 +114,8 @@ function CampaignPage() {
     non_binary: "Não-binário",
   };
 
+  console.log("campaign", campaign)
+
   return (
     <div className="container mx-auto p-4 ">
       <div className="flex items-center gap-1">
@@ -193,6 +195,7 @@ function CampaignPage() {
             min_followers={campaign.min_followers}
             niches={campaignWithOpenJobs.expand?.niche}
             genderMap={genderMap}
+            locality={campaign.locality}
           />
 
           <CampaignVideoCharacteristics
