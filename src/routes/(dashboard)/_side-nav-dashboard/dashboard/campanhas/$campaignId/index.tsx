@@ -44,9 +44,12 @@ export const Route = createFileRoute(
     try {
       const campaignData = await pb
         .collection<Campaign>("campaigns")
-        .getFirstListItem<Campaign>(`unique_name="${campaignId}"`, {
-          expand: "niche, brand",
-        });
+        .getFirstListItem<Campaign>(
+          `unique_name="${campaignId}" && paid=true`,
+          {
+            expand: "niche, brand",
+          }
+        );
 
       if (!campaignData) {
         throw notFound();
@@ -93,8 +96,6 @@ function CampaignPage() {
     setCampaign,
     setCampaignParticipations,
   ]);
-
-  console.log("campaign", campaign)
 
   return (
     <div className="container mx-auto p-4 ">
@@ -161,19 +162,7 @@ function CampaignPage() {
             </p>
           </div>
 
-<<<<<<< HEAD
-          <CampaignRequirements
-            gender={campaign.gender}
-            min_age={campaign.min_age}
-            max_age={campaign.max_age}
-            min_followers={campaign.min_followers}
-            niches={campaignWithOpenJobs.expand?.niche}
-            genderMap={genderMap}
-            locality={campaign.locality}
-          />
-=======
           <CampaignRequirements />
->>>>>>> bfb3285d4a97265797ba06b0a82ff52601e1972f
 
           <CampaignVideoCharacteristics />
 

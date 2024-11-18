@@ -41,7 +41,7 @@ export interface Campaign {
   vagasRestantes?: number;
   participationStatus?: ParticipationStatusFilter;
   expand?: {
-    campaigns_participations_via_Campaign?: CampaignParticipation[];
+    Campaigns_Participations_via_campaign?: CampaignParticipation[];
     niche?: Niche[];
     brand?: Brand;
   };
