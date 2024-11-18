@@ -3,18 +3,15 @@ import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 import LocationPin from "@/assets/icons/location-pin.svg";
 import SocialNetworks from "@/types/SocialNetworks";
-import { Brand } from "@/types/Brand";
 import { Link } from "lucide-react";
+import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
+import { formatLocation } from "@/utils/formatLocation";
 
-interface CampaignBrandProfileProps {
-  brand?: Brand;
-  formatLocation: (brand?: Brand) => string;
-}
+const CampaignBrandProfile: React.FC = () => {
+  const brand = useIndividualCampaignStore(
+    (state) => state.campaign?.expand?.brand
+  );
 
-const CampaignBrandProfile: React.FC<CampaignBrandProfileProps> = ({
-  brand,
-  formatLocation,
-}) => {
   if (!brand) return null;
 
   return (
