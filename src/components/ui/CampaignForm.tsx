@@ -73,7 +73,7 @@ interface CampaignData {
     location: string[];
     videoMinDuration: string;
     videoMaxDuration: string;
-    paidTraffic: boolean | null;
+    paidTraffic: boolean;
     audioFormat: "Música" | "Narração" | null;
   };
 }
@@ -123,7 +123,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       location: [],
       videoMinDuration: "",
       videoMaxDuration: "",
-      paidTraffic: null,
+      paidTraffic: false,
       audioFormat: null,
     },
   });
@@ -164,7 +164,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           location: initialCampaignData.locality || [],
           videoMinDuration: initialCampaignData.min_video_duration || "",
           videoMaxDuration: initialCampaignData.max_video_duration || "",
-          paidTraffic: initialCampaignData.paid_traffic || null,
+          paidTraffic: initialCampaignData.paid_traffic || false,
           audioFormat: initialCampaignData.audio_format || null,
         },
       });
@@ -307,13 +307,17 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       "min_followers",
       campaignData.audienceSegmentation.minFollowers
     );
-
     if (Array.isArray(campaignData.audienceSegmentation.location)) {
-      campaignData.audienceSegmentation.location.forEach((locate) => {
-        formData.append("locality", locate);
-      });
+      if (campaignData.audienceSegmentation.location.length === 0) {
+        // Ensure backend knows this field is empty
+        formData.append("locality", "");
+      } else {
+        campaignData.audienceSegmentation.location.forEach((locate) => {
+          formData.append("locality", locate);
+        });
+      }
     } else {
-      formData.append("locality", campaignData.audienceSegmentation.location);
+      formData.append("locality", campaignData.audienceSegmentation.location || "");
     }
 
     formData.append(
@@ -641,6 +645,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         >
           {mutate.isPending
             ? "Carregando..."
+            : isEditMode
+            ? "Atualizar Campanha"
             : "Concluir e prosseguir para o pagamento"}
         </button>
       </div>
@@ -1071,9 +1077,7 @@ function AudienceSegmentationSection({
 
   // locate
   const [locationOptions, setLocationOptions] = useState(localityOptions);
-  const [selectedLocations, setSelectedLocations] = useState<string[]>(
-    data.location
-  );
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
 
   const [nicheDropdownOpen, setNicheDropdownOpen] = useState(false);
   const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
@@ -1110,15 +1114,23 @@ function AudienceSegmentationSection({
   }, [niches, data.niche]);
 
   useEffect(() => {
+    // Sync selectedLocations with data.location
+    if (data.location) {
+      setSelectedLocations(data.location);
+    }
+  }, [data.location]);
+
+  useEffect(() => {
     if (locationOptions && data.location.length > 0) {
       const availableLocations = localityOptions.filter(
         (loc) => !data.location.includes(loc.value)
       );
+
       setLocationOptions(availableLocations);
     } else {
       setLocationOptions(localityOptions);
     }
-  }, [data.location, locationOptions]);
+  }, [data.location]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -1631,6 +1643,7 @@ function CampaignBudgetSection({
   onChange,
   isEditMode,
 }: CampaignBudgetSectionProps) {
+  console.log("startDate", startDate)
   const [today, setToday] = useState("");
   const [creatorFeeError, setCreatorFeeError] = useState("");
 
@@ -1645,18 +1658,14 @@ function CampaignBudgetSection({
   // Helper function to format the date as "yyyy-MM-dd"
   const formatDate = (dateValue: string | number | Date) => {
     if (!dateValue) return "";
-    let date;
-    if (typeof dateValue === "string") {
-      date = new Date(dateValue);
-    } else if (dateValue instanceof Date) {
-      date = dateValue;
-    } else {
-      return "";
-    }
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+    const date = new Date(dateValue);
+
+    // Use UTC methods to extract the year, month, and day
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+
     return `${year}-${month}-${day}`;
   };
 
@@ -1690,7 +1699,7 @@ function CampaignBudgetSection({
         influencersCount: Number(value),
       });
     } else if (name === "startDate") {
-      const newStartDate = value; // Usar o valor diretamente
+      const newStartDate = value; // Use the value directly
       const newEndDate =
         endDate && endDate < newStartDate ? newStartDate : endDate;
 
@@ -1703,12 +1712,13 @@ function CampaignBudgetSection({
     } else if (name === "endDate") {
       onChange({
         startDate,
-        endDate: value, // Usar o valor diretamente
+        endDate: value, // Use the value directly
         influencersCount,
         creatorFee,
       });
     }
   };
+
 
   return (
     <div className="w-full mt-8">
