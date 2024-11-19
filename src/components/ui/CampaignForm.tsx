@@ -589,6 +589,19 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       return;
     }
 
+    // Ensure creatorFee consistency in edit mode
+    if (isEditMode) {
+      const correctCreatorFee =
+        (initialCampaignData?.price || 0) / (campaignBudget.influencersCount || 1);
+
+      if (campaignBudget.creatorFee !== correctCreatorFee) {
+        setCampaignBudget((prev) => ({
+          ...prev,
+          creatorFee: correctCreatorFee,
+        }));
+      }
+    }
+
     mutate.mutate();
   };
 
@@ -1810,7 +1823,7 @@ function CampaignBudgetSection({
         </div>
       </div>
 
-      <div className="px-5 mb-6">
+      <div className={`px-5 mb-6 ${isEditMode ? "hidden" : ""}`}>
         <label className="block mb-2 text-gray-700 font-semibold">
           Quantos influenciadores você deseja na campanha?*
         </label>
@@ -1826,7 +1839,7 @@ function CampaignBudgetSection({
         />
       </div>
 
-      <div className="px-5 mb-3">
+      <div className={`px-5 mb-3 ${isEditMode ? "hidden" : ""}`}>
         <label className="block mb-2 text-gray-700 font-semibold">
           Valor por criador*
         </label>
@@ -1844,7 +1857,7 @@ function CampaignBudgetSection({
         )}
       </div>
 
-      <div className="px-5 text-gray-800 font-semibold">
+      <div className={`px-5 text-gray-800 font-semibold ${isEditMode ? "hidden" : ""}`}>
         Orçamento total da campanha:{" "}
         {formatCurrency(influencersCount * creatorFee)}
       </div>
