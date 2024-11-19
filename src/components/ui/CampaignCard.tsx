@@ -99,10 +99,9 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         </p>
 
         <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
-          {/* Social Network Icons */}
           <div className="flex flex-wrap gap-2">
             {SocialNetworks.filter((network) =>
-              campaign.channels.includes(network.name),
+              campaign.channels.includes(network.name)
             ).map((network) => (
               <img
                 key={network.name}
@@ -126,7 +125,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-purple-600 font-semibold">
               <Coins className="w-5 h-5" />
-              {`${formatCentsToCurrency(campaign.price)}`}/pessoa
+              {`${formatCentsToCurrency((campaign.price * 100) / Number(campaign.open_jobs))}`}
+              /pessoa
             </div>
 
             {!fromMyCampaigns && (

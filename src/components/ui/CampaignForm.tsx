@@ -282,7 +282,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     formData.append("product_url", campaignData.basicInfo.productUrl);
     formData.append("description", campaignData.basicInfo.campaignDetails);
 
-    // Dissemination channels
     if (Array.isArray(campaignData.basicInfo.disseminationChannels)) {
       campaignData.basicInfo.disseminationChannels.forEach((channel) => {
         formData.append("channels", channel);
@@ -291,9 +290,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       formData.append("channels", campaignData.basicInfo.disseminationChannels);
     }
 
-    // Audience segmentation
     if (campaignData.audienceSegmentation.niche.length === 0) {
-      // Ensure backend knows this field is empty
       formData.append("niche", "");
     } else {
       campaignData.audienceSegmentation.niche.forEach((nicheId) => {
@@ -309,7 +306,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     );
     if (Array.isArray(campaignData.audienceSegmentation.location)) {
       if (campaignData.audienceSegmentation.location.length === 0) {
-        // Ensure backend knows this field is empty
         formData.append("locality", "");
       } else {
         campaignData.audienceSegmentation.location.forEach((locate) => {
@@ -317,7 +313,10 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         });
       }
     } else {
-      formData.append("locality", campaignData.audienceSegmentation.location || "");
+      formData.append(
+        "locality",
+        campaignData.audienceSegmentation.location || ""
+      );
     }
 
     formData.append(
@@ -346,7 +345,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       (campaignBudget.influencersCount * campaignBudget.creatorFee).toString()
     );
 
-    // Responsible info
     formData.append("responsible_name", responsibleInfo.name);
     formData.append("responsible_email", responsibleInfo.email);
     formData.append(
@@ -356,7 +354,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     formData.append("responsible_cpf", responsibleInfo.cpf);
   };
 
-  // Helper function to prepare form data and handle unique name logic
   const prepareCampaignFormData = async (
     formData: FormData,
     user: ReturnType<typeof getUserData>,
@@ -373,7 +370,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       throw new Error("User ID is missing");
     }
 
-    // Fetch existing unique names only if we're creating or changing the name
     let uniqueName = currentUniqueName;
     if (
       isNew ||
@@ -399,7 +395,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       formData.append("unique_name", uniqueName);
     }
 
-    // Populate the rest of the form data
     populateCampaignFormData(
       formData,
       campaignData,
@@ -409,7 +404,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     );
   };
 
-  // Create campaign function
   const createCampaign = async (): Promise<Campaign> => {
     const formData = new FormData();
     await prepareCampaignFormData(
@@ -429,7 +423,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     return createdCampaign;
   };
 
-  // Update campaign function
   const updateCampaign = async (): Promise<Campaign> => {
     if (!campaignId) {
       throw new Error("Campaign ID not found");
@@ -437,7 +430,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
     const formData = new FormData();
 
-    // Fetch current campaign data to get the existing unique name
     const currentCampaign = await pb
       .collection("Campaigns")
       .getOne<Campaign>(campaignId);
@@ -646,8 +638,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           {mutate.isPending
             ? "Carregando..."
             : isEditMode
-            ? "Atualizar Campanha"
-            : "Concluir e prosseguir para o pagamento"}
+              ? "Atualizar Campanha"
+              : "Concluir e prosseguir para o pagamento"}
         </button>
       </div>
 
@@ -1130,7 +1122,7 @@ function AudienceSegmentationSection({
     } else {
       setLocationOptions(localityOptions);
     }
-  }, [data.location]);
+  }, [data.location, locationOptions]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -1173,40 +1165,99 @@ function AudienceSegmentationSection({
   };
 
   const handleLocationSelect = (locate: { label: string; value: string }) => {
-    setSelectedLocations([...selectedLocations, locate.value]);
-    setLocationOptions(
-      locationOptions.filter((loc) => loc.value !== locate.value)
-    );
-    onChange({
-      ...data,
-      location: [...data.location, locate.value],
-    });
+    if (locate.value === "Todas") {
+      setSelectedLocations(["Todas"]);
+      setLocationOptions([]);
+      onChange({
+        ...data,
+        location: ["Todas"],
+      });
+    } else {
+      if (selectedLocations.includes("Todas")) {
+        setSelectedLocations([locate.value]);
+        setLocationOptions(
+          localityOptions.filter(
+            (loc) => loc.value !== locate.value && loc.value !== "Todas"
+          )
+        );
+        onChange({
+          ...data,
+          location: [locate.value],
+        });
+      } else {
+        const newSelectedLocations = [...selectedLocations, locate.value];
+        setSelectedLocations(newSelectedLocations);
+        setLocationOptions(
+          locationOptions.filter((loc) => loc.value !== locate.value)
+        );
+        onChange({
+          ...data,
+          location: newSelectedLocations,
+        });
+
+        const individualLocalities = localityOptions.filter(
+          (loc) => loc.value !== "Todas"
+        );
+        if (newSelectedLocations.length === individualLocalities.length) {
+          setSelectedLocations(["Todas"]);
+          setLocationOptions([]);
+          onChange({
+            ...data,
+            location: ["Todas"],
+          });
+        }
+      }
+    }
   };
 
   const handleLocationRemove = (locateValue: string) => {
-    setSelectedLocations(
-      selectedLocations.filter((loc) => loc !== locateValue)
-    );
-    const removedLocation = localityOptions.find(
-      (loc) => loc.value === locateValue
-    );
-    if (removedLocation) {
-      setLocationOptions([...locationOptions, removedLocation]);
+    if (locateValue === "Todas") {
+      setSelectedLocations([]);
+      setLocationOptions([
+        ...locationOptions,
+        { label: "Todas", value: "Todas" },
+      ]);
+      onChange({
+        ...data,
+        location: [],
+      });
+    } else {
+      const newSelectedLocations = selectedLocations.filter(
+        (loc) => loc !== locateValue
+      );
+      setSelectedLocations(newSelectedLocations);
+
+      const removedLocation = localityOptions.find(
+        (loc) => loc.value === locateValue
+      );
+      if (removedLocation) {
+        setLocationOptions([...locationOptions, removedLocation]);
+      }
+
+      onChange({
+        ...data,
+        location: newSelectedLocations,
+      });
+
+      if (newSelectedLocations.length === localityOptions.length - 1) {
+        setSelectedLocations(["Todas"]);
+        setLocationOptions([]);
+        onChange({
+          ...data,
+          location: ["Todas"],
+        });
+      }
     }
-    onChange({
-      ...data,
-      location: data.location.filter((loc) => loc !== locateValue),
-    });
   };
 
   const toggleNicheDropdown = () => {
     setNicheDropdownOpen((prev) => !prev);
-    setLocationDropdownOpen(false); // Fecha o outro dropdown se estiver aberto
+    setLocationDropdownOpen(false);
   };
 
   const toggleLocationDropdown = () => {
     setLocationDropdownOpen((prev) => !prev);
-    setNicheDropdownOpen(false); // Fecha o outro dropdown se estiver aberto
+    setNicheDropdownOpen(false);
   };
 
   const handleInputChange = (
@@ -1313,7 +1364,7 @@ function AudienceSegmentationSection({
                   ))
                 ) : (
                   <div className="px-4 py-2 text-gray-500">
-                    Todos os nichos foram selecionados
+                    Todas os nichos foram selecionados
                   </div>
                 )}
               </div>
@@ -1459,9 +1510,12 @@ function AudienceSegmentationSection({
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
             >
               {selectedLocations.length > 0
-                ? `${selectedLocations.length} localidade(s) selecionada(s)`
+                ? selectedLocations.includes("Todas")
+                  ? "Todas as localidades selecionadas"
+                  : `${selectedLocations.length} localidade(s) selecionada(s)`
                 : "Selecionar localidade"}
             </button>
+
             {locationDropdownOpen && (
               <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-auto">
                 {locationOptions.length > 0 ? (
@@ -1643,7 +1697,7 @@ function CampaignBudgetSection({
   onChange,
   isEditMode,
 }: CampaignBudgetSectionProps) {
-  console.log("startDate", startDate)
+  console.log("startDate", startDate);
   const [today, setToday] = useState("");
   const [creatorFeeError, setCreatorFeeError] = useState("");
 
@@ -1718,7 +1772,6 @@ function CampaignBudgetSection({
       });
     }
   };
-
 
   return (
     <div className="w-full mt-8">
