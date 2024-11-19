@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import CampaignCard from "@/components/ui/CampaignCard";
 import Spinner from "@/components/ui/Spinner";
 import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
@@ -29,6 +29,7 @@ export const Route = createFileRoute(
 });
 
 function Page() {
+  const navigate = useNavigate();
   const {
     fetchParticipatingCampaigns,
     campaignGoalFilter,
@@ -92,9 +93,9 @@ function Page() {
               </p>
               <button
                 onClick={() => {
-                  console.log("to do");
+                  navigate({ to: "/vitrine-de-campanhas" });
                 }}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+                className="mt-4 px-4 py-2 bg-[#FF672F] text-white rounded font-semibold"
               >
                 Explorar Campanhas
               </button>
