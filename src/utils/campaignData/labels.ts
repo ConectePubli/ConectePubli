@@ -23,7 +23,7 @@ export const minFollowersOptions = [
 ];
 
 export const localityOptions = [
-  { label: "Todos", value: "Todos" },
+  { label: "Todas as localidades", value: "Todas" },
   { label: "AC", value: "AC" },
   { label: "AL", value: "AL" },
   { label: "AP", value: "AP" },

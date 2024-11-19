@@ -66,13 +66,13 @@ function TermosDeUso() {
           <span className="font-semibold">1.4</span> A Marca não poderá desistir
           da campanha se já houver um criador aprovado. A desistência, nesses
           casos, não é permitida para proteger o compromisso assumido entre a
-          marca e o criador.
+          marca e o criador. Se a marca desistir deverá ainda assim pagar o valor total da campanha, ainda que não realizada
         </li>
         <li>
           <span className="font-semibold">1.5</span> A Marca não poderá
           desativar uma campanha sem aviso prévio e autorização formal de um
           membro da equipe Conecte Publi, exceto em situações excepcionais
-          devidamente comprovadas.
+          devidamente comprovadas, como doença grave, roubo/furto de equipamento/material essencial a continuidade/realização da campanha, falência da Marca ou óbito, casos específicos que deverão serem analisados caso a caso.
         </li>
         <li>
           <span className="font-semibold">1.6</span> Qualquer alteração no
@@ -84,7 +84,7 @@ function TermosDeUso() {
           <span className="font-semibold">1.7</span> Em caso de cancelamento de
           vagas específicas dentro de uma campanha por parte da Marca, esta
           deverá arcar com uma taxa de cancelamento correspondente a 20% do
-          valor total definido para cada vaga cancelada.
+          valor total definido para cada vaga cancelada. A cobrança desse valor tem por objetivo compensar o processo de administração da vaga e garantir o comprometimento da marca com os criadores que poderiam ter ocupado essas posições.
         </li>
       </ul>
 
@@ -101,12 +101,12 @@ function TermosDeUso() {
         <li>
           <span className="font-semibold">2.2</span> Não serão permitidas
           negociações fora da plataforma pelo Creator, ainda que com Marca para
-          quem já tenha feito campanha.
+          quem já tenha feito campanha. (sujeito a ser banido da plataforma, sem prejuízo por perdas e danos causados)
         </li>
         <li>
           <span className="font-semibold">2.3</span> A plataforma reforça sua
           não-aceitação da compra de seguidores ou participação em grupos de
-          engajamento para as redes sociais utilizadas por Creator.
+          engajamento para as redes sociais utilizadas por Creator. Caso um Creator já se enquadre nessas práticas, é obrigatório o expresso aviso prévio antes de aderir a uma campanha, cabendo à plataforma e/ou Marca aceitar ou não.
         </li>
       </ul>
 
@@ -131,7 +131,7 @@ function TermosDeUso() {
       <p className="mb-4">
         Após a conclusão da criação da campanha, o valor estipulado pela Marca
         deverá ser pago diretamente na plataforma Conecte Publi através do
-        sistema de pagamento PagBank.
+        sistema de pagamento PagBank. O pagamento deve ser realizado automaticamente e imediamente após a Marca clicar em "salvar campanha". Somente após a confirmação do pagamento a campanha será ativada e disponibilizada para os Creators na plataforma.
       </p>
 
       <h3 className="text-lg font-semibold mt-4 mb-2">
@@ -149,9 +149,7 @@ function TermosDeUso() {
         4. Pagamento ao creator
       </h3>
       <p className="mb-4">
-        O pagamento ao Creator será transferido pela Conecte Publi via PIX, no
-        dia 15 de cada mês, para a chave pix informada pelo Creator, referentes
-        a todas as campanhas finalizadas no mês anterior.
+        O pagamento ao Creator não será realizado imediatamente após a finalização de uma campanha. Valores devidos ao Creator serão transferidos pela Conecte Publi, através de transferência via PIX sempre no dia 15 (quinze) de cada mês, para a chave PIX informada pelo Creator, referente a todas as campanhas finalizadas por ele no mês anterior.
       </p>
 
       <h3 className="text-lg font-semibold mt-4 mb-2">5. Reembolso à marca</h3>

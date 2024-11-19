@@ -86,6 +86,10 @@ function InfluencerEditProfilePage() {
           return;
         }
 
+        if (influencerInfo.birth_date) {
+          influencerInfo.birth_date = influencerInfo.birth_date.split(" ")[0];
+        }
+
         setInfluencer(influencerInfo);
         setFormData(influencerInfo);
         setLoading(false);
@@ -242,6 +246,9 @@ function InfluencerEditProfilePage() {
       try {
         const updateData: any = {};
 
+        console.log("data de nascimento");
+        console.log(formData.birth_date);
+
         if (section === "basicData") {
           if (formData.background_img) {
             updateData["background_img"] = formData.background_img;
@@ -287,7 +294,14 @@ function InfluencerEditProfilePage() {
         } else if (section === "bankAccount") {
           updateData["pix_key"] = formData.pix_key;
         } else if (section === "portfolio") {
-          updateData["previous_work_imgs"] = formData.previous_work_imgs;
+          if (
+            formData.previous_work_imgs &&
+            formData.previous_work_imgs.length > 0
+          ) {
+            updateData["previous_work_imgs"] = formData.previous_work_imgs;
+          } else {
+            updateData["previous_work_imgs"] = null;
+          }
         } else if (section === "skills") {
           updateData["languages"] = formData.languages;
         }
@@ -297,9 +311,15 @@ function InfluencerEditProfilePage() {
           if (updateData[key] instanceof File) {
             data.append(key, updateData[key]);
           } else if (Array.isArray(updateData[key])) {
-            updateData[key].forEach((item: any) => {
-              data.append(key, item);
-            });
+            if (updateData[key].length === 0) {
+              data.append(key, "");
+            } else {
+              updateData[key].forEach((item: any) => {
+                data.append(key, item);
+              });
+            }
+          } else if (updateData[key] === null) {
+            data.append(key, "");
           } else {
             data.append(key, updateData[key]);
           }
