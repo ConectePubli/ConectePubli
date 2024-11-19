@@ -22,7 +22,7 @@ const Testimonial: React.FC<TestimonialProps> = ({
       </div>
       <div className="w-full px-5 md:w-2/5 mt-4 md:mt-0 text-left flex flex-col justify-center flex-1 max-sm:pb-5">
         <blockquote className="italic text-lg text-white">"{quote}"</blockquote>
-        <cite className="mt-2 block text-sm text-white">- {citedBy}</cite>
+        <cite className="mt-2 block text-base text-white">- {citedBy}</cite>
       </div>
     </div>
   );
