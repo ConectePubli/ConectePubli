@@ -30,7 +30,7 @@ function Index() {
 
       <SectionInfo
         imageSrc={brand}
-        title="Para Marcas"
+        title="Para marcas"
         description={
           <div className="space-y-1">
             <p>
@@ -39,34 +39,34 @@ function Index() {
               por transações, maximizando o retorno sobre o investimento.
             </p>
             <p>
-              <strong>Anúncios de Campanhas</strong> - Publique suas campanhas
+              <strong>Anúncios de campanhas</strong> - Publique suas campanhas
               na plataforma para que influenciadores se candidatem a
               oportunidades alinhadas ao seu negócio.
             </p>
             <p>
-              <strong>Criadores Alinhados com sua Marca</strong> - Encontre
+              <strong>Criadores alinhados com sua marca</strong> - Encontre
               influenciadores de acordo com os objetivos, estilo e público da
               sua marca, garantindo parcerias estratégicas e eficazes.
             </p>
             <p>
-              <strong>Pagamento Facilitado </strong> - Com o ConectePay
+              <strong>Pagamento facilitado</strong> - Com o ConectePay
               integrado, realize pagamentos de forma rápida e segura diretamente
               pela plataforma.
             </p>
           </div>
         }
-        buttonLabel="Pré Cadastro de Marcas"
+        buttonLabel="Pré cadastro de marcas"
         buttonVariant="blue"
         buttonOnClick={() => navigate({ to: "/cadastro/marca" })}
       />
 
       <SectionInfo
         imageSrc={influencers}
-        title="Para Influenciadores"
+        title="Para influenciadores"
         description={
           <div className="space-y-2">
             <p>
-              <strong>Plataforma de Oportunidades</strong> - Descubra uma
+              <strong>Plataforma de oportunidades</strong> - Descubra uma
               variedade de jobs exclusivos para monetizar seu conteúdo, com
               entregáveis e pagamentos claros.
             </p>
@@ -82,7 +82,7 @@ function Index() {
             </p>
           </div>
         }
-        buttonLabel="Pré Cadastro de Influenciadores"
+        buttonLabel="Pré cadastro de influenciadores"
         buttonVariant="orange"
         buttonOnClick={() => navigate({ to: "/cadastro/influenciador" })}
         reverse
