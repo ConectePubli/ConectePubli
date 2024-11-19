@@ -278,7 +278,7 @@ const CampaignSubscribeButton: React.FC = () => {
                     <label htmlFor="acceptContract" className="ml-2 text-sm">
                       Li e concordo com o{" "}
                       <a
-                        href={`${window.location.pathname}/termos`}
+                        href={`${window.location.origin}/termos`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="underline text-blue-600 font-semibold"
