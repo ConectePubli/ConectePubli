@@ -125,6 +125,8 @@ function InfluencerEditProfilePage() {
   ) => {
     e.preventDefault();
 
+    console.log("submit");
+
     // Define campos obrigatórios por seção
     const requiredFields: { [key: string]: string[] } = {
       basicData: ["background_img", "bio"],
@@ -147,6 +149,10 @@ function InfluencerEditProfilePage() {
       ],
       socialMedia: ["At least one social media field"],
       bankAccount: ["pix_key"],
+      mediaKit: ["media_kit_url"],
+      skills: ["languages"],
+      accountInfo: [],
+      portfolio: [],
     };
 
     // Função para validar campos
@@ -156,6 +162,7 @@ function InfluencerEditProfilePage() {
       if (formData) {
         if (section !== "portfolio") {
           if (section === "socialMedia") {
+            // Validação para a seção de redes sociais
             const socialFields = [
               "instagram_url",
               "tiktok_url",
@@ -169,8 +176,10 @@ function InfluencerEditProfilePage() {
               "yourclub_url",
             ];
             const hasAtLeastOne = socialFields.some(
-              //@ts-expect-error
-              (field) => formData[field] && formData[field].trim() !== ""
+              (field) =>
+                formData[field as keyof Influencer] &&
+                //@ts-expect-error
+                formData[field as keyof Influencer]?.trim() !== ""
             );
             if (!hasAtLeastOne) {
               missingFields.push(
@@ -178,14 +187,13 @@ function InfluencerEditProfilePage() {
               );
             }
           } else {
-            requiredFields[section].forEach((field) => {
+            const fields = requiredFields[section] || [];
+            fields.forEach((field) => {
               if (
-                //@ts-expect-error
-                !formData[field] ||
-                //@ts-expect-error
-                (typeof formData[field] === "string" &&
+                !formData[field as keyof Influencer] ||
+                (typeof formData[field as keyof Influencer] === "string" &&
                   //@ts-expect-error
-                  formData[field].trim() === "")
+                  formData[field as keyof Influencer].trim() === "")
               ) {
                 const fieldNames: { [key: string]: string } = {
                   background_img: "Foto de fundo",
@@ -204,6 +212,8 @@ function InfluencerEditProfilePage() {
                   state: "Estado",
                   address_num: "Número",
                   pix_key: "Chave Pix",
+                  media_kit_url: "Mídia Kit",
+                  languages: "Idiomas",
                 };
                 missingFields.push(fieldNames[field] || field);
               }
@@ -307,21 +317,24 @@ function InfluencerEditProfilePage() {
         }
 
         const data = new FormData();
+        console.log(updateData);
         for (const key in updateData) {
-          if (updateData[key] instanceof File) {
-            data.append(key, updateData[key]);
-          } else if (Array.isArray(updateData[key])) {
-            if (updateData[key].length === 0) {
+          const value = updateData[key];
+
+          if (value === undefined || value === null) {
+            data.append(key, "");
+          } else if (value instanceof File) {
+            data.append(key, value);
+          } else if (Array.isArray(value)) {
+            if (value.length === 0) {
               data.append(key, "");
             } else {
-              updateData[key].forEach((item: any) => {
+              value.forEach((item: any) => {
                 data.append(key, item);
               });
             }
-          } else if (updateData[key] === null) {
-            data.append(key, "");
           } else {
-            data.append(key, updateData[key]);
+            data.append(key, value);
           }
         }
 
