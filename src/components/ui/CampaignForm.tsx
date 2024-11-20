@@ -211,6 +211,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         "bio",
         "opening_date",
         "company_register",
+        "street",
         "country",
         "cep",
         "city",
