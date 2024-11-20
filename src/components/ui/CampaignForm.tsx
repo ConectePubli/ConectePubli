@@ -341,10 +341,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     formData.append("beginning", campaignBudget.startDate as string);
     formData.append("end", campaignBudget.endDate as string);
     formData.append("open_jobs", campaignBudget.influencersCount.toString());
-    formData.append(
-      "price",
-      (campaignBudget.influencersCount * campaignBudget.creatorFee).toString()
-    );
+    formData.append("price", campaignBudget.creatorFee.toString());
 
     formData.append("responsible_name", responsibleInfo.name);
     formData.append("responsible_email", responsibleInfo.email);
@@ -592,8 +589,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
     // Ensure creatorFee consistency in edit mode
     if (isEditMode) {
-      const correctCreatorFee =
-        (initialCampaignData?.price || 0) / (campaignBudget.influencersCount || 1);
+      const correctCreatorFee = initialCampaignData?.price || 0;
 
       if (campaignBudget.creatorFee !== correctCreatorFee) {
         setCampaignBudget((prev) => ({
@@ -1858,7 +1854,9 @@ function CampaignBudgetSection({
         )}
       </div>
 
-      <div className={`px-5 text-gray-800 font-semibold ${isEditMode ? "hidden" : ""}`}>
+      <div
+        className={`px-5 text-gray-800 font-semibold ${isEditMode ? "hidden" : ""}`}
+      >
         Orçamento total da campanha:{" "}
         {formatCurrency(influencersCount * creatorFee)}
       </div>
