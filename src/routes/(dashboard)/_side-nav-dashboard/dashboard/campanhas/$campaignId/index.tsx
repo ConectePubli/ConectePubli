@@ -29,7 +29,12 @@ export const Route = createFileRoute(
     </div>
   ),
   notFoundComponent: () => (
-    <div className="px-4 py-4">A campanha que você estava procurando ainda não iniciou, foi encerrada ou removida.</div>
+    <div className="px-4 py-4 h-full min-w-100 flex items-center justify-center text-center">
+      <p>
+        A campanha que você estava procurando ainda não iniciou, foi encerrada
+        ou removida.
+      </p>
+    </div>
   ),
   beforeLoad: async () => {
     const userType = await getUserType();

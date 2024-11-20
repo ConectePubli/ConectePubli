@@ -125,7 +125,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-purple-600 font-semibold">
               <Coins className="w-5 h-5" />
-              {`${formatCentsToCurrency((campaign.price * 100) / Number(campaign.open_jobs))}`}
+              {`${formatCentsToCurrency(campaign.price)}`}
               /pessoa
             </div>
 
