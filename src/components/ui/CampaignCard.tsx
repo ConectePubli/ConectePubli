@@ -7,6 +7,7 @@ import SocialNetworks from "@/types/SocialNetworks";
 import { ParticipationStatusFilter } from "@/types/Filters";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import { Link } from "@tanstack/react-router";
+import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -34,21 +35,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         return "Vagas Esgotadas";
       default:
         return "";
-    }
-  };
-
-  const getStatusColor = (type: string) => {
-    switch (type) {
-      case "completed":
-        return "#28A745"; // Concluído
-      case "approved":
-        return "#2881A7"; // Aprovado
-      case "waiting":
-        return "#FFC107"; // Aguardando
-      case "sold_out":
-        return "#DC3545"; // Vagas esgotadas
-      default:
-        return "#000000"; // Cor padrão (preto)
     }
   };
 
@@ -137,7 +123,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             )}
           </div>
 
-          {/* Only render status if participationStatus is provided */}
           {participationStatus && (
             <span
               className="font-semibold"

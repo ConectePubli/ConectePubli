@@ -13,7 +13,7 @@ export interface CampaignParticipation {
   collectionId?: string;
   collectionName?: string;
   expand?: {
-    Campaign?: Campaign;
-    Influencer?: Influencer;
+    campaign?: Campaign;
+    influencer?: Influencer;
   };
 }
