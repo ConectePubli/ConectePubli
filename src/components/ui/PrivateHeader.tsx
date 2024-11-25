@@ -8,60 +8,28 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNotificationStore } from "@/store/useNotificationStore";
 
 export const PrivateHeader = () => {
   const { openSheet } = useSheetStore();
 
-  const mockNotifications = [
-    {
-      id: "1",
-      message: "Você recebeu uma nova mensagem.",
-      time: "Há 2 horas",
-      read: false,
-    },
-    {
-      id: "2",
-      message: "Sua publicação foi aprovada.",
-      time: "Há 4 horas",
-      read: true,
-    },
-    {
-      id: "3",
-      message: "Novo comentário na sua postagem.",
-      time: "Há 1 dia",
-      read: false,
-    },
-    {
-      id: "4",
-      message: "Atualização disponível.",
-      time: "Há 3 dias",
-      read: true,
-    },
-    {
-      id: "5",
-      message: "Você tem um novo seguidor.",
-      time: "Há 5 dias",
-      read: false,
-    },
-  ];
-
-  const [notifications, setNotifications] = useState(mockNotifications);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const {
+    notifications,
+    unreadCount,
+    fetchNotifications,
+    markAsRead,
+  } = useNotificationStore();
 
   // Verifica se a rota é a página inicial
   const isLandingPage = window?.location.pathname === "/";
+  
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   const handleNotificationClick = (id: string) => {
-    // Atualizar o estado localmente
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
-
-    // TODO: Enviar atualização para o backend (PocketBase)
-    // Exemplo:
-    // fetch(`/api/notifications/${id}/mark-as-read`, { method: 'POST' });
+    markAsRead(id);
   };
 
   return (
