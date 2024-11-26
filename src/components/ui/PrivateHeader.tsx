@@ -10,26 +10,36 @@ import {
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useNotificationStore } from "@/store/useNotificationStore";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Notification } from "@/types/Notification";
+import { useNavigate } from "@tanstack/react-router";
 
 export const PrivateHeader = () => {
   const { openSheet } = useSheetStore();
+  const navigate = useNavigate();
 
-  const {
-    notifications,
-    unreadCount,
-    fetchNotifications,
-    markAsRead,
-  } = useNotificationStore();
+  const { notifications, unreadCount, fetchNotifications, markAsRead } =
+    useNotificationStore();
 
   // Verifica se a rota é a página inicial
   const isLandingPage = window?.location.pathname === "/";
-  
+
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  const handleNotificationClick = (id: string) => {
-    markAsRead(id);
+  const handleNotificationClick = (notification: Notification) => {
+    console.log("Clicou na notificação", notification);
+
+    if (notification.type === "new_campaign") {
+      if (!notification.read) {
+        markAsRead(notification.id);
+      }
+      navigate({
+        to: `/dashboard/campanhas/${notification.expand?.campaign.unique_name}`,
+      });
+    }
   };
 
   return (
@@ -91,11 +101,14 @@ export const PrivateHeader = () => {
                           ? "border-b border-gray-200"
                           : ""
                       }`}
-                      onClick={() => handleNotificationClick(notification.id)}
+                      onClick={() => handleNotificationClick(notification)}
                     >
-                      <p className="text-sm">{notification.message}</p>
+                      <p className="text-sm">{notification.description}</p>
                       <span className="text-xs text-gray-500">
-                        {notification.time}
+                        {formatDistanceToNow(new Date(notification.created!), {
+                          addSuffix: true,
+                          locale: ptBR,
+                        })}
                       </span>
                     </li>
                   ))}

@@ -1,64 +1,55 @@
+import pb from "@/lib/pb";
 import { create } from "zustand";
-
-interface Notification {
-  id: string;
-  message: string;
-  time: string;
-  read: boolean;
-}
+import { Notification } from "@/types/Notification";
 
 interface NotificationStore {
   notifications: Notification[];
   unreadCount: number;
-  fetchNotifications: () => void;
-  markAsRead: (id: string) => void;
+  fetchNotifications: () => Promise<void>;
+  markAsRead: (id: string) => Promise<void>;
 }
-
-const mockNotifications: Notification[] = [
-  {
-    id: "1",
-    message: "Você recebeu uma nova mensagem.",
-    time: "Há 2 horas",
-    read: false,
-  },
-  {
-    id: "2",
-    message: "Sua publicação foi aprovada.",
-    time: "Há 4 horas",
-    read: true,
-  },
-];
 
 export const useNotificationStore = create<NotificationStore>((set) => ({
   notifications: [],
   unreadCount: 0,
 
-  fetchNotifications: () => {
-    // Simule uma chamada à API
-    // TODO: integrar com o backend
-    set(() => {
-      const unread = mockNotifications.filter((n) => !n.read).length;
-      return {
-        notifications: mockNotifications,
+  fetchNotifications: async () => {
+    try {
+      const records = await pb
+        .collection("notifications")
+        .getFullList<Notification>({
+          sort: "-created",
+          expand: "campaign",
+          filter: `to_brand = "${pb.authStore.model?.id}" || to_influencer = "${pb.authStore.model?.id}"`,
+        });
+
+      const unread = records.filter((n) => !n.read).length;
+
+      set({
+        notifications: records,
         unreadCount: unread,
-      };
-    });
+      });
+    } catch (error) {
+      console.error("Erro ao buscar notificações:", error);
+    }
   },
 
-  markAsRead: (id) => {
-    set((state) => {
-      const updatedNotifications = state.notifications.map((n) =>
-        n.id === id ? { ...n, read: true } : n
-      );
-      const unread = updatedNotifications.filter((n) => !n.read).length;
-      return {
-        notifications: updatedNotifications,
-        unreadCount: unread,
-      };
-    });
+  markAsRead: async (id) => {
+    try {
+      await pb.collection("notifications").update(id, { read: true });
 
-    // TODO: Enviar atualização para o backend (PocketBase)
-    // Exemplo:
-    // fetch(`/api/notifications/${id}/mark-as-read`, { method: 'POST' });
+      set((state) => {
+        const updatedNotifications = state.notifications.map((n) =>
+          n.id === id ? { ...n, read: true } : n
+        );
+        const unread = updatedNotifications.filter((n) => !n.read).length;
+        return {
+          notifications: updatedNotifications,
+          unreadCount: unread,
+        };
+      });
+    } catch (error) {
+      console.error("Erro ao marcar notificação como lida:", error);
+    }
   },
 }));
