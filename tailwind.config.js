@@ -60,6 +60,15 @@ export default {
         },
         customLinkBlue: "#10438f",
       },
+      keyframes: {
+        slides: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-100%)" },
+        },
+      },
+      animation: {
+        slides: "slides 35s linear infinite",
+      },
       container: {
         center: true,
         padding: "2rem",

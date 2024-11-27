@@ -8,60 +8,38 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNotificationStore } from "@/store/useNotificationStore";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Notification } from "@/types/Notification";
+import { useNavigate } from "@tanstack/react-router";
 
 export const PrivateHeader = () => {
   const { openSheet } = useSheetStore();
+  const navigate = useNavigate();
 
-  const mockNotifications = [
-    {
-      id: "1",
-      message: "Você recebeu uma nova mensagem.",
-      time: "Há 2 horas",
-      read: false,
-    },
-    {
-      id: "2",
-      message: "Sua publicação foi aprovada.",
-      time: "Há 4 horas",
-      read: true,
-    },
-    {
-      id: "3",
-      message: "Novo comentário na sua postagem.",
-      time: "Há 1 dia",
-      read: false,
-    },
-    {
-      id: "4",
-      message: "Atualização disponível.",
-      time: "Há 3 dias",
-      read: true,
-    },
-    {
-      id: "5",
-      message: "Você tem um novo seguidor.",
-      time: "Há 5 dias",
-      read: false,
-    },
-  ];
-
-  const [notifications, setNotifications] = useState(mockNotifications);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const { notifications, unreadCount, fetchNotifications, markAsRead } =
+    useNotificationStore();
 
   // Verifica se a rota é a página inicial
   const isLandingPage = window?.location.pathname === "/";
 
-  const handleNotificationClick = (id: string) => {
-    // Atualizar o estado localmente
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
-    // TODO: Enviar atualização para o backend (PocketBase)
-    // Exemplo:
-    // fetch(`/api/notifications/${id}/mark-as-read`, { method: 'POST' });
+  const handleNotificationClick = (notification: Notification) => {
+    console.log("Clicou na notificação", notification);
+
+    if (notification.type === "new_campaign") {
+      if (!notification.read) {
+        markAsRead(notification.id);
+      }
+      navigate({
+        to: `/dashboard/campanhas/${notification.expand?.campaign.unique_name}`,
+      });
+    }
   };
 
   return (
@@ -123,11 +101,14 @@ export const PrivateHeader = () => {
                           ? "border-b border-gray-200"
                           : ""
                       }`}
-                      onClick={() => handleNotificationClick(notification.id)}
+                      onClick={() => handleNotificationClick(notification)}
                     >
-                      <p className="text-sm">{notification.message}</p>
+                      <p className="text-sm">{notification.description}</p>
                       <span className="text-xs text-gray-500">
-                        {notification.time}
+                        {formatDistanceToNow(new Date(notification.created!), {
+                          addSuffix: true,
+                          locale: ptBR,
+                        })}
                       </span>
                     </li>
                   ))}
