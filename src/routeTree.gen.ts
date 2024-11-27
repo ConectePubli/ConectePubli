@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as TermosIndexImport } from './routes/termos/index'
 import { Route as PrivacidadeIndexImport } from './routes/privacidade/index'
+import { Route as ContratoCampanhaIndexImport } from './routes/contrato-campanha/index'
 import { Route as dashboardSideNavDashboardImport } from './routes/(dashboard)/_side-nav-dashboard'
 import { Route as authLogin123newIndexImport } from './routes/(auth)/login123new/index'
 import { Route as authEsquecerSenhaIndexImport } from './routes/(auth)/esquecer-senha/index'
@@ -65,6 +66,11 @@ const TermosIndexRoute = TermosIndexImport.update({
 
 const PrivacidadeIndexRoute = PrivacidadeIndexImport.update({
   path: '/privacidade/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ContratoCampanhaIndexRoute = ContratoCampanhaIndexImport.update({
+  path: '/contrato-campanha/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -224,6 +230,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof dashboardSideNavDashboardImport
       parentRoute: typeof dashboardRoute
+    }
+    '/contrato-campanha/': {
+      id: '/contrato-campanha/'
+      path: '/contrato-campanha'
+      fullPath: '/contrato-campanha'
+      preLoaderRoute: typeof ContratoCampanhaIndexImport
+      parentRoute: typeof rootRoute
     }
     '/privacidade/': {
       id: '/privacidade/'
@@ -487,6 +500,7 @@ const dashboardRouteWithChildren = dashboardRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '/': typeof dashboardSideNavDashboardRouteWithChildren
+  '/contrato-campanha': typeof ContratoCampanhaIndexRoute
   '/privacidade': typeof PrivacidadeIndexRoute
   '/termos': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
@@ -514,6 +528,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof dashboardSideNavDashboardRouteWithChildren
+  '/contrato-campanha': typeof ContratoCampanhaIndexRoute
   '/privacidade': typeof PrivacidadeIndexRoute
   '/termos': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
@@ -542,6 +557,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof dashboardRouteWithChildren
   '/_side-nav-dashboard': typeof dashboardSideNavDashboardRouteWithChildren
+  '/contrato-campanha/': typeof ContratoCampanhaIndexRoute
   '/privacidade/': typeof PrivacidadeIndexRoute
   '/termos/': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
@@ -572,6 +588,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/contrato-campanha'
     | '/privacidade'
     | '/termos'
     | '/cadastro/influenciador'
@@ -598,6 +615,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/contrato-campanha'
     | '/privacidade'
     | '/termos'
     | '/cadastro/influenciador'
@@ -624,6 +642,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_side-nav-dashboard'
+    | '/contrato-campanha/'
     | '/privacidade/'
     | '/termos/'
     | '/cadastro/influenciador'
@@ -654,6 +673,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   dashboardRoute: typeof dashboardRouteWithChildren
+  ContratoCampanhaIndexRoute: typeof ContratoCampanhaIndexRoute
   PrivacidadeIndexRoute: typeof PrivacidadeIndexRoute
   TermosIndexRoute: typeof TermosIndexRoute
   authCadastroInfluenciadorRoute: typeof authCadastroInfluenciadorRoute
@@ -666,6 +686,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   dashboardRoute: dashboardRouteWithChildren,
+  ContratoCampanhaIndexRoute: ContratoCampanhaIndexRoute,
   PrivacidadeIndexRoute: PrivacidadeIndexRoute,
   TermosIndexRoute: TermosIndexRoute,
   authCadastroInfluenciadorRoute: authCadastroInfluenciadorRoute,
@@ -689,6 +710,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/",
+        "/contrato-campanha/",
         "/privacidade/",
         "/termos/",
         "/cadastro/influenciador",
@@ -718,6 +740,9 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/influenciador/$username/editar/",
         "/_side-nav-dashboard/marca/$userName/editar/"
       ]
+    },
+    "/contrato-campanha/": {
+      "filePath": "contrato-campanha/index.tsx"
     },
     "/privacidade/": {
       "filePath": "privacidade/index.tsx"
