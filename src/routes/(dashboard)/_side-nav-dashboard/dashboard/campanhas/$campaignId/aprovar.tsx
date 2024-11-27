@@ -343,8 +343,18 @@ function Page() {
               const influencer = participation.expand?.influencer;
               if (!influencer) return null;
 
+              const createdAt = new Date(participation.created as Date);
+              createdAt.setHours(createdAt.getHours() - 3);
+
+              const dateString = createdAt.toLocaleDateString();
+              const timeString = createdAt.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              });
+
               const status = participation.status;
-              const proposalText = influencer.bio || "";
+              const proposalText = participation.description || "";
               const isTextLong = proposalText.length > 100;
               const displayedText = isTextLong
                 ? proposalText.slice(0, 100) + "..."
@@ -373,8 +383,7 @@ function Page() {
                       )}
                       <div>
                         <p className="text-sm">
-                          {new Date(influencer.created).toLocaleDateString()} /{" "}
-                          {influencer.state}
+                          {dateString} {timeString} / {influencer.state}
                         </p>
                         <h3 className="font-semibold text-lg text-gray-900">
                           {influencer.name}
@@ -398,7 +407,12 @@ function Page() {
                     </div>
 
                     <div>
-                      <p className="text-base">{displayedText}</p>
+                      <p
+                        className="text-base"
+                        style={!displayedText ? { color: "#777" } : {}}
+                      >
+                        {displayedText || "Sem texto de proposta"}
+                      </p>
                       {isTextLong && (
                         <button
                           className="text-blue-500"
