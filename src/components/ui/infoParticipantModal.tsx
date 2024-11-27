@@ -1,7 +1,6 @@
 import React from "react";
 import Modal from "./Modal";
-import { useNavigate } from "@tanstack/react-router";
-import { Flag, MapPin, MessageCircle, Stars, User } from "lucide-react";
+import { Flag, MapPin, MessageCircle, User } from "lucide-react";
 import { CaretDown, MagnifyingGlassPlus } from "phosphor-react";
 
 import { Influencer } from "@/types/Influencer";
@@ -24,7 +23,6 @@ const InfoParticipantModal: React.FC<Props> = ({
   participant,
   setModalType,
 }) => {
-  const navigate = useNavigate();
   return (
     <Modal onClose={() => setModalType(null)}>
       <div className="flex flex-col gap-4">
@@ -82,9 +80,11 @@ const InfoParticipantModal: React.FC<Props> = ({
           <button
             className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
             onClick={() => {
-              navigate({
-                to: `/influenciador/${participant?.username}`,
-              });
+              window.open(
+                `/influenciador/${participant?.username}`,
+                "_blank",
+                "noopener,noreferrer"
+              );
             }}
           >
             <MagnifyingGlassPlus size={17} weight="bold" />
@@ -101,7 +101,7 @@ const InfoParticipantModal: React.FC<Props> = ({
             Enviar Mensagem
           </button>
 
-          {selectedParticipation.status === "completed" && (
+          {/* {selectedParticipation.status === "completed" && (
             <button
               className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
               onClick={() => {
@@ -111,7 +111,7 @@ const InfoParticipantModal: React.FC<Props> = ({
               <Stars size={17} />
               Avaliar
             </button>
-          )}
+          )} */}
         </div>
 
         {selectedParticipation.status === "approved" && (
@@ -131,7 +131,8 @@ const InfoParticipantModal: React.FC<Props> = ({
 
         <div>
           <h3 className="font-semibold text-lg flex items-center">
-            Endereço <CaretDown className="ml-1 translate-y-0.5" weight="bold" />
+            Endereço{" "}
+            <CaretDown className="ml-1 translate-y-0.5" weight="bold" />
           </h3>
           <p className="text-gray-700">
             CEP: {participant?.cep || "Não informado"}
