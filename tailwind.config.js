@@ -67,7 +67,7 @@ export default {
         },
       },
       animation: {
-        slides: "slides 35s linear infinite",
+        slides: "slides 40s linear infinite",
       },
       container: {
         center: true,

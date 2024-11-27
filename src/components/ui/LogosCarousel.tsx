@@ -12,7 +12,7 @@ const LogosCarousel = () => {
   const allLogos = [...logos, ...logos];
 
   return (
-    <div className="relative overflow-hidden py-8 sm:py-[30px] whitespace-nowrap  mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
+    <div className="relative overflow-hidden py-8 px-4 sm:py-[30px] whitespace-nowrap  mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
       {/* Left Overlay */}
       <div
         className="absolute top-0 left-0 h-full z-10 pointer-events-none"

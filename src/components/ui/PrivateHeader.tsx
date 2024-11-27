@@ -7,7 +7,6 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useNotificationStore } from "@/store/useNotificationStore";
 import { formatDistanceToNow } from "date-fns";
@@ -84,7 +83,7 @@ export const PrivateHeader = () => {
                   )}
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 md:w-96 p-0">
+              <PopoverContent className="w-80 md:w-96 p-0 mr-16">
                 <div className="bg-[#10438F] rounded-t-md pl-3">
                   <h3 className="text-base font-semibold py-2 text-white">
                     Notificações
@@ -96,6 +95,9 @@ export const PrivateHeader = () => {
                       key={notification.id}
                       className={`px-4 py-2 hover:cursor-pointer ${
                         notification.read ? "bg-white" : "bg-blue-50"
+                      } ${
+                        notification.type !== "new_campaign" &&
+                        "hover:cursor-default"
                       } hover:bg-accent ${
                         index !== notifications.length - 1
                           ? "border-b border-gray-200"
@@ -113,13 +115,13 @@ export const PrivateHeader = () => {
                     </li>
                   ))}
                 </ul>
-                <Button
+                {/* <Button UTILIZAR QUANDO FOR FAZER UMA PÁGINA ESPECIFICA PRA ISSO
                   variant="outline"
                   className="rounded-t-none w-full text-[#10438F] font-semibold hover:text-[#10438F]"
                   onClick={() => (window.location.href = "/notificacoes")}
                 >
                   Ver todas as notificações
-                </Button>
+                </Button> */}
               </PopoverContent>
             </Popover>
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border flex items-center justify-center">
