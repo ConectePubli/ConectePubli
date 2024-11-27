@@ -1,0 +1,107 @@
+import React, { useState } from "react";
+import { MapPin, User } from "lucide-react";
+
+import Modal from "./Modal";
+import { Button } from "./button";
+
+import { Influencer } from "@/types/Influencer";
+
+import pb from "@/lib/pb";
+import { CampaignParticipation } from "@/types/Campaign_Participations";
+import { toast } from "react-toastify";
+
+interface Props {
+  setModalType: React.ComponentState;
+  participant: Influencer;
+  selectedParticipantion: CampaignParticipation;
+}
+
+const ChooseParticipantModal: React.FC<Props> = ({
+  setModalType,
+  participant,
+  selectedParticipantion,
+}) => {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  return (
+    <Modal onClose={() => setModalType(null)}>
+      <div className="flex flex-col gap-4">
+        <h2 className="text-xl font-semibold">Escolher Influencer</h2>
+
+        <div className="flex items-center gap-2">
+          {participant?.profile_img ? (
+            <img
+              src={pb.files.getUrl(participant, participant?.profile_img)}
+              alt="Foto do Influenciador"
+              className="w-16 h-16 rounded-full object-cover mr-2"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
+              <User size={20} color="#fff" />
+            </div>
+          )}
+          <div>
+            <p className="font-semibold text-lg">{participant?.name}</p>
+            <p className="text-sm text-red-600 flex items-center gap-1">
+              <MapPin size={16} />
+              {`${participant?.city}, ${participant?.state}, ${participant?.country}`}
+            </p>
+          </div>
+        </div>
+
+        <p className="text-gray-700">
+          Ao escolher este(a) influenciador(a), você está confirmando a
+          participação dele(a) na campanha e autorizando o início das atividades
+          conforme os termos acordados. O(a) influenciador(a) será responsável
+          por executar as tarefas conforme o briefing da campanha e entregar os
+          conteúdos no prazo estabelecido.
+        </p>
+
+        <p className="font-medium">Deseja confirmar a aprovação?</p>
+
+        <div className="flex justify-end gap-4">
+          <button
+            onClick={() => setModalType(null)}
+            className="text-gray-600 hover:text-gray-900"
+          >
+            Cancelar
+          </button>
+
+          <Button
+            variant={"blue"}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            onClick={async () => {
+              setLoading(true);
+
+              try {
+                await pb
+                  .collection("Campaigns_Participations")
+                  .update(selectedParticipantion?.id as string, {
+                    status: "approved",
+                  });
+
+                toast("Status do candidato atualizado com sucesso");
+
+                setModalType(null);
+
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1500);
+              } catch (e) {
+                console.log(`error update status user to approved: ${e}`);
+                toast("Ocorreu um erro ao atualizar o status do candidato");
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading}
+          >
+            {loading ? "Aguarde..." : "Escolher para Campanha"}
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+export default ChooseParticipantModal;

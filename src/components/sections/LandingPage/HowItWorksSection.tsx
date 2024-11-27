@@ -2,7 +2,7 @@ import React from "react";
 import image1 from "@/assets/how-it-works1.webp";
 import image2 from "@/assets/how-it-works2.webp";
 import image3 from "@/assets/how-it-works3.webp";
-import alta_tecnologia from "@/assets/alta_tecnologia.jpg";
+import alta_tecnologia from "@/assets/alta_tecnologia.jpeg";
 
 import { FeatureCard } from "@/components/LandingPage/FeaturesCard/FeaturesCard";
 
