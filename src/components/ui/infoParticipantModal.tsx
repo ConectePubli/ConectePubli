@@ -5,12 +5,14 @@ import { CaretDown, MagnifyingGlassPlus } from "phosphor-react";
 
 import { Influencer } from "@/types/Influencer";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
+import { Campaign } from "@/types/Campaign";
 
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 
 import pb from "@/lib/pb";
 
 interface Props {
+  campaignData: Campaign;
   selectedParticipation: CampaignParticipation;
   setSelectedParticipation: React.ComponentState;
   participant: Influencer;
@@ -18,6 +20,7 @@ interface Props {
 }
 
 const InfoParticipantModal: React.FC<Props> = ({
+  campaignData,
   selectedParticipation,
   setSelectedParticipation,
   participant,
@@ -117,15 +120,17 @@ const InfoParticipantModal: React.FC<Props> = ({
             Ver Perfil
           </button>
 
-          <button
-            className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
-            onClick={() => {
-              // Ação de "Enviar Mensagem" aqui
-            }}
-          >
-            <MessageCircle size={17} />
-            Enviar Mensagem
-          </button>
+          {campaignData.status !== "ended" && (
+            <button
+              className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
+              onClick={() => {
+                // Ação de "Enviar Mensagem" aqui
+              }}
+            >
+              <MessageCircle size={17} />
+              Enviar Mensagem
+            </button>
+          )}
 
           {/* {selectedParticipation.status === "completed" && (
             <button

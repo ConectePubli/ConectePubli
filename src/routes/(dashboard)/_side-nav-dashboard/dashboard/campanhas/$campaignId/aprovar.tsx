@@ -9,7 +9,7 @@ import pb from "@/lib/pb";
 import { ClientResponseError } from "pocketbase";
 import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
-import { MessageCircle, ThumbsUp, User } from "lucide-react";
+import { Info, MessageCircle, ThumbsUp, User } from "lucide-react";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import { Flag, Headset, MagnifyingGlassPlus } from "phosphor-react";
 import "react-toastify/ReactToastify.css";
@@ -247,19 +247,28 @@ function Page() {
           Visualize todos os inscritos dessa campanha.
         </p>
 
+        {campaignData.status === "ended" && (
+          <p className="flex items-center text-red-500 mt-3">
+            <Info size={18} color="#e61919" className="mr-1" /> Essa campanha
+            terminou, então você pode apenas visualizar ela
+          </p>
+        )}
+
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4">
           <div className="flex items-center gap-1 mb-4 sm:mb-0">
             <User size={20} color="#222" />
             <span className="text-gray-900">{openJobs} vagas abertas</span>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-            <Button
-              variant="brown"
-              className="bg-transparent text-[#942A2A] border-2 border-[#942A2A] hover:text-white"
-              onClick={() => setModalType("cancelCampaign")}
-            >
-              Cancelar Campanha
-            </Button>
+            {campaignData.status !== "ended" && (
+              <Button
+                variant="brown"
+                className="bg-transparent text-[#942A2A] border-2 border-[#942A2A] hover:text-white"
+                onClick={() => setModalType("cancelCampaign")}
+              >
+                Cancelar Campanha
+              </Button>
+            )}
             <Button
               variant={"blue"}
               onClick={() =>
@@ -449,17 +458,18 @@ function Page() {
 
                   <div className="flex flex-col md:flex-row items-center md:justify-between border-t-2 pt-5 gap-2">
                     <div>
-                      {(status === "approved" || status === "completed") && (
-                        <button
-                          className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
-                          onClick={() => {
-                            // Navegar para o chat
-                          }}
-                        >
-                          <MessageCircle size={18} className="mr-1 " />
-                          Enviar Mensagem
-                        </button>
-                      )}
+                      {(status === "approved" || status === "completed") &&
+                        campaignData.status !== "ended" && (
+                          <button
+                            className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
+                            onClick={() => {
+                              // Navegar para o chat
+                            }}
+                          >
+                            <MessageCircle size={18} className="mr-1 " />
+                            Enviar Mensagem
+                          </button>
+                        )}
                     </div>
 
                     <div className="flex flex-wrap gap-2">
@@ -475,19 +485,20 @@ function Page() {
                         Visualizar
                       </Button>
 
-                      {status === "waiting" && (
-                        <Button
-                          variant={"blue"}
-                          className="px-4 py-2 text-base flex items-center"
-                          onClick={() => {
-                            setSelectedParticipation(participation);
-                            setModalType("choose");
-                          }}
-                        >
-                          <ThumbsUp size={19} className="mr-1" />
-                          Escolher para a Campanha
-                        </Button>
-                      )}
+                      {status === "waiting" &&
+                        campaignData.status !== "ended" && (
+                          <Button
+                            variant={"blue"}
+                            className="px-4 py-2 text-base flex items-center"
+                            onClick={() => {
+                              setSelectedParticipation(participation);
+                              setModalType("choose");
+                            }}
+                          >
+                            <ThumbsUp size={19} className="mr-1" />
+                            Escolher para a Campanha
+                          </Button>
+                        )}
 
                       {status === "approved" && (
                         <>
@@ -503,16 +514,18 @@ function Page() {
                             Contatar Suporte
                           </Button>
 
-                          <button
-                            className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
-                            onClick={() => {
-                              setSelectedParticipation(participation);
-                              setModalType("conclude");
-                            }}
-                          >
-                            <Flag size={18} className="mr-1" />
-                            Concluir Colaboração
-                          </button>
+                          {campaignData.status !== "ended" && (
+                            <button
+                              className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
+                              onClick={() => {
+                                setSelectedParticipation(participation);
+                                setModalType("conclude");
+                              }}
+                            >
+                              <Flag size={18} className="mr-1" />
+                              Concluir Colaboração
+                            </button>
+                          )}
                         </>
                       )}
                     </div>
@@ -553,6 +566,7 @@ function Page() {
 
       {modalType === "viewProposal" && selectedParticipation && (
         <InfoParticipantModal
+          campaignData={campaignData}
           selectedParticipation={selectedParticipation}
           setSelectedParticipation={setSelectedParticipation}
           participant={selectedParticipation.expand?.influencer as Influencer}
