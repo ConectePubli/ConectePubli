@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "./Modal";
 import { Flag, MapPin, MessageCircle, User } from "lucide-react";
 import { CaretDown, MagnifyingGlassPlus } from "phosphor-react";
@@ -23,25 +23,34 @@ const InfoParticipantModal: React.FC<Props> = ({
   participant,
   setModalType,
 }) => {
+  const [showFullDescription, setShowFullDescription] = useState(false);
+
+  const toggleDescription = () => {
+    setShowFullDescription(!showFullDescription);
+  };
+
+  const truncateText = (text: string, limit: number) =>
+    text.length > limit ? text.slice(0, limit) + "..." : text;
+
   return (
     <Modal onClose={() => setModalType(null)}>
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Informações do Influenciador</h2>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           {participant?.profile_img ? (
             <img
               src={pb.files.getUrl(participant, participant?.profile_img)}
               alt="Foto do Influenciador"
-              className="w-16 h-16 rounded-full object-cover"
+              className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center">
+            <div className="w-16 h-16 min-w-[4rem] rounded-full bg-gray-300 flex items-center justify-center">
               <User size={24} color="#fff" />
             </div>
           )}
 
-          <div>
+          <div className="flex-1">
             <p className="font-semibold text-lg">{participant?.name}</p>
             <p className="text-sm text-red-600 flex items-center gap-1">
               <MapPin size={16} />
@@ -71,10 +80,27 @@ const InfoParticipantModal: React.FC<Props> = ({
         </div>
 
         {/* Bio */}
-        <p className="text-gray-700">
-          {participant?.bio ||
-            "O influenciador não forneceu uma descrição detalhada."}
-        </p>
+        <div className="text-gray-700">
+          {selectedParticipation?.description ? (
+            <>
+              <p>
+                {showFullDescription
+                  ? selectedParticipation.description
+                  : truncateText(selectedParticipation.description, 100)}
+              </p>
+              {selectedParticipation.description.length > 100 && (
+                <button
+                  className="text-blue-600 text-sm hover:underline"
+                  onClick={toggleDescription}
+                >
+                  {showFullDescription ? "Ver Menos" : "Ver Mais"}
+                </button>
+              )}
+            </>
+          ) : (
+            "O influenciador não forneceu uma descrição detalhada."
+          )}
+        </div>
 
         <div className="flex gap-4 flex-wrap max-sm:gap-y-2">
           <button

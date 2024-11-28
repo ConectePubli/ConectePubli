@@ -42,15 +42,15 @@ const RateParticipantModal: React.FC<Props> = ({
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Avaliar Influencer</h2>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           {participant.profile_img ? (
             <img
               src={pb.files.getUrl(participant, participant.profile_img)}
               alt="Foto do Influenciador"
-              className="w-16 h-16 rounded-full object-cover"
+              className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center">
+            <div className="w-16 h-16 min-w-[4rem] rounded-full bg-gray-300 flex items-center justify-center">
               <User size={24} color="#fff" />
             </div>
           )}

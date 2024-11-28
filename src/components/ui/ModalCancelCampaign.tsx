@@ -7,6 +7,7 @@ import pb from "@/lib/pb";
 
 import { UserAuth } from "@/types/UserAuth";
 import { Campaign } from "@/types/Campaign";
+import { Brand } from "@/types/Brand";
 
 interface Props {
   setModalType: React.ComponentState;
@@ -28,17 +29,37 @@ const ModalCancelCampaign: React.FC<Props> = ({
       localStorage.getItem("pocketbase_auth") as string
     );
 
-    const email = await pb.collection("Brands").getOne(userData.model.id, {
-      fields: "email",
-    });
+    const brandDetails: Brand = await pb
+      .collection("Brands")
+      .getOne(userData.model.id, {
+        fields: "email,phone,contact_name",
+      });
 
     try {
       await axios.post(
         "https://conecte-publi.pockethost.io/api/support_email",
         {
           title: `Cancelamento da campanha: ${campaignData?.name}`,
-          email: email,
-          message: `Motivo do cancelamento: ${reason}`,
+          email: brandDetails.email,
+          message: `
+            Motivo do cancelamento: ${reason}
+            
+            Detalhes da Campanha:
+            - Número de telefone: ${brandDetails?.cell_phone || "Telefone não cadastrado"}
+            - Nome da marca: ${brandDetails?.name || "Sem nome"}
+            - Nome do responsavel da campanha: ${campaignData.responsible_name}
+            - Número do responsavel da campanha: ${campaignData.responsible_phone}
+            - Email do responsavel: ${campaignData.responsible_email}
+            - Nome da campanha: ${campaignData.name}
+            - Orçamento Total: ${Number(campaignData?.open_jobs) * campaignData?.price || "Não informado"}
+            - Link para a campanha: ${
+              campaignData
+                ? `${window.location.origin}/campanhas/${campaignData.id}`
+                : "Não disponível"
+            }
+
+            Nota: Para acessar o link da campanha, a conta precisa estar logada na plataforma. Contas de marcas não podem acessar diretamente esta página.
+          `,
         }
       );
       setSubmittedCancel(true);

@@ -13,12 +13,17 @@ interface Props {
   participant: Influencer;
   selectedParticipation: CampaignParticipation;
   setModalType: React.ComponentState;
+  updateParticipationStatus: (
+    participationId: string,
+    newStatus: string
+  ) => void;
 }
 
 const ConcludeModalParticipant: React.FC<Props> = ({
   participant,
   selectedParticipation,
   setModalType,
+  updateParticipationStatus,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -27,15 +32,15 @@ const ConcludeModalParticipant: React.FC<Props> = ({
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Concluir Colaboração</h2>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           {participant.profile_img ? (
             <img
               src={pb.files.getUrl(participant, participant.profile_img)}
               alt="Foto do Influenciador"
-              className="w-16 h-16 rounded-full object-cover"
+              className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center">
+            <div className="w-16 h-16 min-w-[4rem] rounded-full bg-gray-300 flex items-center justify-center">
               <User size={24} color="#fff" />
             </div>
           )}
@@ -80,11 +85,12 @@ const ConcludeModalParticipant: React.FC<Props> = ({
 
                 toast("Status do candidato atualizado com sucesso");
 
-                setModalType(null);
+                updateParticipationStatus(
+                  selectedParticipation?.id as string,
+                  "completed"
+                );
 
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1500);
+                setModalType(null);
               } catch (error) {
                 console.error("Erro ao concluir colaboração:", error);
                 toast("Ocorreu um erro ao atualizar o status do candidato");

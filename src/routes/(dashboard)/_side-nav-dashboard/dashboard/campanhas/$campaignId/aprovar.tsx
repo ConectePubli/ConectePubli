@@ -93,7 +93,10 @@ function Page() {
     from: Route.id,
   }) as LoaderData;
 
-  const { campaignData, campaignParticipations, error } = loaderData;
+  const { campaignData, error } = loaderData;
+  const [campaignParticipations, setCampaignParticipations] = useState<
+    CampaignParticipation[]
+  >(loaderData.campaignParticipations);
 
   const navigate = useNavigate();
   const [selectedParticipation, setSelectedParticipation] =
@@ -116,6 +119,23 @@ function Page() {
 
   // State for niches
   const [niches, setNiches] = useState<Niche[]>([]);
+
+  function updateParticipationStatus(
+    participationId: string,
+    newStatus: string
+  ) {
+    setCampaignParticipations((prevParticipations) =>
+      prevParticipations.map((participation) => {
+        if (participation.id === participationId) {
+          return {
+            ...participation,
+            status: newStatus,
+          } as CampaignParticipation;
+        }
+        return participation;
+      })
+    );
+  }
 
   useEffect(() => {
     const fetchNiches = async () => {
@@ -365,8 +385,8 @@ function Page() {
                   key={participation.id}
                   className="border border-gray-300 rounded-lg p-4 shadow-sm flex flex-col gap-4"
                 >
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="flex sm:border-r border-gray-300 sm:pr-2">
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex md:border-r border-gray-300 md:pr-2">
                       {influencer.profile_img ? (
                         <img
                           src={pb.files.getUrl(
@@ -374,10 +394,10 @@ function Page() {
                             influencer.profile_img
                           )}
                           alt="Foto do Influenciador"
-                          className="w-16 h-16 rounded-full object-cover mr-2"
+                          className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2"
                         />
                       ) : (
-                        <div className="w-16 h-16 rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
+                        <div className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
                           <User size={20} color="#fff" />
                         </div>
                       )}
@@ -427,13 +447,13 @@ function Page() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center sm:justify-between border-t-2 pt-5 gap-2">
+                  <div className="flex flex-col md:flex-row items-center md:justify-between border-t-2 pt-5 gap-2">
                     <div>
                       {(status === "approved" || status === "completed") && (
                         <button
                           className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
                           onClick={() => {
-                            // Navigate to chat
+                            // Navegar para o chat
                           }}
                         >
                           <MessageCircle size={18} className="mr-1 " />
@@ -510,6 +530,7 @@ function Page() {
           setModalType={setModalType}
           participant={selectedParticipation.expand?.influencer as Influencer}
           selectedParticipantion={selectedParticipation}
+          updateParticipationStatus={updateParticipationStatus}
         />
       )}
 
@@ -518,11 +539,13 @@ function Page() {
           participant={selectedParticipation.expand?.influencer as Influencer}
           selectedParticipation={selectedParticipation}
           setModalType={setModalType}
+          updateParticipationStatus={updateParticipationStatus}
         />
       )}
 
       {modalType === "contactSupport" && selectedParticipation && (
         <SupportModal
+          campaignData={campaignData}
           participant={selectedParticipation.expand?.influencer as Influencer}
           setModalType={setModalType}
         />

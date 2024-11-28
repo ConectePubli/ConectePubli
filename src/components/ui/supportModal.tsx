@@ -8,13 +8,20 @@ import { MapPin, User } from "lucide-react";
 
 import pb from "@/lib/pb";
 import { toast } from "react-toastify";
+import { Campaign } from "@/types/Campaign";
+import { Brand } from "@/types/Brand";
 
 interface Props {
+  campaignData: Campaign;
   participant: Influencer;
   setModalType: React.ComponentState;
 }
 
-const SupportModal: React.FC<Props> = ({ participant, setModalType }) => {
+const SupportModal: React.FC<Props> = ({
+  campaignData,
+  participant,
+  setModalType,
+}) => {
   const [supportMessage, setSupportMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -27,27 +34,56 @@ const SupportModal: React.FC<Props> = ({ participant, setModalType }) => {
         localStorage.getItem("pocketbase_auth") as string
       );
 
-      const userDetails = await pb
+      const brandDetails: Brand = await pb
         .collection("Brands")
         .getOne(userData.model.id, {
-          fields: "name,email",
+          fields: "name,email,cell_phone",
         });
 
-      console.log(userDetails);
+      const message = `
+        **Detalhes da Marca:**
+        - Nome da Marca: ${brandDetails?.name || "Não informado"}
+        - Número de telefone: ${brandDetails.cell_phone}
+        - Nome do Responsável: ${campaignData.responsible_name || "Não informado"}
+        - Número do Responsável: ${campaignData.responsible_name || "Não informado"}
+        - Email do Responsável: ${campaignData.responsible_email || "Não informado"}
+        
+        **Detalhes da Campanha:**
+        - Nome da Campanha: ${campaignData?.name || "Não informado"}
+        - Orçamento Total: ${Number(campaignData?.open_jobs) * campaignData?.price || "Não informado"}
+        - Link para a Campanha: ${
+          campaignData
+            ? `${window.location.origin}/campanhas/${campaignData.id}`
+            : "Não disponível"
+        }
 
+        Nota: Para acessar o link da campanha, a conta precisa estar logada na plataforma. Contas de marcas não têm acesso direto.
+
+        **Detalhes do Influenciador:**
+        - Nome: ${participant?.name || "Não informado"}
+        - Número de Telefone: ${participant?.cell_phone || "Não informado"}
+        - Email: ${participant?.email || "Não informado"}
+  
+        **Mensagem da Marca:**
+        ${supportMessage.trim() || "Nenhuma mensagem adicional."}
+      `;
+
+      // Enviar e-mail
       await axios.post(
         "https://conecte-publi.pockethost.io/api/support_email",
         {
-          title: `Solicitação de Mediação - ${userData.name}`,
-          email: userDetails.email,
-          message: supportMessage,
+          title: `Solicitação de Mediação - Campanha ${campaignData?.name || "Desconhecida"}`,
+          email: brandDetails?.email || "sem-email@dominio.com",
+          message: message,
         }
       );
 
       setIsSubmitted(true);
     } catch (error) {
       console.error("Erro ao enviar pedido de suporte:", error);
-      toast("Ocorreu um erro ao enviar sua solicitação. Tente novamente.");
+      toast.error(
+        "Ocorreu um erro ao enviar sua solicitação. Tente novamente."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -66,15 +102,15 @@ const SupportModal: React.FC<Props> = ({ participant, setModalType }) => {
             Solicitar Mediação para o Trabalho do Influenciador
           </h2>
 
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex flex-wrap items-center gap-4 mb-4">
             {participant.profile_img ? (
               <img
                 src={pb.files.getUrl(participant, participant.profile_img)}
                 alt="Foto do Influenciador"
-                className="w-16 h-16 rounded-full object-cover"
+                className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gray-300">
+              <div className="w-16 h-16 min-w-[4rem] rounded-full bg-gray-300 flex items-center justify-center">
                 <User size={24} color="#fff" />
               </div>
             )}

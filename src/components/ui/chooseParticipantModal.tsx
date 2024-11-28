@@ -14,12 +14,17 @@ interface Props {
   setModalType: React.ComponentState;
   participant: Influencer;
   selectedParticipantion: CampaignParticipation;
+  updateParticipationStatus: (
+    participationId: string,
+    newStatus: string
+  ) => void;
 }
 
 const ChooseParticipantModal: React.FC<Props> = ({
   setModalType,
   participant,
   selectedParticipantion,
+  updateParticipationStatus,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -28,15 +33,15 @@ const ChooseParticipantModal: React.FC<Props> = ({
       <div className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">Escolher Influencer</h2>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {participant?.profile_img ? (
             <img
               src={pb.files.getUrl(participant, participant?.profile_img)}
               alt="Foto do Influenciador"
-              className="w-16 h-16 rounded-full object-cover mr-2"
+              className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
+            <div className="w-16 h-16 min-w-[4rem] rounded-full bg-gray-300 flex items-center justify-center">
               <User size={20} color="#fff" />
             </div>
           )}
@@ -82,13 +87,14 @@ const ChooseParticipantModal: React.FC<Props> = ({
 
                 toast("Status do candidato atualizado com sucesso");
 
-                setModalType(null);
+                updateParticipationStatus(
+                  selectedParticipantion?.id as string,
+                  "approved"
+                );
 
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1500);
+                setModalType(null);
               } catch (e) {
-                console.log(`error update status user to approved: ${e}`);
+                console.log(`Erro ao atualizar status: ${e}`);
                 toast("Ocorreu um erro ao atualizar o status do candidato");
               } finally {
                 setLoading(false);
