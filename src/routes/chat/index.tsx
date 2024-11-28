@@ -12,7 +12,8 @@ import { Input } from "@/components/ui/input";
 import { getUserType } from "@/lib/auth";
 import { Chat } from "@/types/Chat";
 import { Message } from "@/types/Message";
-import { Loader2 } from "lucide-react"; // Importação do ícone de loading
+import { Loader2, Undo2, X } from "lucide-react"; // Importação do ícone de loading
+import pb from "@/lib/pb";
 
 export const Route = createFileRoute("/chat/")({
   component: ChatPage,
@@ -172,21 +173,35 @@ function ChatPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-66px)] bg-gray-100 items-center md:pt-4">
-      <div className="flex w-full md:w-[90%] lg:w-[80%] xl:w-[70%] h-full md:h-[70vh] gap-3">
+      <div className="flex w-[90%] max-md:pt-4 rounded-lg lg:w-[80%] xl:w-[70%] h-full md:h-[70vh] gap-3">
         {/* Lista de Conversas */}
         <aside
           className={`${
             selectedChat
               ? "hidden md:flex md:w-[30%]"
-              : "flex w-full md:w-[30%]"
+              : "flex w-full md:w-[30%] max-md:rounded-lg"
           } bg-white border-r p-4 md:rounded-xl shadow-md`}
         >
           <div className="w-full h-full flex flex-col">
+            <Button
+              className="text-gray-500 text-sm font-semibold flex flex-row gap-2 items-center justify-start w-28"
+              variant={"ghost"}
+            >
+              <Undo2
+                className="h-6 w-6"
+                onClick={() =>
+                  router.navigate({
+                    to: `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`,
+                  })
+                }
+              />
+              Voltar
+            </Button>
             <h1 className="text-xl font-bold mb-4">Conversas</h1>
             <div className="flex-1 overflow-y-auto space-y-4">
               {loadingChats ? (
                 <div className="flex justify-center items-center h-full">
-                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#10438F]"></div>
                 </div>
               ) : (
                 chats.map((chat) => {
@@ -273,47 +288,51 @@ function ChatPage() {
           {selectedChat ? (
             <>
               {/* Header do Chat */}
-              <header className="border-b p-4 flex items-center gap-2">
+              <header className="border-b p-4 flex items-center gap-2 justify-between">
+                <div className="flex flex-row gap-2 items-center">
+                  <Avatar>
+                    <AvatarImage
+                      src={
+                        userType === "Brands"
+                          ? selectedChat.expand?.influencer?.profile_img
+                          : selectedChat.expand?.brand?.profile_img
+                      }
+                    />
+                    <AvatarFallback>
+                      {userType === "Brands"
+                        ? selectedChat.expand?.influencer?.name?.charAt(0)
+                        : selectedChat.expand?.brand?.name?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h1 className="font-bold text-xl">
+                      {userType === "Brands"
+                        ? selectedChat.expand?.influencer?.name
+                        : selectedChat.expand?.brand?.name}
+                    </h1>
+                    <p className="text-sm text-gray-500">
+                      {selectedChat.expand?.campaign?.name}
+                    </p>
+                  </div>
+                </div>
+
                 {/* Botão de Voltar no Mobile */}
-                <button
-                  className="block md:hidden text-gray-500 hover:text-gray-800"
+                <Button
+                  className="block  text-gray-500 hover:text-gray-800 font-bold"
+                  variant="ghost"
                   onClick={handleCloseChat}
                 >
-                  Voltar
-                </button>
-                <Avatar>
-                  <AvatarImage
-                    src={
-                      userType === "Brands"
-                        ? selectedChat.expand?.influencer?.profile_img
-                        : selectedChat.expand?.brand?.profile_img
-                    }
-                  />
-                  <AvatarFallback>
-                    {userType === "Brands"
-                      ? selectedChat.expand?.influencer?.name?.charAt(0)
-                      : selectedChat.expand?.brand?.name?.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h1 className="font-bold text-xl">
-                    {userType === "Brands"
-                      ? selectedChat.expand?.influencer?.name
-                      : selectedChat.expand?.brand?.name}
-                  </h1>
-                  <p className="text-sm text-gray-500">
-                    {selectedChat.expand?.campaign?.name}
-                  </p>
-                </div>
+                  <X className="h-6 w-6 outline outline-2 rounded-full" />
+                </Button>
               </header>
 
               {/* Mensagens e Input */}
               <div className="flex flex-col flex-1">
                 {/* Mensagens */}
-                <div className="flex-1 overflow-y-auto p-4">
+                <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
                   {loadingMessages ? (
                     <div className="flex justify-center items-center h-full">
-                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#10438F]"></div>
                     </div>
                   ) : (
                     messages.map((message) => (
@@ -332,7 +351,7 @@ function ChatPage() {
                             (userType === "Brands" && message.brand_sender) ||
                             (userType === "Influencers" &&
                               message.influencer_sender)
-                              ? "bg-blue-500 text-white"
+                              ? "bg-[#10438F] text-white"
                               : "bg-gray-200"
                           }`}
                         >
@@ -355,7 +374,7 @@ function ChatPage() {
                   />
                   <Button
                     onClick={handleSendMessage}
-                    className="bg-blue-500 text-white flex items-center justify-center"
+                    className="bg-[#10438F] hover:bg-[#10438F]/90 text-white flex items-center justify-center font-semibold"
                     disabled={sendingMessage} // Desabilita o botão durante o envio
                   >
                     {sendingMessage ? (
