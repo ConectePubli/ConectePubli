@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as TermosIndexImport } from './routes/termos/index'
 import { Route as PrivacidadeIndexImport } from './routes/privacidade/index'
+import { Route as ChatIndexImport } from './routes/chat/index'
 import { Route as dashboardSideNavDashboardImport } from './routes/(dashboard)/_side-nav-dashboard'
 import { Route as authLogin123newIndexImport } from './routes/(auth)/login123new/index'
 import { Route as authEsquecerSenhaIndexImport } from './routes/(auth)/esquecer-senha/index'
@@ -66,6 +67,11 @@ const TermosIndexRoute = TermosIndexImport.update({
 
 const PrivacidadeIndexRoute = PrivacidadeIndexImport.update({
   path: '/privacidade/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ChatIndexRoute = ChatIndexImport.update({
+  path: '/chat/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -231,6 +237,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof dashboardSideNavDashboardImport
       parentRoute: typeof dashboardRoute
+    }
+    '/chat/': {
+      id: '/chat/'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatIndexImport
+      parentRoute: typeof rootRoute
     }
     '/privacidade/': {
       id: '/privacidade/'
@@ -504,6 +517,7 @@ const dashboardRouteWithChildren = dashboardRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '/': typeof dashboardSideNavDashboardRouteWithChildren
+  '/chat': typeof ChatIndexRoute
   '/privacidade': typeof PrivacidadeIndexRoute
   '/termos': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
@@ -532,6 +546,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof dashboardSideNavDashboardRouteWithChildren
+  '/chat': typeof ChatIndexRoute
   '/privacidade': typeof PrivacidadeIndexRoute
   '/termos': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
@@ -561,6 +576,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof dashboardRouteWithChildren
   '/_side-nav-dashboard': typeof dashboardSideNavDashboardRouteWithChildren
+  '/chat/': typeof ChatIndexRoute
   '/privacidade/': typeof PrivacidadeIndexRoute
   '/termos/': typeof TermosIndexRoute
   '/cadastro/influenciador': typeof authCadastroInfluenciadorRoute
@@ -592,6 +608,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/chat'
     | '/privacidade'
     | '/termos'
     | '/cadastro/influenciador'
@@ -619,6 +636,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/chat'
     | '/privacidade'
     | '/termos'
     | '/cadastro/influenciador'
@@ -646,6 +664,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_side-nav-dashboard'
+    | '/chat/'
     | '/privacidade/'
     | '/termos/'
     | '/cadastro/influenciador'
@@ -677,6 +696,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   dashboardRoute: typeof dashboardRouteWithChildren
+  ChatIndexRoute: typeof ChatIndexRoute
   PrivacidadeIndexRoute: typeof PrivacidadeIndexRoute
   TermosIndexRoute: typeof TermosIndexRoute
   authCadastroInfluenciadorRoute: typeof authCadastroInfluenciadorRoute
@@ -689,6 +709,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   dashboardRoute: dashboardRouteWithChildren,
+  ChatIndexRoute: ChatIndexRoute,
   PrivacidadeIndexRoute: PrivacidadeIndexRoute,
   TermosIndexRoute: TermosIndexRoute,
   authCadastroInfluenciadorRoute: authCadastroInfluenciadorRoute,
@@ -712,6 +733,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/",
+        "/chat/",
         "/privacidade/",
         "/termos/",
         "/cadastro/influenciador",
@@ -742,6 +764,9 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/influenciador/$username/editar/",
         "/_side-nav-dashboard/marca/$userName/editar/"
       ]
+    },
+    "/chat/": {
+      "filePath": "chat/index.tsx"
     },
     "/privacidade/": {
       "filePath": "privacidade/index.tsx"

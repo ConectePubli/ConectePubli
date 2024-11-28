@@ -24,9 +24,7 @@ function Index() {
 
   return (
     <div className="overflow-hidden">
-      <div className="">
-        <SponsorBanner />
-      </div>
+      <SponsorBanner />
 
       <HeroSection />
 
@@ -34,8 +32,8 @@ function Index() {
 
       <p className="text-left text-xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
         Aprovado Por:
+        <LogosCarousel />
       </p>
-      <LogosCarousel />
 
       <HowItWorksSection />
 
