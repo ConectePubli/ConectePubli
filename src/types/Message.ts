@@ -1,3 +1,5 @@
+import { Chat } from "./Chat";
+
 export interface Message {
   id: string;
   chat: string;
@@ -7,4 +9,8 @@ export interface Message {
   influencer_sender: string;
   created: Date;
   updated: Date;
+
+  expand?: {
+    chat: Chat;
+  };
 }

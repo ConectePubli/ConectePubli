@@ -32,21 +32,40 @@ export async function createOrGetChat(
 export async function getUnreadConversationsCount(
   userType: string
 ): Promise<number> {
+  const currentUserId = pb.authStore.model?.id;
+  if (!currentUserId) return 0;
+
   const collection = pb.collection("messages");
 
   let filter = "";
 
   if (userType === "Brands") {
-    filter = "brand_sender != null && read = false";
+    filter = `read = false && influencer_sender != null && chat.brand = "${currentUserId}"`;
   } else if (userType === "Influencers") {
-    filter = "influencer_sender != null && read = false";
+    filter = `read = false && brand_sender != null && chat.influencer = "${currentUserId}"`;
   }
 
   const messages = await collection.getFullList<Message>({
     filter,
+    expand: "chat",
   });
 
-  const uniqueChats = new Set(messages.map((message) => message.chat));
+  // Filtrar mensagens onde o chat é pertencente ao usuário atual
+  const messagesForCurrentUser = messages.filter((message) => {
+    const chat = message.expand?.chat;
+    if (!chat) return false;
+
+    if (userType === "Brands") {
+      return chat.brand === currentUserId;
+    } else if (userType === "Influencers") {
+      return chat.influencer === currentUserId;
+    }
+    return false;
+  });
+
+  const uniqueChats = new Set(
+    messagesForCurrentUser.map((message) => message.chat)
+  );
   return uniqueChats.size;
 }
 
@@ -122,11 +141,22 @@ export async function markMessagesAsRead(
   const oppositeSenderField =
     userType === "Brands" ? "influencer_sender" : "brand_sender";
 
-  const unreadMessages = await pb.collection("messages").getFullList<Message>({
-    filter: `chat="${chatId}" && ${oppositeSenderField} != null && read = false`,
-  });
+  try {
+    // Busca mensagens não lidas enviadas pelo outro usuário
+    const unreadMessages = await pb
+      .collection("messages")
+      .getFullList<Message>({
+        filter: `chat="${chatId}" && ${oppositeSenderField} != null && read = false`,
+      });
 
-  for (const message of unreadMessages) {
-    await pb.collection("messages").update(message.id, { read: true });
+    console.log("Mensagens não lidas:", unreadMessages);
+
+    // Atualiza cada mensagem para marcar como lida
+    for (const message of unreadMessages) {
+      await pb.collection("messages").update(message.id, { read: true });
+      console.log(`Mensagem ${message.id} marcada como lida.`);
+    }
+  } catch (error) {
+    console.error("Erro ao marcar mensagens como lidas:", error);
   }
 }
