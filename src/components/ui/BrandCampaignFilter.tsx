@@ -96,9 +96,8 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
               >
                 <option value={CampaignGoalFilter.All}>Todos</option>
                 <option value={CampaignGoalFilter.UGC}>UGC</option>
-                <option value={CampaignGoalFilter.Influencer}>
-                  Influencer
-                </option>
+                <option value={CampaignGoalFilter.IGC}>IGC</option>
+                <option value={CampaignGoalFilter.Both}>UGC + IGC</option>
               </select>
             </div>
           )}

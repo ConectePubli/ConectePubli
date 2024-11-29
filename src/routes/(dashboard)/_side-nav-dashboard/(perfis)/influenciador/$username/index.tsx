@@ -222,7 +222,7 @@ function InfluencerProfilePage() {
 
         {/* TYPE */}
         {influencer.account_type && (
-          <p className="text-gray-500 text-sm font-bold flex flex-row items-center">
+          <p className="text-gray-500 text-sm font-bold flex flex-row items-center mt-4">
             <img
               src={CompanyIcon}
               alt="company icon"

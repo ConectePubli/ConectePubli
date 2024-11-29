@@ -1,6 +1,7 @@
 export const objectiveOptions = [
   { label: "UGC", value: "UGC" },
-  { label: "Influencers", value: "Influencer" },
+  { label: "IGC", value: "IGC" },
+  { label: "UGC + IGC", value: "UGC + IGC"}
 ];
 
 export const genderOptions = [

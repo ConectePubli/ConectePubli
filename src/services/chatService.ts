@@ -7,25 +7,26 @@ export async function createOrGetChat(
   influencerId: string,
   brandId: string
 ): Promise<Chat> {
-  // Verifica se o chat já existe
-  const existingChat = await pb
-    .collection("chats")
-    .getFirstListItem<Chat>(
-      `campaign="${campaignId}" && influencer="${influencerId}" && brand="${brandId}"`
-    );
+  try {
+    const chats = await pb.collection<Chat>("chats").getList(1, 1, {
+      filter: `campaign="${campaignId}" && influencer="${influencerId}" && brand="${brandId}"`,
+    });
 
-  if (existingChat) {
-    return existingChat;
+    if (chats.items.length > 0) {
+      return chats.items[0];
+    }
+
+    const newChat = await pb.collection<Chat>("chats").create({
+      campaign: campaignId,
+      influencer: influencerId,
+      brand: brandId,
+    });
+
+    return newChat;
+  } catch (error) {
+    console.error("Erro ao criar ou obter o chat:", error);
+    throw error;
   }
-
-  // Cria um novo chat se não existir
-  const newChat = await pb.collection("chats").create<Chat>({
-    campaign: campaignId,
-    influencer: influencerId,
-    brand: brandId,
-  });
-
-  return newChat;
 }
 
 // Busca os chats para o usuário logado

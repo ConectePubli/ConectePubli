@@ -4,6 +4,7 @@ import {
   notFound,
   useLoaderData,
   redirect,
+  useRouter,
 } from "@tanstack/react-router";
 import pb from "@/lib/pb";
 import { ClientResponseError } from "pocketbase";
@@ -28,7 +29,8 @@ import { states } from "@/utils/states";
 import ModalCancelCampaign from "@/components/ui/ModalCancelCampaign";
 import ChooseParticipantModal from "@/components/ui/chooseParticipantModal";
 import RateParticipantModal from "@/components/ui/rateParticipantModal";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { createOrGetChat } from "@/services/chatService";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -89,6 +91,8 @@ export const Route = createFileRoute(
 });
 
 function Page() {
+  const router = useRouter();
+
   const loaderData = useLoaderData({
     from: Route.id,
   }) as LoaderData;
@@ -119,6 +123,37 @@ function Page() {
 
   // State for niches
   const [niches, setNiches] = useState<Niche[]>([]);
+
+  // chat
+  const [loadingChat, setLoadingChat] = useState<boolean>(false);
+
+  const handleStartChat = async (influencerId: string, brandId: string) => {
+    setLoadingChat(true);
+
+    try {
+      const chat = await createOrGetChat(
+        campaignData?.id as string,
+        influencerId,
+        brandId
+      );
+
+      router.navigate({
+        to: "/chat/",
+        search: {
+          campaignId: chat.campaign,
+          influencerId: chat.influencer,
+          brandId: chat.brand,
+        },
+      });
+    } catch (error) {
+      console.error("Erro ao iniciar o chat:", error);
+      toast("Não foi possível iniciar o chat", {
+        type: "error",
+      });
+    } finally {
+      setLoadingChat(false);
+    }
+  };
 
   function updateParticipationStatus(
     participationId: string,
@@ -463,11 +498,20 @@ function Page() {
                           <button
                             className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
                             onClick={() => {
-                              // Navegar para o chat
+                              handleStartChat(
+                                participation.expand?.influencer?.id || "",
+                                participation.expand?.campaign?.brand || ""
+                              );
                             }}
                           >
-                            <MessageCircle size={18} className="mr-1 " />
-                            Enviar Mensagem
+                            {loadingChat ? (
+                              "Aguarde..."
+                            ) : (
+                              <>
+                                <MessageCircle size={18} className="mr-1" />
+                                Enviar Mensagem
+                              </>
+                            )}
                           </button>
                         )}
                     </div>

@@ -19,7 +19,8 @@ export enum ParticipationStatusFilter {
 export enum CampaignGoalFilter {
   All = "",
   UGC = "UGC",
-  Influencer = "Influencer",
+  IGC = "IGC",
+  Both = "UGC + IGC"
 }
 
 // Create a ChannelFilter object instead of an enum

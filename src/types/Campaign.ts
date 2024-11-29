@@ -8,7 +8,12 @@ export interface Campaign {
   id: string;
   unique_name: string;
   name: string;
-  description?: string;
+  briefing?: string;
+  mandatory_deliverables: string;
+  sending_products_or_services: string;
+  expected_actions: string;
+  avoid_actions: string;
+  additional_information: string;
   price: number;
   paid?: boolean;
   brand: string;
@@ -16,7 +21,7 @@ export interface Campaign {
   end: Date;
   max_subscriptions: number;
   open_jobs?: number;
-  objective?: "UGC" | "Influencer";
+  objective?: "UGC" | "IGC" | "UGC+IGC";
   status: "ready" | "in_progress" | "ended";
   niche: string[];
   cover_img?: string;

@@ -19,6 +19,16 @@ export const Route = createFileRoute(
         .collection("Campaigns")
         .getFirstListItem(`id="${campaignId}"`);
 
+      const campaignParticipations = await pb
+        .collection("Campaigns_Participations")
+        .getFullList({
+          filter: `campaign="${campaignId}"`,
+        });
+
+      if (campaignParticipations.length >= 1) {
+        throw redirect({ to: "/dashboard" });
+      }
+
       const currentBrandId = pb.authStore.model?.id;
       if (!currentBrandId) {
         throw redirect({ to: "/login" });
