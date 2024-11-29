@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useRouter, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import pb from "@/lib/pb";
@@ -29,7 +28,6 @@ import {
 } from "@/utils/campaignData/labels";
 import { Niche } from "@/types/Niche";
 import { Campaign } from "@/types/Campaign";
-import ModalInfoCampaign from "./ModalInfoCampaign";
 
 const channelIcons = {
   Instagram: InstagramIcon,
@@ -61,7 +59,12 @@ interface CampaignData {
     format: string;
     coverImage: string | File | Blob;
     productUrl: string;
-    campaignDetails: string;
+    briefing: string;
+    mandatory_deliverables: string;
+    sending_products_or_services: string;
+    expected_actions: string;
+    avoid_actions: string;
+    additional_information: string;
     disseminationChannels: string | string[];
   };
   audienceSegmentation: {
@@ -111,7 +114,12 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       format: "UGC",
       productUrl: "",
       coverImage: "",
-      campaignDetails: "",
+      briefing: "",
+      mandatory_deliverables: "",
+      sending_products_or_services: "",
+      expected_actions: "",
+      avoid_actions: "",
+      additional_information: "",
       disseminationChannels: [],
     },
     audienceSegmentation: {
@@ -152,7 +160,15 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           format: initialCampaignData.objective || "UGC",
           productUrl: initialCampaignData.product_url || "",
           coverImage: initialCampaignData.cover_img || "",
-          campaignDetails: initialCampaignData.description || "",
+          briefing: initialCampaignData.briefing || "",
+          mandatory_deliverables:
+            initialCampaignData.mandatory_deliverables || "",
+          sending_products_or_services:
+            initialCampaignData.sending_products_or_services || "",
+          expected_actions: initialCampaignData.expected_actions || "",
+          avoid_actions: initialCampaignData.avoid_actions || "",
+          additional_information:
+            initialCampaignData.additional_information || "",
           disseminationChannels: initialCampaignData.channels || [],
         },
         audienceSegmentation: {
@@ -281,7 +297,24 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     }
     formData.append("objective", campaignData.basicInfo.format);
     formData.append("product_url", campaignData.basicInfo.productUrl);
-    formData.append("description", campaignData.basicInfo.campaignDetails);
+    formData.append("briefing", campaignData.basicInfo.briefing);
+    formData.append(
+      "mandatory_deliverables",
+      campaignData.basicInfo.mandatory_deliverables
+    );
+    formData.append(
+      "sending_products_or_services",
+      campaignData.basicInfo.sending_products_or_services
+    );
+    formData.append(
+      "expected_actions",
+      campaignData.basicInfo.expected_actions
+    );
+    formData.append("avoid_actions", campaignData.basicInfo.avoid_actions);
+    formData.append(
+      "additional_information",
+      campaignData.basicInfo.additional_information
+    );
 
     if (Array.isArray(campaignData.basicInfo.disseminationChannels)) {
       campaignData.basicInfo.disseminationChannels.forEach((channel) => {
@@ -518,10 +551,18 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     if (!campaignData.basicInfo.coverImage) missingFields.push("Foto de Capa");
     if (!campaignData.basicInfo.productUrl)
       missingFields.push("URL do Produto ou Perfil");
-    if (!campaignData.basicInfo.campaignDetails)
-      missingFields.push("Detalhes da Campanha");
-    if (campaignData.basicInfo.disseminationChannels.length === 0)
-      missingFields.push("Canais de Divulgação");
+    if (!campaignData.basicInfo.briefing)
+      missingFields.push("Briefing da Campanha");
+    if (!campaignData.basicInfo.mandatory_deliverables)
+      missingFields.push("Entregáveis obrigatórios");
+    if (!campaignData.basicInfo.sending_products_or_services)
+      missingFields.push("Envio de produtos ou serviços");
+    if (!campaignData.basicInfo.expected_actions)
+      missingFields.push("Ações esperadas do creator");
+    if (!campaignData.basicInfo.avoid_actions)
+      missingFields.push("Ações a serem evitadas do creator");
+    if (!campaignData.basicInfo.additional_information)
+      missingFields.push("Informações adicionais da campanha");
 
     // Campaign Budget Section Required Fields
     if (!campaignBudget.startDate)
@@ -676,10 +717,6 @@ function BasicInfoSection({
   isEditMode,
 }: BasicInfoSectionProps) {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     if (data.coverImage) {
@@ -761,9 +798,13 @@ function BasicInfoSection({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 px-5">
         <div>
           <div className="mb-8">
-            <label className="block mb-2 text-gray-700 font-semibold">
+            <label className="block mb-1 text-gray-700 font-semibold">
               Nome da campanha*
             </label>
+            <p className="text-gray-500 text-sm mb-2">
+              O nome é a primeira informação que os criadores de conteúdo
+              visualizam.
+            </p>
             <input
               type="text"
               name="campaignName"
@@ -772,10 +813,24 @@ function BasicInfoSection({
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Nome da campanha"
             />
-            <p className="text-gray-500 mt-2">
-              O nome é a primeira informação que os criadores de conteúdo
-              visualizam.
+          </div>
+
+          <div className="mb-8">
+            <label className="block mb-1 text-gray-700 font-semibold">
+              URL do seu site ou perfil no Instagram*
+            </label>
+            <p className="text-gray-500 text-sm mb-2">
+              Compartilhe a URL do seu site ou perfil do Instagram para que os
+              criadores conheçam mais sobre você
             </p>
+            <input
+              type="url"
+              name="productUrl"
+              value={data.productUrl || ""}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Insira a URL"
+            />
           </div>
 
           <div>
@@ -797,10 +852,12 @@ function BasicInfoSection({
                 </button>
               ))}
             </div>
-            <p className="text-gray-500 mt-2">
+            <p className="text-gray-500 text-sm mt-2">
               {data.format === "UGC"
                 ? "UGC (Talentos): O criador de conteúdo fornece o vídeo para você postar nas suas redes sociais ou usar em anúncios."
-                : "Influencers (Nano, Micro e Macro influenciadores): O criador de conteúdo posta o vídeo nas redes sociais dele ou em colaboração com sua marca."}
+                : data.format === "IGC"
+                  ? "IGC (Nano, Micro e Macro influenciadores): O criador de conteúdo posta o vídeo diretamente nas redes sociais dele, promovendo a marca para os seguidores de forma autêntica e engajada."
+                  : "UGC + IGC: O criador de conteúdo fornece o vídeo para sua marca usar em campanhas publicitárias e também publica o conteúdo em suas próprias redes sociais, amplificando a visibilidade e alcance da campanha."}
             </p>
           </div>
         </div>
@@ -838,199 +895,15 @@ function BasicInfoSection({
         </div>
 
         <div className="col-span-1 md:col-span-2">
-          <label className="block text-gray-700 font-semibold">
-            URL do Produto ou Perfil*
-          </label>
-
-          <p className="text-gray-500 mb-2">
-            Compartilhe o URL do Produto/Perfil da sua marca para que os
-            criadores conheçam mais sobre você.
-          </p>
-
-          <input
-            type="url"
-            name="productUrl"
-            value={data.productUrl || ""}
-            onChange={handleInputChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="https://example.com"
-          />
-        </div>
-
-        <div className="col-span-1 md:col-span-2">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <label className="block text-gray-700 font-semibold">
-                Detalhes da campanha*
-              </label>
-
-              <p className="text-gray-500 mb-2">
-                Descreva o que você espera que os criadores façam. Dê instruções
-                claras para que eles entendam suas expectativas.
-              </p>
-            </div>
-
-            <div className="mt-2 md:mt-0">
-              <Button variant={"orange"} onClick={openModal}>
-                Ver instruções
-              </Button>
-            </div>
-          </div>
-
-          <textarea
-            name="campaignDetails"
-            value={data.campaignDetails}
-            onChange={handleInputChange}
-            className="w-full h-[120px] mt-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Inclua as hashtags obrigatórias, chamadas de ação, e qualquer outro detalhe importante que seja necessário para completar a campanha."
-          />
-        </div>
-
-        <ModalInfoCampaign isOpen={isModalOpen} onClose={closeModal}>
-          <div className="p-4 max-sm:px-2 max-sm:py-4">
-            <h1 className="text-xl font-bold mb-4">
-              Normas para Campanhas UGC e IGC na Plataforma Conecte Publi
-            </h1>
-            <div className="max-h-[70vh]">
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                1. Instruções para o Conteúdo:
-              </h2>
-              <p className="mb-2">
-                Objetivo da Campanha: Certifique-se de que o propósito da
-                campanha esteja claramente indicado – seja para aumentar a
-                visibilidade da marca, gerar vendas, promover engajamento,
-                lançar um produto, etc. Quando os criadores compreendem o
-                objetivo, eles podem ajustar o conteúdo para refletir melhor
-                essas metas.
-              </p>
-              <p className="mb-2">
-                Diretrizes de Formato: Especifique o tipo de conteúdo que deseja
-                (como vídeo, foto, ou carrossel de imagens), além dos detalhes
-                técnicos, incluindo resolução e orientação (por exemplo:
-                vertical 9:16 para stories ou reels, horizontal 16:9 para
-                YouTube).
-              </p>
-              <p className="mb-2">
-                Estilo e Estética: Descreva o tom e o estilo esperados para o
-                conteúdo, seja ele mais leve, humorístico, inspirador ou
-                informativo. Exemplos visuais são úteis para ilustrar o estilo
-                desejado.
-              </p>
-              <p className="mb-2">
-                Duração do Conteúdo: Defina o tempo ideal dos vídeos,
-                especialmente considerando a plataforma de publicação. Exemplo:
-                vídeos de até 60 segundos para reels e TikTok, stories de 15
-                segundos.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                2. Referências Visuais e Estéticas:
-              </h2>
-              <p className="mb-2">
-                Exemplos e Links de Inspiração: Inclua links de vídeos ou
-                campanhas anteriores para reduzir possíveis interpretações
-                equivocadas.
-              </p>
-              <p className="mb-2">
-                Diretrizes de Branding: Certifique-se de que os criadores tenham
-                acesso à identidade visual da marca, incluindo paleta de cores e
-                logotipo.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                3. Instruções de Narração, Áudio e Ambiente:
-              </h2>
-              <p className="mb-2">
-                Narração ou Música de Fundo: Indique se o vídeo precisa de
-                narração, falas diretas ou se pode ter apenas uma trilha de
-                fundo.
-              </p>
-              <p className="mb-2">
-                Legendas e Diálogos: Especifique se o vídeo deve incluir
-                legendas para melhorar a acessibilidade.
-              </p>
-              <p className="mb-2">
-                Ambiente de Gravação: Informe se a gravação deve ser feita em
-                local interno ou externo.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                4. Frases e Informações Específicas no Conteúdo:
-              </h2>
-              <p className="mb-2">
-                Orientações sobre Texto: Indique se há frases específicas ou
-                informações essenciais que devem ser mencionadas.
-              </p>
-              <p className="mb-2">
-                Hashtags e Marcação de Perfis: Informe as hashtags ou perfis que
-                devem ser mencionados ou marcados.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                5. Aprovação do Roteiro:
-              </h2>
-              <p className="mb-2">
-                Envio Prévio do Roteiro: Recomende o envio de um roteiro para
-                revisão antes da produção.
-              </p>
-              <p className="mb-2">
-                Feedback Estruturado: Ofereça um retorno claro sobre o que
-                manter ou ajustar.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                6. Processo de Aprovação e Revisões:
-              </h2>
-              <p className="mb-2">
-                Prazos de Aprovação: Estabeleça um prazo para a aprovação dos
-                conteúdos enviados.
-              </p>
-              <p className="mb-2">
-                Solicitação de Ajustes: Defina o número de rodadas de ajustes
-                permitidas, com prazos específicos.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                7. Condições de Pagamento:
-              </h2>
-              <p className="mb-2">
-                Pagamento somente para quem finalizar o escopo pedido, caso
-                contrário, a plataforma não fará o repasse e devolverá para a
-                marca.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                8. Cronograma de Entrega e Publicação:
-              </h2>
-              <p className="mb-2">
-                Prazos de Entrega: Defina datas específicas para envio de
-                rascunhos, versões finais e publicação.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                9. Direitos de Uso e Propriedade Intelectual:
-              </h2>
-              <p className="mb-2">
-                Licenciamento de Conteúdo: Esclareça os termos de uso e as
-                plataformas onde o conteúdo será veiculado.
-              </p>
-
-              <h2 className="text-lg font-semibold mt-4 mb-2">
-                10. Resolução de Conflitos e Contingências:
-              </h2>
-              <p className="pb-5">
-                Cláusulas de Contingência: Inclua disposições para imprevistos,
-                como problemas técnicos ou indisponibilidade.
-              </p>
-            </div>
-          </div>
-        </ModalInfoCampaign>
-
-        <div className="col-span-1 md:col-span-2">
           <div className="col-span-2">
-            <label className="block mb-2 text-gray-700 font-semibold">
-              Canais de divulgação*
+            <label className="block mb-1 text-gray-700 font-semibold">
+              Canais de divulgação
             </label>
+
+            <p className="text-gray-500 text-sm mb-2">
+              Selecione os canais de divulgação que o influencer poste
+              obrigatoriamente (somente para IGC)
+            </p>
 
             <div className="flex flex-wrap gap-4 mt-2">
               {channelsOptions.map((channel) => (
@@ -1054,6 +927,118 @@ function BasicInfoSection({
                 </button>
               ))}
             </div>
+          </div>
+        </div>
+
+        <div className="col-span-1 md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="col-span-1">
+              <label className="block mb-1 text-gray-700 font-semibold">
+                Briefing da Campanha (Forneça detalhes essenciais que o Creator
+                deve saber)*
+              </label>
+              <p className="text-gray-500 text-sm mb-2">
+                Descreva o propósito da campanha, público-alvo, mensagens
+                principais, tom de voz e as diretrizes visuais.
+              </p>
+              <textarea
+                name="briefing"
+                value={data.briefing || ""}
+                onChange={handleInputChange}
+                className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Inclua informações essenciais sobre o objetivo, mensagens principais, tom, linguagem e diretrizes visuais"
+              />
+            </div>
+
+            <div className="col-span-1">
+              <label className="block mb-1 text-gray-700 font-semibold">
+                Entregáveis Obrigatórios (Especifique a quantidade e o tipo de
+                conteúdos que o Creator deve produzir)*
+              </label>
+              <p className="text-gray-500 text-sm mb-2">
+                Informe o tipo de conteúdo necessário (Reels, Stories, Posts), a
+                quantidade e a duração aproximada de cada um.
+              </p>
+              <textarea
+                name="mandatory_deliverables"
+                value={data.mandatory_deliverables || ""}
+                onChange={handleInputChange}
+                className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Especifique os tipos de conteúdo, quantidades e duração (ex.: 1 Reels de 30s, 3 Stories)"
+              />
+            </div>
+          </div>
+
+          <div className="col-span-1 mt-6">
+            <label className="block mb-1 text-gray-700 font-semibold">
+              Envio de Produtos ou Serviços (Detalhe o processo de envio)*
+            </label>
+            <p className="text-gray-500 text-sm mb-2">
+              Informe quais produtos ou serviços serão fornecidos, com detalhes
+              de envio e prazos.
+            </p>
+            <textarea
+              name="sending_products_or_services"
+              value={data.sending_products_or_services || ""}
+              onChange={handleInputChange}
+              className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Descreva os itens enviados e o prazo para entrega"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div className="col-span-1">
+              <label className="block mb-1 text-gray-700 font-semibold">
+                Ações Esperadas do Creator (Do's)*
+              </label>
+              <p className="text-gray-500 text-sm mb-2">
+                Descreva comportamentos e práticas desejadas pelo Creator.
+              </p>
+              <textarea
+                name="expected_actions"
+                value={data.expected_actions || ""}
+                onChange={handleInputChange}
+                className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Exemplo: Publicar conteúdos semanais, interagir com os seguidores, compartilhar insights sobre a campanha"
+              />
+            </div>
+
+            <div className="col-span-1">
+              <label className="block mb-1 text-gray-700 font-semibold">
+                Ações a Serem Evitadas (Don'ts)*
+              </label>
+              <p className="text-gray-500 text-sm mb-2">
+                Detalhe comportamentos indesejados ou proibidos.
+              </p>
+              <textarea
+                name="avoid_actions"
+                value={data.avoid_actions || ""}
+                onChange={handleInputChange}
+                className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Exemplo: Evitar linguagem ofensiva, não divulgar informações confidenciais, não promover marcas concorrentes"
+              />
+            </div>
+          </div>
+
+          <div className="col-span-1 mt-6">
+            <label className="block mb-1 text-gray-700 font-semibold">
+              Informações Adicionais*
+            </label>
+            <p className="text-gray-500 text-sm mb-2">
+              Inclua qualquer outra informação que possa ajudar os criadores a
+              entender melhor a campanha.
+            </p>
+            <textarea
+              name="additional_information"
+              value={data.additional_information || ""}
+              onChange={handleInputChange}
+              className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Exemplo: Diretrizes específicas, referências, detalhes adicionais"
+            />
+          </div>
+
+          <div className="mt-4">
+            <p className="text-gray-700 font-semibold italic">Observações: Todos os campos acima são obrigatórios para garantir que o Creator tenha uma compreensão completa das expectativas da marca. Certifique-se de fornecer informações claras e detalhadas em cada campo para evitar ambiguidades.</p>
           </div>
         </div>
       </div>
@@ -1123,7 +1108,7 @@ function AudienceSegmentationSection({
   }, [data.location]);
 
   useEffect(() => {
-    if (locationOptions && data.location.length > 0) {
+    if (data.location.length > 0) {
       const availableLocations = localityOptions.filter(
         (loc) => !data.location.includes(loc.value)
       );
@@ -1132,7 +1117,7 @@ function AudienceSegmentationSection({
     } else {
       setLocationOptions(localityOptions);
     }
-  }, [data.location, locationOptions]);
+  }, [data.location]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

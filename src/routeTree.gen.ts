@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as TermosIndexImport } from './routes/termos/index'
 import { Route as PrivacidadeIndexImport } from './routes/privacidade/index'
 import { Route as ContratoCampanhaIndexImport } from './routes/contrato-campanha/index'
+import { Route as ChatIndexImport } from './routes/chat/index'
 import { Route as dashboardSideNavDashboardImport } from './routes/(dashboard)/_side-nav-dashboard'
 import { Route as authLogin123newIndexImport } from './routes/(auth)/login123new/index'
 import { Route as authEsquecerSenhaIndexImport } from './routes/(auth)/esquecer-senha/index'
@@ -23,6 +24,7 @@ import { Route as authCadastroIndexImport } from './routes/(auth)/cadastro/index
 import { Route as authCadastroMarcaImport } from './routes/(auth)/cadastro/marca'
 import { Route as authCadastroInfluenciadorImport } from './routes/(auth)/cadastro/influenciador'
 import { Route as dashboardSideNavDashboardVitrineDeCampanhasIndexImport } from './routes/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/index'
+import { Route as dashboardSideNavDashboardNotificacoesIndexImport } from './routes/(dashboard)/_side-nav-dashboard/notificacoes/index'
 import { Route as dashboardSideNavDashboardDashboardIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/index'
 import { Route as dashboardSideNavDashboardDashboardInfluenciadorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-influenciador/index'
@@ -74,6 +76,11 @@ const ContratoCampanhaIndexRoute = ContratoCampanhaIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ChatIndexRoute = ChatIndexImport.update({
+  path: '/chat/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const dashboardSideNavDashboardRoute = dashboardSideNavDashboardImport.update({
   id: '/_side-nav-dashboard',
   getParentRoute: () => dashboardRoute,
@@ -113,6 +120,12 @@ const authCadastroInfluenciadorRoute = authCadastroInfluenciadorImport.update({
 const dashboardSideNavDashboardVitrineDeCampanhasIndexRoute =
   dashboardSideNavDashboardVitrineDeCampanhasIndexImport.update({
     path: '/vitrine-de-campanhas/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardNotificacoesIndexRoute =
+  dashboardSideNavDashboardNotificacoesIndexImport.update({
+    path: '/notificacoes/',
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardImport
       parentRoute: typeof dashboardRoute
     }
+    '/chat/': {
+      id: '/chat/'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/contrato-campanha/': {
       id: '/contrato-campanha/'
       path: '/contrato-campanha'
@@ -321,6 +341,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof dashboardSideNavDashboardDashboardIndexImport
       parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
+    '/(dashboard)/_side-nav-dashboard/notificacoes/': {
+      id: '/_side-nav-dashboard/notificacoes/'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof dashboardSideNavDashboardNotificacoesIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
     }
     '/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/': {
       id: '/_side-nav-dashboard/vitrine-de-campanhas/'
@@ -451,6 +478,7 @@ interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardDashboardRoute: typeof dashboardSideNavDashboardDashboardRouteWithChildren
   dashboardSideNavDashboardDashboardInfluenciadorIndexRoute: typeof dashboardSideNavDashboardDashboardInfluenciadorIndexRoute
   dashboardSideNavDashboardDashboardMarcaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
+  dashboardSideNavDashboardNotificacoesIndexRoute: typeof dashboardSideNavDashboardNotificacoesIndexRoute
   dashboardSideNavDashboardVitrineDeCampanhasIndexRoute: typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   dashboardSideNavDashboardperfisInfluenciadorUsernameIndexRoute: typeof dashboardSideNavDashboardperfisInfluenciadorUsernameIndexRoute
@@ -467,6 +495,8 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardDashboardInfluenciadorIndexRoute,
     dashboardSideNavDashboardDashboardMarcaIndexRoute:
       dashboardSideNavDashboardDashboardMarcaIndexRoute,
+    dashboardSideNavDashboardNotificacoesIndexRoute:
+      dashboardSideNavDashboardNotificacoesIndexRoute,
     dashboardSideNavDashboardVitrineDeCampanhasIndexRoute:
       dashboardSideNavDashboardVitrineDeCampanhasIndexRoute,
     dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute:
@@ -500,6 +530,7 @@ const dashboardRouteWithChildren = dashboardRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '/': typeof dashboardSideNavDashboardRouteWithChildren
+  '/chat': typeof ChatIndexRoute
   '/contrato-campanha': typeof ContratoCampanhaIndexRoute
   '/privacidade': typeof PrivacidadeIndexRoute
   '/termos': typeof TermosIndexRoute
@@ -512,6 +543,7 @@ export interface FileRoutesByFullPath {
   '/dashboard-influenciador': typeof dashboardSideNavDashboardDashboardInfluenciadorIndexRoute
   '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
+  '/notificacoes': typeof dashboardSideNavDashboardNotificacoesIndexRoute
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
@@ -528,6 +560,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof dashboardSideNavDashboardRouteWithChildren
+  '/chat': typeof ChatIndexRoute
   '/contrato-campanha': typeof ContratoCampanhaIndexRoute
   '/privacidade': typeof PrivacidadeIndexRoute
   '/termos': typeof TermosIndexRoute
@@ -539,6 +572,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/dashboard-influenciador': typeof dashboardSideNavDashboardDashboardInfluenciadorIndexRoute
   '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
+  '/notificacoes': typeof dashboardSideNavDashboardNotificacoesIndexRoute
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
@@ -557,6 +591,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof dashboardRouteWithChildren
   '/_side-nav-dashboard': typeof dashboardSideNavDashboardRouteWithChildren
+  '/chat/': typeof ChatIndexRoute
   '/contrato-campanha/': typeof ContratoCampanhaIndexRoute
   '/privacidade/': typeof PrivacidadeIndexRoute
   '/termos/': typeof TermosIndexRoute
@@ -570,6 +605,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/dashboard-influenciador/': typeof dashboardSideNavDashboardDashboardInfluenciadorIndexRoute
   '/_side-nav-dashboard/dashboard-marca/': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/_side-nav-dashboard/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
+  '/_side-nav-dashboard/notificacoes/': typeof dashboardSideNavDashboardNotificacoesIndexRoute
   '/_side-nav-dashboard/vitrine-de-campanhas/': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/_side-nav-dashboard/dashboard-marca/criar-campanha/': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
@@ -588,6 +624,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/chat'
     | '/contrato-campanha'
     | '/privacidade'
     | '/termos'
@@ -600,6 +637,7 @@ export interface FileRouteTypes {
     | '/dashboard-influenciador'
     | '/dashboard-marca'
     | '/dashboard/'
+    | '/notificacoes'
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
     | '/dashboard/campanhas'
@@ -615,6 +653,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/chat'
     | '/contrato-campanha'
     | '/privacidade'
     | '/termos'
@@ -626,6 +665,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard-influenciador'
     | '/dashboard-marca'
+    | '/notificacoes'
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
     | '/dashboard/campanhas'
@@ -642,6 +682,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_side-nav-dashboard'
+    | '/chat/'
     | '/contrato-campanha/'
     | '/privacidade/'
     | '/termos/'
@@ -655,6 +696,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/dashboard-influenciador/'
     | '/_side-nav-dashboard/dashboard-marca/'
     | '/_side-nav-dashboard/dashboard/'
+    | '/_side-nav-dashboard/notificacoes/'
     | '/_side-nav-dashboard/vitrine-de-campanhas/'
     | '/_side-nav-dashboard/dashboard-marca/criar-campanha/'
     | '/_side-nav-dashboard/dashboard/campanhas/'
@@ -673,6 +715,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   dashboardRoute: typeof dashboardRouteWithChildren
+  ChatIndexRoute: typeof ChatIndexRoute
   ContratoCampanhaIndexRoute: typeof ContratoCampanhaIndexRoute
   PrivacidadeIndexRoute: typeof PrivacidadeIndexRoute
   TermosIndexRoute: typeof TermosIndexRoute
@@ -686,6 +729,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   dashboardRoute: dashboardRouteWithChildren,
+  ChatIndexRoute: ChatIndexRoute,
   ContratoCampanhaIndexRoute: ContratoCampanhaIndexRoute,
   PrivacidadeIndexRoute: PrivacidadeIndexRoute,
   TermosIndexRoute: TermosIndexRoute,
@@ -710,6 +754,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/",
+        "/chat/",
         "/contrato-campanha/",
         "/privacidade/",
         "/termos/",
@@ -733,6 +778,7 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/dashboard",
         "/_side-nav-dashboard/dashboard-influenciador/",
         "/_side-nav-dashboard/dashboard-marca/",
+        "/_side-nav-dashboard/notificacoes/",
         "/_side-nav-dashboard/vitrine-de-campanhas/",
         "/_side-nav-dashboard/dashboard-marca/criar-campanha/",
         "/_side-nav-dashboard/influenciador/$username/",
@@ -740,6 +786,9 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/influenciador/$username/editar/",
         "/_side-nav-dashboard/marca/$userName/editar/"
       ]
+    },
+    "/chat/": {
+      "filePath": "chat/index.tsx"
     },
     "/contrato-campanha/": {
       "filePath": "contrato-campanha/index.tsx"
@@ -794,6 +843,10 @@ export const routeTree = rootRoute
     "/_side-nav-dashboard/dashboard/": {
       "filePath": "(dashboard)/_side-nav-dashboard/dashboard/index.tsx",
       "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/_side-nav-dashboard/notificacoes/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/notificacoes/index.tsx",
+      "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/vitrine-de-campanhas/": {
       "filePath": "(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/index.tsx",

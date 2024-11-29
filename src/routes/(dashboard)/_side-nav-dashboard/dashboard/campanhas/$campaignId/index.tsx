@@ -79,9 +79,14 @@ export const Route = createFileRoute(
 });
 
 function CampaignPage() {
-  const { campaignData, campaignParticipationsData } = useLoaderData({
+  const loaderData = useLoaderData({
     from: Route.id,
-  });
+  }) as {
+    campaignData: Campaign;
+    campaignParticipationsData: CampaignParticipation[];
+  };
+  const { campaignData, campaignParticipationsData } = loaderData;
+
   const navigate = useNavigate();
   const {
     campaign = campaignData,
@@ -104,22 +109,20 @@ function CampaignPage() {
 
   return (
     <div className="container mx-auto p-4 ">
-      <div className="flex items-center gap-1">
+      <div
+        className="flex items-center gap-1"
+        onClick={() => {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            navigate({ to: "/dashboard" });
+          }
+        }}
+      >
         <button className="bg-white p-2 rounded-full">
           <img src={GoBack} alt="Go Back" className="w-5 h-5" />
         </button>
-        <button
-          className="text-black/75 font-semibold"
-          onClick={() => {
-            if (window.history.length > 1) {
-              window.history.back();
-            } else {
-              navigate({ to: "/dashboard" });
-            }
-          }}
-        >
-          Voltar
-        </button>
+        <button className="text-black/75 font-semibold">Voltar</button>
       </div>
       <div className="text-center xl:text-left">
         <h1 className="text-lg xl:text-2xl font-bold">{campaign?.name}</h1>
@@ -139,9 +142,32 @@ function CampaignPage() {
         {/* Coluna direita - Detalhes, Requisitos e Características */}
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-lg shadow-lg border max-xl:mt-4">
-            <h2 className="font-bold">Detalhes da Campanha</h2>
-            <p className="text-black mt-2 break-words">
-              {campaign?.description}
+            <h2 className="font-bold mt-2">Briefing da Campanha</h2>
+            <p className="text-black break-words">{campaign?.briefing}</p>
+
+            <h2 className="font-bold mt-2">Entregavéis obrigatórios</h2>
+            <p className="text-black break-words">
+              {campaign?.mandatory_deliverables}
+            </p>
+
+            <h2 className="font-bold mt-2 ">Envio de Produtos ou Serviços</h2>
+            <p className="text-black break-words">
+              {campaign?.sending_products_or_services}
+            </p>
+
+            <h2 className="font-bold mt-2">
+              Ações Esperadas do Creator (Do's)
+            </h2>
+            <p className="text-black break-words">
+              {campaign?.expected_actions}
+            </p>
+
+            <h2 className="font-bold mt-2">Ações a Serem Evitadas (Don'ts)</h2>
+            <p className="text-black break-words">{campaign?.avoid_actions}</p>
+
+            <h2 className="font-bold mt-2">Informações adicionais</h2>
+            <p className="text-black break-words">
+              {campaign?.additional_information}
             </p>
 
             {/* External Link */}

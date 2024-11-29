@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
 import connect1 from "@/assets/connect1.webp";
-import connect2 from "@/assets/connect2.webp";
+import connect2 from "@/assets/connect2.jpeg";
 
 export const ConnectSection: React.FC = () => {
   const navigate = useNavigate();

@@ -16,6 +16,9 @@ export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/editar/"
 )({
   component: InfluencerEditProfilePage,
+  beforeLoad: () => {
+    // evitar que entre se tiver participante na campanha
+  },
 });
 
 function InfluencerEditProfilePage() {
@@ -256,8 +259,8 @@ function InfluencerEditProfilePage() {
       try {
         const updateData: any = {};
 
-        console.log("data de nascimento");
-        console.log(formData.birth_date);
+        console.log("account type");
+        console.log(formData.account_type);
 
         if (section === "basicData") {
           if (formData.background_img) {
@@ -857,25 +860,21 @@ function AboutSection({
             Selecione o tipo de conta
           </option>
           <option value="UGC">UGC (Talentos)</option>
-          <option value="Influencers">
-            Influenciadores (Nano, Micro e Macro)
-          </option>
-          <option value="UGC+Influencers">UGC + Influenciador</option>
+          <option value="IGC">IGC (Nano, Micro e Macro)</option>
+          <option value="UGC + IGC">UGC + IGC</option>
         </select>
         <p className="text-sm text-gray-500 mt-2">
           <strong>UGC (Talentos):</strong> Você cria vídeos ou fotos que serão
           entregues para as marcas utilizarem em suas campanhas, anúncios ou
           redes sociais.
           <br />
-          <strong>
-            Influencers (Nano, Micro e Macro influenciadores):
-          </strong>{" "}
-          Você cria e compartilha o conteúdo diretamente nas suas redes sociais,
+          <strong>IGC (Nano, Micro e Macro influenciadores):</strong> Você cria
+          e compartilha o conteúdo diretamente nas suas redes sociais,
           promovendo produtos e serviços para seu público.
           <br />
-          <strong>UGC + Influenciador:</strong> Você tanto cria o conteúdo para
-          as marcas utilizarem quanto compartilha esse conteúdo nas suas
-          próprias redes sociais, atuando nas duas frentes.
+          <strong>UGC + IGC:</strong> Você tanto cria o conteúdo para as marcas
+          utilizarem quanto compartilha esse conteúdo nas suas próprias redes
+          sociais, atuando nas duas frentes.
         </p>
       </div>
 

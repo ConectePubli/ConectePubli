@@ -7,6 +7,7 @@ import SocialNetworks from "@/types/SocialNetworks";
 import { ParticipationStatusFilter } from "@/types/Filters";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import { Link } from "@tanstack/react-router";
+import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -37,21 +38,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
     }
   };
 
-  const getStatusColor = (type: string) => {
-    switch (type) {
-      case "completed":
-        return "#28A745"; // Concluído
-      case "approved":
-        return "#2881A7"; // Aprovado
-      case "waiting":
-        return "#FFC107"; // Aguardando
-      case "sold_out":
-        return "#DC3545"; // Vagas esgotadas
-      default:
-        return "#000000"; // Cor padrão (preto)
-    }
-  };
-
   return (
     <Link
       to="/dashboard/campanhas/$campaignName"
@@ -78,7 +64,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div className="flex items-center gap-2 mb-2 md:mb-0">
             <Tag className="w-5 h-5 text-blue-500" />
             <span className="text-sm font-medium text-blue-500">
-              {campaign.objective === "UGC" ? "UGC" : "Influenciador"}
+              {campaign.objective}
             </span>
           </div>
         </div>
@@ -95,7 +81,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             textOverflow: "ellipsis",
           }}
         >
-          {campaign.description}
+          {campaign.briefing}
         </p>
 
         <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
@@ -137,7 +123,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             )}
           </div>
 
-          {/* Only render status if participationStatus is provided */}
           {participationStatus && (
             <span
               className="font-semibold"

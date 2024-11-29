@@ -12,6 +12,8 @@ import { Footer } from "@/components/sections/LandingPage/Footer";
 import brand from "@/assets/brand.webp";
 import influencers from "@/assets/influencers.webp";
 import { ConnectBrandsSection } from "@/components/sections/LandingPage/ConnectBrandsSection";
+import SponsorBanner from "@/components/ui/SponsorBanner";
+import LogosCarousel from "@/components/ui/LogosCarousel";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -22,9 +24,16 @@ function Index() {
 
   return (
     <div className="overflow-hidden">
+      <SponsorBanner />
+
       <HeroSection />
 
-      {/*  <BrandsSection /> */}
+      {/* <BrandsSection /> */}
+
+      <p className="text-left text-xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
+        Aprovado Por:
+        <LogosCarousel />
+      </p>
 
       <HowItWorksSection />
 
