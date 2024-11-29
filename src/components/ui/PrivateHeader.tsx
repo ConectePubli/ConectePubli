@@ -1,4 +1,4 @@
-import { AlignJustify, Bell } from "lucide-react";
+import { AlignJustify, Bell, MessageCircle } from "lucide-react";
 import logo from "@/assets/logo.svg";
 import { useSheetStore } from "@/store/useDashSheetStore";
 import { UserMenu } from "./UserMenu";
@@ -13,6 +13,8 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Notification } from "@/types/Notification";
 import { useNavigate } from "@tanstack/react-router";
+import { useMessageStore } from "@/store/useMessageStore";
+import { getUserType } from "@/lib/auth";
 
 export const PrivateHeader = () => {
   const { openSheet } = useSheetStore();
@@ -20,9 +22,20 @@ export const PrivateHeader = () => {
 
   const { notifications, unreadCount, fetchNotifications, markAsRead } =
     useNotificationStore();
-
+  const { unreadConversationsCount, fetchUnreadConversationsCount } =
+    useMessageStore();
   // Verifica se a rota é a página inicial
   const isLandingPage = window?.location.pathname === "/";
+
+  useEffect(() => {
+    async function fetchUserTypeAndConversations() {
+      const type = await getUserType();
+      if (type) {
+        fetchUnreadConversationsCount(type);
+      }
+    }
+    fetchUserTypeAndConversations();
+  }, [fetchUnreadConversationsCount]);
 
   useEffect(() => {
     fetchNotifications();
@@ -69,6 +82,18 @@ export const PrivateHeader = () => {
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
+            <button
+              className="focus:outline-none relative"
+              aria-label={`Você tem ${unreadConversationsCount} conversas não lidas`}
+              onClick={() => navigate({ to: "/chat" })}
+            >
+              <MessageCircle className="w-5 h-5 md:w-6 md:h-6 cursor-pointer hover:text-gray-600 transition duration-200" />
+              {unreadConversationsCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full bg-[#FF672F] text-white text-xs">
+                  {unreadConversationsCount}
+                </span>
+              )}
+            </button>
             <Popover>
               <PopoverTrigger asChild>
                 <button
@@ -124,6 +149,7 @@ export const PrivateHeader = () => {
                 </Button> */}
               </PopoverContent>
             </Popover>
+
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border flex items-center justify-center">
               <UserMenu />
             </div>

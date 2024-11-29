@@ -5,6 +5,7 @@ import {
   getChatDetails,
   getMessages,
   sendMessage,
+  markMessagesAsRead,
 } from "@/services/chatService";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,8 +13,9 @@ import { Input } from "@/components/ui/input";
 import { getUserType } from "@/lib/auth";
 import { Chat } from "@/types/Chat";
 import { Message } from "@/types/Message";
-import { Loader2, Undo2, X } from "lucide-react"; // Importação do ícone de loading
+import { Loader2, Undo2, X } from "lucide-react";
 import pb from "@/lib/pb";
+import { useMessageStore } from "@/store/useMessageStore";
 
 export const Route = createFileRoute("/chat/")({
   component: ChatPage,
@@ -31,9 +33,9 @@ function ChatPage() {
   const [newMessage, setNewMessage] = useState("");
   const [loadingChats, setLoadingChats] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
-  const [sendingMessage, setSendingMessage] = useState(false); // Estado de loading para envio de mensagens
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const { decrementUnreadConversationsCount } = useMessageStore();
 
-  // Buscar o tipo de usuário ao montar o componente
   useEffect(() => {
     async function fetchUserType() {
       try {
@@ -46,7 +48,6 @@ function ChatPage() {
     fetchUserType();
   }, []);
 
-  // Buscar as conversas do usuário quando o tipo de usuário for definido
   useEffect(() => {
     if (userType) {
       async function fetchChats() {
@@ -65,10 +66,8 @@ function ChatPage() {
     }
   }, [userType]);
 
-  // Atualizar o chat selecionado e buscar mensagens quando os parâmetros de busca mudarem
   useEffect(() => {
     if (campaignId && influencerId && brandId) {
-      // Encontrar o chat na lista de chats existente
       const chat = chats.find(
         (c) =>
           c.campaign === campaignId &&
@@ -77,10 +76,9 @@ function ChatPage() {
       );
 
       if (chat) {
-        setSelectedChat(chat); // Atualiza imediatamente o chat selecionado
+        setSelectedChat(chat);
       }
 
-      // Buscar detalhes completos do chat e mensagens
       async function fetchChat() {
         setLoadingMessages(true);
         try {
@@ -89,10 +87,23 @@ function ChatPage() {
             influencerId,
             brandId
           );
-          setSelectedChat(chatDetails); // Atualiza com os detalhes completos do chat
+          setSelectedChat(chatDetails);
 
           const fetchedMessages = await getMessages(chatDetails.id);
           setMessages(fetchedMessages);
+
+          const hadUnreadMessages = fetchedMessages.some(
+            (message) =>
+              message.read === false &&
+              ((userType === "Brands" && message.influencer_sender) ||
+                (userType === "Influencers" && message.brand_sender))
+          );
+
+          await markMessagesAsRead(chatDetails.id, userType);
+
+          if (hadUnreadMessages) {
+            decrementUnreadConversationsCount();
+          }
         } catch (error) {
           console.error("Erro ao obter detalhes do chat ou mensagens:", error);
         } finally {
@@ -104,12 +115,18 @@ function ChatPage() {
       setSelectedChat(null);
       setMessages([]);
     }
-  }, [campaignId, influencerId, brandId, chats]);
+  }, [
+    campaignId,
+    influencerId,
+    brandId,
+    chats,
+    userType,
+    decrementUnreadConversationsCount,
+  ]);
 
-  // Função para enviar uma mensagem
   const handleSendMessage = async () => {
     if (newMessage.trim() && selectedChat) {
-      setSendingMessage(true); // Inicia o loading
+      setSendingMessage(true);
       try {
         const sentMessage = await sendMessage(
           selectedChat.id,
@@ -118,24 +135,21 @@ function ChatPage() {
         );
         setMessages((prev) => [...prev, sentMessage]);
         setNewMessage("");
-        // Opcional: Fazer scroll para a última mensagem
-        // scrollToBottom();
+        scrollToBottom();
       } catch (error) {
         console.error("Erro ao enviar mensagem:", error);
         alert("Falha ao enviar a mensagem. Por favor, tente novamente.");
       } finally {
-        setSendingMessage(false); // Encerra o loading
+        setSendingMessage(false);
       }
     }
   };
 
-  // Função para selecionar um chat
   const handleSelectChat = (
     campaignId: string,
     influencerId: string,
     brandId: string
   ) => {
-    // Encontrar o chat na lista de chats existente
     const chat = chats.find(
       (c) =>
         c.campaign === campaignId &&
@@ -144,10 +158,9 @@ function ChatPage() {
     );
 
     if (chat) {
-      setSelectedChat(chat); // Atualiza imediatamente o chat selecionado
+      setSelectedChat(chat);
     }
 
-    // Atualiza os parâmetros de busca na URL
     router.navigate({
       search: {
         // @ts-expect-error - Não é possível tipar undefined para o search
@@ -158,9 +171,8 @@ function ChatPage() {
     });
   };
 
-  // Função para fechar o chat
   const handleCloseChat = () => {
-    setSelectedChat(null); // Redefine o chat selecionado
+    setSelectedChat(null);
     router.navigate({
       search: {
         // @ts-expect-error - Não é possível tipar undefined para o search
@@ -186,15 +198,13 @@ function ChatPage() {
             <Button
               className="text-gray-500 text-sm font-semibold flex flex-row gap-2 items-center justify-start w-28"
               variant={"ghost"}
+              onClick={() =>
+                router.navigate({
+                  to: `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`,
+                })
+              }
             >
-              <Undo2
-                className="h-6 w-6"
-                onClick={() =>
-                  router.navigate({
-                    to: `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`,
-                  })
-                }
-              />
+              <Undo2 className="h-6 w-6" />
               Voltar
             </Button>
             <h1 className="text-xl font-bold mb-4">Conversas</h1>
@@ -438,3 +448,9 @@ function ChatPage() {
 }
 
 export default ChatPage;
+function scrollToBottom() {
+  const messagesContainer = document.getElementById("messages-container");
+  if (messagesContainer) {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+}

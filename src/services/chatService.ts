@@ -29,7 +29,27 @@ export async function createOrGetChat(
   }
 }
 
-// Busca os chats para o usuário logado
+export async function getUnreadConversationsCount(
+  userType: string
+): Promise<number> {
+  const collection = pb.collection("messages");
+
+  let filter = "";
+
+  if (userType === "Brands") {
+    filter = "brand_sender != null && read = false";
+  } else if (userType === "Influencers") {
+    filter = "influencer_sender != null && read = false";
+  }
+
+  const messages = await collection.getFullList<Message>({
+    filter,
+  });
+
+  const uniqueChats = new Set(messages.map((message) => message.chat));
+  return uniqueChats.size;
+}
+
 export async function getChatsForUser(
   userType: string | null
 ): Promise<Chat[]> {
@@ -56,10 +76,9 @@ export async function getChatsForUser(
     return lastMessageB.getTime() - lastMessageA.getTime();
   });
 
-  // Ordena os chats pela última mensagem (mais recente primeiro)
   return sortedChats;
 }
-// Busca um chat específico
+
 export async function getChatDetails(
   campaignId: string,
   influencerId: string,
@@ -73,7 +92,6 @@ export async function getChatDetails(
     );
 }
 
-// Busca mensagens de um chat
 export async function getMessages(chatId: string): Promise<Message[]> {
   return await pb.collection("messages").getFullList({
     filter: `chat="${chatId}"`,
@@ -81,7 +99,6 @@ export async function getMessages(chatId: string): Promise<Message[]> {
   });
 }
 
-// Envia uma mensagem
 export async function sendMessage(
   chatId: string,
   text: string,
@@ -94,4 +111,22 @@ export async function sendMessage(
     text,
     [senderField]: pb.authStore.model?.id,
   });
+}
+
+export async function markMessagesAsRead(
+  chatId: string,
+  userType: string | null
+): Promise<void> {
+  if (!userType || !pb.authStore.model?.id) return;
+
+  const oppositeSenderField =
+    userType === "Brands" ? "influencer_sender" : "brand_sender";
+
+  const unreadMessages = await pb.collection("messages").getFullList<Message>({
+    filter: `chat="${chatId}" && ${oppositeSenderField} != null && read = false`,
+  });
+
+  for (const message of unreadMessages) {
+    await pb.collection("messages").update(message.id, { read: true });
+  }
 }
