@@ -26,6 +26,8 @@ function ChatPage() {
   const { campaignId, influencerId, brandId } = useSearch({
     from: "/chat/",
   });
+  const { decrementUnreadConversationsCount } = useMessageStore();
+
   const [userType, setUserType] = useState<string | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
@@ -34,7 +36,7 @@ function ChatPage() {
   const [loadingChats, setLoadingChats] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
-  const { decrementUnreadConversationsCount } = useMessageStore();
+  const [unreadChatIds, setUnreadChatIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     async function fetchUserType() {
@@ -54,8 +56,25 @@ function ChatPage() {
         setLoadingChats(true);
         try {
           const fetchedChats = await getChatsForUser(userType);
-          console.log("AAAAAAAA,", fetchedChats);
           setChats(fetchedChats);
+
+          const initialUnreadChatIds = new Set<string>();
+          fetchedChats.forEach((chat) => {
+            const hasUnreadMessages = chat.expand?.messages_via_chat?.some(
+              (message) => {
+                const isUnread = !message.read;
+                const isFromOtherUser =
+                  (userType === "Brands" && message.influencer_sender) ||
+                  (userType === "Influencers" && message.brand_sender);
+                return isUnread && isFromOtherUser;
+              }
+            );
+
+            if (hasUnreadMessages) {
+              initialUnreadChatIds.add(chat.id);
+            }
+          });
+          setUnreadChatIds(initialUnreadChatIds);
         } catch (error) {
           console.error("Erro ao obter chats:", error);
         } finally {
@@ -159,6 +178,11 @@ function ChatPage() {
 
     if (chat) {
       setSelectedChat(chat);
+      setUnreadChatIds((prevUnreadChatIds) => {
+        const newUnreadChatIds = new Set(prevUnreadChatIds);
+        newUnreadChatIds.delete(chat.id);
+        return newUnreadChatIds;
+      });
     }
 
     router.navigate({
@@ -245,6 +269,9 @@ function ChatPage() {
                         )
                       }
                     >
+                      {unreadChatIds.has(chat.id) && (
+                        <span className="h-4 w-5 rounded-full bg-[#10438F]"></span>
+                      )}
                       <Avatar>
                         <AvatarImage
                           src={

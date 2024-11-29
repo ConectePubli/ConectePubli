@@ -43,8 +43,16 @@ export const PrivateHeader = () => {
 
   const handleNotificationClick = (notification: Notification) => {
     console.log("Clicou na notificação", notification);
+    const campaignTypes = [
+      "new_campaign",
+      "campaign_completed_influencer",
+      "new_campaign_participation",
+      "campaign_participation_confirmation",
+      "campaign_approval_influencer",
+      "campaign_approval_brand",
+    ];
 
-    if (notification.type === "new_campaign") {
+    if (campaignTypes.includes(notification.type)) {
       if (!notification.read) {
         markAsRead(notification.id);
       }
