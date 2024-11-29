@@ -54,7 +54,7 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             {campaign.expand?.niche?.map((niche) => niche.niche).join(", ")}{" "}
           </p>
           <p className="mt-2 text-[15px] leading-[22.5px] line-clamp-3 min-h-[67.5px]">
-            {campaign.description}
+            {campaign.briefing}
           </p>
 
           <div className="flex flex-col md:flex-row md:flex-wrap gap-0 md:gap-4 justify-between">
