@@ -1,12 +1,20 @@
+import duh from "@/assets/sponsors/duh.png";
+import lamborguini from "@/assets/sponsors/lamborguini.png";
+import onocaps from "@/assets/sponsors/onocaps.png";
+import scientific from "@/assets/sponsors/scientific.png";
+import yourclub from "@/assets/sponsors/yourclub.png";
+import wyndham from "@/assets/sponsors/wyndham.png";
+import mariaMonteiro from "@/assets/sponsors/maria-monteiro.png";
+
 const LogosCarousel = () => {
   const logos = [
-    "src/assets/sponsors/duh.png",
-    "src/assets/sponsors/lamborguini.png",
-    "src/assets/sponsors/onocaps.png",
-    "src/assets/sponsors/scientific.png",
-    "src/assets/sponsors/yourclub.png",
-    "src/assets/sponsors/wyndham.png",
-    "src/assets/sponsors/maria-monteiro.png",
+    duh,
+    lamborguini,
+    onocaps,
+    scientific,
+    yourclub,
+    wyndham,
+    mariaMonteiro,
   ];
 
   const allLogos = [...logos, ...logos];
