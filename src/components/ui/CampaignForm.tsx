@@ -28,6 +28,7 @@ import {
 } from "@/utils/campaignData/labels";
 import { Niche } from "@/types/Niche";
 import { Campaign } from "@/types/Campaign";
+import { Question } from "phosphor-react";
 
 const channelIcons = {
   Instagram: InstagramIcon,
@@ -718,6 +719,93 @@ function BasicInfoSection({
 }: BasicInfoSectionProps) {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
+  // Estados para tooltips
+  const [tooltipOpenFormat, setTooltipOpenFormat] = useState(false);
+  const [tooltipOpenURL, setTooltipOpenURL] = useState(false);
+  const [tooltipOpenChannels, setTooltipOpenChannels] = useState(false);
+  const [tooltipOpenBriefing, setTooltipOpenBriefing] = useState(false);
+  const [tooltipOpenDeliverables, setTooltipOpenDeliverables] = useState(false);
+  const [tooltipOpenSending, setTooltipOpenSending] = useState(false);
+  const [tooltipOpenExpectedActions, setTooltipOpenExpectedActions] =
+    useState(false);
+  const [tooltipOpenAvoidActions, setTooltipOpenAvoidActions] = useState(false);
+  const [tooltipOpenAdditionalInfo, setTooltipOpenAdditionalInfo] =
+    useState(false);
+
+  // Referências para tooltips
+  const tooltipRefFormat = useRef<HTMLDivElement>(null);
+  const tooltipRefURL = useRef<HTMLDivElement>(null);
+  const tooltipRefChannels = useRef<HTMLDivElement>(null);
+  const tooltipRefBriefing = useRef<HTMLDivElement>(null);
+  const tooltipRefDeliverables = useRef<HTMLDivElement>(null);
+  const tooltipRefSending = useRef<HTMLDivElement>(null);
+  const tooltipRefExpectedActions = useRef<HTMLDivElement>(null);
+  const tooltipRefAvoidActions = useRef<HTMLDivElement>(null);
+  const tooltipRefAdditionalInfo = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        tooltipRefFormat.current &&
+        !tooltipRefFormat.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenFormat(false);
+      }
+      if (
+        tooltipRefURL.current &&
+        !tooltipRefURL.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenURL(false);
+      }
+      if (
+        tooltipRefChannels.current &&
+        !tooltipRefChannels.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenChannels(false);
+      }
+      if (
+        tooltipRefBriefing.current &&
+        !tooltipRefBriefing.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenBriefing(false);
+      }
+      if (
+        tooltipRefDeliverables.current &&
+        !tooltipRefDeliverables.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenDeliverables(false);
+      }
+      if (
+        tooltipRefSending.current &&
+        !tooltipRefSending.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenSending(false);
+      }
+      if (
+        tooltipRefExpectedActions.current &&
+        !tooltipRefExpectedActions.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenExpectedActions(false);
+      }
+      if (
+        tooltipRefAvoidActions.current &&
+        !tooltipRefAvoidActions.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenAvoidActions(false);
+      }
+      if (
+        tooltipRefAdditionalInfo.current &&
+        !tooltipRefAdditionalInfo.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenAdditionalInfo(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     if (data.coverImage) {
       if (typeof data.coverImage === "string") {
@@ -816,8 +904,36 @@ function BasicInfoSection({
           </div>
 
           <div className="mb-8">
-            <label className="block mb-1 text-gray-700 font-semibold">
+            <label className="block mb-1 text-gray-700 font-semibold flex items-center ">
               URL do seu site ou perfil no Instagram*
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[2rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenURL(!tooltipOpenURL);
+                  }}
+                />
+                {tooltipOpenURL && (
+                  <div
+                    ref={tooltipRefURL}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      Insira o Instagram ou site para que os candidatos possam
+                      conhecer a sua marca.
+                    </p>
+                  </div>
+                )}
+              </div>
             </label>
             <p className="text-gray-500 text-sm mb-2">
               Compartilhe a URL do seu site ou perfil do Instagram para que os
@@ -834,9 +950,43 @@ function BasicInfoSection({
           </div>
 
           <div>
-            <label className="block mb-2 text-gray-700 font-semibold">
-              Formato da campanha*
+            <label className="block mb-2 text-gray-700 font-semibold flex items-center">
+              Formato da campanha*{" "}
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[2rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenFormat(!tooltipOpenFormat);
+                  }}
+                />
+                {tooltipOpenFormat && (
+                  <div
+                    ref={tooltipRefFormat}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      <strong>UGC:</strong> O criador de conteúdo te fornece o
+                      vídeo ou fotos para que você poste nas suas redes sociais,
+                      depoimentos em site e/ou rode anúncios de tráfego pago.
+                    </p>
+                    <p className="text-gray-700 mt-2 font-normal">
+                      <strong>IGC:</strong> O criador de conteúdo posta o vídeo
+                      ou fotos nas redes sociais dele em collab com a marca.
+                    </p>
+                  </div>
+                )}
+              </div>
             </label>
+
             <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               {objectiveOptions.map((option) => (
                 <button
@@ -896,8 +1046,36 @@ function BasicInfoSection({
 
         <div className="col-span-1 md:col-span-2">
           <div className="col-span-2">
-            <label className="block mb-1 text-gray-700 font-semibold">
+            <label className="block mb-1 text-gray-700 font-semibold flex items-center">
               Canais de divulgação
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[2rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenChannels(!tooltipOpenChannels);
+                  }}
+                />
+                {tooltipOpenChannels && (
+                  <div
+                    ref={tooltipRefChannels}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      Selecione as redes sociais em que o conteúdo será
+                      vinculado.
+                    </p>
+                  </div>
+                )}
+              </div>
             </label>
 
             <p className="text-gray-500 text-sm mb-2">
@@ -933,9 +1111,40 @@ function BasicInfoSection({
         <div className="col-span-1 md:col-span-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="col-span-1">
-              <label className="block mb-1 text-gray-700 font-semibold">
+              <label className="block mb-1 text-gray-700 font-semibold flex items-center">
                 Briefing da Campanha (Forneça detalhes essenciais que o Creator
                 deve saber)*
+                <div className="relative inline-block">
+                  <Question
+                    size={18}
+                    color="#00f"
+                    className="ml-2 min-w-[2rem] cursor-pointer"
+                    onClick={() => {
+                      setTooltipOpenBriefing(!tooltipOpenBriefing);
+                    }}
+                  />
+                  {tooltipOpenBriefing && (
+                    <div
+                      ref={tooltipRefBriefing}
+                      className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                      style={{
+                        top: "100%",
+                        left: "-100%",
+                        transform: "translateX(-80%)",
+                        width: "300px",
+                        marginTop: "0.5rem",
+                      }}
+                    >
+                      <p className="text-gray-700 font-normal">
+                        Forneça detalhes essenciais que o Creator deve saber,
+                        incluindo o objetivo e escopo da campanha, as mensagens
+                        principais que precisam ser abordadas, o tom e linguagem
+                        desejados, e diretrizes visuais como identidade visual e
+                        elementos gráficos.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </label>
               <p className="text-gray-500 text-sm mb-2">
                 Descreva o propósito da campanha, público-alvo, mensagens
@@ -951,9 +1160,41 @@ function BasicInfoSection({
             </div>
 
             <div className="col-span-1">
-              <label className="block mb-1 text-gray-700 font-semibold">
+              <label className="block mb-1 text-gray-700 font-semibold flex items-center">
                 Entregáveis Obrigatórios (Especifique a quantidade e o tipo de
                 conteúdos que o Creator deve produzir)*
+                <div className="relative inline-block">
+                  <Question
+                    size={18}
+                    color="#00f"
+                    className="ml-2 min-w-[2rem] cursor-pointer"
+                    onClick={() => {
+                      setTooltipOpenDeliverables(!tooltipOpenDeliverables);
+                    }}
+                  />
+                  {tooltipOpenDeliverables && (
+                    <div
+                      ref={tooltipRefDeliverables}
+                      className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                      style={{
+                        top: "100%",
+                        left: "-100%",
+                        transform: "translateX(-80%)",
+                        width: "300px",
+                        marginTop: "0.5rem",
+                      }}
+                    >
+                      <p className="text-gray-700 font-normal">
+                        Especifique a quantidade e o tipo de conteúdos que o
+                        Creator deve produzir. Inclua Reels, Stories, Posts no
+                        feed, vídeos ou fotos entregues via WeTransfer ou Google
+                        Drive, detalhando a quantidade e duração para uso em
+                        tráfego orgânico e pago. Adicione outros formatos
+                        necessários, se houver.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </label>
               <p className="text-gray-500 text-sm mb-2">
                 Informe o tipo de conteúdo necessário (Reels, Stories, Posts), a
@@ -970,8 +1211,37 @@ function BasicInfoSection({
           </div>
 
           <div className="col-span-1 mt-6">
-            <label className="block mb-1 text-gray-700 font-semibold">
+            <label className="block mb-1 text-gray-700 font-semibold flex items-center">
               Envio de Produtos ou Serviços (Detalhe o processo de envio)*
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[2rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenSending(!tooltipOpenSending);
+                  }}
+                />
+                {tooltipOpenSending && (
+                  <div
+                    ref={tooltipRefSending}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "-100%",
+                      transform: "translateX(-80%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      Detalhe o processo de envio, incluindo a descrição dos
+                      produtos ou serviços envolvidos e os prazos previstos para
+                      envio e recebimento.
+                    </p>
+                  </div>
+                )}
+              </div>
             </label>
             <p className="text-gray-500 text-sm mb-2">
               Informe quais produtos ou serviços serão fornecidos, com detalhes
@@ -988,8 +1258,38 @@ function BasicInfoSection({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="col-span-1">
-              <label className="block mb-1 text-gray-700 font-semibold">
+              <label className="block mb-1 text-gray-700 font-semibold flex items-center">
                 Ações Esperadas do Creator (Do's)*
+                <div className="relative inline-block">
+                  <Question
+                    size={18}
+                    color="#00f"
+                    className="ml-2 cursor-pointer"
+                    onClick={() => {
+                      setTooltipOpenExpectedActions(
+                        !tooltipOpenExpectedActions
+                      );
+                    }}
+                  />
+                  {tooltipOpenExpectedActions && (
+                    <div
+                      ref={tooltipRefExpectedActions}
+                      className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                      style={{
+                        top: "100%",
+                        left: "-100%",
+                        transform: "translateX(-80%)",
+                        width: "300px",
+                        marginTop: "0.5rem",
+                      }}
+                    >
+                      <p className="text-gray-700 font-normal">
+                        Liste as ações e comportamentos que o Creator deve
+                        adotar durante a execução da campanha.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </label>
               <p className="text-gray-500 text-sm mb-2">
                 Descreva comportamentos e práticas desejadas pelo Creator.
@@ -1004,8 +1304,36 @@ function BasicInfoSection({
             </div>
 
             <div className="col-span-1">
-              <label className="block mb-1 text-gray-700 font-semibold">
+              <label className="block mb-1 text-gray-700 font-semibold flex items-center">
                 Ações a Serem Evitadas (Don'ts)*
+                <div className="relative inline-block">
+                  <Question
+                    size={18}
+                    color="#00f"
+                    className="ml-2 cursor-pointer"
+                    onClick={() => {
+                      setTooltipOpenAvoidActions(!tooltipOpenAvoidActions);
+                    }}
+                  />
+                  {tooltipOpenAvoidActions && (
+                    <div
+                      ref={tooltipRefAvoidActions}
+                      className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                      style={{
+                        top: "100%",
+                        left: "-100%",
+                        transform: "translateX(-80%)",
+                        width: "300px",
+                        marginTop: "0.5rem",
+                      }}
+                    >
+                      <p className="text-gray-700 font-normal">
+                        Especifique ações e comportamentos que o Creator deve
+                        evitar para atender às expectativas da marca.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </label>
               <p className="text-gray-500 text-sm mb-2">
                 Detalhe comportamentos indesejados ou proibidos.
@@ -1021,8 +1349,37 @@ function BasicInfoSection({
           </div>
 
           <div className="col-span-1 mt-6">
-            <label className="block mb-1 text-gray-700 font-semibold">
+            <label className="block mb-1 text-gray-700 font-semibold flex items-center">
               Informações Adicionais*
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[1rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenAdditionalInfo(!tooltipOpenAdditionalInfo);
+                  }}
+                />
+                {tooltipOpenAdditionalInfo && (
+                  <div
+                    ref={tooltipRefAdditionalInfo}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      Inclua informações relevantes, como prazos de entrega dos
+                      conteúdos, exigências de exclusividade durante a campanha,
+                      e quaisquer restrições ou orientações específicas.
+                    </p>
+                  </div>
+                )}
+              </div>
             </label>
             <p className="text-gray-500 text-sm mb-2">
               Inclua qualquer outra informação que possa ajudar os criadores a
@@ -1038,7 +1395,12 @@ function BasicInfoSection({
           </div>
 
           <div className="mt-4">
-            <p className="text-gray-700 font-semibold italic">Observações: Todos os campos acima são obrigatórios para garantir que o Creator tenha uma compreensão completa das expectativas da marca. Certifique-se de fornecer informações claras e detalhadas em cada campo para evitar ambiguidades.</p>
+            <p className="text-gray-700 font-semibold italic">
+              Observações: Todos os campos acima são obrigatórios para garantir
+              que o Creator tenha uma compreensão completa das expectativas da
+              marca. Certifique-se de fornecer informações claras e detalhadas
+              em cada campo para evitar ambiguidades.
+            </p>
           </div>
         </div>
       </div>
@@ -1071,6 +1433,82 @@ function AudienceSegmentationSection({
 
   const nicheDropdownRef = useRef<HTMLDivElement>(null);
   const locationDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Estados para tooltips
+  const [tooltipOpenNiche, setTooltipOpenNiche] = useState(false);
+  const [tooltipOpenAge, setTooltipOpenAge] = useState(false);
+  const [tooltipOpenGender, setTooltipOpenGender] = useState(false);
+  const [tooltipOpenMinFollowers, setTooltipOpenMinFollowers] = useState(false);
+  const [tooltipOpenLocality, setTooltipOpenLocality] = useState(false);
+  const [tooltipOpenVideoDuration, setTooltipOpenVideoDuration] =
+    useState(false);
+  const [tooltipOpenFormatAudio, setTooltipOpenFormatAudio] = useState(false);
+
+  // Referências para tooltips
+  const tooltipRefNiche = useRef<HTMLDivElement>(null);
+  const tooltipRefAge = useRef<HTMLDivElement>(null);
+  const tooltipRefGender = useRef<HTMLDivElement>(null);
+  const tooltipRefMinFollowers = useRef<HTMLDivElement>(null);
+  const tooltipRefLocality = useRef<HTMLDivElement>(null);
+  const tooltipRefVideoDuration = useRef<HTMLDivElement>(null);
+  const tooltipRefFormatAudio = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        tooltipRefNiche.current &&
+        !tooltipRefNiche.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenNiche(false);
+      }
+
+      if (
+        tooltipRefAge.current &&
+        !tooltipRefAge.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenAge(false);
+      }
+
+      if (
+        tooltipRefGender.current &&
+        !tooltipRefGender.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenGender(false);
+      }
+
+      if (
+        tooltipRefMinFollowers.current &&
+        !tooltipRefMinFollowers.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenMinFollowers(false);
+      }
+
+      if (
+        tooltipRefLocality.current &&
+        !tooltipRefLocality.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenLocality(false);
+      }
+
+      if (
+        tooltipRefVideoDuration.current &&
+        !tooltipRefVideoDuration.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenVideoDuration(false);
+      }
+
+      if (
+        tooltipRefFormatAudio.current &&
+        !tooltipRefFormatAudio.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenFormatAudio(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
 
   const convertDurationToSeconds = (duration: string): number => {
     const [value, unit] = duration.split(" ");
@@ -1330,8 +1768,37 @@ function AudienceSegmentationSection({
       {/* Updated grid classes for responsiveness */}
       <div className="grid grid-cols-1 gap-6 px-5 mb-6">
         <div className="mb-4 relative">
-          <label className="block mb-2 text-gray-700 font-semibold">
+          <label className="block mb-2 text-gray-700 font-semibold flex items-center">
             Nicho (opcional)
+            <div className="relative inline-block">
+              <Question
+                size={18}
+                color="#00f"
+                className="ml-2 min-w-[2rem] cursor-pointer"
+                onClick={() => {
+                  setTooltipOpenNiche(!tooltipOpenNiche);
+                }}
+              />
+
+              {tooltipOpenNiche && (
+                <div
+                  ref={tooltipRefNiche}
+                  className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                  style={{
+                    top: "100%",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "300px",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <p className="text-gray-700 font-normal">
+                    Escolha quais nichos de criadores de conteúdo fazem mais
+                    sentido para essa campanha.
+                  </p>
+                </div>
+              )}
+            </div>
           </label>
           <div className="relative" ref={nicheDropdownRef}>
             <button
@@ -1391,8 +1858,36 @@ function AudienceSegmentationSection({
         {/* Adjusted grid for age and gender */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="col-span-1 md:col-span-2">
-            <label className="block mb-2 text-gray-700 font-semibold">
+            <label className="block mb-2 text-gray-700 font-semibold flex items-center">
               Idade (opcional)
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[2rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenAge(!tooltipOpenAge);
+                  }}
+                />
+
+                {tooltipOpenAge && (
+                  <div
+                    ref={tooltipRefAge}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      Qual a idade mínima e máxima que os candidatos devem ter.
+                    </p>
+                  </div>
+                )}
+              </div>
             </label>
             <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <select
@@ -1443,8 +1938,37 @@ function AudienceSegmentationSection({
           </div>
 
           <div className="col-span-1">
-            <label className="block mb-2 text-gray-700 font-semibold">
+            <label className="block mb-2 text-gray-700 font-semibold flex items-center">
               Gênero (opcional)
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[2rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenGender(!tooltipOpenGender);
+                  }}
+                />
+
+                {tooltipOpenGender && (
+                  <div
+                    ref={tooltipRefGender}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      Selecione o gênero que melhor representa o público-alvo da
+                      sua campanha.
+                    </p>
+                  </div>
+                )}
+              </div>
             </label>
             <select
               name="gender"
@@ -1471,8 +1995,37 @@ function AudienceSegmentationSection({
 
       <div className="px-5 mb-6 grid gap-6 md:grid-cols-2">
         <div>
-          <label className="block mb-2 text-gray-700 font-semibold">
+          <label className="block mb-2 text-gray-700 font-semibold flex items-center">
             Mínimo de Seguidores (opcional)
+            <div className="relative inline-block">
+              <Question
+                size={18}
+                color="#00f"
+                className="ml-2 min-w-[2rem] cursor-pointer"
+                onClick={() => {
+                  setTooltipOpenMinFollowers(!tooltipOpenMinFollowers);
+                }}
+              />
+
+              {tooltipOpenMinFollowers && (
+                <div
+                  ref={tooltipRefMinFollowers}
+                  className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                  style={{
+                    top: "100%",
+                    left: "-50%",
+                    transform: "translateX(-80%)",
+                    width: "300px",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <p className="text-gray-700 font-normal">
+                    Defina o número mínimo de seguidores que os influencers
+                    devem ter para participar da campanha.
+                  </p>
+                </div>
+              )}
+            </div>
           </label>
           <select
             name="minFollowers"
@@ -1495,8 +2048,36 @@ function AudienceSegmentationSection({
         </div>
 
         <div className="mb-4 relative">
-          <label className="block mb-2 text-gray-700 font-semibold">
+          <label className="block mb-2 text-gray-700 font-semibold flex items-center">
             Localidade (opcional)
+            <div className="relative inline-block">
+              <Question
+                size={18}
+                color="#00f"
+                className="ml-2 min-w-[2rem] cursor-pointer"
+                onClick={() => {
+                  setTooltipOpenLocality(!tooltipOpenLocality);
+                }}
+              />
+
+              {tooltipOpenLocality && (
+                <div
+                  ref={tooltipRefLocality}
+                  className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                  style={{
+                    top: "100%",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "300px",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <p className="text-gray-700 font-normal">
+                    Defina de quais estados você gostaria de receber candidatos.
+                  </p>
+                </div>
+              )}
+            </div>
           </label>
           <div className="relative" ref={locationDropdownRef}>
             <button
@@ -1555,8 +2136,36 @@ function AudienceSegmentationSection({
 
         <div className="col-span-1 md:col-span-2 gap-0 grid grid-cols-1 md:grid-cols-2 md:gap-4">
           <div>
-            <label className="block mb-2 text-gray-700 font-semibold">
+            <label className="block mb-2 text-gray-700 font-semibold flex items-center">
               Duração do vídeo (opcional)
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[2rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenVideoDuration(!tooltipOpenVideoDuration);
+                  }}
+                />
+
+                {tooltipOpenVideoDuration && (
+                  <div
+                    ref={tooltipRefVideoDuration}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "-50%",
+                      transform: "translateX(-50%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      Informe qual o tempo mínimo que o vídeo deve durar.
+                    </p>
+                  </div>
+                )}
+              </div>
             </label>
             <select
               name="videoMinDuration"
@@ -1637,8 +2246,38 @@ function AudienceSegmentationSection({
         </div>
 
         <div>
-          <label className="block mb-2 text-gray-700 font-semibold">
+          <label className="block mb-2 text-gray-700 font-semibold flex items-center">
             Formato do áudio (opcional)
+            <div className="relative inline-block">
+              <Question
+                size={18}
+                color="#00f"
+                className="ml-2 min-w-[2rem] cursor-pointer"
+                onClick={() => {
+                  setTooltipOpenFormatAudio(!tooltipOpenFormatAudio);
+                }}
+              />
+
+              {tooltipOpenFormatAudio && (
+                <div
+                  ref={tooltipRefFormatAudio}
+                  className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                  style={{
+                    top: "100%",
+                    left: "-50%",
+                    transform: "translateX(-50%)",
+                    width: "300px",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <p className="text-gray-700 font-normal">
+                    Escolha se o vídeo deve ser criado com uma música de fundo
+                    ou se o é necessário que o criador de conteúdo narre o
+                    vídeo.
+                  </p>
+                </div>
+              )}
+            </div>
           </label>
           <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
             <button
@@ -1695,6 +2334,54 @@ function CampaignBudgetSection({
   console.log("startDate", startDate);
   const [today, setToday] = useState("");
   const [creatorFeeError, setCreatorFeeError] = useState("");
+
+  // Estados para tooltips
+  const [tooltipOpenStartDate, setTooltipOpenStartDate] = useState(false);
+  const [tooltipOpenFinalDate, setTooltipOpenFinalDate] = useState(false);
+  const [tooltipOpenOpenJobs, setTooltipOpenOpenJobs] = useState(false);
+  const [tooltipOpenPrice, setTooltipOpenPrice] = useState(false);
+
+  // Referências para tooltips
+  const tooltipRefStartDate = useRef<HTMLDivElement>(null);
+  const tooltipRefFinalDate = useRef<HTMLDivElement>(null);
+  const tooltipRefOpenJobs = useRef<HTMLDivElement>(null);
+  const tooltipRefPrice = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        tooltipRefStartDate.current &&
+        !tooltipRefStartDate.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenStartDate(false);
+      }
+
+      if (
+        tooltipRefFinalDate.current &&
+        !tooltipRefFinalDate.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenFinalDate(false);
+      }
+
+      if (
+        tooltipRefOpenJobs.current &&
+        !tooltipRefOpenJobs.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenOpenJobs(false);
+      }
+
+      if (
+        tooltipRefPrice.current &&
+        !tooltipRefPrice.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenPrice(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
 
   useEffect(() => {
     const now = new Date();
@@ -1776,8 +2463,37 @@ function CampaignBudgetSection({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-6">
         <div>
-          <label className="block mb-2 text-gray-700 font-semibold">
+          <label className="block mb-2 text-gray-700 font-semibold flex items-center">
             Data de Início*
+            <div className="relative inline-block">
+              <Question
+                size={18}
+                color="#00f"
+                className="ml-2 min-w-[2rem] cursor-pointer"
+                onClick={() => {
+                  setTooltipOpenStartDate(!tooltipOpenStartDate);
+                }}
+              />
+
+              {tooltipOpenStartDate && (
+                <div
+                  ref={tooltipRefStartDate}
+                  className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                  style={{
+                    top: "100%",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "300px",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <p className="text-gray-700 font-normal">
+                    Informe a data em que você deseja que a campanha seja
+                    iniciada.
+                  </p>
+                </div>
+              )}
+            </div>
           </label>
           <input
             type="date"
@@ -1790,8 +2506,37 @@ function CampaignBudgetSection({
         </div>
 
         <div>
-          <label className="block mb-2 text-gray-700 font-semibold">
+          <label className="block mb-2 text-gray-700 font-semibold flex items-center">
             Fim da Campanha*
+            <div className="relative inline-block">
+              <Question
+                size={18}
+                color="#00f"
+                className="ml-2 min-w-[2rem] cursor-pointer"
+                onClick={() => {
+                  setTooltipOpenFinalDate(!tooltipOpenFinalDate);
+                }}
+              />
+
+              {tooltipOpenFinalDate && (
+                <div
+                  ref={tooltipRefFinalDate}
+                  className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                  style={{
+                    top: "100%",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "300px",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <p className="text-gray-700 font-normal">
+                    Informe a data em que você deseja que a campanha seja
+                    encerrada.
+                  </p>
+                </div>
+              )}
+            </div>
           </label>
           <input
             type="date"
@@ -1806,8 +2551,37 @@ function CampaignBudgetSection({
       </div>
 
       <div className={`px-5 mb-6 ${isEditMode ? "hidden" : ""}`}>
-        <label className="block mb-2 text-gray-700 font-semibold">
+        <label className="block mb-2 text-gray-700 font-semibold flex items-center">
           Quantos influenciadores você deseja na campanha?*
+          <div className="relative inline-block">
+            <Question
+              size={18}
+              color="#00f"
+              className="ml-2 min-w-[2rem] cursor-pointer"
+              onClick={() => {
+                setTooltipOpenOpenJobs(!tooltipOpenOpenJobs);
+              }}
+            />
+
+            {tooltipOpenOpenJobs && (
+              <div
+                ref={tooltipRefOpenJobs}
+                className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                style={{
+                  top: "100%",
+                  left: "-100%",
+                  transform: "translateX(-80%)",
+                  width: "300px",
+                  marginTop: "0.5rem",
+                }}
+              >
+                <p className="text-gray-700 font-normal">
+                  O número de vagas representa quantos candidatos você irá
+                  aprovar.
+                </p>
+              </div>
+            )}
+          </div>
         </label>
         <input
           type="number"
@@ -1822,8 +2596,39 @@ function CampaignBudgetSection({
       </div>
 
       <div className={`px-5 mb-3 ${isEditMode ? "hidden" : ""}`}>
-        <label className="block mb-2 text-gray-700 font-semibold">
+        <label className="block mb-2 text-gray-700 font-semibold flex items-center">
           Valor por criador*
+          <div className="relative inline-block">
+            <Question
+              size={18}
+              color="#00f"
+              className="ml-2 min-w-[2rem] cursor-pointer"
+              onClick={() => {
+                setTooltipOpenPrice(!tooltipOpenPrice);
+              }}
+            />
+
+            {tooltipOpenPrice && (
+              <div
+                ref={tooltipRefPrice}
+                className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                style={{
+                  top: "100%",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "300px",
+                  marginTop: "0.5rem",
+                }}
+              >
+                <p className="text-gray-700 font-normal">
+                  Informe o valor que cada criador de conteúdo receberá pela
+                  realização das atividades previstas na campanha. O valor
+                  mínimo por criador é de R$ 50,00. (Lembre-se de colocar um
+                  valor de acordo com os entregáveis que a marca está pedindo).
+                </p>
+              </div>
+            )}
+          </div>
         </label>
         <input
           type="text"
@@ -1843,12 +2648,18 @@ function CampaignBudgetSection({
         className={`px-5 text-gray-800 font-semibold ${isEditMode ? "hidden" : ""}`}
       >
         Orçamento total da campanha:{" "}
-        {formatCurrency(influencersCount * creatorFee)}
+        <span className="text-[#025c02]">
+          {formatCurrency(influencersCount * creatorFee)}
+        </span>
+        .
       </div>
 
-      <p className={`px-5 mt-2 text-gray-500 ${isEditMode ? "hidden" : ""}`}>
-        Ao finalizar a criação da campanha, você será direcionado para o
-        processo de pagamento referente ao orçamento total calculado acima.
+      <p className="px-5 mt-2 text-gray-700">
+        Observação importante: Este valor será pago antes da confirmação final
+        da campanha, garantindo que os fundos estejam reservados. Nota: Caso
+        algum influenciador não cumpra os requisitos, ou ocorra algum problema
+        comprovado, você poderá receber 100% do reembolso do valor pago a esse
+        influenciador.
       </p>
     </div>
   );
