@@ -13,7 +13,7 @@ export function SideNavDashboard() {
   const isBrand = pb.authStore.model?.collectionName === "Brands";
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-[calc(100vh-66px)]">
       {/* Desktop Sidebar */}
       <nav className="md:w-64 hidden md:block bg-white border-r border-gray-200 fixed h-full">
         <ul className="space-y-4 p-4">

@@ -17,14 +17,16 @@ import { Loader2, Undo2, X } from "lucide-react";
 import pb from "@/lib/pb";
 import { useMessageStore } from "@/store/useMessageStore";
 
-export const Route = createFileRoute("/chat/")({
+export const Route = createFileRoute(
+  "/(dashboard)/_side-nav-dashboard/dashboard/chat/"
+)({
   component: ChatPage,
 });
 
 function ChatPage() {
   const router = useRouter();
   const { campaignId, influencerId, brandId } = useSearch({
-    from: "/chat/",
+    from: "/(dashboard)/_side-nav-dashboard/dashboard/chat/",
   });
   const { decrementUnreadConversationsCount } = useMessageStore();
 
@@ -208,14 +210,14 @@ function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-66px)] bg-gray-100 items-center md:pt-4">
-      <div className="flex w-[90%] max-md:pt-4 rounded-lg lg:w-[80%] xl:w-[70%] h-full md:h-[70vh] gap-3">
+    <div className="flex flex-col h-[calc(100vh-66px)] bg-gray-100 items-center lg:pt-4">
+      <div className="flex w-[90%] max-lg:pt-4 rounded-lg xl:w-[80%] 2xl:w-[70%] h-full lg:h-[70vh] gap-3">
         {/* Lista de Conversas */}
         <aside
           className={`${
             selectedChat
-              ? "hidden md:flex md:w-[30%]"
-              : "flex w-full md:w-[30%] max-md:rounded-lg"
+              ? "hidden lg:flex lg:w-[30%]"
+              : "flex w-full lg:w-[30%] max-lg:rounded-lg"
           } bg-white border-r p-4 md:rounded-xl shadow-md`}
         >
           <div className="w-full h-full flex flex-col">
@@ -318,8 +320,8 @@ function ChatPage() {
         <main
           className={`${
             selectedChat
-              ? "flex w-full md:w-[70%] lg:w-[70%] h-full md:h-[70vh]"
-              : "hidden md:flex md:w-[70%] lg:w-[70%] h-full md:h-[70vh]"
+              ? "flex w-full lg:w-[70%] xl:w-[70%] h-full lg:h-[70vh]"
+              : "hidden lg:flex lg:w-[70%] xl:w-[70%] h-full lg:h-[70vh]"
           } flex-col bg-white rounded-xl shadow-md`}
         >
           {selectedChat ? (
