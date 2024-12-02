@@ -5,6 +5,7 @@ import scientific from "@/assets/sponsors/scientific.png";
 import yourclub from "@/assets/sponsors/yourclub.png";
 import wyndham from "@/assets/sponsors/wyndham.png";
 import mariaMonteiro from "@/assets/sponsors/maria-monteiro.png";
+import phillipp from "@/assets/sponsors/phillipp.png";
 
 const LogosCarousel = () => {
   const logos = [
@@ -15,6 +16,7 @@ const LogosCarousel = () => {
     yourclub,
     wyndham,
     mariaMonteiro,
+    phillipp,
   ];
 
   const allLogos = [...logos, ...logos];
