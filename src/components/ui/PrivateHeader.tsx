@@ -93,7 +93,7 @@ export const PrivateHeader = () => {
             <button
               className="focus:outline-none relative"
               aria-label={`Você tem ${unreadConversationsCount} conversas não lidas`}
-              onClick={() => navigate({ to: "/chat" })}
+              onClick={() => navigate({ to: "/dashboard/chat" })}
             >
               <MessageCircle className="w-5 h-5 md:w-6 md:h-6 cursor-pointer hover:text-gray-600 transition duration-200" />
               {unreadConversationsCount > 0 && (

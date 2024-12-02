@@ -16,7 +16,6 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as TermosIndexImport } from './routes/termos/index'
 import { Route as PrivacidadeIndexImport } from './routes/privacidade/index'
 import { Route as ContratoCampanhaIndexImport } from './routes/contrato-campanha/index'
-import { Route as ChatIndexImport } from './routes/chat/index'
 import { Route as dashboardSideNavDashboardImport } from './routes/(dashboard)/_side-nav-dashboard'
 import { Route as authLogin123newIndexImport } from './routes/(auth)/login123new/index'
 import { Route as authEsquecerSenhaIndexImport } from './routes/(auth)/esquecer-senha/index'
@@ -30,6 +29,7 @@ import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './r
 import { Route as dashboardSideNavDashboardDashboardInfluenciadorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-influenciador/index'
 import { Route as dashboardSideNavDashboardDashboardLayoutImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/_layout'
 import { Route as dashboardSideNavDashboardDashboardCriarIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/criar/index'
+import { Route as dashboardSideNavDashboardDashboardChatIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/chat/index'
 import { Route as dashboardSideNavDashboardDashboardCampanhasIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/criar-campanha/index'
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/index'
@@ -73,11 +73,6 @@ const PrivacidadeIndexRoute = PrivacidadeIndexImport.update({
 
 const ContratoCampanhaIndexRoute = ContratoCampanhaIndexImport.update({
   path: '/contrato-campanha/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ChatIndexRoute = ChatIndexImport.update({
-  path: '/chat/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -156,6 +151,12 @@ const dashboardSideNavDashboardDashboardLayoutRoute =
 const dashboardSideNavDashboardDashboardCriarIndexRoute =
   dashboardSideNavDashboardDashboardCriarIndexImport.update({
     path: '/criar/',
+    getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardChatIndexRoute =
+  dashboardSideNavDashboardDashboardChatIndexImport.update({
+    path: '/chat/',
     getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
   } as any)
 
@@ -243,13 +244,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof dashboardSideNavDashboardImport
       parentRoute: typeof dashboardRoute
-    }
-    '/chat/': {
-      id: '/chat/'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatIndexImport
-      parentRoute: typeof rootRoute
     }
     '/contrato-campanha/': {
       id: '/contrato-campanha/'
@@ -370,6 +364,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasIndexImport
       parentRoute: typeof dashboardSideNavDashboardDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/dashboard/chat/': {
+      id: '/_side-nav-dashboard/dashboard/chat/'
+      path: '/chat'
+      fullPath: '/dashboard/chat'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardChatIndexImport
+      parentRoute: typeof dashboardSideNavDashboardDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/dashboard/criar/': {
       id: '/_side-nav-dashboard/dashboard/criar/'
       path: '/criar'
@@ -442,6 +443,7 @@ interface dashboardSideNavDashboardDashboardRouteChildren {
   dashboardSideNavDashboardDashboardLayoutRoute: typeof dashboardSideNavDashboardDashboardLayoutRoute
   dashboardSideNavDashboardDashboardIndexRoute: typeof dashboardSideNavDashboardDashboardIndexRoute
   dashboardSideNavDashboardDashboardCampanhasIndexRoute: typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
+  dashboardSideNavDashboardDashboardChatIndexRoute: typeof dashboardSideNavDashboardDashboardChatIndexRoute
   dashboardSideNavDashboardDashboardCriarIndexRoute: typeof dashboardSideNavDashboardDashboardCriarIndexRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
@@ -457,6 +459,8 @@ const dashboardSideNavDashboardDashboardRouteChildren: dashboardSideNavDashboard
       dashboardSideNavDashboardDashboardIndexRoute,
     dashboardSideNavDashboardDashboardCampanhasIndexRoute:
       dashboardSideNavDashboardDashboardCampanhasIndexRoute,
+    dashboardSideNavDashboardDashboardChatIndexRoute:
+      dashboardSideNavDashboardDashboardChatIndexRoute,
     dashboardSideNavDashboardDashboardCriarIndexRoute:
       dashboardSideNavDashboardDashboardCriarIndexRoute,
     dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute:
@@ -530,7 +534,6 @@ const dashboardRouteWithChildren = dashboardRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '/': typeof dashboardSideNavDashboardRouteWithChildren
-  '/chat': typeof ChatIndexRoute
   '/contrato-campanha': typeof ContratoCampanhaIndexRoute
   '/privacidade': typeof PrivacidadeIndexRoute
   '/termos': typeof TermosIndexRoute
@@ -547,6 +550,7 @@ export interface FileRoutesByFullPath {
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
+  '/dashboard/chat': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/dashboard/criar': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
   '/dashboard/campanhas/$campaignId/aplicar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
@@ -560,7 +564,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof dashboardSideNavDashboardRouteWithChildren
-  '/chat': typeof ChatIndexRoute
   '/contrato-campanha': typeof ContratoCampanhaIndexRoute
   '/privacidade': typeof PrivacidadeIndexRoute
   '/termos': typeof TermosIndexRoute
@@ -576,6 +579,7 @@ export interface FileRoutesByTo {
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
+  '/dashboard/chat': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/dashboard/criar': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
   '/dashboard/campanhas/$campaignId/aplicar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
@@ -591,7 +595,6 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof dashboardRouteWithChildren
   '/_side-nav-dashboard': typeof dashboardSideNavDashboardRouteWithChildren
-  '/chat/': typeof ChatIndexRoute
   '/contrato-campanha/': typeof ContratoCampanhaIndexRoute
   '/privacidade/': typeof PrivacidadeIndexRoute
   '/termos/': typeof TermosIndexRoute
@@ -609,6 +612,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/vitrine-de-campanhas/': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/_side-nav-dashboard/dashboard-marca/criar-campanha/': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
+  '/_side-nav-dashboard/dashboard/chat/': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/_side-nav-dashboard/dashboard/criar/': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAplicarRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
@@ -624,7 +628,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/chat'
     | '/contrato-campanha'
     | '/privacidade'
     | '/termos'
@@ -641,6 +644,7 @@ export interface FileRouteTypes {
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
     | '/dashboard/campanhas'
+    | '/dashboard/chat'
     | '/dashboard/criar'
     | '/dashboard/campanhas/$campaignId/aplicar'
     | '/dashboard/campanhas/$campaignId/aprovar'
@@ -653,7 +657,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/chat'
     | '/contrato-campanha'
     | '/privacidade'
     | '/termos'
@@ -669,6 +672,7 @@ export interface FileRouteTypes {
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
     | '/dashboard/campanhas'
+    | '/dashboard/chat'
     | '/dashboard/criar'
     | '/dashboard/campanhas/$campaignId/aplicar'
     | '/dashboard/campanhas/$campaignId/aprovar'
@@ -682,7 +686,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_side-nav-dashboard'
-    | '/chat/'
     | '/contrato-campanha/'
     | '/privacidade/'
     | '/termos/'
@@ -700,6 +703,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/vitrine-de-campanhas/'
     | '/_side-nav-dashboard/dashboard-marca/criar-campanha/'
     | '/_side-nav-dashboard/dashboard/campanhas/'
+    | '/_side-nav-dashboard/dashboard/chat/'
     | '/_side-nav-dashboard/dashboard/criar/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
@@ -715,7 +719,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   dashboardRoute: typeof dashboardRouteWithChildren
-  ChatIndexRoute: typeof ChatIndexRoute
   ContratoCampanhaIndexRoute: typeof ContratoCampanhaIndexRoute
   PrivacidadeIndexRoute: typeof PrivacidadeIndexRoute
   TermosIndexRoute: typeof TermosIndexRoute
@@ -729,7 +732,6 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   dashboardRoute: dashboardRouteWithChildren,
-  ChatIndexRoute: ChatIndexRoute,
   ContratoCampanhaIndexRoute: ContratoCampanhaIndexRoute,
   PrivacidadeIndexRoute: PrivacidadeIndexRoute,
   TermosIndexRoute: TermosIndexRoute,
@@ -754,7 +756,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/",
-        "/chat/",
         "/contrato-campanha/",
         "/privacidade/",
         "/termos/",
@@ -787,9 +788,6 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/marca/$userName/editar/"
       ]
     },
-    "/chat/": {
-      "filePath": "chat/index.tsx"
-    },
     "/contrato-campanha/": {
       "filePath": "contrato-campanha/index.tsx"
     },
@@ -821,6 +819,7 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/dashboard/_layout",
         "/_side-nav-dashboard/dashboard/",
         "/_side-nav-dashboard/dashboard/campanhas/",
+        "/_side-nav-dashboard/dashboard/chat/",
         "/_side-nav-dashboard/dashboard/criar/",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aplicar",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar",
@@ -858,6 +857,10 @@ export const routeTree = rootRoute
     },
     "/_side-nav-dashboard/dashboard/campanhas/": {
       "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/index.tsx",
+      "parent": "/_side-nav-dashboard/dashboard"
+    },
+    "/_side-nav-dashboard/dashboard/chat/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/chat/index.tsx",
       "parent": "/_side-nav-dashboard/dashboard"
     },
     "/_side-nav-dashboard/dashboard/criar/": {

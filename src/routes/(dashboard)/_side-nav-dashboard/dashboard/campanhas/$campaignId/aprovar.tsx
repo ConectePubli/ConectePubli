@@ -138,7 +138,7 @@ function Page() {
       );
 
       router.navigate({
-        to: "/chat/",
+        to: "/dashboard/chat/",
         search: {
           campaignId: chat.campaign,
           influencerId: chat.influencer,
