@@ -208,11 +208,9 @@ function Page() {
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-4">
-              Lembrete: Certifique-se de selecionar a opção correta (
-              <strong>Marca</strong> ou <strong>Influenciador</strong>). Se você
-              se pré-cadastrou como <strong>Marca</strong>, precisa selecionar
-              essa opção para acessar sua conta; o mesmo vale para{" "}
-              <strong>Influenciadores</strong>.
+              Lembrete: Certifique-se de selecionar a opção correta ao acessar
+              sua conta. Se você se cadastrou como <strong>Marca</strong> ou{" "}
+              <strong>Creator</strong>, escolha a opção correspondente.
             </p>
           </div>
 
@@ -235,9 +233,9 @@ function Page() {
 
               {/* Helper Text for Pre-registered Users */}
               <p className="text-sm text-gray-500 mt-2">
-                Para usuários pré-cadastrados: Ao inserir seu e-mail, será
-                necessário criar uma senha nesta etapa. Caso já tenha completado
-                este processo, entre com a senha existente.
+                Para usuários pré-cadastrados: O cadastramento já está aberto!
+                Use o e-mail do pré-cadastro para criar sua senha e finalizar
+                seu perfil.
               </p>
             </div>
 
@@ -315,7 +313,7 @@ function Page() {
                   : "Entrando..."
                 : isPreRegistered
                   ? "Cadastrar"
-                  : "Entrar"}
+                  : `Entrar como ${loginType === "brand" ? "Marca" : "Influenciador"}`}
             </Button>
 
             <div className="text-center">
