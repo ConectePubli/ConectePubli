@@ -10,7 +10,6 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getUserType } from "@/lib/auth";
 import { Chat } from "@/types/Chat";
 import { Message } from "@/types/Message";
 import { Loader2, Undo2, X } from "lucide-react";
@@ -43,7 +42,7 @@ function ChatPage() {
   useEffect(() => {
     async function fetchUserType() {
       try {
-        const type = await getUserType();
+        const type = pb.authStore.model?.collectionName || null;
         setUserType(type);
       } catch (error) {
         console.error("Erro ao obter o tipo de usuário:", error);
