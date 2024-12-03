@@ -120,17 +120,18 @@ const InfoParticipantModal: React.FC<Props> = ({
             Ver Perfil
           </button>
 
-          {campaignData.status !== "ended" && (
-            <button
-              className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
-              onClick={() => {
-                // Ação de "Enviar Mensagem" aqui
-              }}
-            >
-              <MessageCircle size={17} />
-              Enviar Mensagem
-            </button>
-          )}
+          {campaignData.status !== "ended" &&
+            selectedParticipation.status !== "waiting" && (
+              <button
+                className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
+                onClick={() => {
+                  // Ação de "Enviar Mensagem" aqui
+                }}
+              >
+                <MessageCircle size={17} />
+                Enviar Mensagem
+              </button>
+            )}
 
           {/* {selectedParticipation.status === "completed" && (
             <button
