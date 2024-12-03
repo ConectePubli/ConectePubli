@@ -20,12 +20,23 @@ import {
 } from "lucide-react";
 import { ClientResponseError } from "pocketbase";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { useRouter } from "@tanstack/react-router";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import MaskedInput from "react-text-mask";
-import { toast } from "sonner";
-import { useRouter } from "@tanstack/react-router";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+
+import FacebookIcon from "@/assets/icons/brands/facebook.svg";
+import InstagramIcon from "@/assets/icons/brands/instagram.svg";
+import KwaiIcon from "@/assets/icons/brands/kwai.svg";
+import LinkedInIcon from "@/assets/icons/brands/linkedin.svg";
+import PinterestIcon from "@/assets/icons/brands/pinterest.svg";
+import TiktokIcon from "@/assets/icons/brands/tiktok.svg";
+import TwitchIcon from "@/assets/icons/brands/twitch.svg";
+import TwitterIcon from "@/assets/icons/brands/twitter.svg";
+import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
+import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
 
 interface Option {
   value: string;
@@ -104,6 +115,7 @@ function Page() {
   const isUserDataComplete = userData?.bio ? true : false;
   const isAboutYouComplete = !!(
     userData?.name &&
+    userData?.username &&
     userData?.opening_date &&
     userData?.company_register &&
     userData?.email &&
@@ -326,6 +338,7 @@ function Page() {
 
       const modifiedFields = getModifiedFields<Brand>(originalData, userData, [
         "name",
+        "username",
         "opening_date",
         "company_register",
         "email",
@@ -366,9 +379,22 @@ function Page() {
       toast.success("Dados 'Sobre você' salvos com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar dados da seção 'Sobre você':", error);
-      toast.error(
-        "Erro ao salvar dados da seção 'Sobre você'. Tente novamente."
-      );
+
+      const err = error as ClientResponseError;
+
+      if (err && err.data && err.data.data && err.data.data.username) {
+        const usernameError = err.data.data.username;
+
+        if (usernameError.code === "validation_invalid_username") {
+          toast.error("O nome de usuário é inválido ou já está em uso.");
+        } else {
+          toast.error(usernameError.message || "Erro no campo 'username'.");
+        }
+      } else {
+        toast.error(
+          "Erro ao salvar dados da seção 'Sobre você'. Tente novamente."
+        );
+      }
     } finally {
       toggleSaving("aboutYou", false);
     }
@@ -711,7 +737,7 @@ function Page() {
           {/* Nome da Empresa */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-base font-semibold">Nome da Empresa</h2>
+              <h2 className="text-sm font-semibold">Nome da Empresa</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
@@ -726,10 +752,28 @@ function Page() {
             />
           </div>
 
+          {/* Username da Empresa */}
+          <div>
+            <div className="flex flex-row items-center">
+              <h2 className="text-sm font-semibold">Username</h2>
+              <p className="text-[#10438F] text-lg">*</p>
+            </div>
+            <input
+              type="text"
+              className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500"
+              placeholder="Nome da empresa"
+              value={userData?.username || ""}
+              maxLength={65}
+              onChange={(event) =>
+                setUserData({ ...userData, username: event.target.value })
+              }
+            />
+          </div>
+
           {/* Data de Fundação */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-base font-semibold">Data de Abertura</h2>
+              <h2 className="text-sm font-semibold">Data de Abertura</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <DateInput
@@ -743,7 +787,9 @@ function Page() {
           {/* Registro da Empresa */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-base font-semibold">Registro da Empresa</h2>
+              <h2 className="text-sm font-semibold">
+                Registro da Empresa (CNPJ ou CPF)
+              </h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
@@ -763,7 +809,7 @@ function Page() {
           {/* Email */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-base font-semibold">Email</h2>
+              <h2 className="text-sm font-semibold">Email</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
@@ -780,7 +826,7 @@ function Page() {
           {/* Whatsapp/Telefone */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-base font-semibold">Whatsapp/Telefone</h2>
+              <h2 className="text-sm font-semibold">Whatsapp/Telefone</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <PhoneInput
@@ -798,7 +844,7 @@ function Page() {
           {/* Website */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-base font-semibold">Website</h2>
+              <h2 className="text-sm font-semibold">Website</h2>
             </div>
             <input
               type="url"
@@ -814,7 +860,7 @@ function Page() {
           {/* Nicho */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-base font-semibold">Nicho</h2>
+              <h2 className="text-sm font-semibold">Nicho</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
 
@@ -893,7 +939,7 @@ function Page() {
           <div className="flex-1">
             <div>
               <div className="flex items-center mt-4">
-                <h2 className="text-base font-semibold">País</h2>
+                <h2 className="text-sm font-semibold">País</h2>
                 <p className="text-[#10438F] text-lg">*</p>
               </div>
               <ComboboxCountries
@@ -909,7 +955,7 @@ function Page() {
           {/* Campo de CEP */}
           <div className="flex-1">
             <div className="flex items-center mt-4">
-              <h2 className="text-base font-semibold">CEP</h2>
+              <h2 className="text-sm font-semibold">CEP</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <MaskedInput
@@ -924,7 +970,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Rua</h2>
+            <h2 className="text-sm font-semibold">Rua</h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
@@ -942,7 +988,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Número</h2>
+            <h2 className="text-sm font-semibold">Número</h2>
           </div>
           <input
             type="number"
@@ -965,7 +1011,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Complemento</h2>
+            <h2 className="text-sm font-semibold">Complemento</h2>
           </div>
           <input
             type="text"
@@ -982,7 +1028,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Bairro</h2>
+            <h2 className="text-sm font-semibold">Bairro</h2>
           </div>
           <input
             type="text"
@@ -999,7 +1045,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Cidade</h2>
+            <h2 className="text-sm font-semibold">Cidade</h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
@@ -1017,7 +1063,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Estado</h2>
+            <h2 className="text-sm font-semibold">Estado</h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <div className="mb-6 mt-1">
@@ -1053,6 +1099,7 @@ function Page() {
       </ProfileEditDropdown>
 
       {/* Redes sociais */}
+      {/* Redes sociais */}
       <ProfileEditDropdown
         sectionName="Redes sociais"
         isComplete={isSocialMediaComplete}
@@ -1062,176 +1109,289 @@ function Page() {
           necessário que pelo menos um campo esteja preenchido.
         </p>
 
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Instagram</h2>
+        {/* Instagram */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Instagram
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="instagram_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://instagram.com/usuario"
+                value={userData?.instagram_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, instagram_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={InstagramIcon}
+                  alt="Instagram"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
           </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://instagram.com/usuario"
-            value={userData?.instagram_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, instagram_url: event.target.value } : prev
-              )
-            }
-          />
+
+          {/* YouTube */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              YouTube
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="youtube_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://youtube.com/c/usuario"
+                value={userData?.youtube_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, youtube_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={YouTubeIcon}
+                  alt="YouTube"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* LinkedIn */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              LinkedIn
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="linkedin_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://linkedin.com/in/usuario"
+                value={userData?.linkedin_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, linkedin_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={LinkedInIcon}
+                  alt="LinkedIn"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* YourClub */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              YourClub
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="yourclub_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://yourclub.io/usuario"
+                value={userData?.yourclub_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, yourclub_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={YourClubIcon}
+                  alt="YourClub"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Kwai */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Kwai
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="kwai_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://kwai.com/@usuario"
+                value={userData?.kwai_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, kwai_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={KwaiIcon}
+                  alt="Kwai"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* TikTok */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              TikTok
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="tiktok_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://tiktok.com/@usuario"
+                value={userData?.tiktok_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, tiktok_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={TiktokIcon}
+                  alt="TikTok"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Facebook */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Facebook
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="facebook_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://facebook.com/usuario"
+                value={userData?.facebook_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, facebook_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={FacebookIcon}
+                  alt="Facebook"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Twitter [X] */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Twitter [X]
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="twitter_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://twitter.com/usuario"
+                value={userData?.twitter_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, twitter_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={TwitterIcon}
+                  alt="Twitter"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* TwitchTV */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              TwitchTV
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="twitch_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://twitch.tv/usuario"
+                value={userData?.twitch_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, twitch_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={TwitchIcon}
+                  alt="TwitchTV"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Pinterest */}
+          <div className="mt-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Pinterest
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="pinterest_url"
+                className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
+                placeholder="https://pinterest.com/usuario"
+                value={userData?.pinterest_url || ""}
+                onChange={(event) =>
+                  setUserData((prev) =>
+                    prev ? { ...prev, pinterest_url: event.target.value } : prev
+                  )
+                }
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <img
+                  src={PinterestIcon}
+                  alt="Pinterest"
+                  className="h-5 w-5 text-gray-400"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Facebook</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://facebook.com/usuario"
-            value={userData?.facebook_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, facebook_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Twitter [X]</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://twitter.com/usuario"
-            value={userData?.twitter_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, twitter_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">LinkedIn</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://linkedin.com/in/usuario"
-            value={userData?.linkedin_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, linkedin_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Youtube</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://youtube.com/c/usuario"
-            value={userData?.youtube_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, youtube_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">TikTok</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://tiktok.com/@usuario"
-            value={userData?.tiktok_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, tiktok_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">YourClub</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://yourclub.io/usuario"
-            value={userData?.yourclub_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, yourclub_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Pinterest</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://pinterest.com/usuario"
-            value={userData?.pinterest_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, pinterest_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Kwai</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://kwai.com/@usuario"
-            value={userData?.kwai_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, kwai_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
-        <div>
-          <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">TwitchTV</h2>
-          </div>
-          <input
-            type="text"
-            className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="https://twitch.tv/usuario"
-            value={userData?.twitch_url || ""}
-            onChange={(event) =>
-              setUserData((prev) =>
-                prev ? { ...prev, twitch_url: event.target.value } : prev
-              )
-            }
-          />
-        </div>
-
+        {/* Botão Salvar */}
         <button
           type="button"
           className={`text-white mb-4 font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-md shadow-md transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2 ${
@@ -1267,7 +1427,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Chave Pix</h2>
+            <h2 className="text-sm font-semibold">Chave Pix</h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
@@ -1311,7 +1471,7 @@ function Page() {
       >
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Senha Atual</h2>
+            <h2 className="text-sm font-semibold">Senha Atual</h2>
           </div>
           <input
             type="password"
@@ -1324,7 +1484,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Nova Senha</h2>
+            <h2 className="text-sm font-semibold">Nova Senha</h2>
           </div>
           <input
             type="password"
@@ -1337,7 +1497,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-base font-semibold">Confirmar Nova Senha</h2>
+            <h2 className="text-sm font-semibold">Confirmar Nova Senha</h2>
           </div>
           <input
             type="password"

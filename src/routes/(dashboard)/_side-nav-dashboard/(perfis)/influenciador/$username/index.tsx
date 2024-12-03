@@ -288,7 +288,7 @@ function InfluencerProfilePage() {
           </div>
 
           {/* EDIT BUTTON */}
-          {userLogged?.model.id.includes(influencer.id) && (
+          {userLogged?.model?.id?.includes(influencer.id) && (
             <div className="flex mt-4">
               <button
                 className="text-white font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-lg shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
@@ -380,25 +380,58 @@ function InfluencerProfilePage() {
 
       <div className="px-2 sm-medium:px-4">
         <h4 className="text-lg font-semibold mb-2">Portfólio</h4>
-        {/* PORTFOLIO IMAGES */}
+        {/* PORTFOLIO MEDIA */}
         {influencer.previous_work_imgs &&
         influencer.previous_work_imgs.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-            {influencer.previous_work_imgs.map((img, index) => (
-              <img
-                key={index}
-                src={pb.getFileUrl(influencer, img)}
-                alt={`Portfolio ${index}`}
-                className="w-full h-[500px] rounded-md object-cover"
-              />
-            ))}
+            {influencer.previous_work_imgs.map((media, index) => {
+              const fileExtension = (media ?? "")
+                .split(".")
+                .pop()
+                ?.toLowerCase();
+              const imageExtensions = [
+                "jpg",
+                "jpeg",
+                "png",
+                "gif",
+                "bmp",
+                "webp",
+              ];
+              const videoExtensions = ["mp4", "webm", "ogg"];
+
+              const mediaUrl = pb.getFileUrl(influencer, media);
+
+              if (fileExtension && imageExtensions.includes(fileExtension)) {
+                return (
+                  <img
+                    key={index}
+                    src={mediaUrl}
+                    alt={`Portfolio ${index}`}
+                    className="w-full h-[500px] rounded-md object-cover"
+                  />
+                );
+              } else if (
+                fileExtension &&
+                videoExtensions.includes(fileExtension)
+              ) {
+                return (
+                  <video
+                    key={index}
+                    src={mediaUrl}
+                    controls
+                    className="w-full h-[500px] rounded-md object-cover"
+                  />
+                );
+              } else {
+                return null;
+              }
+            })}
           </div>
         ) : (
           <p className="text-gray-500">
             Este usuário ainda não adicionou nenhum trabalho ao portfólio.
           </p>
-        )}{" "}
-        {/* No fallback message */}
+        )}
       </div>
 
       <div className="mt-12" />

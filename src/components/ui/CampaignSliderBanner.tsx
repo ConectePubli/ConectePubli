@@ -96,10 +96,14 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
               /pessoa
             </p>
 
-            <p className="font-semibold flex flex-row items-center">
-              <User className="mr-2" size={16} />
-              {campaign.vagasRestantes} vagas abertas
-            </p>
+            {JSON.parse(
+              localStorage.getItem("pocketbase_auth") as string
+            ).model?.id?.includes(campaign.expand?.brand?.id) && (
+              <p className="font-semibold flex flex-row items-center">
+                <User className="mr-2" size={16} />
+                {campaign.vagasRestantes} vagas abertas
+              </p>
+            )}
           </div>
         </div>
       </div>

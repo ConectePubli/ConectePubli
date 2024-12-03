@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { createFileRoute, useNavigate, useMatch } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useMatch,
+  redirect,
+} from "@tanstack/react-router";
 import React, { useState, useEffect, useRef } from "react";
 import { CaretDown, CaretUp, Image, Plus, User, X } from "phosphor-react";
 import pb from "@/lib/pb";
@@ -12,12 +17,31 @@ import { Niche } from "@/types/Niche";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { getUserType } from "@/lib/auth";
+import { CheckCircle, Circle, Eye, EyeClosed, Settings } from "lucide-react";
+import { ClientResponseError } from "pocketbase";
+
+import FacebookIcon from "@/assets/icons/brands/facebook.svg";
+import InstagramIcon from "@/assets/icons/brands/instagram.svg";
+import KwaiIcon from "@/assets/icons/brands/kwai.svg";
+import LinkedInIcon from "@/assets/icons/brands/linkedin.svg";
+import PinterestIcon from "@/assets/icons/brands/pinterest.svg";
+import TiktokIcon from "@/assets/icons/brands/tiktok.svg";
+import TwitchIcon from "@/assets/icons/brands/twitch.svg";
+import TwitterIcon from "@/assets/icons/brands/twitter.svg";
+import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
+import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
+
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/editar/"
 )({
   component: InfluencerEditProfilePage,
-  beforeLoad: () => {
-    // evitar que entre se tiver participante na campanha
+  beforeLoad: async () => {
+    if (!(await getUserType())) {
+      throw redirect({
+        to: "/login123new",
+      });
+    }
   },
 });
 
@@ -33,6 +57,33 @@ function InfluencerEditProfilePage() {
   const [influencer, setInfluencer] = useState<Influencer | null>(null);
   const [formData, setFormData] = useState<Influencer>();
   const [loading, setLoading] = useState(true);
+
+  const requiredFields: { [key: string]: string[] } = {
+    basicData: ["background_img", "bio"],
+    about: [
+      "name",
+      "birth_date",
+      "email",
+      "cell_phone",
+      "account_type",
+      "gender",
+    ],
+    address: [
+      "country",
+      "cep",
+      "street",
+      "neighborhood",
+      "city",
+      "state",
+      "address_num",
+    ],
+    socialMedia: ["At least one social media field"],
+    bankAccount: ["pix_key"],
+    mediaKit: ["media_kit_url"],
+    skills: ["languages"],
+    accountInfo: [],
+    portfolio: [],
+  };
 
   // State to manage isFormChanged and loading per section
   const [isFormChangedStates, setIsFormChangedStates] = useState<any>({
@@ -60,6 +111,94 @@ function InfluencerEditProfilePage() {
   });
 
   const [addressFieldsDisabled, setAddressFieldsDisabled] = useState(true);
+
+  // check sections
+  const [sectionCompletion, setSectionCompletion] = useState({
+    basicData: false,
+    about: false,
+    address: false,
+    socialMedia: false,
+    mediaKit: false,
+    bankAccount: false,
+    portfolio: false,
+    skills: false,
+    accountInfo: false,
+  });
+
+  function isFieldEmpty(value: any): boolean {
+    if (value === undefined || value === null) {
+      return true;
+    }
+    if (typeof value === "string") {
+      return value.trim() === "";
+    }
+    if (typeof value === "number") {
+      return value === 0 || isNaN(value);
+    }
+    if (typeof value === "boolean") {
+      return false;
+    }
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+    if (value instanceof Date) {
+      return isNaN(value.getTime());
+    }
+    return false;
+  }
+
+  const checkSectionCompletion = (section: string) => {
+    const missingFields: string[] = [];
+
+    if (formData) {
+      if (section !== "portfolio") {
+        if (section === "socialMedia") {
+          const socialFields = [
+            "instagram_url",
+            "tiktok_url",
+            "facebook_url",
+            "youtube_url",
+            "pinterest_url",
+            "twitter_url",
+            "twitch_url",
+            "linkedin_url",
+            "kwai_url",
+            "yourclub_url",
+          ];
+          const hasAtLeastOne = socialFields.some((field) => {
+            const value = formData[field as keyof Influencer];
+            return !isFieldEmpty(value);
+          });
+          if (!hasAtLeastOne) {
+            missingFields.push(
+              "Pelo menos uma rede social deve ser preenchida."
+            );
+          }
+        } else {
+          const fields = requiredFields[section] || [];
+          fields.forEach((field) => {
+            const value = formData[field as keyof Influencer];
+            if (isFieldEmpty(value)) {
+              missingFields.push(field);
+            }
+          });
+        }
+      }
+    }
+
+    return missingFields.length === 0;
+  };
+
+  useEffect(() => {
+    if (formData) {
+      const sections = Object.keys(requiredFields);
+      const newSectionCompletion: any = {};
+      sections.forEach((section) => {
+        newSectionCompletion[section] = checkSectionCompletion(section);
+      });
+      setSectionCompletion(newSectionCompletion);
+    }
+  }, [formData]);
 
   useEffect(() => {
     const fetchUserAndInfluencer = async () => {
@@ -98,6 +237,19 @@ function InfluencerEditProfilePage() {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast.error(
+          "Erro ao buscar dados do influenciador. Por favor, tente novamente.",
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+
         navigate({ to: `/influenciador/${username}` });
       }
     };
@@ -129,34 +281,6 @@ function InfluencerEditProfilePage() {
     e.preventDefault();
 
     console.log("submit");
-
-    // Define campos obrigatórios por seção
-    const requiredFields: { [key: string]: string[] } = {
-      basicData: ["background_img", "bio"],
-      about: [
-        "name",
-        "birth_date",
-        "email",
-        "cell_phone",
-        "account_type",
-        "gender",
-      ],
-      address: [
-        "country",
-        "cep",
-        "street",
-        "neighborhood",
-        "city",
-        "state",
-        "address_num",
-      ],
-      socialMedia: ["At least one social media field"],
-      bankAccount: ["pix_key"],
-      mediaKit: ["media_kit_url"],
-      skills: ["languages"],
-      accountInfo: [],
-      portfolio: [],
-    };
 
     // Função para validar campos
     const validateFields = () => {
@@ -202,6 +326,7 @@ function InfluencerEditProfilePage() {
                   background_img: "Foto de fundo",
                   bio: "Bio",
                   name: "Nome Completo",
+                  username: "Username",
                   birth_date: "Data de Nascimento",
                   email: "Email",
                   cell_phone: "Telefone Celular",
@@ -277,6 +402,7 @@ function InfluencerEditProfilePage() {
           }
         } else if (section === "about") {
           updateData["name"] = formData.name;
+          updateData["username"] = formData.username;
           updateData["birth_date"] = formData.birth_date;
           updateData["email"] = formData.email;
           updateData["cell_phone"] = formData.cell_phone;
@@ -346,6 +472,29 @@ function InfluencerEditProfilePage() {
         setIsFormChangedStates((prev: any) => ({ ...prev, [section]: false }));
       } catch (error) {
         console.error("Error updating data:", error);
+
+        const err = error as ClientResponseError;
+
+        let errorMessage =
+          "Erro ao salvar as alterações. Por favor, tente novamente.";
+
+        if (err && err.data && err.data.data && err.data.data.username) {
+          const usernameError = err.data.data.username;
+
+          if (usernameError.code === "validation_invalid_username") {
+            errorMessage = "O nome de usuário é inválido ou já está em uso.";
+          }
+        }
+
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       } finally {
         setLoadingStates((prev: any) => ({ ...prev, [section]: false }));
       }
@@ -373,6 +522,18 @@ function InfluencerEditProfilePage() {
         }
       } catch (error) {
         console.error("Error fetching CEP data:", error);
+        toast.error(
+          "CEP não encontrado. Por favor, verifique o CEP informado.",
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
         setAddressFieldsDisabled(false);
       }
     } else {
@@ -391,7 +552,11 @@ function InfluencerEditProfilePage() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <Section title="Dados básicos" initiallyOpen>
+      <Section
+        title="Dados básicos"
+        initiallyOpen
+        completed={sectionCompletion.basicData}
+      >
         <BasicDataSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -403,7 +568,7 @@ function InfluencerEditProfilePage() {
           setFormData={setFormData}
         />
       </Section>
-      <Section title="Sobre você">
+      <Section title="Sobre você" completed={sectionCompletion.about}>
         <AboutSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -415,7 +580,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
 
-      <Section title="Endereço">
+      <Section title="Endereço" completed={sectionCompletion.address}>
         <AddressSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -428,7 +593,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Redes sociais">
+      <Section title="Redes sociais" completed={sectionCompletion.socialMedia}>
         <SocialMediaSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -439,7 +604,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Mídia kit">
+      <Section title="Mídia kit" completed={sectionCompletion.mediaKit}>
         <MediaKitSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -450,7 +615,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Conta bancária">
+      <Section title="Conta bancária" completed={sectionCompletion.bankAccount}>
         <BankAccountSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -461,7 +626,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Portfólio">
+      <Section title="Portfólio" completed={sectionCompletion.portfolio}>
         <PortfolioSection
           formData={formData}
           setFormData={setFormData}
@@ -472,7 +637,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Habilidades">
+      <Section title="Habilidades" completed={sectionCompletion.skills}>
         <SkillsSection
           formData={formData}
           setFormData={setFormData}
@@ -483,7 +648,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Informações da Conta">
+      <Section title="Informações da Conta" isConfig={true}>
         <AccountInfoSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -504,9 +669,17 @@ interface SectionProps {
   title: string;
   children: React.ReactNode;
   initiallyOpen?: boolean;
+  completed?: boolean;
+  isConfig?: boolean;
 }
 
-function Section({ title, children, initiallyOpen = false }: SectionProps) {
+function Section({
+  title,
+  children,
+  initiallyOpen = false,
+  completed,
+  isConfig,
+}: SectionProps) {
   const [isOpen, setIsOpen] = useState(initiallyOpen);
 
   return (
@@ -515,7 +688,28 @@ function Section({ title, children, initiallyOpen = false }: SectionProps) {
         className="flex justify-between items-center cursor-pointer bg-gray-100 px-5 py-3"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h2 className="text-lg font-bold">{title}</h2>
+        <h2 className="text-lg font-bold flex items-center space-x-2 sm:space-x-4">
+          {" "}
+          {completed !== undefined && (
+            <div className="ml-2">
+              {completed ? (
+                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
+              ) : (
+                <Circle className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
+              )}
+            </div>
+          )}
+          {isConfig !== undefined && (
+            <div className="ml-2">
+              {isConfig && (
+                <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
+              )}
+            </div>
+          )}
+          <span className="text-base sm:text-lg font-medium truncate">
+            {title}
+          </span>
+        </h2>
 
         {isOpen ? (
           <CaretUp size={22} color="#333" />
@@ -806,6 +1000,20 @@ function AboutSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
+          Username*
+        </label>
+        <input
+          type="text"
+          name="username"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder="Username"
+          value={formData.username || ""}
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           Data de Nascimento*
         </label>
         <input
@@ -1069,141 +1277,252 @@ function SocialMediaSection({
         opcionais, mas é necessário que ao menos um campo esteja preenchido.
       </p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Instagram */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Instagram
           </label>
-          <input
-            type="url"
-            name="instagram_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.instagram_url || ""}
-            onChange={handleSectionInputChange}
-          />
+          <div className="relative">
+            <input
+              type="url"
+              name="instagram_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.instagram_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={InstagramIcon}
+                alt="Instagram"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
         </div>
+
+        {/* YouTube */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Youtube
+            YouTube
           </label>
-          <input
-            type="url"
-            name="youtube_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.youtube_url || ""}
-            onChange={handleSectionInputChange}
-          />
+          <div className="relative">
+            <input
+              type="url"
+              name="youtube_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.youtube_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={YouTubeIcon}
+                alt="YouTube"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            TikTok
-          </label>
-          <input
-            type="url"
-            name="tiktok_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.tiktok_url || ""}
-            onChange={handleSectionInputChange}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Pinterest
-          </label>
-          <input
-            type="url"
-            name="pinterest_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.pinterest_url || ""}
-            onChange={handleSectionInputChange}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Kwai
-          </label>
-          <input
-            type="url"
-            name="kwai_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.kwai_url || ""}
-            onChange={handleSectionInputChange}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            YourClub
-          </label>
-          <input
-            type="url"
-            name="yourclub_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.yourclub_url || ""}
-            onChange={handleSectionInputChange}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Facebook
-          </label>
-          <input
-            type="url"
-            name="facebook_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.facebook_url || ""}
-            onChange={handleSectionInputChange}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Twitter [X]
-          </label>
-          <input
-            type="url"
-            name="twitter_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.twitter_url || ""}
-            onChange={handleSectionInputChange}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Twitch
-          </label>
-          <input
-            type="url"
-            name="twitch_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.twitch_url || ""}
-            onChange={handleSectionInputChange}
-          />
-        </div>
+
+        {/* LinkedIn */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             LinkedIn
           </label>
-          <input
-            type="url"
-            name="linkedin_url"
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Insira o URL do seu perfil"
-            value={formData.linkedin_url || ""}
-            onChange={handleSectionInputChange}
-          />
+          <div className="relative">
+            <input
+              type="url"
+              name="linkedin_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.linkedin_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={LinkedInIcon}
+                alt="LinkedIn"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* YourClub */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            YourClub
+          </label>
+          <div className="relative">
+            <input
+              type="url"
+              name="yourclub_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.yourclub_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={YourClubIcon}
+                alt="YourClub"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Kwai */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Kwai
+          </label>
+          <div className="relative">
+            <input
+              type="url"
+              name="kwai_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.kwai_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={KwaiIcon}
+                alt="Kwai"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* TikTok */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            TikTok
+          </label>
+          <div className="relative">
+            <input
+              type="url"
+              name="tiktok_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.tiktok_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={TiktokIcon}
+                alt="TikTok"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Facebook */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Facebook
+          </label>
+          <div className="relative">
+            <input
+              type="url"
+              name="facebook_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.facebook_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={FacebookIcon}
+                alt="Facebook"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Twitter [X] */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Twitter [X]
+          </label>
+          <div className="relative">
+            <input
+              type="url"
+              name="twitter_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.twitter_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={TwitterIcon}
+                alt="Twitter"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Twitch */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Twitch
+          </label>
+          <div className="relative">
+            <input
+              type="url"
+              name="twitch_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.twitch_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={TwitchIcon}
+                alt="Twitch"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Pinterest */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Pinterest
+          </label>
+          <div className="relative">
+            <input
+              type="url"
+              name="pinterest_url"
+              className="border border-gray-300 p-2 rounded-lg w-full pl-10"
+              placeholder="Insira o URL do seu perfil"
+              value={formData.pinterest_url || ""}
+              onChange={handleSectionInputChange}
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <img
+                src={PinterestIcon}
+                alt="Pinterest"
+                className="h-5 w-5 text-gray-400"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <button
         className={`${
-          isFormChanged ? "bg-blue-600" : "bg-gray-400"
-        } text-white py-2 px-4 rounded-lg`}
+          isFormChanged
+            ? "bg-blue-600 hover:bg-blue-700"
+            : "bg-gray-400 cursor-not-allowed"
+        } text-white py-2 px-4 rounded-lg mt-4`}
         onClick={(e) => handleSubmit(e, "socialMedia")}
         disabled={!isFormChanged || loading}
       >
@@ -1369,28 +1688,56 @@ function PreviousWorksSection({
     <div>
       <h3 className="text-lg font-semibold mb-2">Trabalhos anteriores</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {workImages.map((image: any, index: number) => (
-          <div key={index} className="relative">
-            <img
-              src={
-                image instanceof File
-                  ? URL.createObjectURL(image)
-                  : pb.getFileUrl(formData, image)
-              }
-              alt="Work"
-              className="w-full h-32 object-cover rounded-lg"
-            />
-            <button
-              onClick={() => removeWorkImage(index)}
-              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        ))}
+        {workImages.map((file: any, index: number) => {
+          let fileType = "";
+
+          if (file instanceof File) {
+            fileType = file.type;
+          } else if (typeof file === "string") {
+            const extension = (file ?? "").split(".").pop()?.toLowerCase();
+            if (extension && ["mp4", "webm", "ogg"].includes(extension)) {
+              fileType = "video";
+            } else {
+              fileType = "image";
+            }
+          }
+
+          return (
+            <div key={index} className="relative">
+              {fileType.startsWith("image") || fileType === "image" ? (
+                <img
+                  src={
+                    file instanceof File
+                      ? URL.createObjectURL(file)
+                      : pb.getFileUrl(formData, file)
+                  }
+                  alt="Work"
+                  className="w-full h-32 object-cover rounded-lg"
+                />
+              ) : fileType.startsWith("video") || fileType === "video" ? (
+                <video
+                  src={
+                    file instanceof File
+                      ? URL.createObjectURL(file)
+                      : pb.getFileUrl(formData, file)
+                  }
+                  className="w-full h-32 object-cover rounded-lg"
+                  controls
+                />
+              ) : null}
+              <button
+                onClick={() => removeWorkImage(index)}
+                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          );
+        })}
+
         <input
           type="file"
-          accept="image/*"
+          accept="image/*,video/*"
           id="workImageUpload"
           className="hidden"
           onChange={addWorkImage}
@@ -1523,91 +1870,179 @@ function SkillsSection({
 
 function AccountInfoSection({
   formData,
-  setIsFormChangedStates,
-  loading,
   setLoadingStates,
+  loading,
 }: FormProps) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handlePasswordSubmit = async (
-    e: React.FormEvent<HTMLButtonElement>
-  ) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert("As senhas não coincidem!");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Inside AccountInfoSection component
+  const handlePasswordSubmit = async () => {
+    // Validate fields
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.warning("Por favor, preencha todos os campos de senha.");
       return;
     }
+
+    if (newPassword !== confirmPassword) {
+      toast.warning("A nova senha e a confirmação não coincidem.");
+      return;
+    }
+
+    // (Optional) Add password complexity validations
+    if (newPassword.length < 8) {
+      toast.info("A nova senha deve ter pelo menos 8 caracteres.");
+      return;
+    }
+
     try {
+      setLoadingStates((prev: any) => ({ ...prev, accountInfo: true }));
       await pb.collection("Influencers").update(formData.id, {
+        oldPassword: currentPassword,
         password: newPassword,
+        passwordConfirm: confirmPassword,
       });
-      alert("Senha atualizada com sucesso!");
+      toast.success(
+        <div className="flex items-center gap-2">
+          <span className="font-semibold">
+            Senha atualizada com sucesso! Faça o login novamente.
+          </span>
+        </div>,
+        {
+          autoClose: 2500,
+          position: "top-right",
+        }
+      );
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setIsFormChangedStates((prev: any) => ({
-        ...prev,
-        accountInfo: false,
-      }));
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
     } catch (error) {
-      console.error("Error updating password:", error);
+      const err = error as ClientResponseError;
+      console.error("Erro ao atualizar a senha:", error);
+
+      // Check if the error is due to incorrect current password
+      if (err.data && err.data.data && err.data.data.oldPassword) {
+        if (
+          err.data.data.oldPassword.code === "validation_invalid_old_password"
+        ) {
+          toast.error(
+            <div className="flex flex-col items-start gap-2">
+              <span className="font-semibold">Senha atual incorreta.</span>
+              <p className="text-sm">Por favor, verifique e tente novamente.</p>
+            </div>,
+            {
+              style: {
+                color: "#EF4444",
+                background: "#FFEBEB",
+              },
+              autoClose: 5000,
+              position: "top-right",
+            }
+          );
+        }
+      } else {
+        toast.error("Erro ao atualizar a senha. Por favor, tente novamente.", {
+          position: "top-center",
+          autoClose: 5000,
+        });
+      }
     } finally {
       setLoadingStates((prev: any) => ({ ...prev, accountInfo: false }));
     }
   };
 
-  const isFormChangedLocal =
-    currentPassword !== "" || newPassword !== "" || confirmPassword !== "";
-
   return (
     <div>
-      <div>
+      <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Senha Atual
         </label>
-        <input
-          type="password"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Digite sua senha atual"
-        />
+        <div className="relative flex items-center">
+          <input
+            type={showCurrentPassword ? "text" : "password"}
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
+            placeholder="Digite sua senha atual"
+          />
+          <button
+            type="button"
+            onClick={() => setShowCurrentPassword((prev) => !prev)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+            tabIndex={-1}
+          >
+            {showCurrentPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
       </div>
 
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Nova Senha
         </label>
-        <input
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Digite sua nova senha"
-        />
+
+        <div className="relative flex items-center">
+          <input
+            type={showNewPassword ? "text" : "password"}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
+            placeholder="Digite sua nova senha"
+          />
+          <button
+            type="button"
+            onClick={() => setShowNewPassword((prev) => !prev)}
+            className="absolute inset-y-0 top-50 right-0 pr-3 flex items-center text-gray-500"
+            tabIndex={-1}
+          >
+            {showNewPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
       </div>
 
-      <div className="mt-4">
+      <div className="relative mt-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Confirmar Nova Senha
         </label>
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Confirme sua nova senha"
-        />
+
+        <div className="relative flex items-center">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
+            placeholder="Confirme sua nova senha"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword((prev) => !prev)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+            tabIndex={-1}
+          >
+            {showConfirmPassword ? <EyeClosed size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
       </div>
 
       <button
+        type="button"
         className={`${
-          isFormChangedLocal ? "bg-blue-600" : "bg-gray-400"
+          currentPassword && newPassword && confirmPassword
+            ? "bg-blue-600 hover:bg-blue-700"
+            : "bg-gray-400 cursor-not-allowed"
         } text-white py-2 px-4 rounded-lg mt-4`}
         onClick={handlePasswordSubmit}
-        disabled={!isFormChangedLocal || loading}
+        disabled={
+          !currentPassword || !newPassword || !confirmPassword || loading
+        }
       >
         {loading ? "Salvando..." : "Salvar Alterações"}
       </button>
