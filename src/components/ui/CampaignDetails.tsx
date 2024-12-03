@@ -87,10 +87,14 @@ const CampaignDetails: React.FC = () => {
         )}
 
         {/* Vagas Restantes */}
-        <p className="flex flex-row items-center font-semibold text-black">
-          <img src={UserIcon} alt="User" className="w-4 h-4 mr-2" />
-          Vagas: {campaign.vagasRestantes}
-        </p>
+        {JSON.parse(
+          localStorage.getItem("pocketbase_auth") as string
+        )?.model?.id?.includes(campaign.expand?.brand?.id) && (
+          <p className="flex flex-row items-center font-semibold text-black">
+            <img src={UserIcon} alt="User" className="w-4 h-4 mr-2" />
+            Vagas: {campaign.vagasRestantes}
+          </p>
+        )}
 
         {/* Botão de Inscrição ou Mensagem de Vagas Esgotadas */}
         <CampaignSubscribeButton />

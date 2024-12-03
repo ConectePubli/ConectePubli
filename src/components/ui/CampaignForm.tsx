@@ -921,8 +921,8 @@ function BasicInfoSection({
                     className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
                     style={{
                       top: "100%",
-                      left: "50%",
-                      transform: "translateX(-50%)",
+                      left: "-100%",
+                      transform: "translateX(-80%)",
                       width: "300px",
                       marginTop: "0.5rem",
                     }}
@@ -2654,13 +2654,15 @@ function CampaignBudgetSection({
         .
       </div>
 
-      <p className="px-5 mt-2 text-gray-700">
-        Observação importante: Este valor será pago antes da confirmação final
-        da campanha, garantindo que os fundos estejam reservados. Nota: Caso
-        algum influenciador não cumpra os requisitos, ou ocorra algum problema
-        comprovado, você poderá receber 100% do reembolso do valor pago a esse
-        influenciador.
-      </p>
+      {!isEditMode && (
+        <p className="px-5 mt-2 text-gray-700">
+          Observação importante: Este valor será pago antes da confirmação final
+          da campanha, garantindo que os fundos estejam reservados. Nota: Caso
+          algum influenciador não cumpra os requisitos, ou ocorra algum problema
+          comprovado, você poderá receber 100% do reembolso do valor pago a esse
+          influenciador.
+        </p>
+      )}
     </div>
   );
 }

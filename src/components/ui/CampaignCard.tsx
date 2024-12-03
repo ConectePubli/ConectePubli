@@ -115,12 +115,15 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
               /pessoa
             </div>
 
-            {!fromMyCampaigns && (
-              <div className="flex items-center gap-2 text-gray-500">
-                <User className="w-5 h-5" />
-                {campaign.open_jobs ?? 0} vagas abertas
-              </div>
-            )}
+            {!fromMyCampaigns &&
+              JSON.parse(
+                localStorage.getItem("pocketbase_auth") as string
+              )?.model?.id?.includes(campaign.expand?.brand?.id) && (
+                <div className="flex items-center gap-2 text-gray-500">
+                  <User className="w-5 h-5" />
+                  {campaign.open_jobs ?? 0} vagas abertas
+                </div>
+              )}
           </div>
 
           {participationStatus && (

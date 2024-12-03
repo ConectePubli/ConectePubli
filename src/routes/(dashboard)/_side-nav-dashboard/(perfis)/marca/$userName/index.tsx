@@ -49,7 +49,7 @@ export const Route = createFileRoute(
       const campaignsData =
         (await pb.collection<Campaign>("campaigns").getFullList({
           filter: `brand="${brandData.id}"`,
-          expand: "niche",
+          expand: "niche, brand",
         })) || [];
 
       const campaignsParticipationsData =
