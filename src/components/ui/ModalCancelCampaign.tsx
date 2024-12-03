@@ -144,8 +144,8 @@ const ModalCancelCampaign: React.FC<Props> = ({
             </button>
             <button
               onClick={handleCancelCampaign}
-              className={`bg-[#942A2A] text-white px-4 py-2 rounded hover:bg-red-700 transition hover:cursor-pointer ${
-                loadingCancel && "opacity-75 cursor-not-allowed"
+              className={`bg-[#942A2A] text-white px-4 py-2 rounded hover:bg-red-700 transition hover:cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed ${
+                loadingCancel && "opacity-30 cursor-not-allowed"
               }`}
               disabled={loadingCancel || !reason.trim()}
             >

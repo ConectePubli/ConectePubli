@@ -378,6 +378,7 @@ function Page() {
               Não há influenciadores inscritos nessa campanha no momento.
             </p>
             <Button
+              variant={"blue"}
               onClick={() =>
                 navigate({
                   to: `/dashboard/campanhas/${campaignData.id}/editar`,
@@ -530,7 +531,8 @@ function Page() {
                       </Button>
 
                       {status === "waiting" &&
-                        campaignData.status !== "ended" && (
+                        campaignData.status !== "ended" &&
+                        openJobs >= 1 && (
                           <Button
                             variant={"blue"}
                             className="px-4 py-2 text-base flex items-center"
