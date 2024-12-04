@@ -155,22 +155,37 @@ function Page() {
     }
   };
 
-  function updateParticipationStatus(
+  async function updateParticipationStatus(
     participationId: string,
     newStatus: string
   ) {
-    setCampaignParticipations((prevParticipations) =>
-      prevParticipations.map((participation) => {
-        if (participation.id === participationId) {
-          return {
-            ...participation,
-            status: newStatus,
-          } as CampaignParticipation;
-        }
-        return participation;
-      })
-    );
+    try {
+      await pb.collection("Campaigns_Participations").update(participationId, {
+        status: newStatus,
+      });
+
+      setCampaignParticipations((prevParticipations) =>
+        prevParticipations.map((participation) => {
+          if (participation.id === participationId) {
+            return {
+              ...participation,
+              status: newStatus,
+            } as CampaignParticipation;
+          }
+          return participation;
+        })
+      );
+    } catch (error) {
+      console.error("Erro ao atualizar o status:", error);
+      toast("Não foi possível atualizar o status", {
+        type: "error",
+      });
+    }
   }
+
+  useEffect(() => {
+    setCampaignParticipations(loaderData.campaignParticipations);
+  }, [loaderData.campaignParticipations]);
 
   useEffect(() => {
     const fetchNiches = async () => {
@@ -285,7 +300,7 @@ function Page() {
         {campaignData.status === "ended" && (
           <p className="flex items-center text-red-500 mt-3">
             <Info size={18} color="#e61919" className="mr-1" /> Essa campanha
-            terminou, então você pode apenas visualizar ela
+            terminou, então você pode apenas
           </p>
         )}
 
@@ -295,7 +310,7 @@ function Page() {
             <span className="text-gray-900">{openJobs} vagas abertas</span>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-            {campaignData.status !== "ended" && (
+            {/* {campaignData.status !== "ended" && (
               <Button
                 variant="brown"
                 className="bg-transparent text-[#942A2A] border-2 border-[#942A2A] hover:text-white"
@@ -303,7 +318,7 @@ function Page() {
               >
                 Cancelar Campanha
               </Button>
-            )}
+            )} */}
             <Button
               variant={"blue"}
               onClick={() =>

@@ -183,6 +183,10 @@ function InfluencerEditProfilePage() {
             }
           });
         }
+      } else {
+        if (formData["previous_work_imgs"].length === 0) {
+          return false;
+        }
       }
     }
 

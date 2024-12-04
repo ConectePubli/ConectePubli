@@ -52,7 +52,7 @@ function Page() {
     channelFilter,
     nicheFilter,
     page,
-  ]);  
+  ]);
 
   return (
     <div className="mx-auto py-6 px-4">
@@ -93,14 +93,16 @@ function Page() {
             </div>
           ) : (
             <div className="space-y-4">
-              {campaigns.map((campaign) => (
-                <CampaignCard
-                  key={campaign.id}
-                  campaign={campaign}
-                  participationStatus={ParticipationStatusFilter.All}
-                  fromMyCampaigns={false}
-                />
-              ))}
+              {campaigns.map((campaign) => {
+                return (
+                  <CampaignCard
+                    key={campaign.id}
+                    campaign={campaign}
+                    participationStatus={ParticipationStatusFilter.All}
+                    fromMyCampaigns={false}
+                  />
+                );
+              })}
             </div>
           )}
         </>
