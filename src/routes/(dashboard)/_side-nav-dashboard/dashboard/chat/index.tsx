@@ -277,8 +277,8 @@ function ChatPage() {
                         <AvatarImage
                           src={
                             userType === "Brands"
-                              ? chat.expand?.influencer?.profile_img
-                              : chat.expand?.brand?.profile_img
+                              ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${chat.expand?.influencer?.collectionName}/${chat.expand?.influencer?.id}/${chat.expand?.influencer?.profile_img}`
+                              : `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${chat.expand?.brand?.collectionName}/${chat.expand?.brand?.id}/${chat.expand?.brand?.profile_img}`
                           }
                         />
                         <AvatarFallback>
@@ -332,8 +332,8 @@ function ChatPage() {
                     <AvatarImage
                       src={
                         userType === "Brands"
-                          ? selectedChat.expand?.influencer?.profile_img
-                          : selectedChat.expand?.brand?.profile_img
+                          ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${selectedChat.expand?.influencer?.collectionName}/${selectedChat.expand?.influencer?.id}/${selectedChat.expand?.influencer?.profile_img}`
+                          : `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${selectedChat.expand?.brand?.collectionName}/${selectedChat.expand?.brand?.id}/${selectedChat.expand?.brand?.profile_img}`
                       }
                     />
                     <AvatarFallback>
@@ -408,12 +408,12 @@ function ChatPage() {
                     onChange={(e) => setNewMessage(e.target.value)}
                     className="flex-1"
                     type="text"
-                    disabled={sendingMessage} // Desabilita o input durante o envio
+                    disabled={sendingMessage}
                   />
                   <Button
                     onClick={handleSendMessage}
                     className="bg-[#10438F] hover:bg-[#10438F]/90 text-white flex items-center justify-center font-semibold"
-                    disabled={sendingMessage} // Desabilita o botão durante o envio
+                    disabled={sendingMessage}
                   >
                     {sendingMessage ? (
                       <Loader2 className="animate-spin h-5 w-5" />
