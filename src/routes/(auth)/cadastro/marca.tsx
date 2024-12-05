@@ -287,12 +287,12 @@ function Page() {
                 .
               </p>
               <p className="text-sm mt-1">
-                É influenciador? Acesse o{" "}
+                É creator? Acesse o{" "}
                 <a
                   className="text-customLinkBlue underline cursor-pointer"
                   onClick={() => navigate({ to: "/cadastro/influenciador" })}
                 >
-                  formulário de influenciadores
+                  formulário de creators
                 </a>{" "}
                 aqui.
               </p>

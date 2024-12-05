@@ -390,7 +390,7 @@ function Page() {
         {campaignParticipations.length === 0 ? (
           <div className="mt-10 w-full flex flex-col items-center justify-center">
             <p className="mb-4">
-              Não há influenciadores inscritos nessa campanha no momento.
+              Não há creators inscritos nessa campanha no momento.
             </p>
             <Button
               variant={"blue"}

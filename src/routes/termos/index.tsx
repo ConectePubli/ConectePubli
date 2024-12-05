@@ -237,7 +237,7 @@ function TermosDeUso() {
           experiência de todos os usuários são motivos ensejadores de banimento.
         </li>
         <li>
-          Quebra de Contrato entre Creator e Marca: Quando o influenciador
+          Quebra de Contrato entre Creator e Marca: Quando o creator
           desrespeitar os termos do contrato estabelecido entre ele e a marca,
           desconsiderando as condições acordadas e prejudicando a parceria será
           banido.
@@ -302,8 +302,8 @@ function TermosDeUso() {
       </p>
       <p className="mb-4">
         (b) Terceiros: A plataforma não se responsabiliza por quaisquer ações,
-        omissões ou condutas de marcas, influenciadores ou terceiros
-        relacionados às transações realizadas na plataforma.
+        omissões ou condutas de marcas, creators ou terceiros relacionados às
+        transações realizadas na plataforma.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Rescisão</h2>

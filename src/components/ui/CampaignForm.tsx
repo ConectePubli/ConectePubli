@@ -2130,7 +2130,7 @@ function AudienceSegmentationSection({
             ))}
           </div>
           <p className="text-gray-500 mt-2">
-            Escolha quais localidades os influenciadores devem estar.
+            Escolha quais localidades os creators devem estar.
           </p>
         </div>
 
@@ -2552,7 +2552,7 @@ function CampaignBudgetSection({
 
       <div className={`px-5 mb-6 ${isEditMode ? "hidden" : ""}`}>
         <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-          Quantos influenciadores você deseja na campanha?*
+          Quantos creators você deseja na campanha?*
           <div className="relative inline-block">
             <Question
               size={18}
@@ -2658,9 +2658,9 @@ function CampaignBudgetSection({
         <p className="px-5 mt-2 text-gray-700">
           Observação importante: Este valor será pago antes da confirmação final
           da campanha, garantindo que os fundos estejam reservados. Nota: Caso
-          algum influenciador não cumpra os requisitos, ou ocorra algum problema
+          algum creator não cumpra os requisitos, ou ocorra algum problema
           comprovado, você poderá receber 100% do reembolso do valor pago a esse
-          influenciador.
+          creator.
         </p>
       )}
     </div>

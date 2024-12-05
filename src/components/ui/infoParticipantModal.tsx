@@ -101,7 +101,7 @@ const InfoParticipantModal: React.FC<Props> = ({
               )}
             </>
           ) : (
-            "O influenciador não forneceu uma descrição detalhada."
+            "O creator não forneceu uma descrição detalhada."
           )}
         </div>
 

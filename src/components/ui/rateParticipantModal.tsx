@@ -91,7 +91,7 @@ const RateParticipantModal: React.FC<Props> = ({
 
           <div>
             <p className="font-medium">
-              Quão pontual e comprometido foi o influenciador?
+              Quão pontual e comprometido foi o creator?
             </p>
             <div className="flex gap-2 mt-2">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -137,7 +137,7 @@ const RateParticipantModal: React.FC<Props> = ({
 
           <div>
             <label className="block font-medium mb-2" htmlFor="comment">
-              Deixe um comentário sobre este influenciador
+              Deixe um comentário sobre este creator
             </label>
             <textarea
               id="comment"

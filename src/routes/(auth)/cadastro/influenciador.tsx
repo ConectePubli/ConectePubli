@@ -140,7 +140,7 @@ function Page() {
           <h2 className="text-3xl font-bold mb-4">Cadastro para Creators</h2>
           <p className="text-gray-600 mb-6">
             Junte-se à ConectePubli e faça parte de uma rede exclusiva de
-            influenciadores.
+            creators.
           </p>
 
           <form className="space-y-6" onSubmit={handleSubmit}>

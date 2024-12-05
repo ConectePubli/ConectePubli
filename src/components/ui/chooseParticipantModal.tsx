@@ -55,11 +55,11 @@ const ChooseParticipantModal: React.FC<Props> = ({
         </div>
 
         <p className="text-gray-700">
-          Ao escolher este(a) influenciador(a), você está confirmando a
-          participação dele(a) na campanha e autorizando o início das atividades
-          conforme os termos acordados. O(a) influenciador(a) será responsável
-          por executar as tarefas conforme o briefing da campanha e entregar os
-          conteúdos no prazo estabelecido.
+          Ao escolher este(a) creator, você está confirmando a participação
+          dele(a) na campanha e autorizando o início das atividades conforme os
+          termos acordados. O(a) creator será responsável por executar as
+          tarefas conforme o briefing da campanha e entregar os conteúdos no
+          prazo estabelecido.
         </p>
 
         <p className="font-medium">Deseja confirmar a aprovação?</p>
