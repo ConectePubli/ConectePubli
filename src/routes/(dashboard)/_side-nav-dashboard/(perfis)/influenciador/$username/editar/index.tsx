@@ -1101,7 +1101,7 @@ function AboutSection({
           <option value="" disabled>
             Selecione o tipo de conta
           </option>
-          <option value="UGC">UGC (Talentos)</option>
+          <option value="UGC">UGC (Creator)</option>
           <option value="IGC">IGC (Nano, Micro e Macro)</option>
           <option value="UGC + IGC">UGC + IGC</option>
         </select>
