@@ -12,9 +12,9 @@ export const ConnectBrandsSection: React.FC = () => {
           universo digital, transformando campanhas publicitárias em
           experiências desejadas pelo público. Com a Conecte Publi, criamos uma
           sinergia entre a inovação da humanização das marcas e o poder dos
-          influenciadores digitais, alavancando as vendas de produtos e serviços
-          e fortalecendo a presença online, enquanto oferecemos aos criadores de
-          conteúdo oportunidades de monetização e crescimento profissional.
+          creators, alavancando as vendas de produtos e serviços e fortalecendo
+          a presença online, enquanto oferecemos aos criadores de conteúdo
+          oportunidades de monetização e crescimento profissional.
           <br />
           <br />
           Conecte-se!

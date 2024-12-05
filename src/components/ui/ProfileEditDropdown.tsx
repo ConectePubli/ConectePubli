@@ -25,7 +25,7 @@ export default function Component({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className=" px-4">
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="px-4">
       <CollapsibleTrigger asChild>
         <Button
           variant="outline"

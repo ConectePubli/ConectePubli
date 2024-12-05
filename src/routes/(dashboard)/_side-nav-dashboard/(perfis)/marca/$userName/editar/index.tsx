@@ -3,7 +3,6 @@ import { ComboboxCountries } from "@/components/ui/ComboboxCountries";
 import { ComboboxNiches } from "@/components/ui/ComboBoxNiches";
 import { ComboboxStates } from "@/components/ui/ComboboxStates";
 import CustomPhoneInput from "@/components/ui/CustomPhoneInput";
-import DateInput from "@/components/ui/DateInput";
 import ProfileEditDropdown from "@/components/ui/ProfileEditDropdown";
 import { BrazilianStates } from "@/data/Brazillian_States";
 import { countries } from "@/data/Countries";
@@ -13,6 +12,8 @@ import { Brand } from "@/types/Brand";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   Camera,
+  CheckCircle,
+  Circle,
   LoaderIcon,
   MessageCircleWarning,
   Upload,
@@ -116,7 +117,6 @@ function Page() {
   const isAboutYouComplete = !!(
     userData?.name &&
     userData?.username &&
-    userData?.opening_date &&
     userData?.company_register &&
     userData?.email &&
     userData?.cell_phone &&
@@ -132,11 +132,13 @@ function Page() {
     userData?.state
       ? true
       : false;
+
   const isAtLeastOneFilled = useMemo(() => {
     return socialMediaFields.some(
       (field) => userData && userData[field]?.toString().trim() !== ""
     );
   }, [userData]);
+
   const isSocialMediaComplete = isAtLeastOneFilled || false;
   const isBankAccountComplete = userData?.pix_key ? true : false;
 
@@ -339,7 +341,6 @@ function Page() {
       const modifiedFields = getModifiedFields<Brand>(originalData, userData, [
         "name",
         "username",
-        "opening_date",
         "company_register",
         "email",
         "cell_phone",
@@ -671,6 +672,29 @@ function Page() {
     <div className="flex flex-col max-w-[100dvw] mb-12 space-y-4">
       {/* Dados básicos */}
       <div className="mt-1" />
+
+      <p className="text-xs text-gray-500 px-4">
+        * É necessário salvar as alterações de cada seção para que elas sejam
+        aplicadas.
+      </p>
+      {/* 
+      <div className="flex flex-row items-center gap-1 px-4">
+        <CheckCircle className="h-3 w-3 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
+        <p className="text-base font-semibold ">
+          {" "}
+          - Indica que todos os dados obrigatórios foram preenchidos, mas não
+          necessariamente estão salvos.
+        </p>
+      </div>
+
+      <div className="flex flex-row items-center gap-1 px-4">
+        <Circle className="h-3 w-3 sm:h-5 sm:w-5 text-gray-500 flex-shrink-0" />
+        <p className="text-base font-semibold ">
+          {" "}
+          - Indica que algum dado obrigatório ainda não foi preenchido.
+        </p>
+      </div> */}
+
       <ProfileEditDropdown
         sectionName="Dados básicos"
         isComplete={isUserDataComplete}
@@ -725,6 +749,10 @@ function Page() {
               "Salvar Alterações"
             )}
           </button>
+          <p className="text-xs text-gray-500">
+            * É necessário salvar as alterações de cada seção para que elas
+            sejam aplicadas.
+          </p>
         </div>
       </ProfileEditDropdown>
 
@@ -771,7 +799,7 @@ function Page() {
           </div>
 
           {/* Data de Fundação */}
-          <div>
+          {/* <div>
             <div className="flex flex-row items-center">
               <h2 className="text-sm font-semibold">Data de Abertura</h2>
               <p className="text-[#10438F] text-lg">*</p>
@@ -782,7 +810,7 @@ function Page() {
                 setUserData({ ...userData, opening_date: date })
               }
             />
-          </div>
+          </div> */}
 
           {/* Registro da Empresa */}
           <div>
@@ -868,6 +896,10 @@ function Page() {
               <div className="flex items-center justify-center w-full p-3 border rounded-md">
                 <p className="text-gray-500 text-center">
                   Carregando nichos...
+                </p>
+                <p className="text-xs text-gray-500">
+                  * É necessário salvar as alterações de cada seção para que
+                  elas sejam aplicadas.
                 </p>
               </div>
             ) : nichesError ? (
@@ -1464,7 +1496,7 @@ function Page() {
 
       {/* Config conta */}
       <ProfileEditDropdown
-        sectionName="Informações da Conta"
+        sectionName="Configurações da Conta"
         isComplete={false}
         showProgress={false}
         isConfig={true}
@@ -1521,10 +1553,10 @@ function Page() {
           {savingStates.accountInfo ? (
             <span className="flex items-center gap-2">
               <LoaderIcon className="animate-spin h-5 w-5" />
-              Salvando...
+              Alterando...
             </span>
           ) : (
-            "Salvar Alterações"
+            "Alterar Senha"
           )}
         </button>
       </ProfileEditDropdown>

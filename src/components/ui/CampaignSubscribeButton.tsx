@@ -153,6 +153,51 @@ const CampaignSubscribeButton: React.FC = () => {
     }
   };
 
+  const getIncompleteProfileFields = (user: Influencer): string[] => {
+    const missingFields: string[] = [];
+
+    if (!user.name) missingFields.push("Nome");
+    if (!user.username) missingFields.push("Nome de usuário");
+    if (!user.email) missingFields.push("Email");
+    if (!user.bio) missingFields.push("Biografia");
+    if (!user.background_img) missingFields.push("Imagem de fundo");
+    if (!user.birth_date) missingFields.push("Data de nascimento");
+    if (!user.cell_phone) missingFields.push("Celular");
+    if (!user.account_type) missingFields.push("Tipo de conta");
+    if (!user.gender) missingFields.push("Gênero");
+    if (!user.country) missingFields.push("País");
+    if (!user.state) missingFields.push("Estado");
+    if (!user.city) missingFields.push("Cidade");
+    if (!user.neighborhood) missingFields.push("Bairro");
+    if (!user.street) missingFields.push("Rua");
+    if (!user.address_num) missingFields.push("Número");
+    if (!user.cep) missingFields.push("CEP");
+    if (!user.pix_key) missingFields.push("Chave PIX");
+
+    const socialFields = [
+      "instagram_url",
+      "facebook_url",
+      "linkedin_url",
+      "youtube_url",
+      "tiktok_url",
+      "twitter_url",
+      "twitch_url",
+      "yourclub_url",
+      "kwai_url",
+      "pinterest_url",
+    ];
+
+    const hasSocialFieldFilled = socialFields.some((field) =>
+      Boolean(user[field as keyof Influencer])
+    );
+    if (!hasSocialFieldFilled) {
+      missingFields.push("Pelo menos uma rede social");
+    }
+
+    return missingFields;
+  };
+  const missingFields = user ? getIncompleteProfileFields(user) : [];
+
   const handleCancelarInscricao = async (): Promise<void> => {
     if (!user) return;
     setIsLoadingCancel(true);
@@ -215,9 +260,17 @@ const CampaignSubscribeButton: React.FC = () => {
         !isProfileComplete(user) &&
         !isVagasEsgotadas &&
         user?.collectionName === "Influencers" && (
-          <p className="text-[#942A2A] font-semibold">
-            Complete seu perfil para se inscrever
-          </p>
+          <div className="text-[#942A2A] font-semibold mt-2">
+            <p>
+              Para se inscrever, complete seu perfil preenchendo os seguintes
+              campos:
+            </p>
+            <ul className="list-disc list-inside">
+              {missingFields.map((field) => (
+                <li key={field}>{field}</li>
+              ))}
+            </ul>
+          </div>
         )}
       {shouldRenderButton ? (
         <>

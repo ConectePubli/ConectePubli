@@ -60,7 +60,7 @@ function Page() {
             className="w-full whitespace-normal h-fit py-4"
             onClick={() => navigate({ to: "/cadastro/influenciador" })}
           >
-            Quero me Cadastrar como um Influenciador
+            Quero me Cadastrar como um Creator
           </Button>
         </div>
       </div>

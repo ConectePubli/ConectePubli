@@ -78,9 +78,8 @@ const ModalCancelCampaign: React.FC<Props> = ({
           <p className="text-gray-700 text-base mb-4">
             Caso deseje cancelar sua campanha, observe que nossa equipe de
             suporte avaliará a situação para garantir que todos os envolvidos
-            sejam tratados de forma justa. Dependendo do progresso dos
-            influenciadores, a campanha poderá ter custos ou reembolsos
-            parciais.
+            sejam tratados de forma justa. Dependendo do progresso dos creators,
+            a campanha poderá ter custos ou reembolsos parciais.
           </p>
           <h3 className="font-semibold text-lg mb-3">
             Passo a Passo para o Cancelamento:
@@ -90,27 +89,22 @@ const ModalCancelCampaign: React.FC<Props> = ({
               <strong>Entenda as Condições de Cancelamento</strong>
               <ul className="list-disc list-inside ml-4">
                 <li>
-                  <strong>Nenhum Influenciador Selecionado:</strong> Se você não
-                  selecionou nenhum influenciador para trabalhar na campanha,
-                  seu reembolso será de 80% após a verificação da equipe.
+                  <strong>Nenhum Creator Selecionado:</strong> Se você não
+                  selecionou nenhum creator para trabalhar na campanha, seu
+                  reembolso será de 80% após a verificação da equipe.
                 </li>
                 <li>
-                  <strong>
-                    Influenciadores com Status "Trabalho em Progresso":
-                  </strong>{" "}
-                  Caso existam influenciadores em "Trabalho em Progresso",
-                  poderá haver custos proporcionais ao trabalho já realizado.
-                  Nossa equipe determinará um reembolso justo com base no nível
-                  de cumprimento dos requisitos.
+                  <strong>Creators com Status "Trabalho em Progresso":</strong>{" "}
+                  Caso existam creators em "Trabalho em Progresso", poderá haver
+                  custos proporcionais ao trabalho já realizado. Nossa equipe
+                  determinará um reembolso justo com base no nível de
+                  cumprimento dos requisitos.
                 </li>
                 <li>
-                  <strong>
-                    Influenciadores com Status "Trabalho Concluído":
-                  </strong>{" "}
-                  Se algum influenciador foi marcado como "Trabalho Concluído",
-                  o valor referente ao trabalho deste influenciador não será
-                  reembolsado, já que você como a marca aceitou e aprovou a
-                  entrega final.
+                  <strong>Creators com Status "Trabalho Concluído":</strong> Se
+                  algum creator foi marcado como "Trabalho Concluído", o valor
+                  referente ao trabalho deste creator não será reembolsado, já
+                  que você como a marca aceitou e aprovou a entrega final.
                 </li>
               </ul>
             </li>

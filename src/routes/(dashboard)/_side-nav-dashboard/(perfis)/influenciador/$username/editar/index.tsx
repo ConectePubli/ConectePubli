@@ -560,6 +560,7 @@ function InfluencerEditProfilePage() {
         title="Dados básicos"
         initiallyOpen
         completed={sectionCompletion.basicData}
+        hasUnsavedChanges={isFormChangedStates.basicData}
       >
         <BasicDataSection
           formData={formData}
@@ -572,7 +573,11 @@ function InfluencerEditProfilePage() {
           setFormData={setFormData}
         />
       </Section>
-      <Section title="Sobre você" completed={sectionCompletion.about}>
+      <Section
+        title="Sobre você"
+        completed={sectionCompletion.about}
+        hasUnsavedChanges={isFormChangedStates.about}
+      >
         <AboutSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -584,7 +589,11 @@ function InfluencerEditProfilePage() {
         />
       </Section>
 
-      <Section title="Endereço" completed={sectionCompletion.address}>
+      <Section
+        title="Endereço"
+        completed={sectionCompletion.address}
+        hasUnsavedChanges={isFormChangedStates.address}
+      >
         <AddressSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -597,7 +606,11 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Redes sociais" completed={sectionCompletion.socialMedia}>
+      <Section
+        title="Redes sociais"
+        completed={sectionCompletion.socialMedia}
+        hasUnsavedChanges={isFormChangedStates.socialMedia}
+      >
         <SocialMediaSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -608,7 +621,11 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Mídia kit" completed={sectionCompletion.mediaKit}>
+      <Section
+        title="Mídia kit"
+        completed={sectionCompletion.mediaKit}
+        hasUnsavedChanges={isFormChangedStates.mediaKit}
+      >
         <MediaKitSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -619,7 +636,11 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Conta bancária" completed={sectionCompletion.bankAccount}>
+      <Section
+        title="Conta bancária"
+        completed={sectionCompletion.bankAccount}
+        hasUnsavedChanges={isFormChangedStates.bankAccount}
+      >
         <BankAccountSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -630,7 +651,11 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Portfólio" completed={sectionCompletion.portfolio}>
+      <Section
+        title="Portfólio"
+        completed={sectionCompletion.portfolio}
+        hasUnsavedChanges={isFormChangedStates.portfolio}
+      >
         <PortfolioSection
           formData={formData}
           setFormData={setFormData}
@@ -641,7 +666,11 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Habilidades" completed={sectionCompletion.skills}>
+      <Section
+        title="Idiomas"
+        completed={sectionCompletion.skills}
+        hasUnsavedChanges={isFormChangedStates.skills}
+      >
         <SkillsSection
           formData={formData}
           setFormData={setFormData}
@@ -652,7 +681,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Informações da Conta" isConfig={true}>
+      <Section title="Configurações da Conta" isConfig={true}>
         <AccountInfoSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -675,6 +704,7 @@ interface SectionProps {
   initiallyOpen?: boolean;
   completed?: boolean;
   isConfig?: boolean;
+  hasUnsavedChanges?: boolean;
 }
 
 function Section({
@@ -683,6 +713,7 @@ function Section({
   initiallyOpen = false,
   completed,
   isConfig,
+  hasUnsavedChanges,
 }: SectionProps) {
   const [isOpen, setIsOpen] = useState(initiallyOpen);
 
@@ -692,10 +723,9 @@ function Section({
         className="flex justify-between items-center cursor-pointer bg-gray-100 px-5 py-3"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <h2 className="text-lg font-bold flex items-center space-x-2 sm:space-x-4">
-          {" "}
+        <div className="flex items-center space-x-2 sm:space-x-4">
           {completed !== undefined && (
-            <div className="ml-2">
+            <div>
               {completed ? (
                 <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
               ) : (
@@ -703,30 +733,30 @@ function Section({
               )}
             </div>
           )}
-          {isConfig !== undefined && (
-            <div className="ml-2">
-              {isConfig && (
-                <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
-              )}
+          {isConfig !== undefined && isConfig && (
+            <div>
+              <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
             </div>
           )}
           <span className="text-base sm:text-lg font-medium truncate">
             {title}
           </span>
-        </h2>
-
+          {hasUnsavedChanges && (
+            <span className="text-red-500 text-sm font-semibold ml-2">
+              *Clique em "Salvar Alterações" ao final deste item
+            </span>
+          )}
+        </div>
         {isOpen ? (
           <CaretUp size={22} color="#333" />
         ) : (
           <CaretDown size={22} color="#333" />
         )}
       </div>
-
       {isOpen && <div className="mt-4 space-y-6 px-5 pb-5">{children}</div>}
     </div>
   );
 }
-
 interface FormProps {
   formData: any;
   setFormData?: any;
@@ -879,7 +909,7 @@ function BasicDataSection({
                   : "https://via.placeholder.com/80"
               }
               alt="Profile"
-              className="w-20 h-20 rounded-full border-2 border-gray-300"
+              className="w-20 h-20 object-cover rounded-full border-2 border-gray-300"
             />
           ) : (
             <div className="w-20 h-20 rounded-full border-2 bg-gray-300 flex items-center justify-center">
@@ -1071,12 +1101,12 @@ function AboutSection({
           <option value="" disabled>
             Selecione o tipo de conta
           </option>
-          <option value="UGC">UGC (Talentos)</option>
+          <option value="UGC">UGC (Creator)</option>
           <option value="IGC">IGC (Nano, Micro e Macro)</option>
           <option value="UGC + IGC">UGC + IGC</option>
         </select>
         <p className="text-sm text-gray-500 mt-2">
-          <strong>UGC (Talentos):</strong> Você cria vídeos ou fotos que serão
+          <strong>UGC (Creators):</strong> Você cria vídeos ou fotos que serão
           entregues para as marcas utilizarem em suas campanhas, anúncios ou
           redes sociais.
           <br />
@@ -1106,6 +1136,7 @@ function AboutSection({
           <option value="male">Masculino</option>
           <option value="female">Feminino</option>
           <option value="non_binary">Não binário</option>
+          <option value="other">Outro</option>
         </select>
       </div>
 
@@ -2048,7 +2079,7 @@ function AccountInfoSection({
           !currentPassword || !newPassword || !confirmPassword || loading
         }
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? "Alterando..." : "Alterar Senha"}
       </button>
     </div>
   );
