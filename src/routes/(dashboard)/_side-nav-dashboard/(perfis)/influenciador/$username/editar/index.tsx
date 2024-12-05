@@ -743,7 +743,7 @@ function Section({
           </span>
           {hasUnsavedChanges && (
             <span className="text-red-500 text-sm font-semibold ml-2">
-              *Você tem alterações não salvas
+              *Clique em "Salvar Alterações" ao final deste item
             </span>
           )}
         </div>

@@ -12,6 +12,8 @@ import { Brand } from "@/types/Brand";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   Camera,
+  CheckCircle,
+  Circle,
   LoaderIcon,
   MessageCircleWarning,
   Upload,
@@ -670,6 +672,29 @@ function Page() {
     <div className="flex flex-col max-w-[100dvw] mb-12 space-y-4">
       {/* Dados básicos */}
       <div className="mt-1" />
+
+      <p className="text-xs text-gray-500 px-4">
+        * É necessário salvar as alterações de cada seção para que elas sejam
+        aplicadas.
+      </p>
+      {/* 
+      <div className="flex flex-row items-center gap-1 px-4">
+        <CheckCircle className="h-3 w-3 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
+        <p className="text-base font-semibold ">
+          {" "}
+          - Indica que todos os dados obrigatórios foram preenchidos, mas não
+          necessariamente estão salvos.
+        </p>
+      </div>
+
+      <div className="flex flex-row items-center gap-1 px-4">
+        <Circle className="h-3 w-3 sm:h-5 sm:w-5 text-gray-500 flex-shrink-0" />
+        <p className="text-base font-semibold ">
+          {" "}
+          - Indica que algum dado obrigatório ainda não foi preenchido.
+        </p>
+      </div> */}
+
       <ProfileEditDropdown
         sectionName="Dados básicos"
         isComplete={isUserDataComplete}
