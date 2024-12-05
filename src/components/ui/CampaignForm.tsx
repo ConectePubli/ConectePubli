@@ -375,7 +375,9 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     formData.append("beginning", campaignBudget.startDate as string);
     formData.append("end", campaignBudget.endDate as string);
     formData.append("open_jobs", campaignBudget.influencersCount.toString());
-    formData.append("price", (campaignBudget.creatorFee * 100).toString());
+    if (!isEditMode) {
+      formData.append("price", (campaignBudget.creatorFee * 100).toString());
+    }
 
     formData.append("responsible_name", responsibleInfo.name);
     formData.append("responsible_email", responsibleInfo.email);
