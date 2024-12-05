@@ -149,8 +149,8 @@ function Page() {
 
           <h2 className="text-3xl font-bold mb-4">Cadastro para Marcas</h2>
           <p className="text-gray-600 mb-6">
-            Junte-se à ConectePubli e conecte sua marca a influenciadores que
-            podem amplificar sua mensagem de forma autêntica.
+            Junte-se à ConectePubli e conecte sua marca a creators que podem
+            amplificar sua mensagem de forma autêntica.
           </p>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
