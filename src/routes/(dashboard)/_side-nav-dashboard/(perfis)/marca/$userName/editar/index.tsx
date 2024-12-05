@@ -3,7 +3,6 @@ import { ComboboxCountries } from "@/components/ui/ComboboxCountries";
 import { ComboboxNiches } from "@/components/ui/ComboBoxNiches";
 import { ComboboxStates } from "@/components/ui/ComboboxStates";
 import CustomPhoneInput from "@/components/ui/CustomPhoneInput";
-import DateInput from "@/components/ui/DateInput";
 import ProfileEditDropdown from "@/components/ui/ProfileEditDropdown";
 import { BrazilianStates } from "@/data/Brazillian_States";
 import { countries } from "@/data/Countries";
@@ -116,7 +115,6 @@ function Page() {
   const isAboutYouComplete = !!(
     userData?.name &&
     userData?.username &&
-    userData?.opening_date &&
     userData?.company_register &&
     userData?.email &&
     userData?.cell_phone &&
@@ -339,7 +337,6 @@ function Page() {
       const modifiedFields = getModifiedFields<Brand>(originalData, userData, [
         "name",
         "username",
-        "opening_date",
         "company_register",
         "email",
         "cell_phone",
@@ -771,7 +768,7 @@ function Page() {
           </div>
 
           {/* Data de Fundação */}
-          <div>
+          {/* <div>
             <div className="flex flex-row items-center">
               <h2 className="text-sm font-semibold">Data de Abertura</h2>
               <p className="text-[#10438F] text-lg">*</p>
@@ -782,7 +779,7 @@ function Page() {
                 setUserData({ ...userData, opening_date: date })
               }
             />
-          </div>
+          </div> */}
 
           {/* Registro da Empresa */}
           <div>
@@ -1464,7 +1461,7 @@ function Page() {
 
       {/* Config conta */}
       <ProfileEditDropdown
-        sectionName="Informações da Conta"
+        sectionName="Configurações da Conta"
         isComplete={false}
         showProgress={false}
         isConfig={true}
@@ -1521,10 +1518,10 @@ function Page() {
           {savingStates.accountInfo ? (
             <span className="flex items-center gap-2">
               <LoaderIcon className="animate-spin h-5 w-5" />
-              Salvando...
+              Alterando...
             </span>
           ) : (
-            "Salvar Alterações"
+            "Alterar Senha"
           )}
         </button>
       </ProfileEditDropdown>

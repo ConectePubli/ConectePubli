@@ -59,7 +59,7 @@ const SupportModal: React.FC<Props> = ({
 
         Nota: Para acessar o link da campanha, a conta precisa estar logada na plataforma. Contas de marcas não têm acesso direto.
 
-        **Detalhes do Influenciador:**
+        **Detalhes do Creator:**
         - Nome: ${participant?.name || "Não informado"}
         - Número de Telefone: ${participant?.cell_phone || "Não informado"}
         - Email: ${participant?.email || "Não informado"}
@@ -99,14 +99,14 @@ const SupportModal: React.FC<Props> = ({
       {!isSubmitted ? (
         <>
           <h2 className="text-xl font-semibold mb-4">
-            Solicitar Mediação para o Trabalho do Influenciador
+            Solicitar Mediação para o Trabalho do Creator
           </h2>
 
           <div className="flex flex-wrap items-center gap-4 mb-4">
             {participant.profile_img ? (
               <img
                 src={pb.files.getUrl(participant, participant.profile_img)}
-                alt="Foto do Influenciador"
+                alt="Foto do Creator"
                 className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
               />
             ) : (
@@ -177,7 +177,7 @@ const SupportModal: React.FC<Props> = ({
                   influenciador.
                 </li>
                 <li>
-                  <em>Se o Influenciador Não Realizou o Trabalho:</em> Caso o
+                  <em>Se o Creator Não Realizou o Trabalho:</em> Caso o
                   influenciador não tenha colaborado ou não tenha entregue
                   nenhum conteúdo relevante para a campanha, a marca terá
                   direito ao reembolso integral para essa posição específica na

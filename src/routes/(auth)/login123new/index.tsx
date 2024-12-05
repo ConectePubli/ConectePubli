@@ -204,7 +204,7 @@ function Page() {
                 }`}
                 onClick={() => setLoginType("influencer")}
               >
-                Influenciador
+                Creator
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-4">
@@ -313,7 +313,7 @@ function Page() {
                   : "Entrando..."
                 : isPreRegistered
                   ? "Cadastrar"
-                  : `Entrar como ${loginType === "brand" ? "Marca" : "Influenciador"}`}
+                  : `Entrar como ${loginType === "brand" ? "Marca" : "Creator"}`}
             </Button>
 
             <div className="text-center">

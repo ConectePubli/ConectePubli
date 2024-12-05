@@ -1,13 +1,14 @@
 export const objectiveOptions = [
   { label: "UGC", value: "UGC" },
   { label: "IGC", value: "IGC" },
-  { label: "UGC + IGC", value: "UGC + IGC"}
+  { label: "UGC + IGC", value: "UGC + IGC" },
 ];
 
 export const genderOptions = [
   { label: "Masculino", value: "male" },
   { label: "Feminino", value: "female" },
-  { label: "Outro", value: "non_binary" },
+  { label: "Não-Binário", value: "non_binary" },
+  { label: "Outro", value: "other" },
 ];
 
 export const minFollowersOptions = [

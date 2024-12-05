@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link, Outlet } from "@tanstack/react-router";
-import { Folder, LayoutGrid, Users, MessageCircle, Plus } from "lucide-react";
+import { Folder, LayoutGrid, MessageCircle, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSheetStore } from "@/store/useDashSheetStore";
 import pb from "@/lib/pb";
@@ -121,7 +121,7 @@ const Sheet = () => {
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link
-                to="/dashboard/settings"
+                to="/vitrine-de-campanhas"
                 className="flex items-center gap-2"
               >
                 <LayoutGrid className="w-6 h-6" />
@@ -129,20 +129,25 @@ const Sheet = () => {
               </Link>
             </Button>
           </li>
-          <li>
+          {/* <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link to="/dashboard/profile" className="flex items-center gap-2">
                 <Users className="w-6 h-6" />
                 Vitrine de Creators
               </Link>
             </Button>
-          </li>
+          </li> */}
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link to="/dashboard/support" className="flex items-center gap-2">
+              <a
+                href="https://api.whatsapp.com/send?phone=5511913185849"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
+              >
                 <MessageCircle className="w-6 h-6" />
                 Suporte/Whatsapp
-              </Link>
+              </a>
             </Button>
           </li>
         </ul>

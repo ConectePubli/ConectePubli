@@ -76,7 +76,7 @@ function PoliticaDePrivacidade() {
         3 - Compartilhamento de Informações
       </h2>
       <p className="mb-4">
-        <strong>(a) Compartilhamento com Marcas e Influenciadores:</strong> Para
+        <strong>(a) Compartilhamento com Marcas e Creators:</strong> Para
         facilitar a conexão entre marcas e influenciadores, compartilharemos
         informações relevantes, como nome de usuário, informações de perfil e
         histórico de colaborações, com as partes envolvidas na transação.

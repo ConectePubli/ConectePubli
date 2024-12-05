@@ -641,7 +641,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Habilidades" completed={sectionCompletion.skills}>
+      <Section title="Idiomas" completed={sectionCompletion.skills}>
         <SkillsSection
           formData={formData}
           setFormData={setFormData}
@@ -652,7 +652,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Informações da Conta" isConfig={true}>
+      <Section title="Configurações da Conta" isConfig={true}>
         <AccountInfoSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -879,7 +879,7 @@ function BasicDataSection({
                   : "https://via.placeholder.com/80"
               }
               alt="Profile"
-              className="w-20 h-20 rounded-full border-2 border-gray-300"
+              className="w-20 h-20 object-cover rounded-full border-2 border-gray-300"
             />
           ) : (
             <div className="w-20 h-20 rounded-full border-2 bg-gray-300 flex items-center justify-center">
@@ -1106,6 +1106,7 @@ function AboutSection({
           <option value="male">Masculino</option>
           <option value="female">Feminino</option>
           <option value="non_binary">Não binário</option>
+          <option value="other">Outro</option>
         </select>
       </div>
 
@@ -2048,7 +2049,7 @@ function AccountInfoSection({
           !currentPassword || !newPassword || !confirmPassword || loading
         }
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? "Alterando..." : "Alterar Senha"}
       </button>
     </div>
   );

@@ -46,7 +46,7 @@ const RateParticipantModal: React.FC<Props> = ({
           {participant.profile_img ? (
             <img
               src={pb.files.getUrl(participant, participant.profile_img)}
-              alt="Foto do Influenciador"
+              alt="Foto do Creator"
               className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
             />
           ) : (
