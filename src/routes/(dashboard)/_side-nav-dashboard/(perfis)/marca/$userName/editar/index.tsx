@@ -12,8 +12,6 @@ import { Brand } from "@/types/Brand";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   Camera,
-  CheckCircle,
-  Circle,
   LoaderIcon,
   MessageCircleWarning,
   Upload,
