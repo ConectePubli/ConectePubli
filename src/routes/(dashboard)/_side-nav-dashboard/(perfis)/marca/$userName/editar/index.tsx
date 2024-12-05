@@ -130,11 +130,13 @@ function Page() {
     userData?.state
       ? true
       : false;
+
   const isAtLeastOneFilled = useMemo(() => {
     return socialMediaFields.some(
       (field) => userData && userData[field]?.toString().trim() !== ""
     );
   }, [userData]);
+
   const isSocialMediaComplete = isAtLeastOneFilled || false;
   const isBankAccountComplete = userData?.pix_key ? true : false;
 
