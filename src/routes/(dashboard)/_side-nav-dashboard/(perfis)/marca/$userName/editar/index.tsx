@@ -724,6 +724,10 @@ function Page() {
               "Salvar Alterações"
             )}
           </button>
+          <p className="text-xs text-gray-500">
+            * É necessário salvar as alterações de cada seção para que elas
+            sejam aplicadas.
+          </p>
         </div>
       </ProfileEditDropdown>
 
@@ -867,6 +871,10 @@ function Page() {
               <div className="flex items-center justify-center w-full p-3 border rounded-md">
                 <p className="text-gray-500 text-center">
                   Carregando nichos...
+                </p>
+                <p className="text-xs text-gray-500">
+                  * É necessário salvar as alterações de cada seção para que
+                  elas sejam aplicadas.
                 </p>
               </div>
             ) : nichesError ? (
