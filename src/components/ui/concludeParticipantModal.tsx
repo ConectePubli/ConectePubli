@@ -89,7 +89,7 @@ const ConcludeModalParticipant: React.FC<Props> = ({
                   "completed"
                 );
 
-                setModalType(null);
+                setModalType("rateParticipant");
               } catch (error) {
                 console.error("Erro ao concluir colaboração:", error);
                 toast("Ocorreu um erro ao atualizar o status do candidato");
