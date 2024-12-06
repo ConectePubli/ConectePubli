@@ -30,6 +30,7 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType }) => {
       ];
 
       await pb.collection("ratings").create({
+        from_brand: pb.authStore.model?.id,
         comment,
         feedback: feedback,
       });
@@ -51,11 +52,11 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType }) => {
         <div className="border-t border-gray-300" />
 
         {/* Logo da plataforma */}
-        <div className="flex justify-center mt-4">
+        <div className="flex">
           <img
             src={logo}
             alt="Logo Conecte Publi"
-            className="w-20 h-20 object-contain"
+            className="w-full h-20 object-contain"
           />
         </div>
 
