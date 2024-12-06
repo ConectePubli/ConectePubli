@@ -1,6 +1,7 @@
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { format } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
+import { formatDateUTC } from "@/utils/formatDateUTC";
 
 const CampaignsTable: React.FC = () => {
   const { campaigns, isLoading, error } = useCampaignStore();
@@ -91,13 +92,10 @@ const CampaignsTable: React.FC = () => {
 
                   <td className="py-2 px-4 font-semibold">
                     {campaign.beginning
-                      ? format(new Date(campaign.beginning), "dd/MM/yyyy")
+                      ? formatDateUTC(campaign.beginning)
                       : "N/A"}{" "}
                     <span className="hidden lg:inline"> - </span>
-                    <br />{" "}
-                    {campaign.end
-                      ? format(new Date(campaign.end), "dd/MM/yyyy")
-                      : "N/A"}
+                    <br /> {campaign.end ? formatDateUTC(campaign.end) : "N/A"}
                   </td>
 
                   <td

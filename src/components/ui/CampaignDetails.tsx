@@ -9,6 +9,7 @@ import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import CampaignSubscribeButton from "./CampaignSubscribeButton";
 import { timeAgo } from "@/utils/timeAgo";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
+import { formatDateUTC } from "@/utils/formatDateUTC";
 
 const CampaignDetails: React.FC = () => {
   const { campaign } = useIndividualCampaignStore();
@@ -65,7 +66,7 @@ const CampaignDetails: React.FC = () => {
         {campaign.beginning && (
           <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
             <img src={Calendar} alt="Início" className="w-4 h-4" /> Início:{" "}
-            {new Date(campaign.beginning).toLocaleDateString()}
+            {formatDateUTC(campaign.beginning)}
           </p>
         )}
 
@@ -73,7 +74,7 @@ const CampaignDetails: React.FC = () => {
         {campaign.end && (
           <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
             <img src={Calendar} alt="Encerramento" className="w-4 h-4" />
-            Encerramento: {new Date(campaign.end).toLocaleDateString()}
+            Encerramento: {formatDateUTC(campaign.end)}
           </p>
         )}
 

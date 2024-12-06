@@ -71,7 +71,7 @@ export const PrivateHeader = () => {
             : ""
         }`}
       >
-        <div className="pr-2 md:p-4 md:hidden flex items-center justify-start">
+        <div className="pr-2 lg:p-4 lg:hidden flex items-center justify-start">
           <button className="focus:outline-none pr-2" onClick={openSheet}>
             <AlignJustify size={25} />
           </button>

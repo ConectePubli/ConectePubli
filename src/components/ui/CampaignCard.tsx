@@ -8,6 +8,7 @@ import { ParticipationStatusFilter } from "@/types/Filters";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import { Link } from "@tanstack/react-router";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
+import { formatDateUTC } from "@/utils/formatDateUTC";
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -20,8 +21,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
   participationStatus,
   fromMyCampaigns,
 }) => {
-  const beginningDate = new Date(campaign.beginning);
-  const endDate = new Date(campaign.end);
+  const beginningDate = formatDateUTC(campaign.beginning);
+  const endDate = formatDateUTC(campaign.end);
 
   const readTextStatus = (type: string) => {
     switch (type) {
@@ -102,7 +103,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div className="flex justify-end items-center">
             <div className="flex items-center gap-2 text-gray-500">
               <Calendar className="w-4 h-4" />
-              {`${beginningDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`}
+              {`${beginningDate} - ${endDate}`}
             </div>
           </div>
         </div>
