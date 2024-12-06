@@ -178,7 +178,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
       if (currentInfluencerId) {
         filters.push(
-          `influencer = "${currentInfluencerId}" && campaign.paid="true"`
+          `influencer = "${currentInfluencerId}" && campaign.paid=true`
         );
       } else {
         throw new Error("Influencer ID not found in authentication.");
