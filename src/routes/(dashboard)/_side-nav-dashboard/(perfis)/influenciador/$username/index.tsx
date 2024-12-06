@@ -7,7 +7,7 @@ import {
   useNavigate,
 } from "@tanstack/react-router";
 import { MapPin, Globe, User } from "lucide-react";
-import { Hourglass, GenderIntersex, Image } from "phosphor-react";
+import { Hourglass, GenderIntersex, Image, Tag } from "phosphor-react";
 import { useMutation } from "@tanstack/react-query";
 
 import Spinner from "@/components/ui/Spinner";
@@ -206,11 +206,11 @@ function InfluencerProfilePage() {
 
           {/* BASIC INFO */}
           <div className="ml-3">
-            <p className="text-gray-500 text-sm font-bold flex flex-row items-center">
+            <p className="text-gray-700 text-sm font-bold flex flex-row items-center">
               <img
                 src={CompanyIcon}
                 alt="company icon"
-                className="w-3 h-3 mr-1"
+                className="w-3 h-3 mr-2"
               />{" "}
               Influencer
             </p>
@@ -222,13 +222,8 @@ function InfluencerProfilePage() {
 
         {/* TYPE */}
         {influencer.account_type && (
-          <p className="text-gray-500 text-sm font-bold flex flex-row items-center mt-4">
-            <img
-              src={CompanyIcon}
-              alt="company icon"
-              className="w-3 h-3 mr-1"
-            />{" "}
-            {influencer.account_type}
+          <p className="text-gray-800 text-sm font-bold flex flex-row items-center mt-4">
+            <Tag size={18} color="#10438F" className="mr-1" /> {influencer.account_type}
           </p>
         )}
 

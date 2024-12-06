@@ -6,8 +6,11 @@ import SocialNetworks from "@/types/SocialNetworks";
 import { Link } from "lucide-react";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
 import { formatLocation } from "@/utils/formatLocation";
+import { useNavigate } from "@tanstack/react-router";
 
 const CampaignBrandProfile: React.FC = () => {
+  const navigate = useNavigate();
+
   const brand = useIndividualCampaignStore(
     (state) => state.campaign?.expand?.brand
   );
@@ -36,7 +39,8 @@ const CampaignBrandProfile: React.FC = () => {
               : ProfilePlaceholder
           }
           alt="Perfil da Marca"
-          className="w-16 h-16 rounded-full border-4 border-white object-cover"
+          className="w-16 h-16 rounded-full border-4 border-white object-cover cursor-pointer"
+          onClick={() => navigate({ to: `/marca/${brand.username}` })}
         />
       </div>
 
@@ -44,7 +48,12 @@ const CampaignBrandProfile: React.FC = () => {
       <div className="p-4 mt-8">
         {/* Nome da Marca */}
         {brand.name && (
-          <h2 className="font-bold break-words break-all">{brand.name}</h2>
+          <h2
+            className="font-bold break-words break-all cursor-pointer"
+            onClick={() => navigate({ to: `/marca/${brand.username}` })}
+          >
+            {brand.name}
+          </h2>
         )}
 
         {/* Localização */}

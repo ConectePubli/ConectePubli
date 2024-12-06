@@ -299,8 +299,8 @@ function Page() {
 
         {campaignData.status === "ended" && (
           <p className="flex items-center text-red-500 mt-3">
-            <Info size={18} color="#e61919" className="mr-1" /> Essa campanha
-            terminou, então você pode apenas
+            <Info size={18} color="#e61919" className="mr-1" /> Esta campanha
+            terminou, então você pode apenas visualizá-la!
           </p>
         )}
 

@@ -48,7 +48,7 @@ export const Route = createFileRoute(
 
       const campaignsData =
         (await pb.collection<Campaign>("campaigns").getFullList({
-          filter: `brand="${brandData.id}"`,
+          filter: `brand="${brandData.id}" && paid=true`,
           expand: "niche, brand",
         })) || [];
 
@@ -127,7 +127,7 @@ function Page() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex p-0 flex-col">
+    <div className="flex p-0 flex-col ">
       <img
         src={
           brand.cover_img
@@ -236,7 +236,7 @@ function Page() {
         <div className="border mt-5 mb-4" />
 
         {/* CAMPANHAS*/}
-        <div className="mt-2 w-full max-w-[99dvw] md:max-w-[calc(100vw-250px)]">
+        <div className="w-full max-w-[99dvw] lg:max-w-[calc(100vw-250px)]">
           <CampaignSlider campaigns={campaignsWithOpenJobs} />
         </div>
 

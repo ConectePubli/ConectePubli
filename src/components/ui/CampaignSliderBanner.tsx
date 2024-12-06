@@ -3,11 +3,11 @@ import { User } from "lucide-react";
 import CalendarIcon from "@/assets/icons/calendar.svg";
 import TagIcon from "@/assets/icons/tag.svg";
 import CoinsIcon from "@/assets/icons/coins.svg";
-import { format } from "date-fns";
 import { Campaign } from "@/types/Campaign";
 import CoverPlaceholder from "@/assets/background-placeholder.webp";
 import SocialNetworks from "@/types/SocialNetworks";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import { formatDateUTC } from "@/utils/formatDateUTC";
 interface CampaignSliderBannerProps {
   campaign: Campaign;
   isFirst: boolean;
@@ -17,12 +17,11 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
   campaign,
   isFirst,
 }) => {
-  console.log("aaaa", campaign);
   return (
     <div
       data-campaign-id={campaign.id}
       data-campaign-unique-name={campaign.unique_name}
-      className={`flex-shrink-0 w-72 sm-medium:w-80 sm-plus:w-96 sm:w-9/12 h-auto mt-1 mr-4 select-none hover:cursor-pointer bg-white ${
+      className={`flex-shrink-0 w-72 sm-medium:w-80 sm-plus:w-96 sm:w-9/12 mr-4 select-none hover:cursor-pointer bg-white ${
         isFirst ? "ml-4" : ""
       }`}
       id={isFirst ? "first-campaign-banner" : undefined}
@@ -36,10 +35,10 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
           }
           alt="campaign"
           draggable={false}
-          className="w-[375px] h-[292px] object-cover hidden xl:block rounded-l-lg select-none"
+          className="w-[375px] h-[292px] object-cover hidden xl:block rounded-l-lg select-none max-sm:h-[320px]"
         />
 
-        <div className="flex flex-col p-4 w-full h-[292px]">
+        <div className="flex flex-col p-4 w-full h-[292px] max-md:h-[320px]">
           <p className="text-[12px] font-bold flex flex-row items-center text-[#052759]">
             <img src={TagIcon} alt="Edit" className="w-3 h-3 mr-1" />
             {campaign.objective}
@@ -76,13 +75,8 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             <div className="flex flex-row items-center mt-3">
               <img src={CalendarIcon} alt="Calendar" className="w-4 h-4 mr-2" />
               <p className="text-[12px] text-gray-700 font-bold">
-                {campaign.beginning
-                  ? format(new Date(campaign.beginning), "dd/MM/yyyy")
-                  : "N/A"}{" "}
-                -{" "}
-                {campaign.end
-                  ? format(new Date(campaign.end), "dd/MM/yyyy")
-                  : "N/A"}
+                {campaign.beginning ? formatDateUTC(campaign.beginning) : "N/A"}{" "}
+                - {campaign.end ? formatDateUTC(campaign.end) : "N/A"}
               </p>
             </div>
           </div>
@@ -99,7 +93,7 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             {JSON.parse(
               localStorage.getItem("pocketbase_auth") as string
             ).model?.id?.includes(campaign.expand?.brand?.id) && (
-              <p className="font-semibold flex flex-row items-center">
+              <p className="font-semibold flex flex-row items-center ">
                 <User className="mr-2" size={16} />
                 {campaign.vagasRestantes} vagas abertas
               </p>

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link, Outlet } from "@tanstack/react-router";
-import { Folder, LayoutGrid, MessageCircle, Plus } from "lucide-react";
+import { Folder, LayoutGrid, MessageCircle, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSheetStore } from "@/store/useDashSheetStore";
 import pb from "@/lib/pb";
@@ -15,7 +15,7 @@ export function SideNavDashboard() {
   return (
     <div className="flex h-[calc(100vh-66px)]">
       {/* Desktop Sidebar */}
-      <nav className="md:w-64 hidden md:block bg-white border-r border-gray-200 fixed h-full">
+      <nav className="lg:w-64 hidden lg:block bg-white border-r border-gray-200 fixed h-full">
         <ul className="space-y-4 p-4">
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
@@ -77,10 +77,10 @@ export function SideNavDashboard() {
         </ul>
       </nav>
       {/* Main Content */}
-      <main className="md:ml-64 w-full">
+      <main className="lg:ml-64 w-full">
         <Outlet />
       </main>
-      <Sheet /> {/* Mobile Sidebar */}
+      <Sheet />
     </div>
   );
 }
@@ -93,6 +93,7 @@ const Sheet = () => {
   const handleNavigation = () => {
     closeSheet();
   };
+  const isBrand = pb.authStore.model?.collectionName === "Brands";
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -105,11 +106,16 @@ const Sheet = () => {
       {/* Drawer content */}
       <div className="relative z-50 w-64 bg-white p-4 shadow-lg transform transition-transform duration-300">
         <button className="mb-4 text-right" onClick={closeSheet}>
-          Fechar
+          <X size={20} color="#555" />
         </button>
         <ul className="space-y-4">
           <li>
-            <Button variant="ghost" className="w-full justify-start" asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              asChild
+              onClick={closeSheet}
+            >
               <Link
                 to={`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`}
                 className="flex items-center gap-2"
@@ -123,37 +129,18 @@ const Sheet = () => {
               </Link>
             </Button>
           </li>
-          {/* <li>
-            <Button variant="ghost" className="w-full justify-start" asChild>
-              <Link to="/dashboard/profile" className="flex items-center gap-2">
-                <Users className="w-6 h-6" />
-                Vitrine de Creators
-              </Link>
-            </Button>
-          </li> */}
 
-          {pb.authStore.model?.collectionName !== "Brands" && (
+          {isBrand && (
             <li>
-              <Button variant="ghost" className="w-full justify-start" asChild>
-                <Link
-                  to="/vitrine-de-campanhas"
-                  className="flex items-center gap-2"
-                  onClick={handleNavigation}
-                >
-                  <LayoutGrid className="w-6 h-6" />
-                  Vitrine de Campanhas
-                </Link>
-              </Button>
-            </li>
-          )}
-
-          {pb.authStore.model?.collectionName === "Brands" && (
-            <li>
-              <Button variant="ghost" className="w-full justify-start" asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                asChild
+                onClick={closeSheet}
+              >
                 <Link
                   to="/dashboard-marca/criar-campanha"
                   className="flex items-center gap-2"
-                  onClick={handleNavigation}
                 >
                   <Plus className="w-6 h-6" />
                   Criar Campanha
@@ -162,6 +149,37 @@ const Sheet = () => {
             </li>
           )}
 
+          {!isBrand && (
+            <li>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                asChild
+                onClick={closeSheet}
+              >
+                <Link
+                  to="/vitrine-de-campanhas"
+                  className="flex items-center gap-2"
+                >
+                  <LayoutGrid className="w-6 h-6" />
+                  Vitrine de Campanhas
+                </Link>
+              </Button>
+            </li>
+          )}
+          {/* <li>
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              asChild
+              onClick={closeSheet}
+            >
+              <Link to="/dashboard/profile" className="flex items-center gap-2">
+                <Users className="w-6 h-6" />
+                Vitrine de Creators
+              </Link>
+            </Button>
+          </li> */}
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <a
@@ -169,7 +187,6 @@ const Sheet = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
-                onClick={closeSheet}
               >
                 <MessageCircle className="w-6 h-6" />
                 Suporte/Whatsapp

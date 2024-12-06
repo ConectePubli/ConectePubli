@@ -170,7 +170,7 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
 
       {campaigns.length > 0 && (
         <div
-          className="flex overflow-x-scroll scrollbar-hide active:cursor-grabbing md:max-w-[calc(100vw-271px)]"
+          className="flex overflow-x-scroll h-[100%] overflow-y-hidden scrollbar-hide active:cursor-grabbing lg:max-w-[calc(100vw-271px)]"
           ref={sliderRef}
           onPointerDown={handlePointerDown}
         >
