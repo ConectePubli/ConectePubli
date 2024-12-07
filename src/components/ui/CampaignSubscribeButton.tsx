@@ -363,11 +363,17 @@ const CampaignSubscribeButton: React.FC = () => {
           )}
         </>
       ) : (
-        !isUserRegistered() ||
-        (isUserRegistered() && userParticipation?.status === "sold_out" && (
-          <p className="text-[#942A2A] font-semibold">
-            $
-            {`As vagas para esta campanha estão preenchidas. Agradecemos seu interesse ${isUserRegistered() && "e participação"}! Fique de olho nas próximas oportunidades que lançaremos em breve.`}
+        (!isUserRegistered() ||
+          (isUserRegistered() && userParticipation?.status === "sold_out" && (
+            <p className="text-[#942A2A] font-semibold">
+              $
+              {`As vagas para esta campanha estão preenchidas. Agradecemos seu interesse ${isUserRegistered() && "e participação"}! Fique de olho nas próximas oportunidades que lançaremos em breve.`}
+            </p>
+          )),
+        (
+          <p className="text-[#DC3545]">
+            {campaign?.vagasRestantes === 0 &&
+              "As vagas para esta campanha encerraram"}
           </p>
         ))
       )}
