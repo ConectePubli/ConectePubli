@@ -97,7 +97,7 @@ function Page() {
                 return (
                   <CampaignCard
                     key={campaign.id}
-                    campaign={campaign}
+                    campaignData={campaign}
                     participationStatus={ParticipationStatusFilter.All}
                     fromMyCampaigns={false}
                   />

@@ -105,7 +105,7 @@ function Page() {
               {campaigns.map((campaign) => (
                 <CampaignCard
                   key={campaign.id}
-                  campaign={campaign}
+                  campaignData={campaign}
                   participationStatus={
                     campaign.participationStatus ??
                     ParticipationStatusFilter.All

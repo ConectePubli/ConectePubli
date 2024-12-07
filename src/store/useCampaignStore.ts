@@ -86,6 +86,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
     try {
       const filters: string[] = [];
+      filters.push(`paid=true`);
       const currentBrandId = pb.authStore.model?.id;
       if (currentBrandId) {
         filters.push(`brand = "${currentBrandId}" && paid=true`);
@@ -133,6 +134,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
     try {
       const filters: string[] = [];
+      filters.push(`paid=true`);
       if (campaignGoalFilter)
         filters.push(`objective = "${campaignGoalFilter}"`);
       if (searchTerm) filters.push(`name ~ "${searchTerm}"`);
@@ -175,7 +177,9 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       const currentInfluencerId = pb.authStore.model?.id;
 
       if (currentInfluencerId) {
-        filters.push(`influencer = "${currentInfluencerId}"`);
+        filters.push(
+          `influencer = "${currentInfluencerId}" && campaign.paid=true`
+        );
       } else {
         throw new Error("Influencer ID not found in authentication.");
       }
@@ -184,7 +188,8 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
         filters.push(`campaign.objective ~ "${campaignGoalFilter}"`);
       if (participationStatusFilter)
         filters.push(`status ~ "${participationStatusFilter}"`);
-      if (searchTerm) filters.push(`campaign.name ~ "${searchTerm}"`);
+      if (searchTerm)
+        filters.push(`campaign.name ~ "${searchTerm}" & paid=true`);
 
       const participationsResult = await pb
         .collection("Campaigns_Participations")

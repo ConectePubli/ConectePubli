@@ -37,7 +37,7 @@ function PoliticaDePrivacidade() {
       </p>
       <p className="mb-4">
         <strong>(c) Informações de Pagamento:</strong> Se você for uma marca que
-        realiza pagamentos aos influenciadores, poderemos coletar informações de
+        realiza pagamentos aos creators, poderemos coletar informações de
         pagamento, como números de cartão de crédito, endereço de cobrança e
         detalhes necessários para a transação financeira. As informações de
         pagamento são processadas por nossos provedores de serviços de pagamento
@@ -51,7 +51,7 @@ function PoliticaDePrivacidade() {
         <strong>(a) Fornecimento dos Serviços:</strong> Utilizamos as
         informações coletadas para operar, manter e melhorar a plataforma
         Conecte Publi, para fornecer suporte ao usuário e facilitar a conexão
-        entre marcas e influenciadores.
+        entre marcas e creators.
       </p>
       <p className="mb-4">
         <strong>(b) Comunicações:</strong> Podemos utilizar o endereço de e-mail
@@ -76,8 +76,8 @@ function PoliticaDePrivacidade() {
         3 - Compartilhamento de Informações
       </h2>
       <p className="mb-4">
-        <strong>(a) Compartilhamento com Marcas e Influenciadores:</strong> Para
-        facilitar a conexão entre marcas e influenciadores, compartilharemos
+        <strong>(a) Compartilhamento com Marcas e Creators:</strong> Para
+        facilitar a conexão entre marcas e creators, compartilharemos
         informações relevantes, como nome de usuário, informações de perfil e
         histórico de colaborações, com as partes envolvidas na transação.
       </p>

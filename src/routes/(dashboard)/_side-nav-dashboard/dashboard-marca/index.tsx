@@ -73,7 +73,7 @@ function Page() {
         showChannel={false}
       />
 
-      <div className="mt-6 w-full overflow-x-auto max-w-[90vw] sm-plus:max-w-[calc(90vw)] md:max-w-[calc(90vw-12rem)] lg:max-w-[calc(100dvw)]">
+      <div className="mt-6 w-full overflow-x-auto max-w-[90vw] sm-plus:max-w-[calc(95vw)]  lg:max-w-[calc(100dvw)]">
         <CampaignsTable />
       </div>
 

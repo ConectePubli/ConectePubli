@@ -299,8 +299,8 @@ function Page() {
 
         {campaignData.status === "ended" && (
           <p className="flex items-center text-red-500 mt-3">
-            <Info size={18} color="#e61919" className="mr-1" /> Essa campanha
-            terminou, então você pode apenas
+            <Info size={18} color="#e61919" className="mr-1" /> Esta campanha
+            terminou, então você pode apenas visualizá-la!
           </p>
         )}
 
@@ -390,7 +390,7 @@ function Page() {
         {campaignParticipations.length === 0 ? (
           <div className="mt-10 w-full flex flex-col items-center justify-center">
             <p className="mb-4">
-              Não há influenciadores inscritos nessa campanha no momento.
+              Não há creators inscritos nessa campanha no momento.
             </p>
             <Button
               variant={"blue"}
@@ -453,7 +453,7 @@ function Page() {
                             influencer,
                             influencer.profile_img
                           )}
-                          alt="Foto do Influenciador"
+                          alt="Foto do Creator"
                           className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2"
                         />
                       ) : (

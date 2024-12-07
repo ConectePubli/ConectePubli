@@ -36,7 +36,7 @@ const ConcludeModalParticipant: React.FC<Props> = ({
           {participant.profile_img ? (
             <img
               src={pb.files.getUrl(participant, participant.profile_img)}
-              alt="Foto do Influenciador"
+              alt="Foto do Creator"
               className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
             />
           ) : (
@@ -56,11 +56,10 @@ const ConcludeModalParticipant: React.FC<Props> = ({
         </div>
 
         <p className="text-gray-700">
-          Ao Concluir Colaboração, você está confirmando que o influenciador(a)
-          completou todas as atividades conforme o combinado, e que a campanha
-          foi concluída com sucesso pela parte desse influenciador. Essa ação
-          indica que o trabalho atendeu às expectativas da marca e não poderá
-          ser desfeita.
+          Ao Concluir Colaboração, você está confirmando que o creator completou
+          todas as atividades conforme o combinado, e que a campanha foi
+          concluída com sucesso pela parte desse creator. Essa ação indica que o
+          trabalho atendeu às expectativas da marca e não poderá ser desfeita.
         </p>
 
         <p className="font-medium">Deseja realmente concluir?</p>

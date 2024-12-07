@@ -181,7 +181,7 @@ function Page() {
           <h2 className="text-3xl font-bold mb-4">Bem-vindo de volta!</h2>
           <p className="text-gray-600 mb-6">
             Conecte-se à sua conta e continue construindo parcerias estratégicas
-            com marcas e influenciadores.
+            com marcas e creators.
           </p>
 
           <div className="mb-6">
@@ -204,7 +204,7 @@ function Page() {
                 }`}
                 onClick={() => setLoginType("influencer")}
               >
-                Influenciador
+                Creator
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-4">
@@ -313,7 +313,7 @@ function Page() {
                   : "Entrando..."
                 : isPreRegistered
                   ? "Cadastrar"
-                  : `Entrar como ${loginType === "brand" ? "Marca" : "Influenciador"}`}
+                  : `Entrar como ${loginType === "brand" ? "Marca" : "Creator"}`}
             </Button>
 
             <div className="text-center">

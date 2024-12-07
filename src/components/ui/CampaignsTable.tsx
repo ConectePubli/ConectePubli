@@ -1,11 +1,29 @@
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { format } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
+import { formatDateUTC } from "@/utils/formatDateUTC";
+import { CampaignParticipation } from "@/types/Campaign_Participations";
 
 const CampaignsTable: React.FC = () => {
   const { campaigns, isLoading, error } = useCampaignStore();
 
   const navigate = useNavigate();
+
+  const returnOpenJobs = (
+    participations: CampaignParticipation[],
+    openJobs: number
+  ) => {
+    const approvedParticipations = participations.filter(
+      (participation) => participation.status !== "waiting"
+    );
+
+    const restJobs = Math.max(
+      0,
+      (openJobs || 0) - approvedParticipations.length
+    );
+
+    return restJobs;
+  };
 
   return (
     <div>
@@ -45,14 +63,10 @@ const CampaignsTable: React.FC = () => {
               const participations =
                 campaign.expand?.Campaigns_Participations_via_campaign || [];
 
-              console.log("participations", participations);
-
-              const inscritos = participations.filter(
-                (p) => p.status === "waiting"
-              ).length; // Quantidade de inscritos
+              const inscritos = participations.length; // Quantidade de inscritos
 
               const aprovados = participations.filter(
-                (p) => p.status === "approved"
+                (p) => p.status === "approved" || p.status === "completed"
               ).length; // Quantidade de aprovados
 
               return (
@@ -84,20 +98,20 @@ const CampaignsTable: React.FC = () => {
                   <td className="py-2 px-4 font-semibold">{inscritos}</td>
 
                   <td className="py-2 px-4 font-semibold">
-                    {campaign.open_jobs}
+                    {returnOpenJobs(
+                      participations,
+                      (campaign.open_jobs as number) || 0
+                    )}
                   </td>
 
                   <td className="py-2 px-4 font-semibold">{aprovados}</td>
 
                   <td className="py-2 px-4 font-semibold">
                     {campaign.beginning
-                      ? format(new Date(campaign.beginning), "dd/MM/yyyy")
+                      ? formatDateUTC(campaign.beginning)
                       : "N/A"}{" "}
                     <span className="hidden lg:inline"> - </span>
-                    <br />{" "}
-                    {campaign.end
-                      ? format(new Date(campaign.end), "dd/MM/yyyy")
-                      : "N/A"}
+                    <br /> {campaign.end ? formatDateUTC(campaign.end) : "N/A"}
                   </td>
 
                   <td

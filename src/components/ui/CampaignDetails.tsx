@@ -9,6 +9,8 @@ import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import CampaignSubscribeButton from "./CampaignSubscribeButton";
 import { timeAgo } from "@/utils/timeAgo";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
+import { formatDateUTC } from "@/utils/formatDateUTC";
+import { Clock } from "lucide-react";
 
 const CampaignDetails: React.FC = () => {
   const { campaign } = useIndividualCampaignStore();
@@ -25,6 +27,17 @@ const CampaignDetails: React.FC = () => {
     Boolean(campaign.vagasRestantes);
 
   if (!hasDetails) return null;
+
+  const returnCampaignStatus = (status: string) => {
+    switch (status) {
+      case "ready":
+        return "Pronta para começar";
+      case "in_progress":
+        return "Em progresso";
+      case "ended":
+        return "Encerrada";
+    }
+  };
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg border">
@@ -65,7 +78,7 @@ const CampaignDetails: React.FC = () => {
         {campaign.beginning && (
           <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
             <img src={Calendar} alt="Início" className="w-4 h-4" /> Início:{" "}
-            {new Date(campaign.beginning).toLocaleDateString()}
+            {formatDateUTC(campaign.beginning)}
           </p>
         )}
 
@@ -73,7 +86,14 @@ const CampaignDetails: React.FC = () => {
         {campaign.end && (
           <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
             <img src={Calendar} alt="Encerramento" className="w-4 h-4" />
-            Encerramento: {new Date(campaign.end).toLocaleDateString()}
+            Encerramento: {formatDateUTC(campaign.end)}
+          </p>
+        )}
+
+        {campaign.status && (
+          <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
+            <Clock className="w-4 h-4" />
+            Status: {returnCampaignStatus(campaign.status)}
           </p>
         )}
 

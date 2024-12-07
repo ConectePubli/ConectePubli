@@ -14,7 +14,7 @@ export const HeroSection: React.FC = () => {
     <section className="py-16 flex flex-col md:flex-row gap-8 items-center justify-between mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl px-4">
       <div className="flex-1 space-y-4">
         <h1 className="text-4xl font-bold">
-          Conexão digital direta entre marcas e influenciadores
+          Conexão digital direta entre marcas e creators
         </h1>
         <p className="text-lg text-gray-700">
           Somos uma plataforma inovadora que conecta diretamente marcas e
