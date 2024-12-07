@@ -43,19 +43,19 @@ function Index() {
         description={
           <div className="space-y-1">
             <p>
-              <strong>Sem taxa no pagamento para influenciadores</strong> -
-              Realize campanhas e pague os influenciadores sem custo adicional
-              por transações, maximizando o retorno sobre o investimento.
+              <strong>Sem taxa no pagamento para creators</strong> - Realize
+              campanhas e pague os creators sem custo adicional por transações,
+              maximizando o retorno sobre o investimento.
             </p>
             <p>
               <strong>Anúncios de campanhas</strong> - Publique suas campanhas
-              na plataforma para que influenciadores se candidatem a
-              oportunidades alinhadas ao seu negócio.
+              na plataforma para que creators se candidatem a oportunidades
+              alinhadas ao seu negócio.
             </p>
             <p>
               <strong>Criadores alinhados com sua marca</strong> - Encontre
-              influenciadores de acordo com os objetivos, estilo e público da
-              sua marca, garantindo parcerias estratégicas e eficazes.
+              creators de acordo com os objetivos, estilo e público da sua
+              marca, garantindo parcerias estratégicas e eficazes.
             </p>
             <p>
               <strong>Pagamento facilitado</strong> - Com o ConectePay
@@ -71,7 +71,7 @@ function Index() {
 
       <SectionInfo
         imageSrc={influencers}
-        title="Para influenciadores"
+        title="Para creators"
         description={
           <div className="space-y-2">
             <p>
@@ -91,7 +91,7 @@ function Index() {
             </p>
           </div>
         }
-        buttonLabel="Pré cadastro de influenciadores"
+        buttonLabel="Pré cadastro de creators"
         buttonVariant="orange"
         buttonOnClick={() => navigate({ to: "/cadastro/influenciador" })}
         reverse

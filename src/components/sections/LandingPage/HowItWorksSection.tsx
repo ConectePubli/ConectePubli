@@ -20,7 +20,7 @@ export const HowItWorksSection: React.FC = () => {
         <FeatureCard
           imageSrc={image2}
           title="Sem taxas para marcas"
-          description="Marcas não pagam taxas ao realizar pagamentos para influenciadores, aumentando seus ganhos e simplificando a gestão financeira das campanhas."
+          description="Marcas não pagam taxas ao realizar pagamentos para creators, aumentando seus ganhos e simplificando a gestão financeira das campanhas."
         />
         <FeatureCard
           imageSrc={image3}

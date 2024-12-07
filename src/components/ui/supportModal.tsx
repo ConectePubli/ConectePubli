@@ -59,7 +59,7 @@ const SupportModal: React.FC<Props> = ({
 
         Nota: Para acessar o link da campanha, a conta precisa estar logada na plataforma. Contas de marcas não têm acesso direto.
 
-        **Detalhes do Influenciador:**
+        **Detalhes do Creator:**
         - Nome: ${participant?.name || "Não informado"}
         - Número de Telefone: ${participant?.cell_phone || "Não informado"}
         - Email: ${participant?.email || "Não informado"}
@@ -99,14 +99,14 @@ const SupportModal: React.FC<Props> = ({
       {!isSubmitted ? (
         <>
           <h2 className="text-xl font-semibold mb-4">
-            Solicitar Mediação para o Trabalho do Influenciador
+            Solicitar Mediação para o Trabalho do Creator
           </h2>
 
           <div className="flex flex-wrap items-center gap-4 mb-4">
             {participant.profile_img ? (
               <img
                 src={pb.files.getUrl(participant, participant.profile_img)}
-                alt="Foto do Influenciador"
+                alt="Foto do Creator"
                 className="w-16 h-16 min-w-[4rem] rounded-full object-cover"
               />
             ) : (
@@ -124,8 +124,8 @@ const SupportModal: React.FC<Props> = ({
           </div>
 
           <p className="text-sm text-gray-600 mb-4">
-            Se houver divergências no trabalho deste influenciador, nossa equipe
-            de suporte pode ajudar a mediar o caso. No entanto, caso ambas as
+            Se houver divergências no trabalho deste creator, nossa equipe de
+            suporte pode ajudar a mediar o caso. No entanto, caso ambas as
             partes cheguem a um acordo por conta própria, vocês podem resolver a
             situação diretamente.
           </p>
@@ -136,17 +136,17 @@ const SupportModal: React.FC<Props> = ({
           <ol className="list-decimal list-inside mb-4 text-sm text-gray-700">
             <li>
               <strong>Tente resolver diretamente:</strong> Recomendamos dialogar
-              com o influenciador e oferecer feedback antes de contatar o
-              suporte. Exemplos:
+              com o creator e oferecer feedback antes de contatar o suporte.
+              Exemplos:
               <ul className="list-disc ml-6 mt-1">
                 <li>
                   <em>Descumprimento parcial:</em> Caso haja pequenas falhas,
-                  como hashtags faltando, solicite que o influenciador ajuste o
+                  como hashtags faltando, solicite que o creator ajuste o
                   conteúdo.
                 </li>
                 <li>
-                  <em>Prazos não cumpridos:</em> Lembre o influenciador(a) da
-                  importância do prazo e veja se é possível uma reprogramação.
+                  <em>Prazos não cumpridos:</em> Lembre o creator da importância
+                  do prazo e veja se é possível uma reprogramação.
                 </li>
                 <li>
                   <em>Inconsistência na mensagem:</em> Se o conteúdo não segue
@@ -158,9 +158,9 @@ const SupportModal: React.FC<Props> = ({
           </ol>
 
           <h3 className="text-sm font-semibold mb-3">
-            Em casos simples (como desistência do influenciador), peça para
-            ele(a) clicar em “Desinscrever-se da Campanha” para uma saída rápida
-            e amigável.
+            Em casos simples (como desistência do creator), peça para ele(a)
+            clicar em “Desinscrever-se da Campanha” para uma saída rápida e
+            amigável.
           </h3>
 
           <ol className="list-none list-decimal list-inside mb-4 text-sm text-gray-700">
@@ -170,18 +170,17 @@ const SupportModal: React.FC<Props> = ({
               </strong>{" "}
               <ul className="list-disc ml-6 mt-1">
                 <li>
-                  <em>Se o influenciador cumpriu os requisitos da campanha:</em>{" "}
-                  Caso a marca deseje desqualificar o influenciador que realizou
-                  o trabalho conforme as especificações da campanha, poderá ser
-                  necessário pagar 20% do valor acordado para esse
-                  influenciador.
+                  <em>Se o creator cumpriu os requisitos da campanha:</em> Caso
+                  a marca deseje desqualificar o creator que realizou o trabalho
+                  conforme as especificações da campanha, poderá ser necessário
+                  pagar 20% do valor acordado para esse creator.
                 </li>
                 <li>
-                  <em>Se o Influenciador Não Realizou o Trabalho:</em> Caso o
-                  influenciador não tenha colaborado ou não tenha entregue
-                  nenhum conteúdo relevante para a campanha, a marca terá
-                  direito ao reembolso integral para essa posição específica na
-                  campanha depois de uma avaliação da equipe da ConectePubli.
+                  <em>Se o Creator Não Realizou o Trabalho:</em> Caso o creator
+                  não tenha colaborado ou não tenha entregue nenhum conteúdo
+                  relevante para a campanha, a marca terá direito ao reembolso
+                  integral para essa posição específica na campanha depois de
+                  uma avaliação da equipe da ConectePubli.
                 </li>
               </ul>
             </li>

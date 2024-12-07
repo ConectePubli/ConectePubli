@@ -90,6 +90,9 @@ const Sheet = () => {
 
   if (!isOpen) return null;
 
+  const handleNavigation = () => {
+    closeSheet();
+  };
   const isBrand = pb.authStore.model?.collectionName === "Brands";
 
   return (
@@ -114,8 +117,9 @@ const Sheet = () => {
               onClick={closeSheet}
             >
               <Link
-                to={`${`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`}`}
+                to={`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`}
                 className="flex items-center gap-2"
+                onClick={handleNavigation}
               >
                 <Folder className="w-6 h-6" />
                 Minhas{" "}

@@ -14,7 +14,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   carousel,
 }) => {
   const phrases = [
-    "Marcas cadastram campanhas e definem o perfil dos influenciadores-alvo.",
+    "Marcas cadastram campanhas e definem o perfil dos creators-alvo.",
     "Criadores acessam oportunidades e se candidatam diretamente, agilizando o processo.",
     "Marcas aprovam os criadores para participar das campanhas.",
   ];
@@ -42,7 +42,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
         }
       };
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex, carousel]);
 
   useEffect(() => {
@@ -60,16 +60,12 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
         }
       };
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex, carousel]);
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <img
-        src={imageSrc}
-        alt={title}
-        className="w-full h-80 object-cover"
-      />
+      <img src={imageSrc} alt={title} className="w-full h-80 object-cover" />
       <div className="px-3 py-3">
         <h3 className="text-xl font-semibold">{title}</h3>
         <p className="text-gray-600 mt-2">{description}</p>

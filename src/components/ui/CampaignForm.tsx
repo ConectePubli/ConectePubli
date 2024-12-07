@@ -575,7 +575,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       !campaignBudget.influencersCount ||
       campaignBudget.influencersCount <= 0
     )
-      missingFields.push("Quantidade de Influenciadores");
+      missingFields.push("Quantidade de Creators");
     if (!campaignBudget.creatorFee || campaignBudget.creatorFee <= 0)
       missingFields.push("Valor por Criador");
 
@@ -1006,7 +1006,7 @@ function BasicInfoSection({
             </div>
             <p className="text-gray-500 text-sm mt-2">
               {data.format === "UGC"
-                ? "UGC (Talentos): O criador de conteúdo fornece o vídeo para você postar nas suas redes sociais ou usar em anúncios."
+                ? "UGC (Creators): O criador de conteúdo fornece o vídeo para você postar nas suas redes sociais ou usar em anúncios."
                 : data.format === "IGC"
                   ? "IGC (Nano, Micro e Macro influenciadores): O criador de conteúdo posta o vídeo diretamente nas redes sociais dele, promovendo a marca para os seguidores de forma autêntica e engajada."
                   : "UGC + IGC: O criador de conteúdo fornece o vídeo para sua marca usar em campanhas publicitárias e também publica o conteúdo em suas próprias redes sociais, amplificando a visibilidade e alcance da campanha."}
@@ -1990,7 +1990,7 @@ function AudienceSegmentationSection({
                 </option>
               ))}
             </select>
-            <p className="text-gray-500 mt-2">Gênero dos influenciadores.</p>
+            <p className="text-gray-500 mt-2">Gênero dos creators.</p>
           </div>
         </div>
       </div>
@@ -2132,7 +2132,7 @@ function AudienceSegmentationSection({
             ))}
           </div>
           <p className="text-gray-500 mt-2">
-            Escolha quais localidades os influenciadores devem estar.
+            Escolha quais localidades os creators devem estar.
           </p>
         </div>
 
@@ -2241,9 +2241,9 @@ function AudienceSegmentationSection({
             </button>
           </div>
           <p className="text-gray-500 mt-2">
-            Escolha uma das opções abaixo. Tráfego pago: Anúncios na Meta Ads,
-            Tiktok Ads, Google ou Ecommerce. Tráfego orgânico: Veicular os
-            conteúdos em qualquer rede social de sua escolha.
+            Tráfego pago: Anúncios na Meta Ads, Tiktok Ads, Google ou Ecommerce.
+            Tráfego orgânico: Veicular os conteúdos em qualquer rede social de
+            sua escolha.
           </p>
         </div>
 
@@ -2554,7 +2554,7 @@ function CampaignBudgetSection({
 
       <div className={`px-5 mb-6 ${isEditMode ? "hidden" : ""}`}>
         <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-          Quantos influenciadores você deseja na campanha?*
+          Quantos creators você deseja na campanha?*
           <div className="relative inline-block">
             <Question
               size={18}
@@ -2660,9 +2660,9 @@ function CampaignBudgetSection({
         <p className="px-5 mt-2 text-gray-700">
           Observação importante: Este valor será pago antes da confirmação final
           da campanha, garantindo que os fundos estejam reservados. Nota: Caso
-          algum influenciador não cumpra os requisitos, ou ocorra algum problema
+          algum creator não cumpra os requisitos, ou ocorra algum problema
           comprovado, você poderá receber 100% do reembolso do valor pago a esse
-          influenciador.
+          creator.
         </p>
       )}
     </div>

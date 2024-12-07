@@ -137,12 +137,10 @@ function Page() {
             <img src={logo} alt="ConectePubli" className="h-7" />
           </Link>
 
-          <h2 className="text-3xl font-bold mb-4">
-            Cadastro para Influenciadores
-          </h2>
+          <h2 className="text-3xl font-bold mb-4">Cadastro para Creators</h2>
           <p className="text-gray-600 mb-6">
             Junte-se à ConectePubli e faça parte de uma rede exclusiva de
-            influenciadores.
+            creators.
           </p>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -248,9 +246,7 @@ function Page() {
               className="w-full"
               disabled={mutation.isPending}
             >
-              {mutation.isPending
-                ? "Enviando..."
-                : "Pré Cadastro Influenciadores"}
+              {mutation.isPending ? "Enviando..." : "Pré Cadastro Creators"}
             </Button>
 
             <div className="text-left">
