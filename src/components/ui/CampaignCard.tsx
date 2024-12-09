@@ -140,6 +140,12 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
               Status: {readTextStatus(participationStatus)}
             </span>
           )}
+
+          {campaignData.participationStatus === "sold_out" && (
+            <span className="font-semibold text-[#DC3545]">
+              Status: Vagas Esgotadas
+            </span>
+          )}
         </div>
       </div>
     </Link>

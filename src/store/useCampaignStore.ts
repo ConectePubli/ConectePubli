@@ -156,14 +156,12 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
         const user = JSON.parse(userAuthString) as UserAuth;
 
         if (user && user.model) {
-          // Buscar participações do usuário
           const participations = await pb
             .collection("Campaigns_Participations")
             .getFullList({
               filter: `influencer="${user.model.id}"`,
             });
 
-          // Mapear participação do usuário: campaign_id -> { status, id }
           const participationMap: Record<
             string,
             { status: string; id: string }
@@ -172,7 +170,6 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
             participationMap[p.campaign] = { status: p.status, id: p.id };
           });
 
-          // Contar quantos aprovados/completos há por campanha
           const allParticipations = await pb
             .collection("Campaigns_Participations")
             .getFullList();
@@ -185,13 +182,12 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
             }
           });
 
-          // Filtrar campanhas baseadas no status do usuário e sold_out
-          for (const campaign of [...filteredCampaigns]) {
+          for (const campaign of filteredCampaigns) {
             const userParticipation = participationMap[campaign.id];
             const approvedCount = approvedCountMap[campaign.id] || 0;
             const isSoldOut = (campaign.open_jobs || 0) <= approvedCount;
 
-            // Se participante já está approved/completed (diferente de waiting ou sold_out), remover
+            // Se o participante já está approved/completed (não waiting ou sold_out), remover a campanha
             if (
               userParticipation &&
               userParticipation.status !== "waiting" &&
@@ -203,7 +199,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
               continue;
             }
 
-            // Se campanha está sold_out
+            // Se a campanha está sold_out
             if (isSoldOut) {
               // Se o participante está waiting, atualizar para sold_out
               if (userParticipation && userParticipation.status === "waiting") {
@@ -213,15 +209,18 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
                     status: "sold_out",
                   });
                 userParticipation.status = "sold_out";
+                campaign.participationStatus =
+                  ParticipationStatusFilter.Sold_out;
+              } else if (!userParticipation) {
+                campaign.participationStatus =
+                  ParticipationStatusFilter.Sold_out;
+              } else {
+                campaign.participationStatus =
+                  userParticipation.status as ParticipationStatusFilter;
               }
-
-              // Se o usuário não participa dessa campanha, remover da vitrine
-              if (!userParticipation) {
-                filteredCampaigns = filteredCampaigns.filter(
-                  (c) => c.id !== campaign.id
-                );
-                continue;
-              }
+            } else if (userParticipation) {
+              campaign.participationStatus =
+                userParticipation.status as ParticipationStatusFilter;
             }
           }
         }
