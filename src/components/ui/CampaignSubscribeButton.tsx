@@ -14,6 +14,7 @@ import { AuthModel, ClientResponseError } from "pocketbase";
 import { toast } from "sonner";
 import { ParticipationStatusFilter } from "@/types/Filters";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
+import ModalSendLinkCampaign from "./ModalSendLinkCampaign";
 
 const Spinner: React.FC = () => (
   <svg
@@ -308,20 +309,31 @@ const CampaignSubscribeButton: React.FC = () => {
   // ou possa se inscrever agora
   return (
     <>
-      <button
-        className={`px-4 py-2 rounded-md mt-2 font-bold border transition-colors duration-200 flex flex-row ${
-          buttonText === "Cancelar Inscrição" || buttonText === "Cancelando..."
-            ? "bg-white border-[#942A2A] text-[#942A2A] hover:bg-[#942A2A] hover:text-white"
-            : (buttonText === "Aprovado pela marca" || buttonText === "Trabalho concluído")
-              ? "bg-green-500 text-white cursor-default"
-              : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
-        } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
-        disabled={isDisabled}
-        onClick={onClickHandler}
-      >
-        {isLoadingCancel && <Spinner />}
-        {buttonText}
-      </button>
+      <div className="flex items-center gap-4 flex-wrap max-sm:gap-0">
+        <button
+          className={`px-4 py-2 rounded-md mt-2 font-bold border transition-colors duration-200 flex flex-row ${
+            buttonText === "Cancelar Inscrição" ||
+            buttonText === "Cancelando..."
+              ? "bg-white border-[#942A2A] text-[#942A2A] hover:bg-[#942A2A] hover:text-white"
+              : buttonText === "Aprovado pela marca" ||
+                  buttonText === "Trabalho concluído"
+                ? "bg-green-500 text-white cursor-default"
+                : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
+          } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={isDisabled}
+          onClick={onClickHandler}
+        >
+          {isLoadingCancel && <Spinner />}
+          {buttonText}
+        </button>
+
+        {participationStatus === "approved" && (
+          <ModalSendLinkCampaign
+            campaignId={campaign?.id as string}
+            brandId={campaign?.expand?.brand?.id as string}
+          />
+        )}
+      </div>
 
       {buttonText === "Inscrever-se" && (
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
