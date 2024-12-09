@@ -170,6 +170,15 @@ function CampaignPage() {
               {campaign?.additional_information}
             </p>
 
+            {campaign?.itinerary_suggestion && (
+              <>
+                <h2 className="font-bold mt-2">Sugestão de roteiro</h2>
+                <p className="text-black break-words">
+                  {campaign?.itinerary_suggestion}
+                </p>
+              </>
+            )}
+
             {/* External Link */}
             {campaign?.product_url && (
               <p className="mt-4 flex flex-wrap gap-2 font-medium">

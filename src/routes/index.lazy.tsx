@@ -93,7 +93,7 @@ function Index() {
         }
         buttonLabel="Pré cadastro de creators"
         buttonVariant="orange"
-        buttonOnClick={() => navigate({ to: "/cadastro/influenciador" })}
+        buttonOnClick={() => navigate({ to: "/cadastro/creator" })}
         reverse
       />
 

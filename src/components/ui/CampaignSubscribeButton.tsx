@@ -115,7 +115,7 @@ const CampaignSubscribeButton: React.FC = () => {
 
   const navigateToCompleteProfile = (): void => {
     if (user?.collectionName === "Influencers") {
-      navigate({ to: `/influenciador/${user.username}/editar` });
+      navigate({ to: `/creator/${user.username}/editar` });
     } else {
       navigate({ to: `/marca/${user?.username}/editar` });
     }

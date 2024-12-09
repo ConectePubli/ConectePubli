@@ -9,6 +9,7 @@ import {
   ChannelFilterType,
   NicheFilterType,
 } from "@/types/Filters";
+import { UserAuth } from "@/types/UserAuth";
 import { create } from "zustand";
 
 const ITEMS_PER_PAGE = 5;
@@ -148,7 +149,85 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
           sort: "-created",
         });
 
-      setCampaigns(result.items);
+      let filteredCampaigns = result.items;
+      const userAuthString = localStorage.getItem("pocketbase_auth");
+
+      if (userAuthString) {
+        const user = JSON.parse(userAuthString) as UserAuth;
+
+        if (user && user.model) {
+          // Buscar participações do usuário
+          const participations = await pb
+            .collection("Campaigns_Participations")
+            .getFullList({
+              filter: `influencer="${user.model.id}"`,
+            });
+
+          // Mapear participação do usuário: campaign_id -> { status, id }
+          const participationMap: Record<
+            string,
+            { status: string; id: string }
+          > = {};
+          participations.forEach((p) => {
+            participationMap[p.campaign] = { status: p.status, id: p.id };
+          });
+
+          // Contar quantos aprovados/completos há por campanha
+          const allParticipations = await pb
+            .collection("Campaigns_Participations")
+            .getFullList();
+          const approvedCountMap: Record<string, number> = {};
+
+          allParticipations.forEach((part) => {
+            if (part.status === "approved" || part.status === "completed") {
+              approvedCountMap[part.campaign] =
+                (approvedCountMap[part.campaign] || 0) + 1;
+            }
+          });
+
+          // Filtrar campanhas baseadas no status do usuário e sold_out
+          for (const campaign of [...filteredCampaigns]) {
+            const userParticipation = participationMap[campaign.id];
+            const approvedCount = approvedCountMap[campaign.id] || 0;
+            const isSoldOut = (campaign.open_jobs || 0) <= approvedCount;
+
+            // Se participante já está approved/completed (diferente de waiting ou sold_out), remover
+            if (
+              userParticipation &&
+              userParticipation.status !== "waiting" &&
+              userParticipation.status !== "sold_out"
+            ) {
+              filteredCampaigns = filteredCampaigns.filter(
+                (c) => c.id !== campaign.id
+              );
+              continue;
+            }
+
+            // Se campanha está sold_out
+            if (isSoldOut) {
+              // Se o participante está waiting, atualizar para sold_out
+              if (userParticipation && userParticipation.status === "waiting") {
+                await pb
+                  .collection("Campaigns_Participations")
+                  .update(userParticipation.id, {
+                    status: "sold_out",
+                  });
+                userParticipation.status = "sold_out";
+              }
+
+              // Se o usuário não participa dessa campanha, remover da vitrine
+              if (!userParticipation) {
+                filteredCampaigns = filteredCampaigns.filter(
+                  (c) => c.id !== campaign.id
+                );
+                continue;
+              }
+            }
+          }
+        }
+      }
+
+      setCampaigns(filteredCampaigns);
       setTotalPages(result.totalPages);
       set({ isLoading: false });
     } catch (error) {
@@ -174,22 +253,22 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
     try {
       const filters: string[] = [];
-      const currentInfluencerId = pb.authStore.model?.id;
-
-      if (currentInfluencerId) {
-        filters.push(
-          `influencer = "${currentInfluencerId}" && campaign.paid=true`
-        );
-      } else {
-        throw new Error("Influencer ID not found in authentication.");
+      const userAuthString = localStorage.getItem("pocketbase_auth");
+      if (!userAuthString) {
+        throw new Error("User not authenticated");
       }
 
+      const user = JSON.parse(userAuthString) as UserAuth;
+      if (!user || !user.model) {
+        throw new Error("Influencer ID not found");
+      }
+
+      filters.push(`influencer = "${user.model.id}" && campaign.paid=true`);
       if (campaignGoalFilter)
         filters.push(`campaign.objective ~ "${campaignGoalFilter}"`);
       if (participationStatusFilter)
-        filters.push(`status ~ "${participationStatusFilter}"`);
-      if (searchTerm)
-        filters.push(`campaign.name ~ "${searchTerm}" & paid=true`);
+        filters.push(`status = "${participationStatusFilter}"`);
+      if (searchTerm) filters.push(`campaign.name ~ "${searchTerm}"`);
 
       const participationsResult = await pb
         .collection("Campaigns_Participations")
@@ -199,10 +278,43 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
           sort: "-created",
         });
 
-      const mergedCampaigns = participationsResult.items.map((item) => ({
-        ...item.expand?.campaign,
-        participationStatus: item.status,
-      }));
+      const mergedCampaigns: (Campaign & { participationStatus: string })[] =
+        participationsResult.items.map((item) => ({
+          ...(item.expand?.campaign as Campaign),
+          participationStatus: item.status,
+        }));
+
+      // Contar quantos aprovados/completos há por campanha para checar sold_out
+      const allParticipations = await pb
+        .collection("Campaigns_Participations")
+        .getFullList();
+      const approvedCountMap: Record<string, number> = {};
+
+      allParticipations.forEach((part) => {
+        if (part.status === "approved" || part.status === "completed") {
+          approvedCountMap[part.campaign] =
+            (approvedCountMap[part.campaign] || 0) + 1;
+        }
+      });
+
+      // Atualizar status de waiting para sold_out se a campanha estiver esgotada
+      for (const camp of mergedCampaigns) {
+        const approvedCount = approvedCountMap[camp.id] || 0;
+        const isSoldOut = (camp.open_jobs || 0) <= approvedCount;
+
+        if (isSoldOut && camp.participationStatus === "waiting") {
+          // Encontrar a participação para atualizar
+          const p = participationsResult.items.find(
+            (i) => i.campaign === camp.id
+          );
+          if (p) {
+            await pb.collection("Campaigns_Participations").update(p.id, {
+              status: "sold_out",
+            });
+            camp.participationStatus = ParticipationStatusFilter.Sold_out;
+          }
+        }
+      }
 
       setCampaigns(mergedCampaigns);
       setTotalPages(participationsResult.totalPages);

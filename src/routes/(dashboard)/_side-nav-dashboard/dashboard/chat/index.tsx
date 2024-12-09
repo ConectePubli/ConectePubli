@@ -225,7 +225,7 @@ function ChatPage() {
               variant={"ghost"}
               onClick={() =>
                 router.navigate({
-                  to: `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`,
+                  to: `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-creator"}`,
                 })
               }
             >

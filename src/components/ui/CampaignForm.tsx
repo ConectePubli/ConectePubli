@@ -29,6 +29,8 @@ import {
 import { Niche } from "@/types/Niche";
 import { Campaign } from "@/types/Campaign";
 import { Question } from "phosphor-react";
+import { Button } from "./button";
+import FloatingHelpButton from "./FloatingHelpButton";
 
 const channelIcons = {
   Instagram: InstagramIcon,
@@ -66,6 +68,7 @@ interface CampaignData {
     expected_actions: string;
     avoid_actions: string;
     additional_information: string;
+    itinerary_suggestion: string;
     disseminationChannels: string | string[];
   };
   audienceSegmentation: {
@@ -121,6 +124,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       expected_actions: "",
       avoid_actions: "",
       additional_information: "",
+      itinerary_suggestion: "",
       disseminationChannels: [],
     },
     audienceSegmentation: {
@@ -170,6 +174,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           avoid_actions: initialCampaignData.avoid_actions || "",
           additional_information:
             initialCampaignData.additional_information || "",
+          itinerary_suggestion: initialCampaignData.itinerary_suggestion || "",
           disseminationChannels: initialCampaignData.channels || [],
         },
         audienceSegmentation: {
@@ -316,6 +321,10 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       "additional_information",
       campaignData.basicInfo.additional_information
     );
+    formData.append(
+      "itinerary_suggestion",
+      campaignData.basicInfo.itinerary_suggestion
+    );
 
     if (Array.isArray(campaignData.basicInfo.disseminationChannels)) {
       campaignData.basicInfo.disseminationChannels.forEach((channel) => {
@@ -416,11 +425,19 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         .getFullList<Campaign>({ fields: "unique_name" })
         .then((campaigns) => campaigns.map((c) => c.unique_name));
 
-      const baseName = campaignData.basicInfo.campaignName
+      const sanitizedName = campaignData.basicInfo.campaignName
+        .replace(/[^\p{L}\p{N}\s]/gu, "") // Remove pontuações
         .toLowerCase()
-        .replace(/\s+/g, "_")
         .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+        .replace(/[\u0300-\u036f]/g, "") // Remove acentuações
+        .trim()
+        .split(/\s+/); // Separa em palavras
+
+      // Mantém apenas as primeiras 5 palavras
+      const limitedWords = sanitizedName.slice(0, 5);
+
+      // Junta as palavras com underscore
+      const baseName = limitedWords.join("_");
 
       uniqueName = generateUniqueName(baseName, existingUniqueNames);
     }
@@ -683,10 +700,11 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         onChange={setResponsibleInfo}
       />
 
-      <div className="px-5 w-full">
-        <button
+      <div className="px-5 w-full flex justify-center">
+        <Button
+          variant={"blue"}
           onClick={handleSubmit}
-          className="w-[200px] bg-[#10438F] text-white py-2 rounded-md mt-6 mb-8 w-full"
+          className="w-auto text-white py-2 px-5 rounded-md mt-6 mb-8"
           disabled={mutate.isPending}
         >
           {mutate.isPending
@@ -694,8 +712,10 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             : isEditMode
               ? "Atualizar Campanha"
               : "Concluir e prosseguir para o pagamento"}
-        </button>
+        </Button>
       </div>
+
+      {!isEditMode && <FloatingHelpButton />}
 
       <ToastContainer />
     </div>
@@ -733,6 +753,7 @@ function BasicInfoSection({
   const [tooltipOpenAvoidActions, setTooltipOpenAvoidActions] = useState(false);
   const [tooltipOpenAdditionalInfo, setTooltipOpenAdditionalInfo] =
     useState(false);
+  const [tooltipOpenSuggestion, setTooltipOpenSuggestion] = useState(false);
 
   // Referências para tooltips
   const tooltipRefFormat = useRef<HTMLDivElement>(null);
@@ -744,6 +765,7 @@ function BasicInfoSection({
   const tooltipRefExpectedActions = useRef<HTMLDivElement>(null);
   const tooltipRefAvoidActions = useRef<HTMLDivElement>(null);
   const tooltipRefAdditionalInfo = useRef<HTMLDivElement>(null);
+  const tooltipRefSuggestion = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -800,6 +822,12 @@ function BasicInfoSection({
         !tooltipRefAdditionalInfo.current.contains(event.target as Node)
       ) {
         setTooltipOpenAdditionalInfo(false);
+      }
+      if (
+        tooltipRefSuggestion.current &&
+        !tooltipRefSuggestion.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenSuggestion(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -1403,6 +1431,52 @@ function BasicInfoSection({
               marca. Certifique-se de fornecer informações claras e detalhadas
               em cada campo para evitar ambiguidades.
             </p>
+          </div>
+
+          <div className="col-span-1 mt-6">
+            <label className="block mb-1 text-gray-700 font-semibold flex items-center">
+              Sugestão de roteiro (opcional)
+              <div className="relative inline-block">
+                <Question
+                  size={18}
+                  color="#00f"
+                  className="ml-2 min-w-[1rem] cursor-pointer"
+                  onClick={() => {
+                    setTooltipOpenSuggestion(!tooltipOpenSuggestion);
+                  }}
+                />
+                {tooltipOpenSuggestion && (
+                  <div
+                    ref={tooltipRefSuggestion}
+                    className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                    style={{
+                      top: "100%",
+                      left: "-100%",
+                      transform: "translateX(-50%)",
+                      width: "300px",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <p className="text-gray-700 font-normal">
+                      Este campo é reservado para marcas que desejam sugerir um
+                      roteiro para o influencer. Caso prefira dar liberdade
+                      criativa ao influencer, deixe este campo em branco.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </label>
+            <p className="text-gray-500 text-sm mb-2">
+              Utilize este campo para oferecer um guia criativo ao influencer.
+              Caso prefira dar liberdade total, deixe em branco.
+            </p>
+            <textarea
+              name="itinerary_suggestion"
+              value={data.itinerary_suggestion || ""}
+              onChange={handleInputChange}
+              className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Exemplo: Sugestão de uma sequência de ideias, tópicos ou cenas a serem exploradas no vídeo."
+            />
           </div>
         </div>
       </div>

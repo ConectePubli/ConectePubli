@@ -6,84 +6,84 @@ import {
   useNavigate,
   useMatch,
   redirect,
-} from "@tanstack/react-router";
-import React, { useState, useEffect, useRef } from "react";
-import { CaretDown, CaretUp, Image, Plus, User, X } from "phosphor-react";
-import pb from "@/lib/pb";
-import { UserAuth } from "@/types/UserAuth";
-import { Influencer } from "@/types/Influencer";
-import Spinner from "@/components/ui/Spinner";
-import { Niche } from "@/types/Niche";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+} from '@tanstack/react-router'
+import React, { useState, useEffect, useRef } from 'react'
+import { CaretDown, CaretUp, Image, Plus, User, X } from 'phosphor-react'
+import pb from '@/lib/pb'
+import { UserAuth } from '@/types/UserAuth'
+import { Influencer } from '@/types/Influencer'
+import Spinner from '@/components/ui/Spinner'
+import { Niche } from '@/types/Niche'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
-import { getUserType } from "@/lib/auth";
-import { CheckCircle, Circle, Eye, EyeClosed, Settings } from "lucide-react";
-import { ClientResponseError } from "pocketbase";
+import { getUserType } from '@/lib/auth'
+import { CheckCircle, Circle, Eye, EyeClosed, Settings } from 'lucide-react'
+import { ClientResponseError } from 'pocketbase'
 
-import FacebookIcon from "@/assets/icons/brands/facebook.svg";
-import InstagramIcon from "@/assets/icons/brands/instagram.svg";
-import KwaiIcon from "@/assets/icons/brands/kwai.svg";
-import LinkedInIcon from "@/assets/icons/brands/linkedin.svg";
-import PinterestIcon from "@/assets/icons/brands/pinterest.svg";
-import TiktokIcon from "@/assets/icons/brands/tiktok.svg";
-import TwitchIcon from "@/assets/icons/brands/twitch.svg";
-import TwitterIcon from "@/assets/icons/brands/twitter.svg";
-import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
-import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
+import FacebookIcon from '@/assets/icons/brands/facebook.svg'
+import InstagramIcon from '@/assets/icons/brands/instagram.svg'
+import KwaiIcon from '@/assets/icons/brands/kwai.svg'
+import LinkedInIcon from '@/assets/icons/brands/linkedin.svg'
+import PinterestIcon from '@/assets/icons/brands/pinterest.svg'
+import TiktokIcon from '@/assets/icons/brands/tiktok.svg'
+import TwitchIcon from '@/assets/icons/brands/twitch.svg'
+import TwitterIcon from '@/assets/icons/brands/twitter.svg'
+import YourClubIcon from '@/assets/icons/brands/yourclub.svg'
+import YouTubeIcon from '@/assets/icons/brands/youtube.svg'
 
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/(perfis)/influenciador/$username/editar/"
+  '/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/editar/',
 )({
   component: InfluencerEditProfilePage,
   beforeLoad: async () => {
     if (!(await getUserType())) {
       throw redirect({
-        to: "/login123new",
-      });
+        to: '/login123new',
+      })
     }
   },
-});
+})
 
 function InfluencerEditProfilePage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const {
     params: { username },
   } = useMatch({
-    from: "/(dashboard)/_side-nav-dashboard/influenciador/$username/editar/",
-  });
+    from: '/(dashboard)/_side-nav-dashboard/creator/$username/editar/',
+  })
 
-  const [influencer, setInfluencer] = useState<Influencer | null>(null);
-  const [formData, setFormData] = useState<Influencer>();
-  const [loading, setLoading] = useState(true);
+  const [influencer, setInfluencer] = useState<Influencer | null>(null)
+  const [formData, setFormData] = useState<Influencer>()
+  const [loading, setLoading] = useState(true)
 
   const requiredFields: { [key: string]: string[] } = {
-    basicData: ["background_img", "bio"],
+    basicData: ['background_img', 'bio'],
     about: [
-      "name",
-      "birth_date",
-      "email",
-      "cell_phone",
-      "account_type",
-      "gender",
+      'name',
+      'birth_date',
+      'email',
+      'cell_phone',
+      'account_type',
+      'gender',
     ],
     address: [
-      "country",
-      "cep",
-      "street",
-      "neighborhood",
-      "city",
-      "state",
-      "address_num",
+      'country',
+      'cep',
+      'street',
+      'neighborhood',
+      'city',
+      'state',
+      'address_num',
     ],
-    socialMedia: ["At least one social media field"],
-    bankAccount: ["pix_key"],
-    mediaKit: ["media_kit_url"],
-    skills: ["languages"],
+    socialMedia: ['At least one social media field'],
+    bankAccount: ['pix_key'],
+    mediaKit: ['media_kit_url'],
+    skills: ['languages'],
     accountInfo: [],
     portfolio: [],
-  };
+  }
 
   // State to manage isFormChanged and loading per section
   const [isFormChangedStates, setIsFormChangedStates] = useState<any>({
@@ -96,7 +96,7 @@ function InfluencerEditProfilePage() {
     portfolio: false,
     skills: false,
     accountInfo: false,
-  });
+  })
 
   const [loadingStates, setLoadingStates] = useState<any>({
     basicData: false,
@@ -108,9 +108,9 @@ function InfluencerEditProfilePage() {
     portfolio: false,
     skills: false,
     accountInfo: false,
-  });
+  })
 
-  const [addressFieldsDisabled, setAddressFieldsDisabled] = useState(true);
+  const [addressFieldsDisabled, setAddressFieldsDisabled] = useState(true)
 
   // check sections
   const [sectionCompletion, setSectionCompletion] = useState({
@@ -123,241 +123,241 @@ function InfluencerEditProfilePage() {
     portfolio: false,
     skills: false,
     accountInfo: false,
-  });
+  })
 
   function isFieldEmpty(value: any): boolean {
     if (value === undefined || value === null) {
-      return true;
+      return true
     }
-    if (typeof value === "string") {
-      return value.trim() === "";
+    if (typeof value === 'string') {
+      return value.trim() === ''
     }
-    if (typeof value === "number") {
-      return value === 0 || isNaN(value);
+    if (typeof value === 'number') {
+      return value === 0 || isNaN(value)
     }
-    if (typeof value === "boolean") {
-      return false;
+    if (typeof value === 'boolean') {
+      return false
     }
     if (Array.isArray(value)) {
-      return value.length === 0;
+      return value.length === 0
     }
     if (value instanceof Date) {
-      return isNaN(value.getTime());
+      return isNaN(value.getTime())
     }
-    return false;
+    return false
   }
 
   const checkSectionCompletion = (section: string) => {
-    const missingFields: string[] = [];
+    const missingFields: string[] = []
 
     if (formData) {
-      if (section !== "portfolio") {
-        if (section === "socialMedia") {
+      if (section !== 'portfolio') {
+        if (section === 'socialMedia') {
           const socialFields = [
-            "instagram_url",
-            "tiktok_url",
-            "facebook_url",
-            "youtube_url",
-            "pinterest_url",
-            "twitter_url",
-            "twitch_url",
-            "linkedin_url",
-            "kwai_url",
-            "yourclub_url",
-          ];
+            'instagram_url',
+            'tiktok_url',
+            'facebook_url',
+            'youtube_url',
+            'pinterest_url',
+            'twitter_url',
+            'twitch_url',
+            'linkedin_url',
+            'kwai_url',
+            'yourclub_url',
+          ]
           const hasAtLeastOne = socialFields.some((field) => {
-            const value = formData[field as keyof Influencer];
-            return !isFieldEmpty(value);
-          });
+            const value = formData[field as keyof Influencer]
+            return !isFieldEmpty(value)
+          })
           if (!hasAtLeastOne) {
             missingFields.push(
-              "Pelo menos uma rede social deve ser preenchida."
-            );
+              'Pelo menos uma rede social deve ser preenchida.',
+            )
           }
         } else {
-          const fields = requiredFields[section] || [];
+          const fields = requiredFields[section] || []
           fields.forEach((field) => {
-            const value = formData[field as keyof Influencer];
+            const value = formData[field as keyof Influencer]
             if (isFieldEmpty(value)) {
-              missingFields.push(field);
+              missingFields.push(field)
             }
-          });
+          })
         }
       } else {
-        if (formData["previous_work_imgs"].length === 0) {
-          return false;
+        if (formData['previous_work_imgs'].length === 0) {
+          return false
         }
       }
     }
 
-    return missingFields.length === 0;
-  };
+    return missingFields.length === 0
+  }
 
   useEffect(() => {
     if (formData) {
-      const sections = Object.keys(requiredFields);
-      const newSectionCompletion: any = {};
+      const sections = Object.keys(requiredFields)
+      const newSectionCompletion: any = {}
       sections.forEach((section) => {
-        newSectionCompletion[section] = checkSectionCompletion(section);
-      });
-      setSectionCompletion(newSectionCompletion);
+        newSectionCompletion[section] = checkSectionCompletion(section)
+      })
+      setSectionCompletion(newSectionCompletion)
     }
-  }, [formData]);
+  }, [formData])
 
   useEffect(() => {
     const fetchUserAndInfluencer = async () => {
       try {
-        const userAuthStr = localStorage.getItem("pocketbase_auth");
+        const userAuthStr = localStorage.getItem('pocketbase_auth')
         if (!userAuthStr) {
-          navigate({ to: "/login" });
-          return;
+          navigate({ to: '/login' })
+          return
         }
-        const user: UserAuth = JSON.parse(userAuthStr);
+        const user: UserAuth = JSON.parse(userAuthStr)
 
-        const influencerData = await pb.collection("Influencers").getFullList({
+        const influencerData = await pb.collection('Influencers').getFullList({
           filter: `username="${username}"`,
-          expand: "niche",
-        });
+          expand: 'niche',
+        })
 
-        console.log(influencerData);
+        console.log(influencerData)
         if (influencerData.length === 0) {
-          navigate({ to: `/influenciador/${username}` });
-          return;
+          navigate({ to: `/creator/${username}` })
+          return
         }
 
-        const influencerInfo = influencerData[0] as unknown as Influencer;
+        const influencerInfo = influencerData[0] as unknown as Influencer
 
         if (user.model.id !== influencerInfo.id) {
-          navigate({ to: `/influenciador/${username}` });
-          return;
+          navigate({ to: `/creator/${username}` })
+          return
         }
 
         if (influencerInfo.birth_date) {
-          influencerInfo.birth_date = influencerInfo.birth_date.split(" ")[0];
+          influencerInfo.birth_date = influencerInfo.birth_date.split(' ')[0]
         }
 
-        setInfluencer(influencerInfo);
-        setFormData(influencerInfo);
-        setLoading(false);
+        setInfluencer(influencerInfo)
+        setFormData(influencerInfo)
+        setLoading(false)
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error)
         toast.error(
-          "Erro ao buscar dados do influenciador. Por favor, tente novamente.",
+          'Erro ao buscar dados do influenciador. Por favor, tente novamente.',
           {
-            position: "top-right",
+            position: 'top-right',
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          }
-        );
+          },
+        )
 
-        navigate({ to: `/influenciador/${username}` });
+        navigate({ to: `/creator/${username}` })
       }
-    };
+    }
 
-    fetchUserAndInfluencer();
-  }, [username]);
+    fetchUserAndInfluencer()
+  }, [username])
 
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
-    const { name, value, files } = e.target as HTMLInputElement;
-    let newValue: any = value;
+    const { name, value, files } = e.target as HTMLInputElement
+    let newValue: any = value
     if (files && files.length > 0) {
-      newValue = files[0];
+      newValue = files[0]
     }
 
     setFormData((prev: any) => {
-      const updatedFormData = { ...prev, [name]: newValue };
-      return updatedFormData;
-    });
-  };
+      const updatedFormData = { ...prev, [name]: newValue }
+      return updatedFormData
+    })
+  }
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLButtonElement>,
-    section: string
+    section: string,
   ) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    console.log("submit");
+    console.log('submit')
 
     // Função para validar campos
     const validateFields = () => {
-      const missingFields: string[] = [];
+      const missingFields: string[] = []
 
       if (formData) {
-        if (section !== "portfolio") {
-          if (section === "socialMedia") {
+        if (section !== 'portfolio') {
+          if (section === 'socialMedia') {
             // Validação para a seção de redes sociais
             const socialFields = [
-              "instagram_url",
-              "tiktok_url",
-              "facebook_url",
-              "youtube_url",
-              "pinterest_url",
-              "twitter_url",
-              "twitch_url",
-              "linkedin_url",
-              "kwai_url",
-              "yourclub_url",
-            ];
+              'instagram_url',
+              'tiktok_url',
+              'facebook_url',
+              'youtube_url',
+              'pinterest_url',
+              'twitter_url',
+              'twitch_url',
+              'linkedin_url',
+              'kwai_url',
+              'yourclub_url',
+            ]
             const hasAtLeastOne = socialFields.some(
               (field) =>
                 formData[field as keyof Influencer] &&
                 //@ts-expect-error
-                formData[field as keyof Influencer]?.trim() !== ""
-            );
+                formData[field as keyof Influencer]?.trim() !== '',
+            )
             if (!hasAtLeastOne) {
               missingFields.push(
-                "Pelo menos uma rede social deve ser preenchida."
-              );
+                'Pelo menos uma rede social deve ser preenchida.',
+              )
             }
           } else {
-            const fields = requiredFields[section] || [];
+            const fields = requiredFields[section] || []
             fields.forEach((field) => {
               if (
                 !formData[field as keyof Influencer] ||
-                (typeof formData[field as keyof Influencer] === "string" &&
+                (typeof formData[field as keyof Influencer] === 'string' &&
                   //@ts-expect-error
-                  formData[field as keyof Influencer].trim() === "")
+                  formData[field as keyof Influencer].trim() === '')
               ) {
                 const fieldNames: { [key: string]: string } = {
-                  background_img: "Foto de fundo",
-                  bio: "Bio",
-                  name: "Nome Completo",
-                  username: "Username",
-                  birth_date: "Data de Nascimento",
-                  email: "Email",
-                  cell_phone: "Telefone Celular",
-                  account_type: "Tipo de Conta",
-                  gender: "Gênero",
-                  country: "País",
-                  cep: "CEP",
-                  street: "Rua",
-                  neighborhood: "Bairro",
-                  city: "Cidade",
-                  state: "Estado",
-                  address_num: "Número",
-                  pix_key: "Chave Pix",
-                  media_kit_url: "Mídia Kit",
-                  languages: "Idiomas",
-                };
-                missingFields.push(fieldNames[field] || field);
+                  background_img: 'Foto de fundo',
+                  bio: 'Bio',
+                  name: 'Nome Completo',
+                  username: 'Username',
+                  birth_date: 'Data de Nascimento',
+                  email: 'Email',
+                  cell_phone: 'Telefone Celular',
+                  account_type: 'Tipo de Conta',
+                  gender: 'Gênero',
+                  country: 'País',
+                  cep: 'CEP',
+                  street: 'Rua',
+                  neighborhood: 'Bairro',
+                  city: 'Cidade',
+                  state: 'Estado',
+                  address_num: 'Número',
+                  pix_key: 'Chave Pix',
+                  media_kit_url: 'Mídia Kit',
+                  languages: 'Idiomas',
+                }
+                missingFields.push(fieldNames[field] || field)
               }
-            });
+            })
           }
         }
       }
 
-      return missingFields;
-    };
+      return missingFields
+    }
 
-    const missingFields = validateFields();
+    const missingFields = validateFields()
 
     if (missingFields.length > 0) {
       toast.warning(
@@ -370,148 +370,148 @@ function InfluencerEditProfilePage() {
           </ul>
         </div>,
         {
-          position: "top-right",
+          position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        }
-      );
-      return;
+        },
+      )
+      return
     }
 
-    setLoadingStates((prev: any) => ({ ...prev, [section]: true }));
+    setLoadingStates((prev: any) => ({ ...prev, [section]: true }))
 
     if (formData) {
       try {
-        const updateData: any = {};
+        const updateData: any = {}
 
-        console.log("account type");
-        console.log(formData.account_type);
+        console.log('account type')
+        console.log(formData.account_type)
 
-        if (section === "basicData") {
+        if (section === 'basicData') {
           if (formData.background_img) {
-            updateData["background_img"] = formData.background_img;
+            updateData['background_img'] = formData.background_img
           }
           if (formData.profile_img) {
-            updateData["profile_img"] = formData.profile_img;
+            updateData['profile_img'] = formData.profile_img
           }
           if (formData.bio) {
-            updateData["bio"] = formData.bio;
+            updateData['bio'] = formData.bio
           }
           if (formData.niche) {
-            updateData["niche"] = formData.niche;
+            updateData['niche'] = formData.niche
           }
-        } else if (section === "about") {
-          updateData["name"] = formData.name;
-          updateData["username"] = formData.username;
-          updateData["birth_date"] = formData.birth_date;
-          updateData["email"] = formData.email;
-          updateData["cell_phone"] = formData.cell_phone;
-          updateData["account_type"] = formData.account_type;
-          updateData["gender"] = formData.gender;
-        } else if (section === "address") {
-          updateData["country"] = formData.country;
-          updateData["cep"] = formData.cep;
-          updateData["street"] = formData.street;
-          updateData["address_num"] = formData.address_num;
-          updateData["complement"] = formData.complement;
-          updateData["neighborhood"] = formData.neighborhood;
-          updateData["city"] = formData.city;
-          updateData["state"] = formData.state;
-        } else if (section === "socialMedia") {
-          updateData["instagram_url"] = formData.instagram_url;
-          updateData["tiktok_url"] = formData.tiktok_url;
-          updateData["facebook_url"] = formData.facebook_url;
-          updateData["youtube_url"] = formData.youtube_url;
-          updateData["pinterest_url"] = formData.pinterest_url;
-          updateData["twitter_url"] = formData.twitter_url;
-          updateData["twitch_url"] = formData.twitch_url;
-          updateData["linkedin_url"] = formData.linkedin_url;
-          updateData["kwai_url"] = formData.kwai_url;
-          updateData["yourclub_url"] = formData.yourclub_url;
-        } else if (section === "mediaKit") {
-          updateData["media_kit_url"] = formData.media_kit_url;
-        } else if (section === "bankAccount") {
-          updateData["pix_key"] = formData.pix_key;
-        } else if (section === "portfolio") {
+        } else if (section === 'about') {
+          updateData['name'] = formData.name
+          updateData['username'] = formData.username
+          updateData['birth_date'] = formData.birth_date
+          updateData['email'] = formData.email
+          updateData['cell_phone'] = formData.cell_phone
+          updateData['account_type'] = formData.account_type
+          updateData['gender'] = formData.gender
+        } else if (section === 'address') {
+          updateData['country'] = formData.country
+          updateData['cep'] = formData.cep
+          updateData['street'] = formData.street
+          updateData['address_num'] = formData.address_num
+          updateData['complement'] = formData.complement
+          updateData['neighborhood'] = formData.neighborhood
+          updateData['city'] = formData.city
+          updateData['state'] = formData.state
+        } else if (section === 'socialMedia') {
+          updateData['instagram_url'] = formData.instagram_url
+          updateData['tiktok_url'] = formData.tiktok_url
+          updateData['facebook_url'] = formData.facebook_url
+          updateData['youtube_url'] = formData.youtube_url
+          updateData['pinterest_url'] = formData.pinterest_url
+          updateData['twitter_url'] = formData.twitter_url
+          updateData['twitch_url'] = formData.twitch_url
+          updateData['linkedin_url'] = formData.linkedin_url
+          updateData['kwai_url'] = formData.kwai_url
+          updateData['yourclub_url'] = formData.yourclub_url
+        } else if (section === 'mediaKit') {
+          updateData['media_kit_url'] = formData.media_kit_url
+        } else if (section === 'bankAccount') {
+          updateData['pix_key'] = formData.pix_key
+        } else if (section === 'portfolio') {
           if (
             formData.previous_work_imgs &&
             formData.previous_work_imgs.length > 0
           ) {
-            updateData["previous_work_imgs"] = formData.previous_work_imgs;
+            updateData['previous_work_imgs'] = formData.previous_work_imgs
           } else {
-            updateData["previous_work_imgs"] = null;
+            updateData['previous_work_imgs'] = null
           }
-        } else if (section === "skills") {
-          updateData["languages"] = formData.languages;
+        } else if (section === 'skills') {
+          updateData['languages'] = formData.languages
         }
 
-        const data = new FormData();
-        console.log(updateData);
+        const data = new FormData()
+        console.log(updateData)
         for (const key in updateData) {
-          const value = updateData[key];
+          const value = updateData[key]
 
           if (value === undefined || value === null) {
-            data.append(key, "");
+            data.append(key, '')
           } else if (value instanceof File) {
-            data.append(key, value);
+            data.append(key, value)
           } else if (Array.isArray(value)) {
             if (value.length === 0) {
-              data.append(key, "");
+              data.append(key, '')
             } else {
               value.forEach((item: any) => {
-                data.append(key, item);
-              });
+                data.append(key, item)
+              })
             }
           } else {
-            data.append(key, value);
+            data.append(key, value)
           }
         }
 
-        await pb.collection("Influencers").update(influencer!.id, data);
+        await pb.collection('Influencers').update(influencer!.id, data)
 
-        setIsFormChangedStates((prev: any) => ({ ...prev, [section]: false }));
+        setIsFormChangedStates((prev: any) => ({ ...prev, [section]: false }))
       } catch (error) {
-        console.error("Error updating data:", error);
+        console.error('Error updating data:', error)
 
-        const err = error as ClientResponseError;
+        const err = error as ClientResponseError
 
         let errorMessage =
-          "Erro ao salvar as alterações. Por favor, tente novamente.";
+          'Erro ao salvar as alterações. Por favor, tente novamente.'
 
         if (err && err.data && err.data.data && err.data.data.username) {
-          const usernameError = err.data.data.username;
+          const usernameError = err.data.data.username
 
-          if (usernameError.code === "validation_invalid_username") {
-            errorMessage = "O nome de usuário é inválido ou já está em uso.";
+          if (usernameError.code === 'validation_invalid_username') {
+            errorMessage = 'O nome de usuário é inválido ou já está em uso.'
           }
         }
 
         toast.error(errorMessage, {
-          position: "top-right",
+          position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-        });
+        })
       } finally {
-        setLoadingStates((prev: any) => ({ ...prev, [section]: false }));
+        setLoadingStates((prev: any) => ({ ...prev, [section]: false }))
       }
     }
-  };
+  }
 
   const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const cep = e.target.value;
-    setFormData((prev: any) => ({ ...prev, cep }));
+    const cep = e.target.value
+    setFormData((prev: any) => ({ ...prev, cep }))
     if (cep.length === 8) {
       try {
-        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        const data = await response.json();
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        const data = await response.json()
         if (!data.erro) {
           setFormData((prev: any) => ({
             ...prev,
@@ -519,39 +519,39 @@ function InfluencerEditProfilePage() {
             neighborhood: data.bairro,
             city: data.localidade,
             state: data.uf,
-          }));
-          setAddressFieldsDisabled(false);
+          }))
+          setAddressFieldsDisabled(false)
         } else {
-          setAddressFieldsDisabled(false);
+          setAddressFieldsDisabled(false)
         }
       } catch (error) {
-        console.error("Error fetching CEP data:", error);
+        console.error('Error fetching CEP data:', error)
         toast.error(
-          "CEP não encontrado. Por favor, verifique o CEP informado.",
+          'CEP não encontrado. Por favor, verifique o CEP informado.',
           {
-            position: "top-right",
+            position: 'top-right',
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-          }
-        );
-        setAddressFieldsDisabled(false);
+          },
+        )
+        setAddressFieldsDisabled(false)
       }
     } else {
-      setAddressFieldsDisabled(true);
+      setAddressFieldsDisabled(true)
     }
-    setIsFormChangedStates((prev: any) => ({ ...prev, address: true }));
-  };
+    setIsFormChangedStates((prev: any) => ({ ...prev, address: true }))
+  }
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spinner />
       </div>
-    );
+    )
   }
 
   return (
@@ -695,16 +695,16 @@ function InfluencerEditProfilePage() {
 
       <ToastContainer />
     </div>
-  );
+  )
 }
 
 interface SectionProps {
-  title: string;
-  children: React.ReactNode;
-  initiallyOpen?: boolean;
-  completed?: boolean;
-  isConfig?: boolean;
-  hasUnsavedChanges?: boolean;
+  title: string
+  children: React.ReactNode
+  initiallyOpen?: boolean
+  completed?: boolean
+  isConfig?: boolean
+  hasUnsavedChanges?: boolean
 }
 
 function Section({
@@ -715,7 +715,7 @@ function Section({
   isConfig,
   hasUnsavedChanges,
 }: SectionProps) {
-  const [isOpen, setIsOpen] = useState(initiallyOpen);
+  const [isOpen, setIsOpen] = useState(initiallyOpen)
 
   return (
     <div className="bg-white rounded-lg overflow-hidden border-2">
@@ -755,19 +755,19 @@ function Section({
       </div>
       {isOpen && <div className="mt-4 space-y-6 px-5 pb-5">{children}</div>}
     </div>
-  );
+  )
 }
 interface FormProps {
-  formData: any;
-  setFormData?: any;
-  handleInputChange?: any;
-  handleSubmit: any;
-  isFormChanged: any;
-  setIsFormChangedStates: any;
-  loading: boolean;
-  addressFieldsDisabled?: boolean;
-  handleCepChange?: any;
-  setLoadingStates: React.ComponentState;
+  formData: any
+  setFormData?: any
+  handleInputChange?: any
+  handleSubmit: any
+  isFormChanged: any
+  setIsFormChangedStates: any
+  loading: boolean
+  addressFieldsDisabled?: boolean
+  handleCepChange?: any
+  setLoadingStates: React.ComponentState
 }
 
 function BasicDataSection({
@@ -779,12 +779,12 @@ function BasicDataSection({
   loading,
   setFormData,
 }: FormProps) {
-  const [nicheInput, setNicheInput] = useState("");
-  const [niches, setNiches] = useState(formData?.expand?.niche || []);
-  const [suggestedNiches, setSuggestedNiches] = useState<Niche[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [nicheInput, setNicheInput] = useState('')
+  const [niches, setNiches] = useState(formData?.expand?.niche || [])
+  const [suggestedNiches, setSuggestedNiches] = useState<Niche[]>([])
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -792,76 +792,76 @@ function BasicDataSection({
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsDropdownOpen(false);
+        setIsDropdownOpen(false)
       }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
+    }
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   const handleSectionInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    handleInputChange(e);
-    setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
-  };
+    handleInputChange(e)
+    setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }))
+  }
 
   const fetchNiches = async (query: string) => {
     if (!query) {
-      setSuggestedNiches([]);
-      setIsDropdownOpen(false);
-      return;
+      setSuggestedNiches([])
+      setIsDropdownOpen(false)
+      return
     }
     try {
-      const response = await pb.collection("Niches").getFullList({
+      const response = await pb.collection('Niches').getFullList({
         filter: `niche ~ "${query}"`,
         limit: 10,
-      });
-      setSuggestedNiches(response as unknown as Niche[]);
-      setIsDropdownOpen(response.length > 0);
+      })
+      setSuggestedNiches(response as unknown as Niche[])
+      setIsDropdownOpen(response.length > 0)
     } catch (error) {
-      console.error("Erro ao buscar nichos:", error);
+      console.error('Erro ao buscar nichos:', error)
     }
-  };
+  }
 
   useEffect(() => {
     if (nicheInput) {
-      fetchNiches(nicheInput);
+      fetchNiches(nicheInput)
     } else {
-      setSuggestedNiches([]);
-      setIsDropdownOpen(false);
+      setSuggestedNiches([])
+      setIsDropdownOpen(false)
     }
-  }, [nicheInput]);
+  }, [nicheInput])
 
   const addNiche = (niche: Niche) => {
     if (!niches.some((n: { id: string }) => n.id === niche.id)) {
-      const updatedNiches = [...niches, niche];
-      setNiches(updatedNiches);
+      const updatedNiches = [...niches, niche]
+      setNiches(updatedNiches)
       setFormData((prev: any) => ({
         ...prev,
         niche: updatedNiches.map((n) => n.id),
-      }));
-      setNicheInput("");
-      setSuggestedNiches([]);
-      setIsDropdownOpen(false);
-      setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
+      }))
+      setNicheInput('')
+      setSuggestedNiches([])
+      setIsDropdownOpen(false)
+      setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }))
 
-      console.log("atualizou dados");
+      console.log('atualizou dados')
     }
-  };
+  }
 
   const removeNiche = (index: number) => {
-    const updatedNiches = niches.filter((_: any, i: number) => i !== index);
-    setNiches(updatedNiches);
+    const updatedNiches = niches.filter((_: any, i: number) => i !== index)
+    setNiches(updatedNiches)
     setFormData((prev: any) => ({
       ...prev,
       niche: updatedNiches.map((n: { id: any }) => n.id),
-    }));
+    }))
 
-    setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
-  };
+    setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }))
+  }
 
   return (
     <>
@@ -877,7 +877,7 @@ function BasicDataSection({
                   ? formData.background_img instanceof File
                     ? URL.createObjectURL(formData.background_img)
                     : pb.getFileUrl(formData, formData.background_img)
-                  : "https://via.placeholder.com/600"
+                  : 'https://via.placeholder.com/600'
               }
               alt="Cover"
               className="w-full h-48 object-cover rounded-lg mb-4"
@@ -906,7 +906,7 @@ function BasicDataSection({
                   ? formData.profile_img instanceof File
                     ? URL.createObjectURL(formData.profile_img)
                     : pb.getFileUrl(formData, formData.profile_img)
-                  : "https://via.placeholder.com/80"
+                  : 'https://via.placeholder.com/80'
               }
               alt="Profile"
               className="w-20 h-20 object-cover rounded-full border-2 border-gray-300"
@@ -919,7 +919,7 @@ function BasicDataSection({
           <input
             type="file"
             name="profile_img"
-            className="border border-gray-300 p-2 rounded-lg mt-4"
+            className="border border-gray-300 p-2 rounded-lg mt-4 max-sm: w-full"
             onChange={handleSectionInputChange}
           />
         </div>
@@ -933,7 +933,7 @@ function BasicDataSection({
           className="border border-gray-300 p-2 rounded-lg w-full"
           rows={3}
           placeholder="Escreva uma breve descrição sobre você"
-          value={formData.bio || ""}
+          value={formData.bio || ''}
           onChange={handleSectionInputChange}
         />
       </div>
@@ -990,15 +990,15 @@ function BasicDataSection({
 
       <button
         className={`${
-          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+          isFormChanged ? 'bg-blue-600' : 'bg-gray-400'
         } text-white py-2 px-4 rounded-lg mt-4`}
-        onClick={(e) => handleSubmit(e, "basicData")}
+        onClick={(e) => handleSubmit(e, 'basicData')}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </>
-  );
+  )
 }
 
 function AboutSection({
@@ -1010,11 +1010,11 @@ function AboutSection({
   loading,
 }: FormProps) {
   const handleSectionInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    handleInputChange(e);
-    setIsFormChangedStates((prev: any) => ({ ...prev, about: true }));
-  };
+    handleInputChange(e)
+    setIsFormChangedStates((prev: any) => ({ ...prev, about: true }))
+  }
 
   return (
     <>
@@ -1027,7 +1027,7 @@ function AboutSection({
           name="name"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Nome completo"
-          value={formData.name || ""}
+          value={formData.name || ''}
           onChange={handleSectionInputChange}
         />
       </div>
@@ -1041,7 +1041,7 @@ function AboutSection({
           name="username"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Username"
-          value={formData.username || ""}
+          value={formData.username || ''}
           onChange={handleSectionInputChange}
         />
       </div>
@@ -1055,7 +1055,7 @@ function AboutSection({
           name="birth_date"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="DD/MM/AAAA"
-          value={formData.birth_date || ""}
+          value={formData.birth_date || ''}
           onChange={handleSectionInputChange}
         />
       </div>
@@ -1069,7 +1069,7 @@ function AboutSection({
           name="email"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Email"
-          value={formData.email || ""}
+          value={formData.email || ''}
           onChange={handleSectionInputChange}
         />
       </div>
@@ -1083,7 +1083,7 @@ function AboutSection({
           name="cell_phone"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Número do Whatsapp"
-          value={formData.cell_phone || ""}
+          value={formData.cell_phone || ''}
           onChange={handleSectionInputChange}
         />
       </div>
@@ -1095,7 +1095,7 @@ function AboutSection({
         <select
           name="account_type"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          value={formData.account_type || ""}
+          value={formData.account_type || ''}
           onChange={handleSectionInputChange}
         >
           <option value="" disabled>
@@ -1127,7 +1127,7 @@ function AboutSection({
         <select
           name="gender"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          value={formData.gender || ""}
+          value={formData.gender || ''}
           onChange={handleSectionInputChange}
         >
           <option value="" disabled>
@@ -1142,15 +1142,15 @@ function AboutSection({
 
       <button
         className={`${
-          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+          isFormChanged ? 'bg-blue-600' : 'bg-gray-400'
         } text-white py-2 px-4 rounded-lg mt-4`}
-        onClick={(e) => handleSubmit(e, "about")}
+        onClick={(e) => handleSubmit(e, 'about')}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </>
-  );
+  )
 }
 
 function AddressSection({
@@ -1163,11 +1163,11 @@ function AddressSection({
   loading,
 }: FormProps) {
   const handleSectionInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    handleInputChange(e);
-    setIsFormChangedStates((prev: any) => ({ ...prev, address: true }));
-  };
+    handleInputChange(e)
+    setIsFormChangedStates((prev: any) => ({ ...prev, address: true }))
+  }
 
   return (
     <>
@@ -1181,7 +1181,7 @@ function AddressSection({
             name="country"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="País"
-            value={formData.country || ""}
+            value={formData.country || ''}
             onChange={handleSectionInputChange}
           />
         </div>
@@ -1194,7 +1194,7 @@ function AddressSection({
             name="cep"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Digite seu CEP"
-            value={formData.cep || ""}
+            value={formData.cep || ''}
             onChange={handleCepChange}
           />
         </div>
@@ -1207,7 +1207,7 @@ function AddressSection({
             name="street"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Rua"
-            value={formData.street || ""}
+            value={formData.street || ''}
             onChange={handleSectionInputChange}
           />
         </div>
@@ -1220,7 +1220,7 @@ function AddressSection({
             name="neighborhood"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Bairro"
-            value={formData.neighborhood || ""}
+            value={formData.neighborhood || ''}
             onChange={handleSectionInputChange}
           />
         </div>
@@ -1233,7 +1233,7 @@ function AddressSection({
             name="city"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Cidade"
-            value={formData.city || ""}
+            value={formData.city || ''}
             onChange={handleSectionInputChange}
           />
         </div>
@@ -1246,7 +1246,7 @@ function AddressSection({
             name="state"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Estado"
-            value={formData.state || ""}
+            value={formData.state || ''}
             onChange={handleSectionInputChange}
           />
         </div>
@@ -1259,7 +1259,7 @@ function AddressSection({
             name="complement"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Complemento"
-            value={formData.complement || ""}
+            value={formData.complement || ''}
             onChange={handleSectionInputChange}
           />
         </div>
@@ -1272,22 +1272,22 @@ function AddressSection({
             name="address_num"
             className="border border-gray-300 p-2 rounded-lg w-full"
             placeholder="Número"
-            value={formData.address_num || ""}
+            value={formData.address_num || ''}
             onChange={handleSectionInputChange}
           />
         </div>
       </div>
       <button
         className={`${
-          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+          isFormChanged ? 'bg-blue-600' : 'bg-gray-400'
         } text-white py-2 px-4 rounded-lg`}
-        onClick={(e) => handleSubmit(e, "address")}
+        onClick={(e) => handleSubmit(e, 'address')}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </>
-  );
+  )
 }
 
 function SocialMediaSection({
@@ -1299,11 +1299,11 @@ function SocialMediaSection({
   loading,
 }: FormProps) {
   const handleSectionInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    handleInputChange(e);
-    setIsFormChangedStates((prev: any) => ({ ...prev, socialMedia: true }));
-  };
+    handleInputChange(e)
+    setIsFormChangedStates((prev: any) => ({ ...prev, socialMedia: true }))
+  }
 
   return (
     <>
@@ -1323,7 +1323,7 @@ function SocialMediaSection({
               name="instagram_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.instagram_url || ""}
+              value={formData.instagram_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1347,7 +1347,7 @@ function SocialMediaSection({
               name="youtube_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.youtube_url || ""}
+              value={formData.youtube_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1371,7 +1371,7 @@ function SocialMediaSection({
               name="linkedin_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.linkedin_url || ""}
+              value={formData.linkedin_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1395,7 +1395,7 @@ function SocialMediaSection({
               name="yourclub_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.yourclub_url || ""}
+              value={formData.yourclub_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1419,7 +1419,7 @@ function SocialMediaSection({
               name="kwai_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.kwai_url || ""}
+              value={formData.kwai_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1443,7 +1443,7 @@ function SocialMediaSection({
               name="tiktok_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.tiktok_url || ""}
+              value={formData.tiktok_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1467,7 +1467,7 @@ function SocialMediaSection({
               name="facebook_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.facebook_url || ""}
+              value={formData.facebook_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1491,7 +1491,7 @@ function SocialMediaSection({
               name="twitter_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.twitter_url || ""}
+              value={formData.twitter_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1515,7 +1515,7 @@ function SocialMediaSection({
               name="twitch_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.twitch_url || ""}
+              value={formData.twitch_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1539,7 +1539,7 @@ function SocialMediaSection({
               name="pinterest_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
               placeholder="Insira o URL do seu perfil"
-              value={formData.pinterest_url || ""}
+              value={formData.pinterest_url || ''}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -1555,16 +1555,16 @@ function SocialMediaSection({
       <button
         className={`${
           isFormChanged
-            ? "bg-blue-600 hover:bg-blue-700"
-            : "bg-gray-400 cursor-not-allowed"
+            ? 'bg-blue-600 hover:bg-blue-700'
+            : 'bg-gray-400 cursor-not-allowed'
         } text-white py-2 px-4 rounded-lg mt-4`}
-        onClick={(e) => handleSubmit(e, "socialMedia")}
+        onClick={(e) => handleSubmit(e, 'socialMedia')}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </>
-  );
+  )
 }
 
 function MediaKitSection({
@@ -1576,9 +1576,9 @@ function MediaKitSection({
   loading,
 }: FormProps) {
   const handleSectionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleInputChange(e);
-    setIsFormChangedStates((prev: any) => ({ ...prev, mediaKit: true }));
-  };
+    handleInputChange(e)
+    setIsFormChangedStates((prev: any) => ({ ...prev, mediaKit: true }))
+  }
 
   return (
     <>
@@ -1591,21 +1591,21 @@ function MediaKitSection({
           name="media_kit_url"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Insira o URL do seu mídia kit"
-          value={formData.media_kit_url || ""}
+          value={formData.media_kit_url || ''}
           onChange={handleSectionInputChange}
         />
       </div>
       <button
         className={`${
-          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+          isFormChanged ? 'bg-blue-600' : 'bg-gray-400'
         } text-white py-2 px-4 rounded-lg`}
-        onClick={(e) => handleSubmit(e, "mediaKit")}
+        onClick={(e) => handleSubmit(e, 'mediaKit')}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </>
-  );
+  )
 }
 
 function BankAccountSection({
@@ -1617,9 +1617,9 @@ function BankAccountSection({
   loading,
 }: FormProps) {
   const handleSectionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleInputChange(e);
-    setIsFormChangedStates((prev: any) => ({ ...prev, bankAccount: true }));
-  };
+    handleInputChange(e)
+    setIsFormChangedStates((prev: any) => ({ ...prev, bankAccount: true }))
+  }
 
   return (
     <>
@@ -1632,21 +1632,21 @@ function BankAccountSection({
           name="pix_key"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Insira sua chave Pix"
-          value={formData.pix_key || ""}
+          value={formData.pix_key || ''}
           onChange={handleSectionInputChange}
         />
       </div>
       <button
         className={`${
-          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+          isFormChanged ? 'bg-blue-600' : 'bg-gray-400'
         } text-white py-2 px-4 rounded-lg`}
-        onClick={(e) => handleSubmit(e, "bankAccount")}
+        onClick={(e) => handleSubmit(e, 'bankAccount')}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </>
-  );
+  )
 }
 
 function PortfolioSection({
@@ -1658,8 +1658,8 @@ function PortfolioSection({
   loading,
 }: FormProps) {
   const handleSectionInputChange = () => {
-    setIsFormChangedStates((prev: any) => ({ ...prev, portfolio: true }));
-  };
+    setIsFormChangedStates((prev: any) => ({ ...prev, portfolio: true }))
+  }
 
   return (
     <div className="space-y-8">
@@ -1672,15 +1672,15 @@ function PortfolioSection({
       {/* <BrandsSection /> */}
       <button
         className={`${
-          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+          isFormChanged ? 'bg-blue-600' : 'bg-gray-400'
         } text-white py-2 px-4 rounded-lg mt-4`}
-        onClick={(e) => handleSubmit(e, "portfolio")}
+        onClick={(e) => handleSubmit(e, 'portfolio')}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </div>
-  );
+  )
 }
 
 function PreviousWorksSection({
@@ -1688,58 +1688,58 @@ function PreviousWorksSection({
   setFormData,
   handleSectionInputChange,
 }: {
-  formData: any;
-  setFormData: any;
-  handleSectionInputChange: any;
+  formData: any
+  setFormData: any
+  handleSectionInputChange: any
 }) {
   const [workImages, setWorkImages] = useState(
-    formData.previous_work_imgs || []
-  );
+    formData.previous_work_imgs || [],
+  )
 
   const addWorkImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const newImage = e.target.files[0];
-      const updatedImages = [...workImages, newImage];
-      setWorkImages(updatedImages);
+      const newImage = e.target.files[0]
+      const updatedImages = [...workImages, newImage]
+      setWorkImages(updatedImages)
       setFormData((prev: any) => ({
         ...prev,
         previous_work_imgs: updatedImages,
-      }));
-      handleSectionInputChange();
+      }))
+      handleSectionInputChange()
     }
-  };
+  }
 
   const removeWorkImage = (index: number) => {
-    const updatedImages = workImages.filter((_: any, i: number) => i !== index);
-    setWorkImages(updatedImages);
+    const updatedImages = workImages.filter((_: any, i: number) => i !== index)
+    setWorkImages(updatedImages)
     setFormData((prev: any) => ({
       ...prev,
       previous_work_imgs: updatedImages,
-    }));
-    handleSectionInputChange();
-  };
+    }))
+    handleSectionInputChange()
+  }
 
   return (
     <div>
       <h3 className="text-lg font-semibold mb-2">Trabalhos anteriores</h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {workImages.map((file: any, index: number) => {
-          let fileType = "";
+          let fileType = ''
 
           if (file instanceof File) {
-            fileType = file.type;
-          } else if (typeof file === "string") {
-            const extension = (file ?? "").split(".").pop()?.toLowerCase();
-            if (extension && ["mp4", "webm", "ogg"].includes(extension)) {
-              fileType = "video";
+            fileType = file.type
+          } else if (typeof file === 'string') {
+            const extension = (file ?? '').split('.').pop()?.toLowerCase()
+            if (extension && ['mp4', 'webm', 'ogg'].includes(extension)) {
+              fileType = 'video'
             } else {
-              fileType = "image";
+              fileType = 'image'
             }
           }
 
           return (
             <div key={index} className="relative">
-              {fileType.startsWith("image") || fileType === "image" ? (
+              {fileType.startsWith('image') || fileType === 'image' ? (
                 <img
                   src={
                     file instanceof File
@@ -1749,7 +1749,7 @@ function PreviousWorksSection({
                   alt="Work"
                   className="w-full h-32 object-cover rounded-lg"
                 />
-              ) : fileType.startsWith("video") || fileType === "video" ? (
+              ) : fileType.startsWith('video') || fileType === 'video' ? (
                 <video
                   src={
                     file instanceof File
@@ -1767,7 +1767,7 @@ function PreviousWorksSection({
                 <X size={16} />
               </button>
             </div>
-          );
+          )
         })}
 
         <input
@@ -1785,7 +1785,7 @@ function PreviousWorksSection({
         </label>
       </div>
     </div>
-  );
+  )
 }
 
 function SkillsSection({
@@ -1798,54 +1798,52 @@ function SkillsSection({
 }: FormProps) {
   // Função para garantir que languages é um array
   const parseLanguages = (languages: string) => {
-    if (!languages) return [];
-    if (typeof languages === "string") {
+    if (!languages) return []
+    if (typeof languages === 'string') {
       try {
-        const parsed = JSON.parse(languages);
-        return Array.isArray(parsed) ? parsed : [languages];
+        const parsed = JSON.parse(languages)
+        return Array.isArray(parsed) ? parsed : [languages]
       } catch (e) {
-        console.log(`error parse languages: ${e}`);
-        return [languages];
+        console.log(`error parse languages: ${e}`)
+        return [languages]
       }
     }
-    return Array.isArray(languages) ? languages : [languages];
-  };
+    return Array.isArray(languages) ? languages : [languages]
+  }
 
-  const [languages, setLanguages] = useState(
-    parseLanguages(formData.languages)
-  );
-  const [languageInput, setLanguageInput] = useState("");
+  const [languages, setLanguages] = useState(parseLanguages(formData.languages))
+  const [languageInput, setLanguageInput] = useState('')
 
   useEffect(() => {
-    setLanguages(parseLanguages(formData.languages));
-  }, [formData.languages]);
+    setLanguages(parseLanguages(formData.languages))
+  }, [formData.languages])
 
   const handleSectionInputChange = () => {
-    setIsFormChangedStates((prev: FormData) => ({ ...prev, skills: true }));
-  };
+    setIsFormChangedStates((prev: FormData) => ({ ...prev, skills: true }))
+  }
 
   const addLanguage = () => {
     if (languageInput && !languages.includes(languageInput)) {
-      const updatedLanguages = [...languages, languageInput];
-      setLanguages(updatedLanguages);
+      const updatedLanguages = [...languages, languageInput]
+      setLanguages(updatedLanguages)
       setFormData((prev: FormData) => ({
         ...prev,
         languages: JSON.stringify(updatedLanguages),
-      }));
-      setLanguageInput("");
-      handleSectionInputChange();
+      }))
+      setLanguageInput('')
+      handleSectionInputChange()
     }
-  };
+  }
 
   const removeLanguage = (index: number) => {
-    const updatedLanguages = languages.filter((_, i) => i !== index);
-    setLanguages(updatedLanguages);
+    const updatedLanguages = languages.filter((_, i) => i !== index)
+    setLanguages(updatedLanguages)
     setFormData((prev: FormData) => ({
       ...prev,
       languages: JSON.stringify(updatedLanguages),
-    }));
-    handleSectionInputChange();
-  };
+    }))
+    handleSectionInputChange()
+  }
 
   return (
     <div>
@@ -1892,15 +1890,15 @@ function SkillsSection({
 
       <button
         className={`${
-          isFormChanged ? "bg-blue-600" : "bg-gray-400"
+          isFormChanged ? 'bg-blue-600' : 'bg-gray-400'
         } text-white py-2 px-4 rounded-lg mt-7`}
-        onClick={(e) => handleSubmit(e, "skills")}
+        onClick={(e) => handleSubmit(e, 'skills')}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? 'Salvando...' : 'Salvar Alterações'}
       </button>
     </div>
-  );
+  )
 }
 
 function AccountInfoSection({
@@ -1908,40 +1906,40 @@ function AccountInfoSection({
   setLoadingStates,
   loading,
 }: FormProps) {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   // Inside AccountInfoSection component
   const handlePasswordSubmit = async () => {
     // Validate fields
     if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.warning("Por favor, preencha todos os campos de senha.");
-      return;
+      toast.warning('Por favor, preencha todos os campos de senha.')
+      return
     }
 
     if (newPassword !== confirmPassword) {
-      toast.warning("A nova senha e a confirmação não coincidem.");
-      return;
+      toast.warning('A nova senha e a confirmação não coincidem.')
+      return
     }
 
     // (Optional) Add password complexity validations
     if (newPassword.length < 8) {
-      toast.info("A nova senha deve ter pelo menos 8 caracteres.");
-      return;
+      toast.info('A nova senha deve ter pelo menos 8 caracteres.')
+      return
     }
 
     try {
-      setLoadingStates((prev: any) => ({ ...prev, accountInfo: true }));
-      await pb.collection("Influencers").update(formData.id, {
+      setLoadingStates((prev: any) => ({ ...prev, accountInfo: true }))
+      await pb.collection('Influencers').update(formData.id, {
         oldPassword: currentPassword,
         password: newPassword,
         passwordConfirm: confirmPassword,
-      });
+      })
       toast.success(
         <div className="flex items-center gap-2">
           <span className="font-semibold">
@@ -1950,23 +1948,23 @@ function AccountInfoSection({
         </div>,
         {
           autoClose: 2500,
-          position: "top-right",
-        }
-      );
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+          position: 'top-right',
+        },
+      )
+      setCurrentPassword('')
+      setNewPassword('')
+      setConfirmPassword('')
       setTimeout(() => {
-        window.location.reload();
-      }, 2500);
+        window.location.reload()
+      }, 2500)
     } catch (error) {
-      const err = error as ClientResponseError;
-      console.error("Erro ao atualizar a senha:", error);
+      const err = error as ClientResponseError
+      console.error('Erro ao atualizar a senha:', error)
 
       // Check if the error is due to incorrect current password
       if (err.data && err.data.data && err.data.data.oldPassword) {
         if (
-          err.data.data.oldPassword.code === "validation_invalid_old_password"
+          err.data.data.oldPassword.code === 'validation_invalid_old_password'
         ) {
           toast.error(
             <div className="flex flex-col items-start gap-2">
@@ -1975,24 +1973,24 @@ function AccountInfoSection({
             </div>,
             {
               style: {
-                color: "#EF4444",
-                background: "#FFEBEB",
+                color: '#EF4444',
+                background: '#FFEBEB',
               },
               autoClose: 5000,
-              position: "top-right",
-            }
-          );
+              position: 'top-right',
+            },
+          )
         }
       } else {
-        toast.error("Erro ao atualizar a senha. Por favor, tente novamente.", {
-          position: "top-center",
+        toast.error('Erro ao atualizar a senha. Por favor, tente novamente.', {
+          position: 'top-center',
           autoClose: 5000,
-        });
+        })
       }
     } finally {
-      setLoadingStates((prev: any) => ({ ...prev, accountInfo: false }));
+      setLoadingStates((prev: any) => ({ ...prev, accountInfo: false }))
     }
-  };
+  }
 
   return (
     <div>
@@ -2002,7 +2000,7 @@ function AccountInfoSection({
         </label>
         <div className="relative flex items-center">
           <input
-            type={showCurrentPassword ? "text" : "password"}
+            type={showCurrentPassword ? 'text' : 'password'}
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
@@ -2026,7 +2024,7 @@ function AccountInfoSection({
 
         <div className="relative flex items-center">
           <input
-            type={showNewPassword ? "text" : "password"}
+            type={showNewPassword ? 'text' : 'password'}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
@@ -2050,7 +2048,7 @@ function AccountInfoSection({
 
         <div className="relative flex items-center">
           <input
-            type={showConfirmPassword ? "text" : "password"}
+            type={showConfirmPassword ? 'text' : 'password'}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
@@ -2071,18 +2069,18 @@ function AccountInfoSection({
         type="button"
         className={`${
           currentPassword && newPassword && confirmPassword
-            ? "bg-blue-600 hover:bg-blue-700"
-            : "bg-gray-400 cursor-not-allowed"
+            ? 'bg-blue-600 hover:bg-blue-700'
+            : 'bg-gray-400 cursor-not-allowed'
         } text-white py-2 px-4 rounded-lg mt-4`}
         onClick={handlePasswordSubmit}
         disabled={
           !currentPassword || !newPassword || !confirmPassword || loading
         }
       >
-        {loading ? "Alterando..." : "Alterar Senha"}
+        {loading ? 'Alterando...' : 'Alterar Senha'}
       </button>
     </div>
-  );
+  )
 }
 
 // function FAQSection() {

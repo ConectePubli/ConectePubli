@@ -58,7 +58,7 @@ export function UserMenu() {
             onSelect={() => {
               if (userName) {
                 router.navigate({
-                  to: `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`,
+                  to: `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-creator"}`,
                 });
               }
             }}
@@ -71,7 +71,7 @@ export function UserMenu() {
             onSelect={() => {
               if (userName) {
                 router.navigate({
-                  to: `/${pb.authStore.model?.collectionName === "Brands" ? "marca" : "influenciador"}/${userName}`,
+                  to: `/${pb.authStore.model?.collectionName === "Brands" ? "marca" : "creator"}/${userName}`,
                 });
               }
             }}
