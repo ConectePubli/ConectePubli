@@ -47,8 +47,8 @@ const channelIcons = {
 };
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
-  label: (i + 16).toString(),
-  value: (i + 16).toString(),
+  label: (i + 18).toString(),
+  value: (i + 18).toString(),
 }));
 
 const maxAgeOptions = Array.from({ length: 65 }, (_, i) => ({
@@ -231,7 +231,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         "name",
         "email",
         "bio",
-        "opening_date",
         "company_register",
         "street",
         "country",
@@ -1235,7 +1234,7 @@ function BasicInfoSection({
                 value={data.mandatory_deliverables || ""}
                 onChange={handleInputChange}
                 className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Especifique os tipos de conteúdo, quantidades e duração (ex.: 1 Reels de 30s, 3 Stories)"
+                placeholder="(Escopo) - Especifique os tipos de conteúdo, quantidades e duração (ex.: 1 Reels de 30s, 3 Stories)"
               />
             </div>
           </div>
@@ -1329,7 +1328,7 @@ function BasicInfoSection({
                 value={data.expected_actions || ""}
                 onChange={handleInputChange}
                 className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Exemplo: Publicar conteúdos semanais, interagir com os seguidores, compartilhar insights sobre a campanha"
+                placeholder="Exemplo: Publicar conteúdos semanais, interagir com os seguidores, compartilhar insights sobre a campanha, colocar CTA, marcar o @ da marca nas redes sociais, usar hashtags específicos."
               />
             </div>
 
@@ -2096,8 +2095,9 @@ function AudienceSegmentationSection({
                   }}
                 >
                   <p className="text-gray-700 font-normal">
-                    Defina o número mínimo de seguidores que os influencers
-                    devem ter para participar da campanha.
+                    Defina o número mínimo de seguidores em todas as redes
+                    sociais que os influencers devem ter para participar da
+                    campanha.
                   </p>
                 </div>
               )}
