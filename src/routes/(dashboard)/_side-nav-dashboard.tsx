@@ -20,7 +20,7 @@ export function SideNavDashboard() {
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <Link
-                to={`${`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`}`}
+                to={`${`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-creator"}`}`}
                 className="flex items-center gap-2"
               >
                 <Folder className="w-6 h-6" /> Minhas{" "}
@@ -117,7 +117,7 @@ const Sheet = () => {
               onClick={closeSheet}
             >
               <Link
-                to={`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-influenciador"}`}
+                to={`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-creator"}`}
                 className="flex items-center gap-2"
                 onClick={handleNavigation}
               >

@@ -25,7 +25,7 @@ export const Route = createFileRoute("/(auth)/cadastro/marca")({
       });
     } else if (userType === "Influencers") {
       throw redirect({
-        to: "/dashboard-influenciador",
+        to: "/dashboard-creator",
       });
     }
   },
@@ -290,7 +290,7 @@ function Page() {
                 É creator? Acesse o{" "}
                 <a
                   className="text-customLinkBlue underline cursor-pointer"
-                  onClick={() => navigate({ to: "/cadastro/influenciador" })}
+                  onClick={() => navigate({ to: "/cadastro/creator" })}
                 >
                   formulário de creators
                 </a>{" "}

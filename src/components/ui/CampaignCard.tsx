@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Campaign } from "@/types/Campaign";
 import { Calendar, User, Tag } from "lucide-react";
 import { Coins, Image } from "phosphor-react";
@@ -9,7 +9,6 @@ import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import { Link } from "@tanstack/react-router";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import { formatDateUTC } from "@/utils/formatDateUTC";
-import { UserAuth } from "@/types/UserAuth";
 
 interface CampaignCardProps {
   campaignData: Campaign;
@@ -24,63 +23,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 }) => {
   const beginningDate = formatDateUTC(campaignData.beginning);
   const endDate = formatDateUTC(campaignData.end);
-
-  const [soldOutState, setSoldOutState] = useState<boolean>(false);
-
-  const getParticipationsCampaign = async () => {
-    const records = await pb
-      .collection("Campaigns_Participations")
-      .getFullList({
-        filter: `campaign="${campaignData.id}"`,
-      });
-
-    // Contar quantos participantes estão aprovados ou completados
-    const approvedOrCompletedCount = records.filter(
-      (r) =>
-        r.status === ParticipationStatusFilter.Approved ||
-        r.status === ParticipationStatusFilter.Completed
-    ).length;
-
-    // Verificar se já atingiu ou excedeu o número de vagas (open_jobs)
-    // E se o usuário atual está esperando (waiting)
-    if (
-      participationStatus === ParticipationStatusFilter.Waiting &&
-      (campaignData.open_jobs || 0) <= approvedOrCompletedCount
-    ) {
-      setSoldOutState(true);
-
-      try {
-        const user: UserAuth = JSON.parse(
-          localStorage.getItem("pocketbase_auth") as string
-        );
-
-        const participation = await pb
-          .collection("Campaigns_Participations")
-          .getFullList({
-            filter: `campaign="${campaignData.id}" && influencer="${user.model.id}"`,
-          });
-
-        console.log(participation);
-
-        await pb
-          .collection("Campaigns_Participations")
-          .update(participation[0].id, {
-            status: "sold_out",
-          });
-      } catch (e) {
-        console.log(`error update status to sold_out: ${e}`);
-      }
-    } else {
-      if (
-        !fromMyCampaigns &&
-        (campaignData.open_jobs || 0) <= approvedOrCompletedCount
-      ) {
-        setSoldOutState(true);
-      } else {
-        setSoldOutState(false);
-      }
-    }
-  };
 
   const readTextStatus = (type: string) => {
     switch (type) {
@@ -97,11 +39,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
     }
   };
 
-  useEffect(() => {
-    getParticipationsCampaign();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <Link
       to="/dashboard/campanhas/$campaignName"
@@ -113,7 +50,10 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div
             className="w-full h-full bg-cover bg-center rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
             style={{
-              backgroundImage: `url(${pb.getFileUrl(campaignData, campaignData.cover_img)})`,
+              backgroundImage: `url(${pb.getFileUrl(
+                campaignData,
+                campaignData.cover_img
+              )})`,
             }}
           ></div>
         ) : (
@@ -194,19 +134,16 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             <span
               className="font-semibold"
               style={{
-                color: getStatusColor(
-                  soldOutState ? "sold_out" : participationStatus
-                ),
+                color: getStatusColor(participationStatus),
               }}
             >
-              Status:{" "}
-              {readTextStatus(soldOutState ? "sold_out" : participationStatus)}
+              Status: {readTextStatus(participationStatus)}
             </span>
           )}
 
-          {soldOutState && !fromMyCampaigns && (
+          {campaignData.participationStatus === "sold_out" && (
             <span className="font-semibold text-[#DC3545]">
-              Status: Vagas encerradas
+              Status: Vagas Esgotadas
             </span>
           )}
         </div>

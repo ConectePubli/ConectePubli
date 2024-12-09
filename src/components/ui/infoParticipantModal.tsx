@@ -110,7 +110,7 @@ const InfoParticipantModal: React.FC<Props> = ({
             className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
             onClick={() => {
               window.open(
-                `/influenciador/${participant?.username}`,
+                `/creator/${participant?.username}`,
                 "_blank",
                 "noopener,noreferrer"
               );

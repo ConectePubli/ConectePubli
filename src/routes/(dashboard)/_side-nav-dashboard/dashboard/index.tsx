@@ -18,7 +18,7 @@ export const Route = createFileRoute(
       });
     } else if (userType === "Influencers") {
       throw redirect({
-        to: "/dashboard-influenciador",
+        to: "/dashboard-creator",
       });
     } else {
       pb.authStore.clear();
