@@ -4,6 +4,13 @@ import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 import register_marca from "@/assets/register-marca.webp";
 import pb from "@/lib/pb";
@@ -36,6 +43,8 @@ interface Data {
   responsible_name: string;
   email: string;
   phone: string;
+  knownFrom: string;
+  knownFromDetails: string;
 }
 
 function Page() {
@@ -46,6 +55,8 @@ function Page() {
     responsible_name: "",
     email: "",
     phone: "",
+    knownFrom: "",
+    knownFromDetails: "",
   });
 
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -71,7 +82,13 @@ function Page() {
         setErrorMessage("Este e-mail já está pré-registrado.");
         throw new Error("Este e-mail já está pré-registrado.");
       } catch (e) {
-        console.error("Erro ao verificar e-mail:", e);
+        if (
+          e instanceof Error &&
+          e.message !== "Este e-mail já está pré-registrado."
+        ) {
+          console.error("Erro ao verificar e-mail:", e);
+        }
+        // Ignorar erro 404 (email não pré-registrado)
       }
 
       const data = {
@@ -79,6 +96,8 @@ function Page() {
         responsible_name: formData.responsible_name,
         email: formData.email,
         cell_phone: formData.phone.replace(/\D/g, ""),
+        known_from: formData.knownFrom,
+        known_from_details: formData.knownFromDetails,
       };
 
       await pb.collection("Brands_Pre_Registration").create(data);
@@ -99,8 +118,46 @@ function Page() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validação adicional
+    if (!formData.knownFrom) {
+      setErrorMessage(
+        "Por favor, selecione como você conheceu a Conecte Publi."
+      );
+      return;
+    }
+    if (
+      (formData.knownFrom === "indAmigos" ||
+        formData.knownFrom === "indUsuario" ||
+        formData.knownFrom === "outra") &&
+      !formData.knownFromDetails.trim()
+    ) {
+      setErrorMessage(
+        "Por favor, especifique como você conheceu a Conecte Publi."
+      );
+      return;
+    }
+
     mutation.mutate();
   };
+
+  const knownFromOptions = [
+    { value: "indAmigos", label: "Indicação de amigos ou colegas" },
+    { value: "indUsuario", label: "Indicação de outro usuário na plataforma" },
+    { value: "instagram", label: "Instagram" },
+    { value: "facebook", label: "Facebook" },
+    { value: "linkedin", label: "LinkedIn" },
+    { value: "youtube", label: "YouTube" },
+    { value: "tiktok", label: "TikTok" },
+    { value: "kwai", label: "Kwai" },
+    { value: "twitter", label: "Twitter/X" },
+    { value: "yourclub", label: "YourClub" },
+    { value: "emailmarketing", label: "E-mail marketing" },
+    { value: "midia", label: "Mídia" },
+    { value: "google", label: "Pesquisa no Google" },
+    { value: "outrobuscador", label: "Pesquisa em outro buscador" },
+    { value: "outra", label: "Outra" },
+  ];
 
   return (
     <div className="relative">
@@ -126,6 +183,8 @@ function Page() {
                   email: "",
                   responsible_name: "",
                   phone: "",
+                  knownFrom: "",
+                  knownFromDetails: "",
                 });
                 setTermsAccepted(false);
               }}
@@ -231,6 +290,58 @@ function Page() {
                 placeholder="(XX) XXXXX-XXXX"
                 maxLength={15}
               />
+            </div>
+
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="knownFrom"
+              >
+                Como você conheceu a Conecte Publi?{" "}
+                <span className="text-red-500">*</span>
+              </label>
+              <Select
+                onValueChange={(value) => {
+                  setFormData({
+                    ...formData,
+                    knownFrom: value,
+                    knownFromDetails: "",
+                  });
+                }}
+                value={formData.knownFrom}
+              >
+                <SelectTrigger className="w-full border border-gray-300 rounded-md">
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  {knownFromOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {(formData.knownFrom === "indAmigos" ||
+                formData.knownFrom === "indUsuario" ||
+                formData.knownFrom === "outra") && (
+                <div className="mt-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Especifique:
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.knownFromDetails}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        knownFromDetails: e.target.value,
+                      })
+                    }
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Forneça mais detalhes"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex items-start">
