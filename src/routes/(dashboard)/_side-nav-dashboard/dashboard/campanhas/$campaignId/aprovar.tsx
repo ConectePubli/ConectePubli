@@ -131,7 +131,7 @@ function Page() {
         const hasRating = await pb
           .collection("ratings")
           .getFirstListItem(
-            `(from_influencer="${userId}" || from_brand="${userId}") && to_influencer=NULL && to_brand=NULL`
+            `(from_influencer="${userId}" || from_brand="${userId}") && to_influencer=NULL && to_brand=NULL && campaign="${campaignData?.id}"`
           );
 
         if (hasRating) {
@@ -699,7 +699,10 @@ function Page() {
       )}
 
       {modalType === "ratePlatform" && (
-        <RatePlatformModal setModalType={setModalType} />
+        <RatePlatformModal
+          setModalType={setModalType}
+          campaign={campaignData}
+        />
       )}
 
       <ToastContainer />
