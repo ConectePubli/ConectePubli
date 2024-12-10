@@ -15,6 +15,7 @@ import { Message } from "@/types/Message";
 import { Loader2, Undo2, X } from "lucide-react";
 import pb from "@/lib/pb";
 import { useMessageStore } from "@/store/useMessageStore";
+import { linkify } from "@/utils/linkify";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/chat/"
@@ -393,7 +394,7 @@ function ChatPage() {
                               : "bg-gray-200"
                           }`}
                         >
-                          <p>{message.text}</p>
+                          <p>{linkify(message.text)}</p>
                         </div>
                       </div>
                     ))

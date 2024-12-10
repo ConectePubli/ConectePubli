@@ -14,6 +14,7 @@ import { AuthModel, ClientResponseError } from "pocketbase";
 import { toast } from "sonner";
 import { ParticipationStatusFilter } from "@/types/Filters";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
+import ModalSendLinkCampaign from "./ModalSendLinkCampaign";
 
 const Spinner: React.FC = () => (
   <svg
@@ -326,12 +327,12 @@ const CampaignSubscribeButton: React.FC = () => {
           {buttonText}
         </button>
 
-        {/* {participationStatus === "approved" && (
+        {participationStatus === "approved" && (
           <ModalSendLinkCampaign
             campaignId={campaign?.id as string}
             brandId={campaign?.expand?.brand?.id as string}
           />
-        )} */}
+        )}
       </div>
 
       {buttonText === "Inscrever-se" && (
