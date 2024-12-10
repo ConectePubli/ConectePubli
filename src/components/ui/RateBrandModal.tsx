@@ -5,18 +5,18 @@ import Modal from "./Modal";
 
 import pb from "@/lib/pb";
 import { Influencer } from "@/types/Influencer";
-import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { toast } from "react-toastify";
+import { Brand } from "@/types/Brand";
 
 interface Props {
   participant: Influencer;
-  selectedParticipation: CampaignParticipation;
+  brand: Brand;
   setModalType: React.ComponentState;
 }
 
 const RateBrandModal: React.FC<Props> = ({
   participant,
-  selectedParticipation,
+  brand,
   setModalType,
 }) => {
   const [ratings, setRatings] = useState({
@@ -59,7 +59,7 @@ const RateBrandModal: React.FC<Props> = ({
       ];
 
       await pb.collection("ratings").create({
-        to_brand: selectedParticipation.expand?.campaign?.brand,
+        to_brand: brand.id,
         from_influencer: participant.id,
         comment,
         feedback: feedback,

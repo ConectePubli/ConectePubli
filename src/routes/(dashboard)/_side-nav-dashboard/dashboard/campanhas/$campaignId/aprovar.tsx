@@ -156,12 +156,9 @@ function Page() {
     if (hasRateParam) {
       checkRating();
     }
-    console.log("aAAA", hasRateParam);
   }, [hasRateParam]);
 
   useEffect(() => {
-    console.log("hasRateParam", hasRateParam);
-    console.log("hasRatedPlatform", hasRatedPlatform);
     if (hasRateParam && !hasRatedPlatform) {
       setModalType("ratePlatform");
     }

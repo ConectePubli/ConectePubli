@@ -237,6 +237,9 @@ const CampaignSubscribeButton: React.FC = () => {
     } else if (userParticipation.status === "waiting") {
       buttonText = isLoadingCancel ? "Cancelando..." : "Cancelar Inscrição";
       onClickHandler = handleCancelarInscricao;
+    } else if (userParticipation.status === "completed") {
+      buttonText = "Você já completou essa campanha";
+      isDisabled = true;
     }
   } else if (
     !isProfileComplete(user) &&
