@@ -4,6 +4,7 @@ import {
   redirect,
   useLoaderData,
   useNavigate,
+  useSearch,
 } from "@tanstack/react-router";
 import pb from "@/lib/pb";
 import { Campaign } from "@/types/Campaign";
@@ -16,7 +17,11 @@ import CampaignDetails from "@/components/ui/CampaignDetails";
 import CampaignBrandProfile from "@/components/ui/CampaignBrandProfile";
 import { getUserType } from "@/lib/auth";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import RateBrandModal from "@/components/ui/RateBrandModal";
+import { Influencer } from "@/types/Influencer";
+import { Brand } from "@/types/Brand";
 import FormattedText from "@/utils/FormattedText";
 
 export const Route = createFileRoute(
@@ -107,11 +112,53 @@ function CampaignPage() {
     setCampaign,
     setCampaignParticipations,
   ]);
+  
+  const { rateBrand } = useSearch({ from: Route.id });
+  const [modalType, setModalType] = useState<string | null>(null);
+  const [hasRatedBrand, setHasRatedBrand] = useState(true);
 
   useEffect(() => {
-    console.log(campaign);
-  }, [campaign]);
+    const checkBrandRating = async () => {
+      const influencerId = pb.authStore.model?.id;
+      if (!influencerId) return;
+      const participation = campaignParticipationsData.find(
+        (p) => p.influencer === pb.authStore.model?.id
+      );
 
+      if (participation?.status !== "completed") {
+        return;
+      }
+
+      try {
+        await pb
+          .collection("ratings")
+          .getFirstListItem(
+            `(from_influencer="${influencerId}" && to_brand="${campaignData.brand}")`
+          );
+        // Caso encontre, o influenciador já avaliou a marca
+        setHasRatedBrand(true);
+      } catch (error) {
+        if (error instanceof ClientResponseError && error.status === 404) {
+          // Não encontrou avaliação, então o influenciador não avaliou a marca
+          setHasRatedBrand(false);
+        } else {
+          console.error("Erro ao verificar avaliação da marca:", error);
+          toast.error("Ocorreu um erro ao verificar sua avaliação da marca.");
+        }
+      }
+    };
+
+    if (rateBrand) {
+      checkBrandRating();
+    }
+  }, [rateBrand, campaignData.brand]);
+
+  useEffect(() => {
+    if (rateBrand && !hasRatedBrand) {
+      setModalType("rateBrand");
+    }
+  }, [rateBrand, hasRatedBrand]);
+    
   return (
     <div className="container mx-auto p-4 ">
       <div
@@ -132,7 +179,6 @@ function CampaignPage() {
       <div className="text-center xl:text-left">
         <h1 className="text-lg xl:text-2xl font-bold">{campaign?.name}</h1>
       </div>
-
       <div className="grid xl:grid-cols-2 xl:gap-4 mt-4">
         {/* Coluna esquerda - Tipo e Inscrição */}
         <div className="space-y-4">
@@ -227,6 +273,14 @@ function CampaignPage() {
           <div className="h-6" />
         </div>
       </div>
+      {modalType === "rateBrand" && (
+        <RateBrandModal
+          participant={pb.authStore.model as Influencer}
+          brand={campaign?.expand?.brand as Brand}
+          setModalType={setModalType}
+        />
+      )}
+      <ToastContainer />
     </div>
   );
 }

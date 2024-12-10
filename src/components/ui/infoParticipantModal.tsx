@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Modal from "./Modal";
-import { Flag, MapPin, MessageCircle, User } from "lucide-react";
+import { Flag, MapPin, MessageCircle, Stars, User } from "lucide-react";
 import { CaretDown, MagnifyingGlassPlus } from "phosphor-react";
 
 import { Influencer } from "@/types/Influencer";
@@ -177,7 +177,7 @@ const InfoParticipantModal: React.FC<Props> = ({
               </button>
             )}
 
-          {/* {selectedParticipation.status === "completed" && (
+          {selectedParticipation.status === "completed" && (
             <button
               className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
               onClick={() => {
@@ -187,7 +187,7 @@ const InfoParticipantModal: React.FC<Props> = ({
               <Stars size={17} />
               Avaliar
             </button>
-          )} */}
+          )}
         </div>
 
         {selectedParticipation.status === "approved" && (
