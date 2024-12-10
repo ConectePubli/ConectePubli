@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
 import pb from "@/lib/pb";
 import { toast } from "react-toastify";
@@ -12,6 +12,17 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userType, setUserType] = useState<"Brands" | "Influencers" | null>(
+    null
+  );
+
+  useEffect(() => {
+    const checkType = async () => {
+      const type = pb.authStore.model?.collectionName;
+      setUserType(type);
+    };
+    checkType();
+  }, []);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -29,12 +40,29 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType }) => {
         },
       ];
 
-      await pb.collection("ratings").create({
-        from_brand: pb.authStore.model?.id,
+      // Montando o objeto de criação da avaliação
+      const dataToCreate: {
+        comment: string;
+        to_conectepubli: boolean;
+        feedback: { question: string; rating: number }[];
+        from_brand?: string;
+        from_influencer?: string;
+      } = {
         comment,
         to_conectepubli: true,
         feedback: feedback,
-      });
+      };
+
+      if (userType === "Brands") {
+        dataToCreate.from_brand = pb.authStore.model?.id;
+      } else if (userType === "Influencers") {
+        dataToCreate.from_influencer = pb.authStore.model?.id;
+      } else {
+        toast.error("Não foi possível identificar o tipo de usuário.");
+        return;
+      }
+
+      await pb.collection("ratings").create(dataToCreate);
 
       toast.success("Avaliação enviada com sucesso!");
       setModalType(null);
@@ -116,7 +144,7 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType }) => {
           <button
             onClick={handleSubmit}
             className="bg-[#10438F] text-white px-4 py-2 rounded hover:bg-[#10438F]/90 transition cursor-pointer"
-            disabled={loading}
+            disabled={loading || userType === null}
           >
             {loading ? "Enviando..." : "Avaliar"}
           </button>

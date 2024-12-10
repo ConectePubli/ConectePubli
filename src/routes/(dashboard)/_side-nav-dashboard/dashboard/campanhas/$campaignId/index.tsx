@@ -23,6 +23,7 @@ import RateBrandModal from "@/components/ui/RateBrandModal";
 import { Influencer } from "@/types/Influencer";
 import { Brand } from "@/types/Brand";
 import FormattedText from "@/utils/FormattedText";
+import RatePlatformModal from "@/components/ui/RatePlatformModal";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
@@ -112,15 +113,17 @@ function CampaignPage() {
     setCampaign,
     setCampaignParticipations,
   ]);
-  
-  const { rateBrand } = useSearch({ from: Route.id });
+
+  const { rateBrand, rateConecte } = useSearch({ from: Route.id });
   const [modalType, setModalType] = useState<string | null>(null);
   const [hasRatedBrand, setHasRatedBrand] = useState(true);
+  const [hasRatedPlatform, setHasRatedPlatform] = useState(true);
 
   useEffect(() => {
     const checkBrandRating = async () => {
       const influencerId = pb.authStore.model?.id;
       if (!influencerId) return;
+
       const participation = campaignParticipationsData.find(
         (p) => p.influencer === pb.authStore.model?.id
       );
@@ -151,14 +154,52 @@ function CampaignPage() {
     if (rateBrand) {
       checkBrandRating();
     }
-  }, [rateBrand, campaignData.brand]);
+  }, [rateBrand, campaignData.brand, campaignParticipationsData]);
 
   useEffect(() => {
     if (rateBrand && !hasRatedBrand) {
       setModalType("rateBrand");
     }
   }, [rateBrand, hasRatedBrand]);
-    
+
+  useEffect(() => {
+    const checkPlatformRating = async () => {
+      const userId = pb.authStore.model?.id;
+      if (!userId) return;
+
+      try {
+        const hasRating = await pb
+          .collection("ratings")
+          .getFirstListItem(
+            `(from_influencer="${userId}" || from_brand="${userId}") && to_influencer=NULL && to_brand=NULL`
+          );
+        if (hasRating) {
+          setHasRatedPlatform(true);
+        }
+      } catch (error) {
+        if (error instanceof ClientResponseError && error.status === 404) {
+          // Nenhum rating encontrado, o usuário nunca avaliou a plataforma
+          setHasRatedPlatform(false);
+        } else {
+          console.error("Erro ao verificar avaliação da plataforma:", error);
+          toast.error(
+            "Ocorreu um erro ao verificar sua avaliação da plataforma."
+          );
+        }
+      }
+    };
+
+    if (rateConecte && pb.authStore.model?.collectionName !== "Brands") {
+      checkPlatformRating();
+    }
+  }, [rateConecte]);
+
+  useEffect(() => {
+    if (rateConecte && !hasRatedPlatform) {
+      setModalType("ratePlatform");
+    }
+  }, [rateConecte, hasRatedPlatform]);
+
   return (
     <div className="container mx-auto p-4 ">
       <div
@@ -279,6 +320,9 @@ function CampaignPage() {
           brand={campaign?.expand?.brand as Brand}
           setModalType={setModalType}
         />
+      )}
+      {modalType === "ratePlatform" && (
+        <RatePlatformModal setModalType={setModalType} />
       )}
       <ToastContainer />
     </div>

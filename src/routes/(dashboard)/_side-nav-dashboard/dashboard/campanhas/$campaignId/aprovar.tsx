@@ -128,7 +128,6 @@ function Page() {
       if (!userId) return;
 
       try {
-        console.log("Buscando rating...");
         const hasRating = await pb
           .collection("ratings")
           .getFirstListItem(
