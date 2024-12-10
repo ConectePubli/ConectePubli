@@ -136,7 +136,7 @@ function CampaignPage() {
         await pb
           .collection("ratings")
           .getFirstListItem(
-            `(from_influencer="${influencerId}" && to_brand="${campaignData.brand}")`
+            `(from_influencer="${influencerId}" && to_brand="${campaignData.brand} && campaign="${campaignData.id}")`
           );
         // Caso encontre, o influenciador já avaliou a marca
         setHasRatedBrand(true);
@@ -154,7 +154,12 @@ function CampaignPage() {
     if (rateBrand) {
       checkBrandRating();
     }
-  }, [rateBrand, campaignData.brand, campaignParticipationsData]);
+  }, [
+    rateBrand,
+    campaignData.brand,
+    campaignParticipationsData,
+    campaignData.id,
+  ]);
 
   useEffect(() => {
     if (rateBrand && !hasRatedBrand) {
@@ -171,7 +176,7 @@ function CampaignPage() {
         const hasRating = await pb
           .collection("ratings")
           .getFirstListItem(
-            `(from_influencer="${userId}" || from_brand="${userId}") && to_influencer=NULL && to_brand=NULL`
+            `(from_influencer="${userId}" || from_brand="${userId}") && to_influencer=NULL && to_brand=NULL && campaign="${campaignData.id}"`
           );
         if (hasRating) {
           setHasRatedPlatform(true);
@@ -192,7 +197,7 @@ function CampaignPage() {
     if (rateConecte && pb.authStore.model?.collectionName !== "Brands") {
       checkPlatformRating();
     }
-  }, [rateConecte]);
+  }, [campaignData.id, rateConecte]);
 
   useEffect(() => {
     if (rateConecte && !hasRatedPlatform) {
@@ -318,11 +323,15 @@ function CampaignPage() {
         <RateBrandModal
           participant={pb.authStore.model as Influencer}
           brand={campaign?.expand?.brand as Brand}
+          campaign={campaignData}
           setModalType={setModalType}
         />
       )}
       {modalType === "ratePlatform" && (
-        <RatePlatformModal setModalType={setModalType} />
+        <RatePlatformModal
+          setModalType={setModalType}
+          campaign={campaignData}
+        />
       )}
       <ToastContainer />
     </div>

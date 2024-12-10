@@ -3,12 +3,14 @@ import Modal from "./Modal";
 import pb from "@/lib/pb";
 import { toast } from "react-toastify";
 import logo from "@/assets/logo.svg";
+import { Campaign } from "@/types/Campaign";
 
 interface Props {
   setModalType: React.ComponentState;
+  campaign: Campaign;
 }
 
-const RatePlatformModal: React.FC<Props> = ({ setModalType }) => {
+const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,10 +49,12 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType }) => {
         feedback: { question: string; rating: number }[];
         from_brand?: string;
         from_influencer?: string;
+        campaign?: string;
       } = {
         comment,
         to_conectepubli: true,
         feedback: feedback,
+        campaign: campaign.id,
       };
 
       if (userType === "Brands") {

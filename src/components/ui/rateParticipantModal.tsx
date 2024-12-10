@@ -58,6 +58,7 @@ const RateParticipantModal: React.FC<Props> = ({
       await pb.collection("ratings").create({
         to_influencer: participant.id,
         from_brand: selectedParticipation.expand?.campaign?.brand,
+        campaign: selectedParticipation.expand?.campaign?.id,
         comment,
         feedback: feedback,
       });
