@@ -11,18 +11,18 @@ import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import { formatDateUTC } from "@/utils/formatDateUTC";
 
 interface CampaignCardProps {
-  campaign: Campaign;
+  campaignData: Campaign;
   participationStatus: ParticipationStatusFilter;
   fromMyCampaigns: boolean;
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({
-  campaign,
+  campaignData,
   participationStatus,
   fromMyCampaigns,
 }) => {
-  const beginningDate = formatDateUTC(campaign.beginning);
-  const endDate = formatDateUTC(campaign.end);
+  const beginningDate = formatDateUTC(campaignData.beginning);
+  const endDate = formatDateUTC(campaignData.end);
 
   const readTextStatus = (type: string) => {
     switch (type) {
@@ -42,15 +42,18 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
   return (
     <Link
       to="/dashboard/campanhas/$campaignName"
-      params={{ campaignName: campaign.unique_name }}
+      params={{ campaignName: campaignData.unique_name }}
       className="flex flex-col md:flex-row bg-white rounded-lg border-2 h-auto"
     >
       <div className="w-full hidden md:block md:w-[32%] h-auto">
-        {campaign.cover_img ? (
+        {campaignData.cover_img ? (
           <div
             className="w-full h-full bg-cover bg-center rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
             style={{
-              backgroundImage: `url(${pb.getFileUrl(campaign, campaign.cover_img)})`,
+              backgroundImage: `url(${pb.getFileUrl(
+                campaignData,
+                campaignData.cover_img
+              )})`,
             }}
           ></div>
         ) : (
@@ -65,12 +68,12 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div className="flex items-center gap-2 mb-2 md:mb-0">
             <Tag className="w-5 h-5 text-blue-500" />
             <span className="text-sm font-medium text-blue-500">
-              {campaign.objective}
+              {campaignData.objective}
             </span>
           </div>
         </div>
 
-        <h3 className="text-lg font-bold">{campaign.name}</h3>
+        <h3 className="text-lg font-bold">{campaignData.name}</h3>
 
         <p
           className="text-gray-700 mb-3"
@@ -82,13 +85,13 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             textOverflow: "ellipsis",
           }}
         >
-          {campaign.briefing}
+          {campaignData.briefing}
         </p>
 
         <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
           <div className="flex flex-wrap gap-2">
             {SocialNetworks.filter((network) =>
-              campaign.channels.includes(network.name)
+              campaignData.channels.includes(network.name)
             ).map((network) => (
               <img
                 key={network.name}
@@ -112,17 +115,17 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-purple-600 font-semibold">
               <Coins className="w-5 h-5" />
-              {`${formatCentsToCurrency(campaign.price)}`}
+              {`${formatCentsToCurrency(campaignData.price)}`}
               /pessoa
             </div>
 
             {!fromMyCampaigns &&
               JSON.parse(
                 localStorage.getItem("pocketbase_auth") as string
-              )?.model?.id?.includes(campaign.expand?.brand?.id) && (
+              )?.model?.id?.includes(campaignData.expand?.brand?.id) && (
                 <div className="flex items-center gap-2 text-gray-500">
                   <User className="w-5 h-5" />
-                  {campaign.open_jobs ?? 0} vagas abertas
+                  {campaignData.open_jobs ?? 0} vagas abertas
                 </div>
               )}
           </div>
@@ -130,9 +133,17 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           {participationStatus && (
             <span
               className="font-semibold"
-              style={{ color: getStatusColor(participationStatus) }}
+              style={{
+                color: getStatusColor(participationStatus),
+              }}
             >
               Status: {readTextStatus(participationStatus)}
+            </span>
+          )}
+
+          {campaignData.participationStatus === "sold_out" && (
+            <span className="font-semibold text-[#DC3545]">
+              Status: Vagas Esgotadas
             </span>
           )}
         </div>

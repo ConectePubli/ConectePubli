@@ -1,5 +1,4 @@
 import pb from "@/lib/pb";
-import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useState, useEffect } from "react";
 import { Influencer } from "@/types/Influencer";
@@ -15,6 +14,30 @@ import { AuthModel, ClientResponseError } from "pocketbase";
 import { toast } from "sonner";
 import { ParticipationStatusFilter } from "@/types/Filters";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
+import ModalSendLinkCampaign from "./ModalSendLinkCampaign";
+
+const Spinner: React.FC = () => (
+  <svg
+    className="animate-spin h-5 w-5 mr-2 text-white"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      className="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="4"
+    ></circle>
+    <path
+      className="opacity-75"
+      fill="currentColor"
+      d="M4 12a8 8 0 018-8v8H4z"
+    ></path>
+  </svg>
+);
 
 const isProfileComplete = (user: AuthModel): boolean => {
   if (!user) return false;
@@ -53,28 +76,49 @@ const isProfileComplete = (user: AuthModel): boolean => {
   return requiredFieldsFilled && socialFieldsFilled;
 };
 
-const Spinner: React.FC = () => (
-  <svg
-    className="animate-spin h-5 w-5 mr-2 text-white"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <circle
-      className="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      strokeWidth="4"
-    ></circle>
-    <path
-      className="opacity-75"
-      fill="currentColor"
-      d="M4 12a8 8 0 018-8v8H4z"
-    ></path>
-  </svg>
-);
+const getIncompleteProfileFields = (user: Influencer): string[] => {
+  const missingFields: string[] = [];
+
+  if (!user.name) missingFields.push("Nome");
+  if (!user.username) missingFields.push("Nome de usuário");
+  if (!user.email) missingFields.push("Email");
+  if (!user.bio) missingFields.push("Biografia");
+  if (!user.background_img) missingFields.push("Imagem de fundo");
+  if (!user.birth_date) missingFields.push("Data de nascimento");
+  if (!user.cell_phone) missingFields.push("Celular");
+  if (!user.account_type) missingFields.push("Tipo de conta");
+  if (!user.gender) missingFields.push("Gênero");
+  if (!user.country) missingFields.push("País");
+  if (!user.state) missingFields.push("Estado");
+  if (!user.city) missingFields.push("Cidade");
+  if (!user.neighborhood) missingFields.push("Bairro");
+  if (!user.street) missingFields.push("Rua");
+  if (!user.address_num) missingFields.push("Número");
+  if (!user.cep) missingFields.push("CEP");
+  if (!user.pix_key) missingFields.push("Chave PIX");
+
+  const socialFields = [
+    "instagram_url",
+    "facebook_url",
+    "linkedin_url",
+    "youtube_url",
+    "tiktok_url",
+    "twitter_url",
+    "twitch_url",
+    "yourclub_url",
+    "kwai_url",
+    "pinterest_url",
+  ];
+
+  const hasSocialFieldFilled = socialFields.some((field) =>
+    Boolean(user[field as keyof Influencer])
+  );
+  if (!hasSocialFieldFilled) {
+    missingFields.push("Pelo menos uma rede social");
+  }
+
+  return missingFields;
+};
 
 const CampaignSubscribeButton: React.FC = () => {
   const navigate = useNavigate();
@@ -87,6 +131,7 @@ const CampaignSubscribeButton: React.FC = () => {
     addParticipation,
     removeParticipation,
   } = useIndividualCampaignStore();
+
   const vagasRestantes = campaign?.vagasRestantes;
   const isBrand = user?.collectionName === "Brands";
   const isVagasEsgotadas = vagasRestantes === 0;
@@ -105,28 +150,29 @@ const CampaignSubscribeButton: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  const isUserRegistered = (): boolean => {
-    if (!user || !campaignParticipations) return false;
-    return campaignParticipations.some(
-      (participation: CampaignParticipation) =>
-        participation.influencer === user.id
-    );
-  };
+  const userParticipation = user
+    ? campaignParticipations.find((p) => p.influencer === user.id)
+    : null;
 
-  const navigateToCompleteProfile = (): void => {
+  const isUserRegistered = Boolean(userParticipation);
+  const participationStatus = userParticipation?.status;
+
+  // Função para navegar até a edição do perfil
+  const navigateToCompleteProfile = () => {
     if (user?.collectionName === "Influencers") {
-      navigate({ to: `/influenciador/${user.username}/editar` });
+      navigate({ to: `/creator/${user.username}/editar` });
     } else {
       navigate({ to: `/marca/${user?.username}/editar` });
     }
   };
 
+  // Função para lidar com a inscrição
   const handleInscricao = async (): Promise<void> => {
-    if (!user) return;
+    if (!user || !campaign) return;
     setIsLoadingSubmit(true);
     try {
       await addParticipation({
-        campaign: campaign!.id,
+        campaign: campaign.id,
         influencer: user.id,
         status: ParticipationStatusFilter.Waiting,
         description: contentIdea,
@@ -136,11 +182,7 @@ const CampaignSubscribeButton: React.FC = () => {
       setIsModalOpen(false);
     } catch (error) {
       const err = error as ClientResponseError;
-      if (
-        err.data &&
-        err.data.data.influencer &&
-        err.data.data.influencer.code === "validation_not_unique"
-      ) {
+      if (err.data?.data?.influencer?.code === "validation_not_unique") {
         toast.error("Você já está inscrito nesta campanha!");
       } else {
         console.error(
@@ -153,63 +195,13 @@ const CampaignSubscribeButton: React.FC = () => {
     }
   };
 
-  const getIncompleteProfileFields = (user: Influencer): string[] => {
-    const missingFields: string[] = [];
-
-    if (!user.name) missingFields.push("Nome");
-    if (!user.username) missingFields.push("Nome de usuário");
-    if (!user.email) missingFields.push("Email");
-    if (!user.bio) missingFields.push("Biografia");
-    if (!user.background_img) missingFields.push("Imagem de fundo");
-    if (!user.birth_date) missingFields.push("Data de nascimento");
-    if (!user.cell_phone) missingFields.push("Celular");
-    if (!user.account_type) missingFields.push("Tipo de conta");
-    if (!user.gender) missingFields.push("Gênero");
-    if (!user.country) missingFields.push("País");
-    if (!user.state) missingFields.push("Estado");
-    if (!user.city) missingFields.push("Cidade");
-    if (!user.neighborhood) missingFields.push("Bairro");
-    if (!user.street) missingFields.push("Rua");
-    if (!user.address_num) missingFields.push("Número");
-    if (!user.cep) missingFields.push("CEP");
-    if (!user.pix_key) missingFields.push("Chave PIX");
-
-    const socialFields = [
-      "instagram_url",
-      "facebook_url",
-      "linkedin_url",
-      "youtube_url",
-      "tiktok_url",
-      "twitter_url",
-      "twitch_url",
-      "yourclub_url",
-      "kwai_url",
-      "pinterest_url",
-    ];
-
-    const hasSocialFieldFilled = socialFields.some((field) =>
-      Boolean(user[field as keyof Influencer])
-    );
-    if (!hasSocialFieldFilled) {
-      missingFields.push("Pelo menos uma rede social");
-    }
-
-    return missingFields;
-  };
-  const missingFields = user ? getIncompleteProfileFields(user) : [];
-
+  // Função para cancelar inscrição
   const handleCancelarInscricao = async (): Promise<void> => {
-    if (!user) return;
+    if (!userParticipation) return;
     setIsLoadingCancel(true);
     try {
-      const participation = campaignParticipations.find(
-        (p) => p.influencer === user.id
-      );
-      if (participation) {
-        removeParticipation(participation.id!);
-
-        toast.success("Inscrição cancelada com sucesso!");
-      }
+      await removeParticipation(userParticipation.id!);
+      toast.success("Inscrição cancelada com sucesso!");
     } catch (error) {
       console.error("Erro ao cancelar inscrição:", error);
       toast.error(
@@ -220,159 +212,199 @@ const CampaignSubscribeButton: React.FC = () => {
     }
   };
 
-  const userParticipation = user
-    ? campaignParticipations.find((p) => p.influencer === user.id)
-    : null;
+  // Determinar o estado final do botão (texto, se está habilitado, handler)
+  const userIsInfluencer = user?.collectionName === "Influencers";
+  const userProfileIsComplete = user && isProfileComplete(user);
+  const missingFields = user && getIncompleteProfileFields(user);
 
-  let buttonText: string = "Inscrever-se";
-  let isDisabled: boolean =
-    isBrand || (!isUserRegistered() && isVagasEsgotadas) || isOwner;
-  let onClickHandler: () => void = () => setIsModalOpen(true);
+  let buttonText = "";
+  let isDisabled = false;
+  let onClickHandler: () => void = () => {};
 
-  if (userParticipation) {
-    if (userParticipation.status === "approved") {
-      buttonText = "Aprovado pela marca";
-      isDisabled = true;
-      onClickHandler = () => {};
-    } else if (userParticipation.status === "waiting") {
-      buttonText = isLoadingCancel ? "Cancelando..." : "Cancelar Inscrição";
-      onClickHandler = handleCancelarInscricao;
-    } else if (userParticipation.status === "completed") {
-      buttonText = "Você já completou essa campanha";
-      isDisabled = true;
-    }
-  } else if (
-    !isProfileComplete(user) &&
-    user?.collectionName === "Influencers"
-  ) {
+  // Regras de Exibição do Botão:
+
+  // 1. Caso seja marca ou dono da campanha, não mostrar botão
+  if (isBrand || isOwner) {
+    // Não renderiza botão
+  }
+  // 2. Caso não haja vagas ou status sold_out
+  else if (isVagasEsgotadas || participationStatus === "sold_out") {
+    // Não renderiza botão, e mostra a mensagem abaixo do return
+  }
+  // 3. Caso o usuário não tenha perfil completo
+  else if (userIsInfluencer && !userProfileIsComplete) {
     buttonText = "Completar Perfil";
-    isDisabled = isBrand || isVagasEsgotadas || isOwner;
+    isDisabled = false;
     onClickHandler = navigateToCompleteProfile;
   }
+  // 4. Caso o usuário já esteja inscrito
+  else if (isUserRegistered) {
+    // Ajuste o texto com base no status
+    switch (participationStatus) {
+      case "approved":
+        buttonText = "Aprovado pela marca";
+        isDisabled = true;
+        break;
+      case "waiting":
+        buttonText = isLoadingCancel ? "Cancelando..." : "Cancelar Inscrição";
+        onClickHandler = handleCancelarInscricao;
+        break;
+      case "completed":
+        buttonText = "Trabalho concluído";
+        isDisabled = true;
+        break;
+      default:
+        buttonText = "Status desconhecido";
+        isDisabled = true;
+    }
+  }
+  // 5. Caso o usuário possa se inscrever normalmente
+  else {
+    buttonText = "Inscrever-se";
+    onClickHandler = () => setIsModalOpen(true);
+  }
 
-  if (isBrand) {
+  // Renderizações Condicionais:
+
+  // Caso seja marca ou dono da campanha, não mostra nada
+  if (isBrand || isOwner) {
     return null;
   }
 
-  const shouldRenderButton =
-    (!isVagasEsgotadas || isUserRegistered()) && !isOwner && !isBrand;
+  // Caso as vagas estejam esgotadas ou o status do usuário seja sold_out
+  if (isVagasEsgotadas || participationStatus === "sold_out") {
+    return (
+      <p className="text-[#942A2A] font-semibold">
+        Não há mais vagas disponíveis para essa campanha.
+      </p>
+    );
+  }
 
+  // Caso usuário não tenha perfil completo
+  if (userIsInfluencer && !userProfileIsComplete && missingFields) {
+    return (
+      <div>
+        <div className="text-[#942A2A] font-semibold mt-2">
+          <p>
+            Para se inscrever, complete seu perfil preenchendo os seguintes
+            campos:
+          </p>
+          <ul className="list-disc list-inside">
+            {missingFields.map((field) => (
+              <li key={field}>{field}</li>
+            ))}
+          </ul>
+        </div>
+        <button
+          className={`px-4 py-2 rounded-md mt-2 font-bold border bg-[#10438F] text-white hover:bg-[#10438F]/90`}
+          onClick={onClickHandler}
+        >
+          {buttonText}
+        </button>
+      </div>
+    );
+  }
+
+  // Caso o usuário já esteja inscrito (approved ou waiting)
+  // ou possa se inscrever agora
   return (
     <>
-      {!isBrand &&
-        !isProfileComplete(user) &&
-        !isVagasEsgotadas &&
-        user?.collectionName === "Influencers" && (
-          <div className="text-[#942A2A] font-semibold mt-2">
-            <p>
-              Para se inscrever, complete seu perfil preenchendo os seguintes
-              campos:
-            </p>
-            <ul className="list-disc list-inside">
-              {missingFields.map((field) => (
-                <li key={field}>{field}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      {shouldRenderButton ? (
-        <>
-          <button
-            className={`px-4 py-2 rounded-md mt-2 font-bold border transition-colors duration-200 flex flex-row ${
-              buttonText === "Cancelar Inscrição" ||
-              buttonText === "Cancelando..."
-                ? "bg-white border-[#942A2A] text-[#942A2A] hover:bg-[#942A2A] hover:text-white"
-                : buttonText === "Aprovado pela marca"
-                  ? "bg-green-500 text-white cursor-default"
-                  : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
-            } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
-            disabled={isDisabled}
-            onClick={onClickHandler}
-          >
-            {isLoadingCancel && <Spinner />}
-            {buttonText}
-          </button>
+      <div className="flex items-center gap-4 flex-wrap max-sm:gap-0">
+        <button
+          className={`px-4 py-2 rounded-md mt-2 font-bold border transition-colors duration-200 flex flex-row ${
+            buttonText === "Cancelar Inscrição" ||
+            buttonText === "Cancelando..."
+              ? "bg-white border-[#942A2A] text-[#942A2A] hover:bg-[#942A2A] hover:text-white"
+              : buttonText === "Aprovado pela marca" ||
+                  buttonText === "Trabalho concluído"
+                ? "bg-green-500 text-white cursor-default"
+                : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
+          } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={isDisabled}
+          onClick={onClickHandler}
+        >
+          {isLoadingCancel && <Spinner />}
+          {buttonText}
+        </button>
 
-          {buttonText === "Inscrever-se" && (
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-              <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                  <DialogTitle>Conclua sua Inscrição</DialogTitle>
-                  <DialogDescription>
-                    Escreva aqui sua ideia/roteiro de conteúdo para essa
-                    campanha e/ou porquê a marca deve te escolher
-                  </DialogDescription>
-                </DialogHeader>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleInscricao();
-                  }}
+        {participationStatus === "approved" && (
+          <ModalSendLinkCampaign
+            campaignId={campaign?.id as string}
+            brandId={campaign?.expand?.brand?.id as string}
+          />
+        )}
+      </div>
+
+      {buttonText === "Inscrever-se" && (
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Conclua sua Inscrição</DialogTitle>
+              <DialogDescription>
+                Escreva aqui sua ideia/roteiro de conteúdo para essa campanha
+                e/ou porquê a marca deve te escolher
+              </DialogDescription>
+            </DialogHeader>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleInscricao();
+              }}
+            >
+              <div className="mt-4">
+                <textarea
+                  className="w-full border border-gray-300 rounded-md p-2 max-h-[60dvh] min-h-20"
+                  placeholder="Digite aqui (máximo 600 caracteres)"
+                  value={contentIdea}
+                  maxLength={600}
+                  onChange={(e) => setContentIdea(e.target.value)}
+                  required
+                ></textarea>
+                <div className="text-right text-sm text-gray-500">
+                  {contentIdea.length} / 600
+                </div>
+              </div>
+              <div className="mt-4 flex items-center">
+                <input
+                  type="checkbox"
+                  id="acceptContract"
+                  checked={isContractAccepted}
+                  onChange={(e) => setIsContractAccepted(e.target.checked)}
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                  required
+                />
+                <label htmlFor="acceptContract" className="ml-2 text-sm">
+                  Li e concordo com o{" "}
+                  <a
+                    href={`${window.location.origin}/contrato-campanha`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline text-blue-600 font-semibold"
+                  >
+                    Contrato da Campanha
+                  </a>
+                </label>
+              </div>
+              <DialogFooter className="mt-4">
+                <button
+                  type="submit"
+                  className={`bg-[#E34105] text-white px-4 py-2 rounded-md ${
+                    !isContractAccepted || !contentIdea.trim()
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-[#E34105]/90"
+                  }`}
+                  disabled={
+                    !isContractAccepted ||
+                    !contentIdea.trim() ||
+                    isLoadingSubmit
+                  }
                 >
-                  <div className="mt-4">
-                    <textarea
-                      className="w-full border border-gray-300 rounded-md p-2 max-h-[60dvh] min-h-20"
-                      placeholder="Digite aqui (máximo 600 caracteres)"
-                      value={contentIdea}
-                      maxLength={600}
-                      onChange={(e) => setContentIdea(e.target.value)}
-                      required
-                    ></textarea>
-                    <div className="text-right text-sm text-gray-500">
-                      {contentIdea.length} / 600
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-center">
-                    <input
-                      type="checkbox"
-                      id="acceptContract"
-                      checked={isContractAccepted}
-                      onChange={(e) => setIsContractAccepted(e.target.checked)}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                      required
-                    />
-                    <label htmlFor="acceptContract" className="ml-2 text-sm">
-                      Li e concordo com o{" "}
-                      <a
-                        href={`${window.location.origin}/contrato-campanha`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline text-blue-600 font-semibold"
-                      >
-                        Contrato da Campanha
-                      </a>
-                    </label>
-                  </div>
-                  <DialogFooter className="mt-4">
-                    <button
-                      type="submit"
-                      className={`bg-[#E34105] text-white px-4 py-2 rounded-md ${
-                        !isContractAccepted || !contentIdea.trim()
-                          ? "opacity-50 cursor-not-allowed"
-                          : "hover:bg-[#E34105] hover:bg-opacity-90"
-                      }`}
-                      disabled={
-                        !isContractAccepted ||
-                        !contentIdea.trim() ||
-                        isLoadingSubmit
-                      }
-                    >
-                      {isLoadingSubmit ? "Enviando..." : "Concluir inscrição"}
-                    </button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-          )}
-        </>
-      ) : (
-        !isUserRegistered() ||
-        (isUserRegistered() && userParticipation?.status === "sold_out" && (
-          <p className="text-[#942A2A] font-semibold">
-            $
-            {`As vagas para esta campanha estão preenchidas. Agradecemos seu interesse ${isUserRegistered() && "e participação"}! Fique de olho nas próximas oportunidades que lançaremos em breve.`}
-          </p>
-        ))
+                  {isLoadingSubmit ? "Enviando..." : "Concluir inscrição"}
+                </button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

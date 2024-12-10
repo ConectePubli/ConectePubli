@@ -45,7 +45,7 @@ export const Route = createFileRoute("/(auth)/login123new/")({
       });
     } else if (userType === "Influencers") {
       throw redirect({
-        to: "/dashboard-influenciador",
+        to: "/dashboard-creator",
       });
     }
   },

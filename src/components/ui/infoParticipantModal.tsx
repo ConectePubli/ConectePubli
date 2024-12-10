@@ -10,6 +10,9 @@ import { Campaign } from "@/types/Campaign";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 
 import pb from "@/lib/pb";
+import { useRouter } from "@tanstack/react-router";
+import { createOrGetChat } from "@/services/chatService";
+import { toast, ToastContainer } from "react-toastify";
 
 interface Props {
   campaignData: Campaign;
@@ -26,7 +29,39 @@ const InfoParticipantModal: React.FC<Props> = ({
   participant,
   setModalType,
 }) => {
+  const router = useRouter();
   const [showFullDescription, setShowFullDescription] = useState(false);
+
+  // chat
+  const [loadingChat, setLoadingChat] = useState<boolean>(false);
+
+  const handleStartChat = async (influencerId: string, brandId: string) => {
+    setLoadingChat(true);
+
+    try {
+      const chat = await createOrGetChat(
+        campaignData?.id as string,
+        influencerId,
+        brandId
+      );
+
+      router.navigate({
+        to: "/dashboard/chat/",
+        search: {
+          campaignId: chat.campaign,
+          influencerId: chat.influencer,
+          brandId: chat.brand,
+        },
+      });
+    } catch (error) {
+      console.error("Erro ao iniciar o chat:", error);
+      toast("Não foi possível iniciar o chat", {
+        type: "error",
+      });
+    } finally {
+      setLoadingChat(false);
+    }
+  };
 
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
@@ -110,7 +145,7 @@ const InfoParticipantModal: React.FC<Props> = ({
             className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
             onClick={() => {
               window.open(
-                `/influenciador/${participant?.username}`,
+                `/creator/${participant?.username}`,
                 "_blank",
                 "noopener,noreferrer"
               );
@@ -125,11 +160,20 @@ const InfoParticipantModal: React.FC<Props> = ({
               <button
                 className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
                 onClick={() => {
-                  // Ação de "Enviar Mensagem" aqui
+                  handleStartChat(
+                    selectedParticipation.influencer || "",
+                    campaignData.brand
+                  );
                 }}
               >
-                <MessageCircle size={17} />
-                Enviar Mensagem
+                {loadingChat ? (
+                  "Aguarde..."
+                ) : (
+                  <>
+                    <MessageCircle size={18} className="mr-1" />
+                    Enviar Mensagem
+                  </>
+                )}
               </button>
             )}
 
@@ -192,6 +236,8 @@ const InfoParticipantModal: React.FC<Props> = ({
           </p>
         </div>
       </div>
+
+      <ToastContainer />
     </Modal>
   );
 };

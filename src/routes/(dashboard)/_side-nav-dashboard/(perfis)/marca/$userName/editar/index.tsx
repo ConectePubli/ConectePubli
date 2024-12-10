@@ -346,6 +346,9 @@ function Page() {
         "niche",
       ]);
 
+      console.log("email");
+      console.log(modifiedFields.email);
+
       if (Object.keys(modifiedFields).length === 0) {
         return;
       }
@@ -1000,7 +1003,9 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Rua</h2>
+            <h2 className="text-sm font-semibold">
+              Logradouro (Rua, Avenida, Alameda, etc.)
+            </h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input

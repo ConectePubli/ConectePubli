@@ -22,6 +22,7 @@ import { toast, ToastContainer } from "react-toastify";
 import RateBrandModal from "@/components/ui/RateBrandModal";
 import { Influencer } from "@/types/Influencer";
 import { Brand } from "@/types/Brand";
+import FormattedText from "@/utils/FormattedText";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
@@ -111,7 +112,7 @@ function CampaignPage() {
     setCampaign,
     setCampaignParticipations,
   ]);
-
+  
   const { rateBrand } = useSearch({ from: Route.id });
   const [modalType, setModalType] = useState<string | null>(null);
   const [hasRatedBrand, setHasRatedBrand] = useState(true);
@@ -157,6 +158,7 @@ function CampaignPage() {
       setModalType("rateBrand");
     }
   }, [rateBrand, hasRatedBrand]);
+    
   return (
     <div className="container mx-auto p-4 ">
       <div
@@ -191,33 +193,34 @@ function CampaignPage() {
         {/* Coluna direita - Detalhes, Requisitos e Características */}
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-lg shadow-lg border max-xl:mt-4">
-            <h2 className="font-bold mt-2">Briefing da Campanha</h2>
-            <p className="text-black break-words">{campaign?.briefing}</p>
+            <h2 className="font-bold mt-4">Briefing da Campanha</h2>
+            <FormattedText text={campaign?.briefing || ""} />
 
-            <h2 className="font-bold mt-2">Entregavéis obrigatórios</h2>
-            <p className="text-black break-words">
-              {campaign?.mandatory_deliverables}
-            </p>
+            <h2 className="font-bold mt-4">Entregavéis obrigatórios</h2>
+            <FormattedText text={campaign?.mandatory_deliverables || ""} />
 
-            <h2 className="font-bold mt-2 ">Envio de Produtos ou Serviços</h2>
-            <p className="text-black break-words">
-              {campaign?.sending_products_or_services}
-            </p>
+            <h2 className="font-bold mt-4">Envio de Produtos ou Serviços</h2>
+            <FormattedText
+              text={campaign?.sending_products_or_services || ""}
+            />
 
-            <h2 className="font-bold mt-2">
+            <h2 className="font-bold mt-4">
               Ações Esperadas do Creator (Do's)
             </h2>
-            <p className="text-black break-words">
-              {campaign?.expected_actions}
-            </p>
+            <FormattedText text={campaign?.expected_actions || ""} />
 
-            <h2 className="font-bold mt-2">Ações a Serem Evitadas (Don'ts)</h2>
-            <p className="text-black break-words">{campaign?.avoid_actions}</p>
+            <h2 className="font-bold mt-4">Ações a Serem Evitadas (Don'ts)</h2>
+            <FormattedText text={campaign?.avoid_actions || ""} />
 
-            <h2 className="font-bold mt-2">Informações adicionais</h2>
-            <p className="text-black break-words">
-              {campaign?.additional_information}
-            </p>
+            <h2 className="font-bold mt-4">Informações adicionais</h2>
+            <FormattedText text={campaign?.additional_information || ""} />
+
+            {campaign?.itinerary_suggestion && (
+              <>
+                <h2 className="font-bold mt-4">Sugestão de roteiro</h2>
+                <FormattedText text={campaign?.itinerary_suggestion || ""} />
+              </>
+            )}
 
             {/* External Link */}
             {campaign?.product_url && (

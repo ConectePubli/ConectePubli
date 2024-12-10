@@ -19,7 +19,7 @@ export const Route = createFileRoute("/(auth)/cadastro/")({
       });
     } else if (userType === "Influencers") {
       throw redirect({
-        to: "/dashboard-influenciador",
+        to: "/dashboard-creator",
       });
     }
   },
@@ -58,7 +58,7 @@ function Page() {
             variant="blue"
             size="lg"
             className="w-full whitespace-normal h-fit py-4"
-            onClick={() => navigate({ to: "/cadastro/influenciador" })}
+            onClick={() => navigate({ to: "/cadastro/creator" })}
           >
             Quero me Cadastrar como um Creator
           </Button>

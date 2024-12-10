@@ -14,6 +14,7 @@ export interface Campaign {
   expected_actions: string;
   avoid_actions: string;
   additional_information: string;
+  itinerary_suggestion: string;
   price: number;
   paid?: boolean;
   brand: string;

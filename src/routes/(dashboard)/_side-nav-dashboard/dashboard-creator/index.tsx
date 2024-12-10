@@ -1,35 +1,35 @@
-import { useEffect } from "react";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import CampaignCard from "@/components/ui/CampaignCard";
-import Spinner from "@/components/ui/Spinner";
-import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
-import { getUserType } from "@/lib/auth";
-import Pagination from "@/components/ui/Pagination";
-import { useCampaignStore } from "@/store/useCampaignStore";
-import { ParticipationStatusFilter } from "@/types/Filters";
+import { useEffect } from 'react'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import CampaignCard from '@/components/ui/CampaignCard'
+import Spinner from '@/components/ui/Spinner'
+import BrandCampaignFilter from '@/components/ui/BrandCampaignFilter'
+import { getUserType } from '@/lib/auth'
+import Pagination from '@/components/ui/Pagination'
+import { useCampaignStore } from '@/store/useCampaignStore'
+import { ParticipationStatusFilter } from '@/types/Filters'
 
 // Route creation
 export const Route = createFileRoute(
-  "/(dashboard)/_side-nav-dashboard/dashboard-influenciador/"
+  '/(dashboard)/_side-nav-dashboard/dashboard-creator/',
 )({
   component: Page,
   beforeLoad: async () => {
-    const userType = await getUserType();
+    const userType = await getUserType()
 
     if (!userType) {
       throw redirect({
-        to: "/login123new",
-      });
-    } else if (userType !== "Influencers") {
+        to: '/login123new',
+      })
+    } else if (userType !== 'Influencers') {
       throw redirect({
-        to: "/dashboard",
-      });
+        to: '/dashboard',
+      })
     }
   },
-});
+})
 
 function Page() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const {
     fetchParticipatingCampaigns,
     campaignGoalFilter,
@@ -42,21 +42,21 @@ function Page() {
     totalPages,
     setPage,
     resetFilters,
-  } = useCampaignStore();
+  } = useCampaignStore()
 
   useEffect(() => {
-    resetFilters(); // Reset filters when the page mounts
-  }, [resetFilters]);
+    resetFilters() // Reset filters when the page mounts
+  }, [resetFilters])
 
   useEffect(() => {
-    fetchParticipatingCampaigns();
+    fetchParticipatingCampaigns()
   }, [
     fetchParticipatingCampaigns,
     campaignGoalFilter,
     searchTerm,
     participationStatusFilter,
     page,
-  ]);
+  ])
 
   return (
     <div className="mx-auto py-6 px-4">
@@ -93,7 +93,7 @@ function Page() {
               </p>
               <button
                 onClick={() => {
-                  navigate({ to: "/vitrine-de-campanhas" });
+                  navigate({ to: '/vitrine-de-campanhas' })
                 }}
                 className="mt-4 px-4 py-2 bg-[#FF672F] text-white rounded font-semibold"
               >
@@ -105,7 +105,7 @@ function Page() {
               {campaigns.map((campaign) => (
                 <CampaignCard
                   key={campaign.id}
-                  campaign={campaign}
+                  campaignData={campaign}
                   participationStatus={
                     campaign.participationStatus ??
                     ParticipationStatusFilter.All
@@ -121,7 +121,7 @@ function Page() {
       {/* Pagination */}
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
     </div>
-  );
+  )
 }
 
-export default Page;
+export default Page
