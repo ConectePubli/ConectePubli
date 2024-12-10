@@ -120,6 +120,13 @@ function CampaignPage() {
     const checkBrandRating = async () => {
       const influencerId = pb.authStore.model?.id;
       if (!influencerId) return;
+      const participation = campaignParticipationsData.find(
+        (p) => p.influencer === pb.authStore.model?.id
+      );
+
+      if (participation?.status !== "completed") {
+        return;
+      }
 
       try {
         await pb
