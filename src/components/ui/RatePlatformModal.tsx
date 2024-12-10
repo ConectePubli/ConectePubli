@@ -32,6 +32,7 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType }) => {
       await pb.collection("ratings").create({
         from_brand: pb.authStore.model?.id,
         comment,
+        to_conectepubli: true,
         feedback: feedback,
       });
 
