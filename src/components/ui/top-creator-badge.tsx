@@ -1,0 +1,40 @@
+import GoldCheckIcon from "@/assets/icons/gold-check.svg";
+import GrayCheckIcon from "@/assets/icons/gray-check.svg";
+import { useNavigate } from "@tanstack/react-router";
+
+interface BadgeProps {
+  status: true | false;
+}
+
+const TopCreatorBadge: React.FC<BadgeProps> = ({ status }) => {
+  const navigate = useNavigate(); // Hook para navegação
+  const isActive = status === true;
+
+  const handleClick = () => {
+    if (!isActive) {
+      navigate({ to: "/criar-pagina" }); // Substitua pela URL real
+    }
+  };
+
+  return (
+    <div
+      onClick={handleClick} // Adiciona o evento de clique
+      className={`flex items-center px-2 py-1 rounded-full font-bold text-xs cursor-pointer ${
+        isActive
+          ? "bg-blue-900 text-yellow-400"
+          : "bg-white text-gray-700 border border-gray-700 hover:bg-gray-100"
+      }`}
+    >
+      <span className="mr-2 w-4 h-4">
+        <img
+          src={isActive ? GoldCheckIcon : GrayCheckIcon}
+          alt={isActive ? "Gold Check" : "Gray Check"}
+          className="w-4 h-4"
+        />
+      </span>
+      {isActive ? "Top Influencer" : "Torne-se um Top Influencer"}
+    </div>
+  );
+};
+
+export default TopCreatorBadge;

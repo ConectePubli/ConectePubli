@@ -26,6 +26,7 @@ import AllRatingsModal from "@/components/ui/AllRatingsModal";
 import { RecordModel } from "pocketbase";
 import { Rating as StarRating } from "react-simple-star-rating";
 import Spinner from "@/components/ui/Spinner";
+import TopCreatorBadge from "@/components/ui/top-creator-badge";
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/"
 )({
@@ -264,8 +265,19 @@ function InfluencerProfilePage() {
               />{" "}
               Creator/Influencer
             </p>
-            <h1 className="text-xl font-bold break-words break-all">
-              {influencer.name || "..."}
+            <h1 className="text-xl font-bold flex items-center">
+              <span className="break-words break-all">
+                {influencer.name || "..."}
+              </span>
+              <div className="ml-4">
+                {
+                  influencer.top_creator ? (
+                    <TopCreatorBadge status={true} />
+                  ) : userLogged?.model?.username === username ? (
+                    <TopCreatorBadge status={false} />
+                  ) : null
+                }
+              </div>
             </h1>
           </div>
         </div>

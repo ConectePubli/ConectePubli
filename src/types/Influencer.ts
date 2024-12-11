@@ -51,6 +51,7 @@ export interface Influencer {
   account_type: string;
   gender: string;
   verified: boolean;
+  top_creator: boolean;
   created: Date;
   updated: Date;
   collectionId: string;
