@@ -47,16 +47,19 @@ const RateBrandModal: React.FC<Props> = ({
         {
           question:
             "Quão claro foi o briefing fornecido pela marca em relação aos objetivos, público-alvo e diretrizes da campanha?",
+          short_term: "Clareza",
           rating: ratings.clarity,
         },
         {
           question:
             "Como você avalia a disponibilidade e a agilidade da marca em responder às dúvidas ou solicitações durante o projeto?",
+          short_term: "Agilidade",
           rating: ratings.availability,
         },
         {
           question:
             "A marca demonstrou expectativas realistas e lidou bem com ajustes necessários durante a campanha?",
+          short_term: "Expectativas",
           rating: ratings.realisticExpectations,
         },
       ];

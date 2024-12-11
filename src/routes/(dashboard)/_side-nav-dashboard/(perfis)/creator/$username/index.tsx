@@ -25,6 +25,7 @@ import { Rating } from "@/types/Rating";
 import AllRatingsModal from "@/components/ui/AllRatingsModal";
 import { RecordModel } from "pocketbase";
 import { Rating as StarRating } from "react-simple-star-rating";
+import Spinner from "@/components/ui/Spinner";
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/"
 )({
@@ -195,13 +196,13 @@ function InfluencerProfilePage() {
 
   const niches = influencer?.expand?.niche || [];
 
-  // if (mutate.isPending) { TODO: REMOVER COMENTÁRIO
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <Spinner />
-  //     </div>
-  //   );
-  // }
+  if (mutate.isPending) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
 
   if (mutate.isError) {
     return (

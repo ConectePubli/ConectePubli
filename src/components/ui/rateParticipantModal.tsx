@@ -43,14 +43,17 @@ const RateParticipantModal: React.FC<Props> = ({
       const feedback = [
         {
           question: "Quão bem o conteúdo produzido atendeu às diretrizes?",
+          short_term: "Qualidade",
           rating: ratings.creativeContent,
         },
         {
           question: "Pontualidade e comunicação do influenciador?",
+          short_term: "Pontualidade",
           rating: ratings.punctuality,
         },
         {
           question: "Como avalia o alcance e engajamento?",
+          short_term: "Performance",
           rating: ratings.engagement,
         },
       ];

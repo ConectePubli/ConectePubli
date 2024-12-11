@@ -38,6 +38,7 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
         {
           question:
             "Em uma escala de 1 a 5, como você avalia sua satisfação geral com a plataforma Conecte Publi, considerando navegação, funcionalidades e suporte?",
+          short_term: "Satisfação geral",
           rating: rating,
         },
       ];
