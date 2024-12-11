@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { PrivateHeader } from "@/components/ui/PrivateHeader";
 import { PublicHeader } from "@/components/ui/PublicHeader";
 import pb from "@/lib/pb";
+import { ToastContainer } from "react-toastify";
 
 export const Route = createRootRouteWithContext()({
   component: RootPage,
@@ -54,6 +55,7 @@ function RootPage() {
       )}
       <Outlet />
       <Toaster />
+      <ToastContainer />
 
       {/* Exibe as Devtools apenas se não estiver no domínio principal */}
       {window.location.hostname !== "conectepubli.com" && (

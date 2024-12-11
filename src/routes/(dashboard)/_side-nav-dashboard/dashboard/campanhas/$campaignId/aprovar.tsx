@@ -33,6 +33,7 @@ import RateParticipantModal from "@/components/ui/rateParticipantModal";
 import { toast, ToastContainer } from "react-toastify";
 import { createOrGetChat } from "@/services/chatService";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
+import Spinner from "@/components/ui/Spinner";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -82,6 +83,11 @@ export const Route = createFileRoute(
       throw error;
     }
   },
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen">
+      <Spinner />
+    </div>
+  ),
   component: Page,
   errorComponent: () => (
     <div>

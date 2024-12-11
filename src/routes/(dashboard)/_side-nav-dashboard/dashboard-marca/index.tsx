@@ -7,12 +7,13 @@ import CampaignsTable from "@/components/ui/CampaignsTable";
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
+import Spinner from "@/components/ui/Spinner";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/"
 )({
   component: Page,
-  beforeLoad: async () => {
+  loader: async () => {
     const userType = await getUserType();
 
     if (!userType) {
@@ -25,6 +26,11 @@ export const Route = createFileRoute(
       });
     }
   },
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen">
+      <Spinner />
+    </div>
+  ),
 });
 
 function Page() {
