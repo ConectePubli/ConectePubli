@@ -24,6 +24,7 @@ import { Influencer } from "@/types/Influencer";
 import { Brand } from "@/types/Brand";
 import FormattedText from "@/utils/FormattedText";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
+import Spinner from "@/components/ui/Spinner";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
@@ -41,6 +42,11 @@ export const Route = createFileRoute(
         A campanha que você estava procurando ainda não iniciou, foi encerrada
         ou removida.
       </p>
+    </div>
+  ),
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen">
+      <Spinner />
     </div>
   ),
   beforeLoad: async () => {
