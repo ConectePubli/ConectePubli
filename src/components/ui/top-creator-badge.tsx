@@ -7,21 +7,21 @@ interface BadgeProps {
 }
 
 const TopCreatorBadge: React.FC<BadgeProps> = ({ status }) => {
-  const navigate = useNavigate(); // Hook para navegação
+  const navigate = useNavigate();
   const isActive = status === true;
 
   const handleClick = () => {
     if (!isActive) {
-      navigate({ to: "/criar-pagina" }); // Substitua pela URL real
+      navigate({ to: "/top-creator" });
     }
   };
 
   return (
     <div
-      onClick={handleClick} // Adiciona o evento de clique
+      onClick={handleClick}
       className={`flex items-center px-2 py-1 rounded-full font-bold text-xs cursor-pointer ${
         isActive
-          ? "bg-blue-900 text-yellow-400"
+          ? "bg-blue-900 text-yellow-300"
           : "bg-white text-gray-700 border border-gray-700 hover:bg-gray-100"
       }`}
     >
@@ -32,7 +32,7 @@ const TopCreatorBadge: React.FC<BadgeProps> = ({ status }) => {
           className="w-4 h-4"
         />
       </span>
-      {isActive ? "Top Influencer" : "Torne-se um Top Influencer"}
+      {isActive ? "Top Creator" : "Torne-se um Top Creator"}
     </div>
   );
 };

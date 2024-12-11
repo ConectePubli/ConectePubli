@@ -23,6 +23,7 @@ import { Route as authCadastroIndexImport } from './routes/(auth)/cadastro/index
 import { Route as authCadastroMarcaImport } from './routes/(auth)/cadastro/marca'
 import { Route as authCadastroCreatorImport } from './routes/(auth)/cadastro/creator'
 import { Route as dashboardSideNavDashboardVitrineDeCampanhasIndexImport } from './routes/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/index'
+import { Route as dashboardSideNavDashboardTopCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/top-creator/index'
 import { Route as dashboardSideNavDashboardNotificacoesIndexImport } from './routes/(dashboard)/_side-nav-dashboard/notificacoes/index'
 import { Route as dashboardSideNavDashboardDashboardIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/index'
@@ -115,6 +116,12 @@ const authCadastroCreatorRoute = authCadastroCreatorImport.update({
 const dashboardSideNavDashboardVitrineDeCampanhasIndexRoute =
   dashboardSideNavDashboardVitrineDeCampanhasIndexImport.update({
     path: '/vitrine-de-campanhas/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardTopCreatorIndexRoute =
+  dashboardSideNavDashboardTopCreatorIndexImport.update({
+    path: '/top-creator/',
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
@@ -343,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardNotificacoesIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/top-creator/': {
+      id: '/_side-nav-dashboard/top-creator/'
+      path: '/top-creator'
+      fullPath: '/top-creator'
+      preLoaderRoute: typeof dashboardSideNavDashboardTopCreatorIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/': {
       id: '/_side-nav-dashboard/vitrine-de-campanhas/'
       path: '/vitrine-de-campanhas'
@@ -483,6 +497,7 @@ interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardDashboardCreatorIndexRoute: typeof dashboardSideNavDashboardDashboardCreatorIndexRoute
   dashboardSideNavDashboardDashboardMarcaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   dashboardSideNavDashboardNotificacoesIndexRoute: typeof dashboardSideNavDashboardNotificacoesIndexRoute
+  dashboardSideNavDashboardTopCreatorIndexRoute: typeof dashboardSideNavDashboardTopCreatorIndexRoute
   dashboardSideNavDashboardVitrineDeCampanhasIndexRoute: typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   dashboardSideNavDashboardperfisCreatorUsernameIndexRoute: typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
@@ -501,6 +516,8 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardDashboardMarcaIndexRoute,
     dashboardSideNavDashboardNotificacoesIndexRoute:
       dashboardSideNavDashboardNotificacoesIndexRoute,
+    dashboardSideNavDashboardTopCreatorIndexRoute:
+      dashboardSideNavDashboardTopCreatorIndexRoute,
     dashboardSideNavDashboardVitrineDeCampanhasIndexRoute:
       dashboardSideNavDashboardVitrineDeCampanhasIndexRoute,
     dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute:
@@ -547,6 +564,7 @@ export interface FileRoutesByFullPath {
   '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/notificacoes': typeof dashboardSideNavDashboardNotificacoesIndexRoute
+  '/top-creator': typeof dashboardSideNavDashboardTopCreatorIndexRoute
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
@@ -576,6 +594,7 @@ export interface FileRoutesByTo {
   '/dashboard-creator': typeof dashboardSideNavDashboardDashboardCreatorIndexRoute
   '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/notificacoes': typeof dashboardSideNavDashboardNotificacoesIndexRoute
+  '/top-creator': typeof dashboardSideNavDashboardTopCreatorIndexRoute
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
@@ -609,6 +628,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/dashboard-marca/': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/_side-nav-dashboard/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/_side-nav-dashboard/notificacoes/': typeof dashboardSideNavDashboardNotificacoesIndexRoute
+  '/_side-nav-dashboard/top-creator/': typeof dashboardSideNavDashboardTopCreatorIndexRoute
   '/_side-nav-dashboard/vitrine-de-campanhas/': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/_side-nav-dashboard/dashboard-marca/criar-campanha/': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
@@ -641,6 +661,7 @@ export interface FileRouteTypes {
     | '/dashboard-marca'
     | '/dashboard/'
     | '/notificacoes'
+    | '/top-creator'
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
     | '/dashboard/campanhas'
@@ -669,6 +690,7 @@ export interface FileRouteTypes {
     | '/dashboard-creator'
     | '/dashboard-marca'
     | '/notificacoes'
+    | '/top-creator'
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
     | '/dashboard/campanhas'
@@ -700,6 +722,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/dashboard-marca/'
     | '/_side-nav-dashboard/dashboard/'
     | '/_side-nav-dashboard/notificacoes/'
+    | '/_side-nav-dashboard/top-creator/'
     | '/_side-nav-dashboard/vitrine-de-campanhas/'
     | '/_side-nav-dashboard/dashboard-marca/criar-campanha/'
     | '/_side-nav-dashboard/dashboard/campanhas/'
@@ -780,6 +803,7 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/dashboard-creator/",
         "/_side-nav-dashboard/dashboard-marca/",
         "/_side-nav-dashboard/notificacoes/",
+        "/_side-nav-dashboard/top-creator/",
         "/_side-nav-dashboard/vitrine-de-campanhas/",
         "/_side-nav-dashboard/dashboard-marca/criar-campanha/",
         "/_side-nav-dashboard/creator/$username/",
@@ -845,6 +869,10 @@ export const routeTree = rootRoute
     },
     "/_side-nav-dashboard/notificacoes/": {
       "filePath": "(dashboard)/_side-nav-dashboard/notificacoes/index.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
+    "/_side-nav-dashboard/top-creator/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/top-creator/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/vitrine-de-campanhas/": {
