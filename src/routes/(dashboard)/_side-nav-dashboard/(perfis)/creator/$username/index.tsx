@@ -331,6 +331,7 @@ function InfluencerProfilePage() {
             </button>
           </div>
         </div>
+
         {/* SOCIAL LINKS */}
         <div className="flex flex-wrap gap-2 mt-2 sm-medium:gap-2">
           {SocialNetworks.map((network) => {
@@ -521,6 +522,7 @@ function InfluencerProfilePage() {
           ratings={ratings}
           conecteRatings={conecteRatings}
           onClose={() => setIsRatingModalOpen(false)}
+          userType="influencer"
         />
       )}
 

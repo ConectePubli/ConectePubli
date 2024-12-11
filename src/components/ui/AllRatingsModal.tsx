@@ -13,12 +13,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface Props {
   ratings: Rating[];
   conecteRatings: Rating[];
+  userType: "brand" | "influencer";
   onClose: () => void;
 }
 
 const AllRatingsModal: React.FC<Props> = ({
   ratings,
   conecteRatings,
+  userType,
   onClose,
 }) => {
   // Cálculo da média geral
@@ -125,8 +127,8 @@ const AllRatingsModal: React.FC<Props> = ({
             />
           </div>
           <p className="text-sm text-black font-bold ml-1">
-            ({totalReviews} {totalReviews === 1 ? "review" : "reviews"} do
-            usuário)
+            ({totalReviews} {totalReviews === 1 ? "review" : "reviews"}{" "}
+            {userType === "brand" ? "da marca" : "do usuário"})
           </p>
         </div>
 
@@ -140,13 +142,31 @@ const AllRatingsModal: React.FC<Props> = ({
         ) : (
           <div className="flex flex-col gap-4">
             {ratings.map((rating) => {
-              // Identificar quem avaliou
-              const fromName =
-                rating.expand?.from_brand?.name ||
-                rating.expand?.from_influencer?.name ||
-                "Usuário Desconhecido";
+              const isBrandProfile = userType === "brand";
+              const from = isBrandProfile
+                ? rating.expand?.from_influencer
+                : rating.expand?.from_brand;
+              const fromName = from?.name || "Usuário Desconhecido";
 
-              // Calcular média da avaliação individual
+              let url = "";
+              if (isBrandProfile && rating.expand?.from_influencer) {
+                url = `/creator/${rating.expand.from_influencer.username}`;
+              } else if (!isBrandProfile && rating.expand?.from_brand) {
+                url = `/marca/${rating.expand.from_brand.username}`;
+              }
+
+              const fromCollectionName = isBrandProfile
+                ? rating.expand?.from_influencer?.collectionName
+                : rating.expand?.from_brand?.collectionName;
+
+              const fromProfileImg = isBrandProfile
+                ? rating.expand?.from_influencer?.profile_img
+                : rating.expand?.from_brand?.profile_img;
+
+              const fromId = isBrandProfile
+                ? rating.expand?.from_influencer?.id
+                : rating.expand?.from_brand?.id;
+
               let individualAverage = 0;
               if (rating.feedback && rating.feedback.length > 0) {
                 const sum = rating.feedback.reduce(
@@ -164,32 +184,24 @@ const AllRatingsModal: React.FC<Props> = ({
                   key={rating.id}
                   className="border border-gray-300 rounded-lg p-4 shadow-sm bg-white scrollbar-hide"
                 >
-                  {/* Cabeçalho da avaliação */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 cursor-default">
                     <div className="flex flex-col">
                       <div className="flex items-center flex-row gap-2">
                         <Avatar
-                          className="hover:cursor-pointer"
+                          className={`hover:cursor-pointer ${isBrandProfile ? "" : "rounded-md"}`}
                           onClick={() => {
-                            let url = "";
-                            if (rating.expand?.from_brand) {
-                              url = `/marca/${rating.expand.from_brand.username}`;
-                            } else if (rating.expand?.from_influencer) {
-                              url = `/creator/${rating.expand.from_influencer.username}`;
-                            }
-
                             if (url) {
                               window.open(url, "_blank", "noopener,noreferrer");
                             }
                           }}
                         >
                           <AvatarImage
-                            src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${rating.expand?.from_brand?.collectionName}/${rating.expand?.from_brand?.id}/${rating.expand?.from_brand?.profile_img}`}
+                            src={`${import.meta.env.VITE_POCKETBASE_URL}/api/files/${fromCollectionName}/${fromId}/${fromProfileImg}`}
                           />
-                          <AvatarFallback>
-                            {rating.expand?.from_brand?.name
-                              ? rating.expand.from_brand.name.charAt(0)
-                              : rating.expand?.from_brand?.username.charAt(0)}
+                          <AvatarFallback
+                            className={`hover:cursor-pointer ${isBrandProfile ? "" : "rounded-md"}`}
+                          >
+                            {fromName.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
@@ -203,24 +215,21 @@ const AllRatingsModal: React.FC<Props> = ({
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {
-                        <StarRating
-                          initialValue={individualAverage}
-                          readonly={true}
-                          allowFraction={true}
-                          size={24}
-                          SVGclassName={"inline-block"}
-                          fillColor={"#eab308"}
-                          emptyColor={"#D1D5DB"}
-                        />
-                      }
+                      <StarRating
+                        initialValue={individualAverage}
+                        readonly={true}
+                        allowFraction={true}
+                        size={24}
+                        SVGclassName={"inline-block"}
+                        fillColor={"#eab308"}
+                        emptyColor={"#D1D5DB"}
+                      />
                       <span className="text-sm text-gray-600">
                         ({individualAverage.toFixed(1)})
                       </span>
                     </div>
                   </div>
 
-                  {/* Nome da campanha */}
                   <p
                     className="text-sm text-gray-800 mt-2 font-bold hover:underline hover:cursor-pointer"
                     onClick={() => {
@@ -231,7 +240,6 @@ const AllRatingsModal: React.FC<Props> = ({
                     {campaignName}
                   </p>
 
-                  {/* Feedback detalhado */}
                   {rating.feedback && rating.feedback.length > 0 && (
                     <div className="mt-3 flex flex-row items-center space-x-2">
                       {rating.feedback.map((f, index) => (
@@ -247,7 +255,6 @@ const AllRatingsModal: React.FC<Props> = ({
                     </div>
                   )}
 
-                  {/* Comentário (opcional) */}
                   {rating.comment && (
                     <div className="mt-3">
                       <p className="text-sm text-gray-700 mt-1">

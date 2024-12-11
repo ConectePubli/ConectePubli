@@ -21,6 +21,11 @@ import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { formatLocation } from "@/utils/formatLocation";
 import { getUserType } from "@/lib/auth";
+import { Rating } from "@/types/Rating";
+import { useState } from "react";
+import { Rating as StarRating } from "react-simple-star-rating";
+import AllRatingsModal from "@/components/ui/AllRatingsModal";
+import Spinner from "@/components/ui/Spinner";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
@@ -46,20 +51,37 @@ export const Route = createFileRoute(
         throw notFound();
       }
 
-      const campaignsData =
-        (await pb.collection<Campaign>("campaigns").getFullList({
+      const [
+        campaignsData,
+        campaignsParticipationsData,
+        ratingsData,
+        conecteRatingsData,
+      ] = await Promise.all([
+        pb.collection<Campaign>("campaigns").getFullList({
           filter: `brand="${brandData.id}" && paid=true`,
           expand: "niche, brand",
-        })) || [];
-
-      const campaignsParticipationsData =
-        (await pb
+        }),
+        pb
           .collection("Campaigns_Participations")
           .getFullList<CampaignParticipation>({
             expand: "Campaign,Influencer",
-          })) || [];
+          }),
+        pb.collection("ratings").getFullList<Rating>({
+          filter: `to_brand~"${brandData.id}"`,
+          expand: "from_influencer,campaign",
+        }),
+        pb.collection("ratings").getFullList<Rating>({
+          filter: `to_conectepubli=true`,
+        }),
+      ]);
 
-      return { brandData, campaignsData, campaignsParticipationsData };
+      return {
+        brandData,
+        campaignsData: campaignsData || [],
+        campaignsParticipationsData: campaignsParticipationsData || [],
+        ratingsData: ratingsData || [],
+        conecteRatingsData: conecteRatingsData || [],
+      };
     } catch (error) {
       if (error instanceof ClientResponseError) {
         if (error.status === 404) {
@@ -70,6 +92,11 @@ export const Route = createFileRoute(
       throw error;
     }
   },
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen">
+      <Spinner />
+    </div>
+  ),
   component: Page,
   errorComponent: () => (
     <div>
@@ -81,12 +108,22 @@ export const Route = createFileRoute(
 });
 
 function Page() {
-  const { brandData, campaignsData, campaignsParticipationsData } =
-    useLoaderData({ from: Route.id });
+  const {
+    brandData,
+    campaignsData,
+    campaignsParticipationsData,
+    ratingsData,
+    conecteRatingsData,
+  } = useLoaderData({ from: Route.id });
+
   const brand = brandData as Brand;
   const campaigns = campaignsData as Campaign[];
   const campaignParticipations =
     campaignsParticipationsData as CampaignParticipation[];
+  const ratings = ratingsData as Rating[];
+  const conecteRatings = conecteRatingsData as Rating[];
+
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
   const calculateOpenJobs = (
     campaigns: Campaign[],
@@ -125,6 +162,27 @@ function Page() {
   );
 
   const navigate = useNavigate();
+
+  const calculateOverallAverage = () => {
+    if (ratings.length === 0) return 0;
+
+    let totalSum = 0;
+    let count = 0;
+
+    ratings.forEach((rating) => {
+      if (rating.feedback && rating.feedback.length > 0) {
+        rating.feedback.forEach((f) => {
+          totalSum += f.rating;
+          count++;
+        });
+      }
+    });
+
+    return count > 0 ? totalSum / count : 0;
+  };
+
+  const totalReviews = ratings.length;
+  const overallAverage = calculateOverallAverage();
 
   return (
     <div className="flex p-0 flex-col ">
@@ -173,6 +231,33 @@ function Page() {
           <p className="text-orange-600 font-bold text-md truncate max-w-xs">
             {formatLocation(brand)}
           </p>
+        </div>
+
+        <div className="flex items-center mt-3 px-4">
+          {/* Estrelas da Média */}
+          <StarRating
+            initialValue={overallAverage}
+            readonly={true}
+            allowFraction={true}
+            size={24}
+            SVGclassName={"inline-block"}
+            fillColor={"#eab308"}
+            emptyColor={"#D1D5DB"}
+          />
+
+          <div className="flex items-center mt-1">
+            <span className="text-black/75 text-sm items-center ml-3">
+              ({totalReviews} Avaliaç{totalReviews !== 1 ? "ões" : "ão"})
+            </span>
+
+            <div className="w-[6px] h-[6px] bg-orange-600 rounded-full ml-3" />
+            <button
+              className="ml-3 text-[#10438F] hover:underline font-bold"
+              onClick={() => setIsRatingModalOpen(true)}
+            >
+              Ver Reviews da Marca
+            </button>
+          </div>
         </div>
 
         {/* LINK */}
@@ -265,6 +350,14 @@ function Page() {
 
         <div className="mt-5 mb-6" />
       </div>
+      {isRatingModalOpen && (
+        <AllRatingsModal
+          ratings={ratings}
+          conecteRatings={conecteRatings}
+          onClose={() => setIsRatingModalOpen(false)}
+          userType={"brand"}
+        />
+      )}
     </div>
   );
 }
