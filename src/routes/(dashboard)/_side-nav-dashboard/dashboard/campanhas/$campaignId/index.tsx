@@ -142,7 +142,7 @@ function CampaignPage() {
         await pb
           .collection("ratings")
           .getFirstListItem(
-            `(from_influencer="${influencerId}" && to_brand="${campaignData.brand} && campaign="${campaignData.id}")`
+            `(from_influencer="${influencerId}" && to_brand="${campaignData.brand}" && campaign="${campaignData.id}")`
           );
         // Caso encontre, o influenciador já avaliou a marca
         setHasRatedBrand(true);
@@ -179,6 +179,12 @@ function CampaignPage() {
       if (!userId) return;
 
       try {
+        const hasFinishedCampaign = campaignParticipationsData.some(
+          (p) => p.influencer === userId && p.status === "completed"
+        );
+        if (!hasFinishedCampaign) {
+          return;
+        }
         const hasRating = await pb
           .collection("ratings")
           .getFirstListItem(
@@ -203,7 +209,7 @@ function CampaignPage() {
     if (rateConecte && pb.authStore.model?.collectionName !== "Brands") {
       checkPlatformRating();
     }
-  }, [campaignData.id, rateConecte]);
+  }, [campaignData.id, campaignParticipationsData, rateConecte]);
 
   useEffect(() => {
     if (rateConecte && !hasRatedPlatform) {
