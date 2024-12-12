@@ -233,7 +233,7 @@ function Page() {
           </p>
         </div>
 
-        <div className="flex items-center mt-3 px-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center mt-3 px-4">
           {/* Estrelas da Média */}
           <StarRating
             initialValue={overallAverage}
@@ -245,18 +245,20 @@ function Page() {
             emptyColor={"#D1D5DB"}
           />
 
-          <div className="flex items-center mt-1">
-            <span className="text-black/75 text-sm items-center ml-3">
+          <div className="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1">
+            <span className="text-black/75 text-sm ml-0 sm:ml-3">
               ({totalReviews} Avaliaç{totalReviews !== 1 ? "ões" : "ão"})
             </span>
 
-            <div className="w-[6px] h-[6px] bg-orange-600 rounded-full ml-3" />
-            <button
-              className="ml-3 text-[#10438F] hover:underline font-bold"
-              onClick={() => setIsRatingModalOpen(true)}
-            >
-              Ver Reviews da Marca
-            </button>
+            <div className="flex items-center mt-2 sm:mt-0">
+              <div className="w-[6px] h-[6px] bg-orange-600 rounded-full ml-0 sm:ml-3"></div>
+              <button
+                className="ml-2 sm:ml-3 text-[#10438F] hover:underline font-bold"
+                onClick={() => setIsRatingModalOpen(true)}
+              >
+                Ver Reviews da Marca
+              </button>
+            </div>
           </div>
         </div>
 
@@ -265,7 +267,7 @@ function Page() {
           <div className="mt-2 flex flex-row items-center px-4">
             <Link className="text-black mr-2" size={16} />
             <a
-              className="text-[#10438F] font-semibold text-md hover:underline"
+              className="text-[#10438F] font-semibold text-md hover:underline break-all"
               href={brand.web_site}
               target="_blank"
             >

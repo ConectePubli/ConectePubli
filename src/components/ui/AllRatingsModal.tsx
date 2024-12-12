@@ -241,14 +241,16 @@ const AllRatingsModal: React.FC<Props> = ({
                   </p>
 
                   {rating.feedback && rating.feedback.length > 0 && (
-                    <div className="mt-3 flex flex-row items-center space-x-2">
+                    <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:space-x-2 space-y-2 sm:space-y-0">
                       {rating.feedback.map((f, index) => (
                         <React.Fragment key={index}>
                           <span className="text-sm text-gray-700 font-semibold">
                             {f.short_term}: {f.rating.toFixed(0)}/5
                           </span>
                           {index < rating.feedback!.length - 1 && (
-                            <span className="text-sm text-gray-700">•</span>
+                            <span className="text-sm text-gray-700 hidden sm:block">
+                              •
+                            </span>
                           )}
                         </React.Fragment>
                       ))}
