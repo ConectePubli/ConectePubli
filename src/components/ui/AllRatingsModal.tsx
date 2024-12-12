@@ -4,22 +4,17 @@ import logo from "@/assets/logo.svg";
 import { Rating as StarRating } from "react-simple-star-rating";
 import { Rating } from "@/types/Rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-/**
- * Props:
- * - ratings: array de avaliações que o usuário recebeu
- *   Cada rating deve ter o `from_brand` ou `from_influencer` e `campaign` expandidos se necessário.
- * - onClose: função para fechar o modal
- */
+
 interface Props {
   ratings: Rating[];
-  conecteRatings: Rating[];
+  // conecteRatings: Rating[];
   userType: "brand" | "influencer";
   onClose: () => void;
 }
 
 const AllRatingsModal: React.FC<Props> = ({
   ratings,
-  conecteRatings,
+  // conecteRatings, TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
   userType,
   onClose,
 }) => {
@@ -42,25 +37,25 @@ const AllRatingsModal: React.FC<Props> = ({
     return count > 0 ? totalSum / count : 0;
   }, [ratings]);
 
-  const overallAverageConecte = useMemo(() => {
-    if (conecteRatings.length === 0) return 0;
+  // const overallAverageConecte = useMemo(() => { TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
+  //   if (conecteRatings.length === 0) return 0;
 
-    let totalSum = 0;
-    let count = 0;
+  //   let totalSum = 0;
+  //   let count = 0;
 
-    conecteRatings.forEach((rating) => {
-      if (rating.feedback && rating.feedback.length > 0) {
-        rating.feedback.forEach((f) => {
-          totalSum += f.rating;
-          count++;
-        });
-      }
-    });
+  //   conecteRatings.forEach((rating) => {
+  //     if (rating.feedback && rating.feedback.length > 0) {
+  //       rating.feedback.forEach((f) => {
+  //         totalSum += f.rating;
+  //         count++;
+  //       });
+  //     }
+  //   });
 
-    return count > 0 ? totalSum / count : 0;
-  }, [conecteRatings]);
+  //   return count > 0 ? totalSum / count : 0;
+  // }, [conecteRatings]);
 
-  const totalReviewsConecte = conecteRatings.length;
+  // const totalReviewsConecte = conecteRatings.length; TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
   const totalReviews = ratings.length;
 
   //   const renderStars = (value: number) => { TODO: COMENTADO POIS SERIA PARA USAR UM ICON CUSTOM PORÉM NÃO FIZERAM CERTO NO FIGMA E O SVG FICA ERRADO
@@ -96,7 +91,7 @@ const AllRatingsModal: React.FC<Props> = ({
       <div className="flex flex-col gap-4 max-h-[80vh] w-full max-w-3xl overflow-auto p-2 sm:p-4 scrollbar-hide">
         <div>
           <img src={logo} alt="ConectePubli" className="w-52" />
-          <div className="flex flex-row items-center">
+          {/* <div className="flex flex-row items-center"> TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
             <StarRating
               initialValue={overallAverageConecte}
               readonly={true}
@@ -109,7 +104,7 @@ const AllRatingsModal: React.FC<Props> = ({
             <p className="text-sm text-gray-600 mt-[2px] ml-3">
               ({totalReviewsConecte} avaliações da plataforma)
             </p>
-          </div>
+          </div> */}
         </div>
         <div className="border-t border-gray-300" />
 

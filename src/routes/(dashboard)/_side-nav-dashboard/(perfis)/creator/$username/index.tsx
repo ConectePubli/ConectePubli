@@ -54,7 +54,7 @@ function InfluencerProfilePage() {
   const [influencer, setInfluencer] = useState<Influencer | null>(null);
   const [userLogged, setUserLogged] = useState<UserAuth | null>(null);
   const [ratings, setRatings] = useState<Rating[]>([]);
-  const [conecteRatings, setConecteRatings] = useState<Rating[]>([]);
+  // const [conecteRatings, setConecteRatings] = useState<Rating[]>([]); TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
   const returnGender = (gender: string) => {
@@ -95,11 +95,11 @@ function InfluencerProfilePage() {
         expand: "from_brand,campaign",
       });
 
-      const conecteRatings = await pb.collection("ratings").getFullList({
-        filter: `to_conectepubli=true`,
-      });
+      // const conecteRatings = await pb.collection("ratings").getFullList({
+      //   filter: `to_conectepubli=true`,
+      // }); TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
 
-      setConecteRatings(conecteRatings as unknown as Rating[]);
+      // setConecteRatings(conecteRatings as unknown as Rating[]); TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
       setRatings(ratings as unknown as Rating[]);
       return ratings;
     } catch (e) {
@@ -520,7 +520,7 @@ function InfluencerProfilePage() {
       {isRatingModalOpen && (
         <AllRatingsModal
           ratings={ratings}
-          conecteRatings={conecteRatings}
+          // conecteRatings={conecteRatings}
           onClose={() => setIsRatingModalOpen(false)}
           userType="influencer"
         />

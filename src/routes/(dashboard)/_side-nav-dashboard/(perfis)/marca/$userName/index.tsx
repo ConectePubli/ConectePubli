@@ -54,7 +54,7 @@ export const Route = createFileRoute(
         campaignsData,
         campaignsParticipationsData,
         ratingsData,
-        conecteRatingsData,
+        // conecteRatingsData, TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
       ] = await Promise.all([
         pb.collection<Campaign>("campaigns").getFullList({
           filter: `brand="${brandData.id}" && paid=true`,
@@ -69,9 +69,9 @@ export const Route = createFileRoute(
           filter: `to_brand~"${brandData.id}"`,
           expand: "from_influencer,campaign",
         }),
-        pb.collection("ratings").getFullList<Rating>({
-          filter: `to_conectepubli=true`,
-        }),
+        // pb.collection("ratings").getFullList<Rating>({ TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
+        //   filter: `to_conectepubli=true`,
+        // }),
       ]);
 
       return {
@@ -79,7 +79,7 @@ export const Route = createFileRoute(
         campaignsData: campaignsData || [],
         campaignsParticipationsData: campaignsParticipationsData || [],
         ratingsData: ratingsData || [],
-        conecteRatingsData: conecteRatingsData || [],
+        // conecteRatingsData: conecteRatingsData || [], TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
       };
     } catch (error) {
       if (error instanceof ClientResponseError) {
@@ -112,7 +112,7 @@ function Page() {
     campaignsData,
     campaignsParticipationsData,
     ratingsData,
-    conecteRatingsData,
+    // conecteRatingsData, TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
   } = useLoaderData({ from: Route.id });
 
   const brand = brandData as Brand;
@@ -120,7 +120,7 @@ function Page() {
   const campaignParticipations =
     campaignsParticipationsData as CampaignParticipation[];
   const ratings = ratingsData as Rating[];
-  const conecteRatings = conecteRatingsData as Rating[];
+  // const conecteRatings = conecteRatingsData as Rating[]; TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
 
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
@@ -354,7 +354,7 @@ function Page() {
       {isRatingModalOpen && (
         <AllRatingsModal
           ratings={ratings}
-          conecteRatings={conecteRatings}
+          // conecteRatings={conecteRatings} TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
           onClose={() => setIsRatingModalOpen(false)}
           userType={"brand"}
         />
