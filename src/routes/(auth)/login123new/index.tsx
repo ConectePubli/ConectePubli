@@ -108,14 +108,18 @@ function Page() {
         }
 
         await pb.collection(collection).create(body);
-        await pb.collection(collection).authWithPassword(email, password);
+        await pb
+          .collection(collection)
+          .authWithPassword(email.toLowerCase(), password);
         const preRegCollection =
           loginType === "brand"
             ? "Brands_Pre_Registration"
             : "Influencers_Pre_Registration";
         await pb.collection(preRegCollection).delete(dataPreRegister.id);
       } else {
-        await pb.collection(collection).authWithPassword(email, password);
+        await pb
+          .collection(collection)
+          .authWithPassword(email.toLowerCase(), password);
       }
     },
     onSuccess: () => {
