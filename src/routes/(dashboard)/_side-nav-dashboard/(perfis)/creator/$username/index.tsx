@@ -265,11 +265,11 @@ function InfluencerProfilePage() {
               />{" "}
               Creator/Influencer
             </p>
-            <h1 className="text-xl font-bold flex items-center">
+            <h1 className="text-xl font-bold flex flex-col sm:flex-row sm:items-center">
               <span className="break-words break-all">
                 {influencer.name || "..."}
               </span>
-              <div className="ml-4">
+              <div className="mt-2 sm:mt-0 sm:ml-4">
                 {influencer.top_creator ? (
                   <TopCreatorBadge status={true} />
                 ) : userLogged?.model?.username === username ? (
