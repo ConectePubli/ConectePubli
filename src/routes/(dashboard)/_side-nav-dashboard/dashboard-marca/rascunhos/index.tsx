@@ -85,54 +85,67 @@ function Page() {
       )}
 
       {!isLoading && (
-        <table className="w-full border-collapse">
-          {campaigns.length >= 1 && (
-            <thead>
-              <tr className="bg-[#10438F]">
-                <th className="border p-2 text-white">Data</th>
-                <th className="border p-2 text-white">Nome</th>
-                <th className="border p-2 text-white">Status</th>
-              </tr>
-            </thead>
-          )}
-          <tbody>
-            {campaigns.length >= 1 &&
-              campaigns.map((campaign: Campaign) => (
-                <tr key={campaign.id}>
-                  <td className="border p-2">
-                    {formatDateUTC(campaign.created)}
-                  </td>
-                  <td className="border p-2">{campaign.name}</td>
-                  <td className="border p-2 flex items-center justify-center">
-                    <Button
-                      variant={"orange"}
-                      className="py-2 px-4 rounded"
-                      onClick={() => {
-                        navigate({
-                          to: "/dashboard-marca/criar-campanha",
-                          search: {
-                            campaign_id: campaign?.id,
-                            is_draft: true,
-                          },
-                          replace: true,
-                        });
-                      }}
-                    >
-                      {campaign.status === "draft"
-                        ? "Finalizar campanha"
-                        : "Status desconhecido"}
-                    </Button>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse min-w-[600px]">
+            {campaigns.length >= 1 && (
+              <thead>
+                <tr className="bg-[#10438F]">
+                  <th className="border p-2 text-white whitespace-nowrap">
+                    Data
+                  </th>
+                  <th className="border p-2 text-white whitespace-nowrap">
+                    Nome
+                  </th>
+                  <th className="border p-2 text-white whitespace-nowrap">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {campaigns.length >= 1 &&
+                campaigns.map((campaign: Campaign) => (
+                  <tr key={campaign.id}>
+                    <td className="border p-2 whitespace-nowrap">
+                      {formatDateUTC(campaign.created)}
+                    </td>
+                    <td className="border p-2">{campaign.name}</td>
+                    <td className="border p-2 flex items-center justify-center whitespace-nowrap">
+                      <Button
+                        variant={"orange"}
+                        className="py-2 px-4 rounded"
+                        onClick={() => {
+                          navigate({
+                            to: "/dashboard-marca/criar-campanha",
+                            search: {
+                              campaign_id: campaign?.id,
+                              is_draft: true,
+                            },
+                            replace: true,
+                          });
+                        }}
+                      >
+                        {campaign.status === "draft"
+                          ? "Finalizar campanha"
+                          : "Status desconhecido"}
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+
+              {campaigns.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="w-full flex items-center justify-center p-10"
+                  >
+                    <p>Você não salvou nenhuma campanha como rascunho ainda</p>
                   </td>
                 </tr>
-              ))}
-
-            {campaigns.length === 0 && (
-              <div className="w-full flex items-center justify-center p-10">
-                <p>Você não salvou nenhuma campanha como rascunho ainda</p>
-              </div>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

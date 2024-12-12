@@ -14,8 +14,7 @@ export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/criar-campanha/"
 )({
   component: function CampaignRouteComponent() {
-    const match = useMatch(Route.id as any); // Use o ID da rota
-
+    const match = useMatch(Route.id as any);
     const campaignIdFromURL = match.search?.campaign_id || null;
     const isDraftFromURL = match.search?.is_draft === true;
 
@@ -44,9 +43,10 @@ export const Route = createFileRoute(
             throw new Error("A campanha está marcada como rascunho.");
           }
 
+          console.log(record);
+
           setCampaignData(record as unknown as Campaign);
 
-          // Atualizar a URL removendo os parâmetros de rascunho
           if (isDraftFromURL) {
             const url = new URL(window.location.href);
             url.searchParams.delete("campaign_id");

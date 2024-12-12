@@ -175,6 +175,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
   useEffect(() => {
     if (isDraft && initialCampaignData) {
+      console.log(initialCampaignData);
       setCampaignData({
         basicInfo: {
           campaignName: initialCampaignData.name || "",
@@ -239,7 +240,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         cpf: initialCampaignData.responsible_cpf || "",
       });
     }
-  }, [isDraft]);
+  }, []);
 
   useEffect(() => {
     if (isEditMode && initialCampaignData && !initialCampaignDataState) {
@@ -810,6 +811,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         }}
         initialCampaignData={initialCampaignData as Campaign}
         isEditMode={isEditMode}
+        isDraft={isDraft}
       />
 
       <AudienceSegmentationSection
@@ -874,6 +876,7 @@ type BasicInfoSectionProps = {
   onChange: (data: CampaignData["basicInfo"]) => void;
   initialCampaignData: Campaign;
   isEditMode: boolean;
+  isDraft: boolean;
 };
 
 function isBlobOrFile(value: unknown): value is Blob | File {
@@ -885,6 +888,7 @@ function BasicInfoSection({
   onChange,
   initialCampaignData,
   isEditMode,
+  isDraft,
 }: BasicInfoSectionProps) {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
@@ -984,9 +988,10 @@ function BasicInfoSection({
   }, []);
 
   useEffect(() => {
+    console.log(data);
     if (data.coverImage) {
       if (typeof data.coverImage === "string") {
-        if (isEditMode && initialCampaignData?.cover_img) {
+        if ((isEditMode || isDraft) && initialCampaignData?.cover_img) {
           const imageUrl = `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${initialCampaignData?.collectionId}/${initialCampaignData?.id}/${initialCampaignData?.cover_img}`;
           setImagePreviewUrl(imageUrl);
         }
