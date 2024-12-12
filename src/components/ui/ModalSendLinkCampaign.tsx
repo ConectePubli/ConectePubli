@@ -3,7 +3,7 @@ import { PaperPlaneTilt, Warning } from "phosphor-react";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "@tanstack/react-router";
 
-import { createOrGetChat } from "@/services/chatService";
+import { createOrGetChat, sendMessage } from "@/services/chatService";
 
 import Modal from "@/components/ui/Modal";
 import { UserAuth } from "@/types/UserAuth";
@@ -19,28 +19,12 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
   const [linkUrl, setLinkUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // enviar link para chat da marca
   const handleStartChat = async () => {
-    try {
-      const user: UserAuth = JSON.parse(
-        localStorage.getItem("pocketbase_auth") as string
-      );
-      const chat = await createOrGetChat(campaignId, user.model.id, brandId);
-
-      router.navigate({
-        to: "/dashboard/chat/",
-        search: {
-          campaignId: chat.campaign,
-          influencerId: chat.influencer,
-          brandId: chat.brand,
-        },
-      });
-    } catch (error) {
-      console.error("Erro ao iniciar o chat:", error);
-      toast("Não foi possível iniciar o chat", {
-        type: "error",
-      });
-    }
+    const user: UserAuth = JSON.parse(
+      localStorage.getItem("pocketbase_auth") as string
+    );
+    const chat = await createOrGetChat(campaignId, user.model.id, brandId);
+    return chat;
   };
 
   const handleEnviarLink = async () => {
@@ -52,11 +36,25 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
     setIsSubmitting(true);
 
     try {
-      await handleStartChat();
+      // Primeiro obtemos ou criamos o chat
+      const chat = await handleStartChat();
+
+      await sendMessage(chat.id, linkUrl, "Influencers");
+
+      // Em seguida, navegamos para a página do chat
+      router.navigate({
+        to: "/dashboard/chat/",
+        search: {
+          campaignId: chat.campaign,
+          influencerId: chat.influencer,
+          brandId: chat.brand,
+        },
+      });
+
       setIsEnviarLinkModalOpen(false);
     } catch (error) {
       console.error("Erro ao enviar o link:", error);
-      alert("Ocorreu um erro ao enviar o link. Tente novamente.");
+      toast.error("Ocorreu um erro ao enviar o link. Tente novamente.");
     } finally {
       setIsSubmitting(false);
     }
@@ -74,7 +72,7 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
       {isEnviarLinkModalOpen && (
         <Modal onClose={() => setIsEnviarLinkModalOpen(false)}>
           <div className="space-y-4">
-            <div className="bg-yellow-100 p-4 rounded-md text-yellow-800 text-sm font-semibold flex items-center gap-2 max-sm:gap-0">
+            <div className="bg-yellow-100 p-4 rounded-md text-yellow-800 text-sm font-semibold flex items-center gap-2 max-sm:gap-0 mt-2">
               <Warning size={18} className="w-4 h-4 max-sm:min-w-[2rem]" />{" "}
               Importante lembrar que uma taxa de sucesso de 20% será aplicada
             </div>

@@ -1,114 +1,165 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 import {
   createFileRoute,
   redirect,
   useMatch,
   useNavigate,
-} from '@tanstack/react-router'
-import { MapPin, Globe, User } from 'lucide-react'
-import { Hourglass, GenderIntersex, Image, Tag } from 'phosphor-react'
-import { useMutation } from '@tanstack/react-query'
+} from "@tanstack/react-router";
+import { MapPin, Globe, User } from "lucide-react";
+import { Hourglass, GenderIntersex, Image, Tag } from "phosphor-react";
+import { useMutation } from "@tanstack/react-query";
 
-import Spinner from '@/components/ui/Spinner'
+import { UserAuth } from "@/types/UserAuth";
+import SocialNetworks from "@/types/SocialNetworks";
+import { Influencer } from "@/types/Influencer";
+import { Niche } from "@/types/Niche";
 
-import { UserAuth } from '@/types/UserAuth'
-import SocialNetworks from '@/types/SocialNetworks'
-import { Influencer } from '@/types/Influencer'
-import { Niche } from '@/types/Niche'
+import CreatorIcon from "@/assets/icons/megaphone.svg";
+import LocationPin from "@/assets/icons/location-pin.svg";
+import EditIcon from "@/assets/icons/edit.svg";
 
-import CompanyIcon from '@/assets/icons/company.svg'
-import LocationPin from '@/assets/icons/location-pin.svg'
-import EditIcon from '@/assets/icons/edit.svg'
-
-import pb from '@/lib/pb'
-import { getUserType } from '@/lib/auth'
-
+import pb from "@/lib/pb";
+import { getUserType } from "@/lib/auth";
+import { Rating } from "@/types/Rating";
+import AllRatingsModal from "@/components/ui/AllRatingsModal";
+import { RecordModel } from "pocketbase";
+import { Rating as StarRating } from "react-simple-star-rating";
+import Spinner from "@/components/ui/Spinner";
+import TopCreatorBadge from "@/components/ui/top-creator-badge";
 export const Route = createFileRoute(
-  '/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/',
+  "/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/"
 )({
   component: InfluencerProfilePage,
   beforeLoad: async () => {
-    const userType = await getUserType()
+    const userType = await getUserType();
 
     if (!userType) {
       throw redirect({
-        to: '/login123new',
-      })
+        to: "/login123new",
+      });
     }
   },
-})
+});
 
 function InfluencerProfilePage() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const {
     params: { username },
   } = useMatch({
-    from: '/(dashboard)/_side-nav-dashboard/creator/$username/',
-  })
+    from: "/(dashboard)/_side-nav-dashboard/creator/$username/",
+  });
 
-  const [influencer, setInfluencer] = useState<Influencer | null>(null)
-  const [userLogged, setUserLogged] = useState<UserAuth | null>(null)
+  const [influencer, setInfluencer] = useState<Influencer | null>(null);
+  const [userLogged, setUserLogged] = useState<UserAuth | null>(null);
+  const [ratings, setRatings] = useState<Rating[]>([]);
+  const [conecteRatings, setConecteRatings] = useState<Rating[]>([]);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
   const returnGender = (gender: string) => {
     switch (gender) {
-      case 'male':
-        return 'Homem'
-      case 'female':
-        return 'Mulher'
-      case 'non-binary':
-        return 'Não-binário'
+      case "male":
+        return "Homem";
+      case "female":
+        return "Mulher";
+      case "non-binary":
+        return "Não-binário";
     }
-  }
+  };
 
   const getUserInfo = async () => {
     const user: UserAuth = JSON.parse(
-      localStorage.getItem('pocketbase_auth') as string,
-    )
+      localStorage.getItem("pocketbase_auth") as string
+    );
 
-    setUserLogged(user)
+    setUserLogged(user);
 
     try {
-      const influencerData = await pb.collection('Influencers').getFullList({
+      const influencerData = await pb.collection("Influencers").getFullList({
         filter: `username="${username}"`,
-        expand: 'niche',
-      })
+        expand: "niche",
+      });
 
-      return influencerData[0]
+      return influencerData[0];
     } catch (e) {
-      console.log(`error get user info: ${e}`)
-      throw e
+      console.log(`error get user info: ${e}`);
+      throw e;
     }
-  }
+  };
+
+  const getUserRating = async (influencer: RecordModel) => {
+    try {
+      const ratings = await pb.collection("ratings").getFullList({
+        filter: `to_influencer~"${influencer?.id}"`,
+        expand: "from_brand,campaign",
+      });
+
+      const conecteRatings = await pb.collection("ratings").getFullList({
+        filter: `to_conectepubli=true`,
+      });
+
+      setConecteRatings(conecteRatings as unknown as Rating[]);
+      setRatings(ratings as unknown as Rating[]);
+      return ratings;
+    } catch (e) {
+      console.log(`error get user rating: ${e}`);
+      throw e;
+    }
+  };
+
+  const calculateOverallAverage = () => {
+    if (ratings.length === 0) return 0;
+
+    let totalSum = 0;
+    let count = 0;
+
+    ratings.forEach((rating) => {
+      if (rating.feedback && rating.feedback.length > 0) {
+        rating.feedback.forEach((f) => {
+          totalSum += f.rating;
+          count++;
+        });
+      }
+    });
+
+    return count > 0 ? totalSum / count : 0;
+  };
+
+  const totalReviews = ratings.length;
+  const overallAverage = calculateOverallAverage();
 
   const calculateAge = (birthDateString: string) => {
-    if (!birthDateString) return 'N/A'
-    const today = new Date()
-    const birthDate = new Date(birthDateString)
-    let age = today.getFullYear() - birthDate.getFullYear()
-    const m = today.getMonth() - birthDate.getMonth()
+    if (!birthDateString) return "N/A";
+    const today = new Date();
+    const birthDate = new Date(birthDateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--
+      age--;
     }
-    return age
-  }
+    return age;
+  };
 
   const mutate = useMutation({
     mutationFn: async () => {
-      const data = await getUserInfo()
-      setInfluencer(data as unknown as Influencer)
-      return data
+      const data = await getUserInfo();
+      setInfluencer(data as unknown as Influencer);
+
+      const ratings = await getUserRating(data);
+      setRatings(ratings as unknown as Rating[]);
+
+      return data;
     },
     onError: (error) => {
-      console.log(`Mutation error: ${error}`)
+      console.log(`Mutation error: ${error}`);
     },
-  })
+  });
 
   useEffect(() => {
-    mutate.mutate()
+    mutate.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   // const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
@@ -144,14 +195,14 @@ function InfluencerProfilePage() {
   //   },
   // ];
 
-  const niches = influencer?.expand?.niche || []
+  const niches = influencer?.expand?.niche || [];
 
   if (mutate.isPending) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spinner />
       </div>
-    )
+    );
   }
 
   if (mutate.isError) {
@@ -161,7 +212,7 @@ function InfluencerProfilePage() {
           Erro ao carregar as informações do Influencer
         </p>
       </div>
-    )
+    );
   }
 
   if (!influencer) {
@@ -171,7 +222,7 @@ function InfluencerProfilePage() {
           Esta página ou não existe ou foi removida, tente novamente!
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -208,14 +259,23 @@ function InfluencerProfilePage() {
           <div className="ml-3">
             <p className="text-gray-700 text-sm font-bold flex flex-row items-center">
               <img
-                src={CompanyIcon}
-                alt="company icon"
+                src={CreatorIcon}
+                alt="creator icon"
                 className="w-3 h-3 mr-2"
-              />{' '}
-              Influencer
+              />{" "}
+              Creator/Influencer
             </p>
-            <h1 className="text-xl font-bold break-words break-all">
-              {influencer.name || '...'}
+            <h1 className="text-xl font-bold flex items-center">
+              <span className="break-words break-all">
+                {influencer.name || "..."}
+              </span>
+              <div className="ml-4">
+                {influencer.top_creator ? (
+                  <TopCreatorBadge status={true} />
+                ) : userLogged?.model?.username === username ? (
+                  <TopCreatorBadge status={false} />
+                ) : null}
+              </div>
             </h1>
           </div>
         </div>
@@ -223,7 +283,7 @@ function InfluencerProfilePage() {
         {/* TYPE */}
         {influencer.account_type && (
           <p className="text-gray-800 text-sm font-bold flex flex-row items-center mt-4">
-            <Tag size={18} color="#10438F" className="mr-1" />{' '}
+            <Tag size={18} color="#10438F" className="mr-1" />{" "}
             {influencer.account_type}
           </p>
         )}
@@ -242,11 +302,41 @@ function InfluencerProfilePage() {
           </div>
         )}
 
+        {/* Média de Avaliações e Total de Reviews */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center mt-2 mb-3">
+          {/* Estrelas da Média */}
+          <StarRating
+            initialValue={overallAverage}
+            readonly={true}
+            allowFraction={true}
+            size={24}
+            SVGclassName={"inline-block"}
+            fillColor={"#eab308"}
+            emptyColor={"#D1D5DB"}
+          />
+
+          <div className="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1">
+            <span className="text-black/75 text-sm ml-0 sm:ml-3">
+              ({totalReviews} Avaliaç{totalReviews !== 1 ? "ões" : "ão"})
+            </span>
+
+            <div className="flex items-center mt-2 sm:mt-0">
+              <div className="w-[6px] h-[6px] bg-orange-600 rounded-full ml-0 sm:ml-3"></div>
+              <button
+                className="ml-2 sm:ml-3 text-[#10438F] hover:underline font-bold"
+                onClick={() => setIsRatingModalOpen(true)}
+              >
+                Ver Reviews do Usuário
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* SOCIAL LINKS */}
         <div className="flex flex-wrap gap-2 mt-2 sm-medium:gap-2">
           {SocialNetworks.map((network) => {
-            const url = network.url(influencer as any)
-            if (!url) return null
+            const url = network.url(influencer as any);
+            if (!url) return null;
 
             return (
               <a
@@ -263,7 +353,7 @@ function InfluencerProfilePage() {
                 />
                 {network.name}
               </a>
-            )
+            );
           })}
         </div>
 
@@ -288,15 +378,13 @@ function InfluencerProfilePage() {
             <div className="flex mt-4">
               <button
                 className="text-white font-semibold text-md flex items-center gap-2 bg-[#10438F] px-4 py-2 rounded-lg shadow-md hover:shadow-lg hover:bg-[#103c8f] transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-[#10438F] focus:ring-offset-2"
-                onClick={() =>
-                  navigate({ to: `/creator/${username}/editar` })
-                }
+                onClick={() => navigate({ to: `/creator/${username}/editar` })}
               >
                 <img
                   src={EditIcon}
                   alt="company icon"
                   className="w-4 h-4 text-white fill-current"
-                  style={{ filter: 'brightness(0) invert(1)' }}
+                  style={{ filter: "brightness(0) invert(1)" }}
                 />
                 Editar Perfil
               </button>
@@ -314,24 +402,24 @@ function InfluencerProfilePage() {
           {/* COUNTRY AND STATE */}
           {(influencer.country || influencer.state) && (
             <p className="text-sm text-gray-600 font-medium flex items-center">
-              <MapPin className="inline-block w-4 h-4 text-gray-500 mr-1" />{' '}
+              <MapPin className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
               {influencer.country}
-              {influencer.state ? `, ${influencer.state}` : ''}
+              {influencer.state ? `, ${influencer.state}` : ""}
             </p>
           )}
 
           {/* LANGUAGES */}
           {influencer.languages && influencer.languages.length > 0 && (
             <p className="text-sm text-gray-600 font-medium flex items-center">
-              <Globe className="inline-block w-4 h-4 text-gray-500 mr-1" />{' '}
-              Idioma: {influencer.languages.join(', ')}
+              <Globe className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
+              Idioma: {influencer.languages.join(", ")}
             </p>
           )}
 
           {/* AGE */}
           {influencer.birth_date && (
             <p className="text-sm text-gray-600 font-medium flex items-center">
-              <Hourglass className="inline-block w-4 h-4 text-gray-500 mr-1" />{' '}
+              <Hourglass className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
               Idade: {calculateAge(influencer.birth_date)}
             </p>
           )}
@@ -339,7 +427,7 @@ function InfluencerProfilePage() {
           {/* GENDER */}
           {influencer.gender && (
             <p className="text-sm text-gray-600 font-medium flex items-center">
-              <GenderIntersex className="inline-block w-4 h-4 text-gray-500 mr-1" />{' '}
+              <GenderIntersex className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
               {returnGender(influencer.gender)}
             </p>
           )}
@@ -381,21 +469,21 @@ function InfluencerProfilePage() {
         influencer.previous_work_imgs.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
             {influencer.previous_work_imgs.map((media, index) => {
-              const fileExtension = (media ?? '')
-                .split('.')
+              const fileExtension = (media ?? "")
+                .split(".")
                 .pop()
-                ?.toLowerCase()
+                ?.toLowerCase();
               const imageExtensions = [
-                'jpg',
-                'jpeg',
-                'png',
-                'gif',
-                'bmp',
-                'webp',
-              ]
-              const videoExtensions = ['mp4', 'webm', 'ogg']
+                "jpg",
+                "jpeg",
+                "png",
+                "gif",
+                "bmp",
+                "webp",
+              ];
+              const videoExtensions = ["mp4", "webm", "ogg"];
 
-              const mediaUrl = pb.getFileUrl(influencer, media)
+              const mediaUrl = pb.getFileUrl(influencer, media);
 
               if (fileExtension && imageExtensions.includes(fileExtension)) {
                 return (
@@ -405,7 +493,7 @@ function InfluencerProfilePage() {
                     alt={`Portfolio ${index}`}
                     className="w-full h-[500px] rounded-md object-cover"
                   />
-                )
+                );
               } else if (
                 fileExtension &&
                 videoExtensions.includes(fileExtension)
@@ -417,9 +505,9 @@ function InfluencerProfilePage() {
                     controls
                     className="w-full h-[500px] rounded-md object-cover"
                   />
-                )
+                );
               } else {
-                return null
+                return null;
               }
             })}
           </div>
@@ -429,10 +517,18 @@ function InfluencerProfilePage() {
           </p>
         )}
       </div>
+      {isRatingModalOpen && (
+        <AllRatingsModal
+          ratings={ratings}
+          conecteRatings={conecteRatings}
+          onClose={() => setIsRatingModalOpen(false)}
+          userType="influencer"
+        />
+      )}
 
       <div className="mt-12" />
     </div>
-  )
+  );
 }
 
-export default InfluencerProfilePage
+export default InfluencerProfilePage;

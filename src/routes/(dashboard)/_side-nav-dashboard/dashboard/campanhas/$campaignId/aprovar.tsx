@@ -5,6 +5,7 @@ import {
   useLoaderData,
   redirect,
   useRouter,
+  useSearch,
 } from "@tanstack/react-router";
 import pb from "@/lib/pb";
 import { ClientResponseError } from "pocketbase";
@@ -31,6 +32,8 @@ import ChooseParticipantModal from "@/components/ui/chooseParticipantModal";
 import RateParticipantModal from "@/components/ui/rateParticipantModal";
 import { toast, ToastContainer } from "react-toastify";
 import { createOrGetChat } from "@/services/chatService";
+import RatePlatformModal from "@/components/ui/RatePlatformModal";
+import Spinner from "@/components/ui/Spinner";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -80,6 +83,11 @@ export const Route = createFileRoute(
       throw error;
     }
   },
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen">
+      <Spinner />
+    </div>
+  ),
   component: Page,
   errorComponent: () => (
     <div>
@@ -92,7 +100,10 @@ export const Route = createFileRoute(
 
 function Page() {
   const router = useRouter();
-
+  const { rateConecte } = useSearch({
+    from: "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar",
+  });
+  const hasRateParam = rateConecte === true;
   const loaderData = useLoaderData({
     from: Route.id,
   }) as LoaderData;
@@ -112,8 +123,51 @@ function Page() {
     | "viewProposal"
     | "cancelCampaign"
     | "rateParticipant"
+    | "ratePlatform"
     | null
   >(null);
+  const [hasRatedPlatform, setHasRatedPlatform] = useState(true);
+  useEffect(() => {
+    const checkRating = async () => {
+      console.log("Verificando se o usuário já avaliou a plataforma...");
+      const userId = pb.authStore.model?.id;
+      if (!userId) return;
+
+      try {
+        const hasRating = await pb
+          .collection("ratings")
+          .getFirstListItem(
+            `(from_influencer="${userId}" || from_brand="${userId}") && to_influencer=NULL && to_brand=NULL && campaign="${campaignData?.id}"`
+          );
+
+        if (hasRating) {
+          setHasRatedPlatform(true);
+          console.log("Já avaliou a plataforma?", hasRating);
+        }
+      } catch (error) {
+        if (error instanceof ClientResponseError && error.status === 404) {
+          // Nenhum rating encontrado, o usuário nunca avaliou a plataforma
+          console.log("Usuário ainda não avaliou a plataforma.");
+          setHasRatedPlatform(false);
+        } else {
+          console.error("Erro ao verificar avaliação da plataforma:", error);
+          toast.error(
+            "Ocorreu um erro ao verificar sua avaliação da plataforma."
+          );
+        }
+      }
+    };
+
+    if (hasRateParam) {
+      checkRating();
+    }
+  }, [hasRateParam]);
+
+  useEffect(() => {
+    if (hasRateParam && !hasRatedPlatform) {
+      setModalType("ratePlatform");
+    }
+  }, [hasRateParam, hasRatedPlatform, campaignParticipations]);
 
   // State variables for filters
   const [searchName, setSearchName] = useState("");
@@ -647,6 +701,13 @@ function Page() {
           selectedParticipation={selectedParticipation}
           participant={selectedParticipation.expand?.influencer as Influencer}
           setModalType={setModalType}
+        />
+      )}
+
+      {modalType === "ratePlatform" && (
+        <RatePlatformModal
+          setModalType={setModalType}
+          campaign={campaignData}
         />
       )}
 

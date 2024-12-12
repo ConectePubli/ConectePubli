@@ -23,6 +23,7 @@ import { Route as authCadastroIndexImport } from './routes/(auth)/cadastro/index
 import { Route as authCadastroMarcaImport } from './routes/(auth)/cadastro/marca'
 import { Route as authCadastroCreatorImport } from './routes/(auth)/cadastro/creator'
 import { Route as dashboardSideNavDashboardVitrineDeCampanhasIndexImport } from './routes/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/index'
+import { Route as dashboardSideNavDashboardTopCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/top-creator/index'
 import { Route as dashboardSideNavDashboardNotificacoesIndexImport } from './routes/(dashboard)/_side-nav-dashboard/notificacoes/index'
 import { Route as dashboardSideNavDashboardDashboardIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/index'
@@ -31,6 +32,7 @@ import { Route as dashboardSideNavDashboardDashboardLayoutImport } from './route
 import { Route as dashboardSideNavDashboardDashboardCriarIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/criar/index'
 import { Route as dashboardSideNavDashboardDashboardChatIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/chat/index'
 import { Route as dashboardSideNavDashboardDashboardCampanhasIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/index'
+import { Route as dashboardSideNavDashboardDashboardMarcaRascunhosIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/rascunhos/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/criar-campanha/index'
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/index'
 import { Route as dashboardSideNavDashboardperfisMarcaUserNameIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/index'
@@ -118,6 +120,12 @@ const dashboardSideNavDashboardVitrineDeCampanhasIndexRoute =
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
+const dashboardSideNavDashboardTopCreatorIndexRoute =
+  dashboardSideNavDashboardTopCreatorIndexImport.update({
+    path: '/top-creator/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
 const dashboardSideNavDashboardNotificacoesIndexRoute =
   dashboardSideNavDashboardNotificacoesIndexImport.update({
     path: '/notificacoes/',
@@ -164,6 +172,12 @@ const dashboardSideNavDashboardDashboardCampanhasIndexRoute =
   dashboardSideNavDashboardDashboardCampanhasIndexImport.update({
     path: '/campanhas/',
     getParentRoute: () => dashboardSideNavDashboardDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute =
+  dashboardSideNavDashboardDashboardMarcaRascunhosIndexImport.update({
+    path: '/dashboard-marca/rascunhos/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
 const dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute =
@@ -343,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardNotificacoesIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/top-creator/': {
+      id: '/_side-nav-dashboard/top-creator/'
+      path: '/top-creator'
+      fullPath: '/top-creator'
+      preLoaderRoute: typeof dashboardSideNavDashboardTopCreatorIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/': {
       id: '/_side-nav-dashboard/vitrine-de-campanhas/'
       path: '/vitrine-de-campanhas'
@@ -355,6 +376,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard-marca/criar-campanha'
       fullPath: '/dashboard-marca/criar-campanha'
       preLoaderRoute: typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
+    '/(dashboard)/_side-nav-dashboard/dashboard-marca/rascunhos/': {
+      id: '/_side-nav-dashboard/dashboard-marca/rascunhos/'
+      path: '/dashboard-marca/rascunhos'
+      fullPath: '/dashboard-marca/rascunhos'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardMarcaRascunhosIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
     '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/': {
@@ -483,8 +511,10 @@ interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardDashboardCreatorIndexRoute: typeof dashboardSideNavDashboardDashboardCreatorIndexRoute
   dashboardSideNavDashboardDashboardMarcaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   dashboardSideNavDashboardNotificacoesIndexRoute: typeof dashboardSideNavDashboardNotificacoesIndexRoute
+  dashboardSideNavDashboardTopCreatorIndexRoute: typeof dashboardSideNavDashboardTopCreatorIndexRoute
   dashboardSideNavDashboardVitrineDeCampanhasIndexRoute: typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
+  dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute
   dashboardSideNavDashboardperfisCreatorUsernameIndexRoute: typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   dashboardSideNavDashboardperfisMarcaUserNameIndexRoute: typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute: typeof dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute
@@ -501,10 +531,14 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardDashboardMarcaIndexRoute,
     dashboardSideNavDashboardNotificacoesIndexRoute:
       dashboardSideNavDashboardNotificacoesIndexRoute,
+    dashboardSideNavDashboardTopCreatorIndexRoute:
+      dashboardSideNavDashboardTopCreatorIndexRoute,
     dashboardSideNavDashboardVitrineDeCampanhasIndexRoute:
       dashboardSideNavDashboardVitrineDeCampanhasIndexRoute,
     dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute:
       dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute,
+    dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute:
+      dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute,
     dashboardSideNavDashboardperfisCreatorUsernameIndexRoute:
       dashboardSideNavDashboardperfisCreatorUsernameIndexRoute,
     dashboardSideNavDashboardperfisMarcaUserNameIndexRoute:
@@ -547,8 +581,10 @@ export interface FileRoutesByFullPath {
   '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/notificacoes': typeof dashboardSideNavDashboardNotificacoesIndexRoute
+  '/top-creator': typeof dashboardSideNavDashboardTopCreatorIndexRoute
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
+  '/dashboard-marca/rascunhos': typeof dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
   '/dashboard/chat': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/dashboard/criar': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
@@ -576,8 +612,10 @@ export interface FileRoutesByTo {
   '/dashboard-creator': typeof dashboardSideNavDashboardDashboardCreatorIndexRoute
   '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/notificacoes': typeof dashboardSideNavDashboardNotificacoesIndexRoute
+  '/top-creator': typeof dashboardSideNavDashboardTopCreatorIndexRoute
   '/vitrine-de-campanhas': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/dashboard-marca/criar-campanha': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
+  '/dashboard-marca/rascunhos': typeof dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute
   '/dashboard/campanhas': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
   '/dashboard/chat': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/dashboard/criar': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
@@ -609,8 +647,10 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/dashboard-marca/': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/_side-nav-dashboard/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
   '/_side-nav-dashboard/notificacoes/': typeof dashboardSideNavDashboardNotificacoesIndexRoute
+  '/_side-nav-dashboard/top-creator/': typeof dashboardSideNavDashboardTopCreatorIndexRoute
   '/_side-nav-dashboard/vitrine-de-campanhas/': typeof dashboardSideNavDashboardVitrineDeCampanhasIndexRoute
   '/_side-nav-dashboard/dashboard-marca/criar-campanha/': typeof dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute
+  '/_side-nav-dashboard/dashboard-marca/rascunhos/': typeof dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/': typeof dashboardSideNavDashboardDashboardCampanhasIndexRoute
   '/_side-nav-dashboard/dashboard/chat/': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/_side-nav-dashboard/dashboard/criar/': typeof dashboardSideNavDashboardDashboardCriarIndexRoute
@@ -641,8 +681,10 @@ export interface FileRouteTypes {
     | '/dashboard-marca'
     | '/dashboard/'
     | '/notificacoes'
+    | '/top-creator'
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
+    | '/dashboard-marca/rascunhos'
     | '/dashboard/campanhas'
     | '/dashboard/chat'
     | '/dashboard/criar'
@@ -669,8 +711,10 @@ export interface FileRouteTypes {
     | '/dashboard-creator'
     | '/dashboard-marca'
     | '/notificacoes'
+    | '/top-creator'
     | '/vitrine-de-campanhas'
     | '/dashboard-marca/criar-campanha'
+    | '/dashboard-marca/rascunhos'
     | '/dashboard/campanhas'
     | '/dashboard/chat'
     | '/dashboard/criar'
@@ -700,8 +744,10 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/dashboard-marca/'
     | '/_side-nav-dashboard/dashboard/'
     | '/_side-nav-dashboard/notificacoes/'
+    | '/_side-nav-dashboard/top-creator/'
     | '/_side-nav-dashboard/vitrine-de-campanhas/'
     | '/_side-nav-dashboard/dashboard-marca/criar-campanha/'
+    | '/_side-nav-dashboard/dashboard-marca/rascunhos/'
     | '/_side-nav-dashboard/dashboard/campanhas/'
     | '/_side-nav-dashboard/dashboard/chat/'
     | '/_side-nav-dashboard/dashboard/criar/'
@@ -780,8 +826,10 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/dashboard-creator/",
         "/_side-nav-dashboard/dashboard-marca/",
         "/_side-nav-dashboard/notificacoes/",
+        "/_side-nav-dashboard/top-creator/",
         "/_side-nav-dashboard/vitrine-de-campanhas/",
         "/_side-nav-dashboard/dashboard-marca/criar-campanha/",
+        "/_side-nav-dashboard/dashboard-marca/rascunhos/",
         "/_side-nav-dashboard/creator/$username/",
         "/_side-nav-dashboard/marca/$userName/",
         "/_side-nav-dashboard/creator/$username/editar/",
@@ -847,12 +895,20 @@ export const routeTree = rootRoute
       "filePath": "(dashboard)/_side-nav-dashboard/notificacoes/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
+    "/_side-nav-dashboard/top-creator/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/top-creator/index.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
     "/_side-nav-dashboard/vitrine-de-campanhas/": {
       "filePath": "(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/dashboard-marca/criar-campanha/": {
       "filePath": "(dashboard)/_side-nav-dashboard/dashboard-marca/criar-campanha/index.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
+    "/_side-nav-dashboard/dashboard-marca/rascunhos/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard-marca/rascunhos/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/dashboard/campanhas/": {

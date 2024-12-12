@@ -4,6 +4,7 @@ import {
   redirect,
   useLoaderData,
   useNavigate,
+  useSearch,
 } from "@tanstack/react-router";
 import pb from "@/lib/pb";
 import { Campaign } from "@/types/Campaign";
@@ -16,7 +17,14 @@ import CampaignDetails from "@/components/ui/CampaignDetails";
 import CampaignBrandProfile from "@/components/ui/CampaignBrandProfile";
 import { getUserType } from "@/lib/auth";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import RateBrandModal from "@/components/ui/RateBrandModal";
+import { Influencer } from "@/types/Influencer";
+import { Brand } from "@/types/Brand";
+import FormattedText from "@/utils/FormattedText";
+import RatePlatformModal from "@/components/ui/RatePlatformModal";
+import Spinner from "@/components/ui/Spinner";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
@@ -34,6 +42,11 @@ export const Route = createFileRoute(
         A campanha que você estava procurando ainda não iniciou, foi encerrada
         ou removida.
       </p>
+    </div>
+  ),
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen">
+      <Spinner />
     </div>
   ),
   beforeLoad: async () => {
@@ -107,6 +120,97 @@ function CampaignPage() {
     setCampaignParticipations,
   ]);
 
+  const { rateBrand, rateConecte } = useSearch({ from: Route.id });
+  const [modalType, setModalType] = useState<string | null>(null);
+  const [hasRatedBrand, setHasRatedBrand] = useState(true);
+  const [hasRatedPlatform, setHasRatedPlatform] = useState(true);
+
+  useEffect(() => {
+    const checkBrandRating = async () => {
+      const influencerId = pb.authStore.model?.id;
+      if (!influencerId) return;
+
+      const participation = campaignParticipationsData.find(
+        (p) => p.influencer === pb.authStore.model?.id
+      );
+
+      if (participation?.status !== "completed") {
+        return;
+      }
+
+      try {
+        await pb
+          .collection("ratings")
+          .getFirstListItem(
+            `(from_influencer="${influencerId}" && to_brand="${campaignData.brand} && campaign="${campaignData.id}")`
+          );
+        // Caso encontre, o influenciador já avaliou a marca
+        setHasRatedBrand(true);
+      } catch (error) {
+        if (error instanceof ClientResponseError && error.status === 404) {
+          // Não encontrou avaliação, então o influenciador não avaliou a marca
+          setHasRatedBrand(false);
+        } else {
+          console.error("Erro ao verificar avaliação da marca:", error);
+          toast.error("Ocorreu um erro ao verificar sua avaliação da marca.");
+        }
+      }
+    };
+
+    if (rateBrand) {
+      checkBrandRating();
+    }
+  }, [
+    rateBrand,
+    campaignData.brand,
+    campaignParticipationsData,
+    campaignData.id,
+  ]);
+
+  useEffect(() => {
+    if (rateBrand && !hasRatedBrand) {
+      setModalType("rateBrand");
+    }
+  }, [rateBrand, hasRatedBrand]);
+
+  useEffect(() => {
+    const checkPlatformRating = async () => {
+      const userId = pb.authStore.model?.id;
+      if (!userId) return;
+
+      try {
+        const hasRating = await pb
+          .collection("ratings")
+          .getFirstListItem(
+            `(from_influencer="${userId}" || from_brand="${userId}") && to_influencer=NULL && to_brand=NULL && campaign="${campaignData.id}"`
+          );
+        if (hasRating) {
+          setHasRatedPlatform(true);
+        }
+      } catch (error) {
+        if (error instanceof ClientResponseError && error.status === 404) {
+          // Nenhum rating encontrado, o usuário nunca avaliou a plataforma
+          setHasRatedPlatform(false);
+        } else {
+          console.error("Erro ao verificar avaliação da plataforma:", error);
+          toast.error(
+            "Ocorreu um erro ao verificar sua avaliação da plataforma."
+          );
+        }
+      }
+    };
+
+    if (rateConecte && pb.authStore.model?.collectionName !== "Brands") {
+      checkPlatformRating();
+    }
+  }, [campaignData.id, rateConecte]);
+
+  useEffect(() => {
+    if (rateConecte && !hasRatedPlatform) {
+      setModalType("ratePlatform");
+    }
+  }, [rateConecte, hasRatedPlatform]);
+
   return (
     <div className="container mx-auto p-4 ">
       <div
@@ -127,7 +231,6 @@ function CampaignPage() {
       <div className="text-center xl:text-left">
         <h1 className="text-lg xl:text-2xl font-bold">{campaign?.name}</h1>
       </div>
-
       <div className="grid xl:grid-cols-2 xl:gap-4 mt-4">
         {/* Coluna esquerda - Tipo e Inscrição */}
         <div className="space-y-4">
@@ -142,40 +245,32 @@ function CampaignPage() {
         {/* Coluna direita - Detalhes, Requisitos e Características */}
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-lg shadow-lg border max-xl:mt-4">
-            <h2 className="font-bold mt-2">Briefing da Campanha</h2>
-            <p className="text-black break-words">{campaign?.briefing}</p>
+            <h2 className="font-bold mt-4">Briefing da Campanha</h2>
+            <FormattedText text={campaign?.briefing || ""} />
 
-            <h2 className="font-bold mt-2">Entregavéis obrigatórios</h2>
-            <p className="text-black break-words">
-              {campaign?.mandatory_deliverables}
-            </p>
+            <h2 className="font-bold mt-4">Entregavéis obrigatórios</h2>
+            <FormattedText text={campaign?.mandatory_deliverables || ""} />
 
-            <h2 className="font-bold mt-2 ">Envio de Produtos ou Serviços</h2>
-            <p className="text-black break-words">
-              {campaign?.sending_products_or_services}
-            </p>
+            <h2 className="font-bold mt-4">Envio de Produtos ou Serviços</h2>
+            <FormattedText
+              text={campaign?.sending_products_or_services || ""}
+            />
 
-            <h2 className="font-bold mt-2">
+            <h2 className="font-bold mt-4">
               Ações Esperadas do Creator (Do's)
             </h2>
-            <p className="text-black break-words">
-              {campaign?.expected_actions}
-            </p>
+            <FormattedText text={campaign?.expected_actions || ""} />
 
-            <h2 className="font-bold mt-2">Ações a Serem Evitadas (Don'ts)</h2>
-            <p className="text-black break-words">{campaign?.avoid_actions}</p>
+            <h2 className="font-bold mt-4">Ações a Serem Evitadas (Don'ts)</h2>
+            <FormattedText text={campaign?.avoid_actions || ""} />
 
-            <h2 className="font-bold mt-2">Informações adicionais</h2>
-            <p className="text-black break-words">
-              {campaign?.additional_information}
-            </p>
+            <h2 className="font-bold mt-4">Informações adicionais</h2>
+            <FormattedText text={campaign?.additional_information || ""} />
 
             {campaign?.itinerary_suggestion && (
               <>
-                <h2 className="font-bold mt-2">Sugestão de roteiro</h2>
-                <p className="text-black break-words">
-                  {campaign?.itinerary_suggestion}
-                </p>
+                <h2 className="font-bold mt-4">Sugestão de roteiro</h2>
+                <FormattedText text={campaign?.itinerary_suggestion || ""} />
               </>
             )}
 
@@ -230,6 +325,21 @@ function CampaignPage() {
           <div className="h-6" />
         </div>
       </div>
+      {modalType === "rateBrand" && (
+        <RateBrandModal
+          participant={pb.authStore.model as Influencer}
+          brand={campaign?.expand?.brand as Brand}
+          campaign={campaignData}
+          setModalType={setModalType}
+        />
+      )}
+      {modalType === "ratePlatform" && (
+        <RatePlatformModal
+          setModalType={setModalType}
+          campaign={campaignData}
+        />
+      )}
+      <ToastContainer />
     </div>
   );
 }

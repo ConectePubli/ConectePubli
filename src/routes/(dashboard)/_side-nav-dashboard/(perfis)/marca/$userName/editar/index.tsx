@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { ClientResponseError } from "pocketbase";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { useRouter } from "@tanstack/react-router";
 import PhoneInput, { parsePhoneNumber } from "react-phone-number-input";
@@ -109,6 +109,12 @@ function Page() {
   const [coverImageUrlLocal, setCoverImageUrlLocal] = useState<string | null>(
     coverImageUrl
   );
+
+  const usernameRegex = /^[a-zA-Z0-9_]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   // Verificar se as seções estão completas para marcação visual
   const isUserDataComplete = userData?.bio ? true : false;
@@ -333,6 +339,24 @@ function Page() {
       return;
     }
 
+    setUsernameError(null);
+    setEmailError(null);
+
+    if (!userData.username || !usernameRegex.test(userData.username)) {
+      setUsernameError(
+        "O username deve ser único e não pode conter espaços ou caracteres especiais. Use apenas letras, números e underscore."
+      );
+    }
+
+    if (!userData.email || !emailRegex.test(userData.email)) {
+      setEmailError("Por favor, insira um e-mail válido.");
+    }
+
+    if (usernameError || emailError || !userData.username || !userData.email) {
+      toast.error("Por favor, corrija os erros antes de salvar.");
+      return;
+    }
+
     try {
       toggleSaving("aboutYou", true);
 
@@ -373,6 +397,7 @@ function Page() {
       });
 
       await pb.collection("brands").update(pb.authStore.model?.id, formData);
+      await pb.collection("brands").authRefresh();
 
       const updatedUserData = { ...originalData, ...modifiedFields };
       setUserData(updatedUserData);
@@ -386,8 +411,12 @@ function Page() {
 
       if (err && err.data && err.data.data && err.data.data.username) {
         const usernameError = err.data.data.username;
+        console.log(usernameError);
 
-        if (usernameError.code === "validation_invalid_username") {
+        if (
+          usernameError.code === "validation_invalid_username" ||
+          usernameError.code === "validation_match_invalid"
+        ) {
           toast.error("O nome de usuário é inválido ou já está em uso.");
         } else {
           toast.error(usernameError.message || "Erro no campo 'username'.");
@@ -589,16 +618,7 @@ function Page() {
           <span className="font-semibold">
             Senha atualizada com sucesso! Faça o login novamente.
           </span>
-        </div>,
-        {
-          style: {
-            border: "2px solid #10B981",
-            color: "#10B981",
-            background: "#ECFDF5",
-          },
-          duration: 5000,
-          position: "top-center",
-        }
+        </div>
       );
       setCurrentPassword("");
       setNewPassword("");
@@ -620,16 +640,7 @@ function Page() {
               <MessageCircleWarning className="text-red-500 text-xl" />
               <span className="font-semibold">Senha atual incorreta.</span>
               <p className="text-sm">Por favor, verifique e tente novamente.</p>
-            </div>,
-            {
-              style: {
-                border: "2px solid #EF4444",
-                color: "#EF4444",
-                background: "#FFEBEB",
-              },
-              duration: 5000,
-              position: "top-center",
-            }
+            </div>
           );
         }
       } else {
@@ -797,6 +808,9 @@ function Page() {
                 setUserData({ ...userData, username: event.target.value })
               }
             />
+            {usernameError && (
+              <p className="text-red-500 text-sm mt-1">{usernameError}</p>
+            )}
           </div>
 
           {/* Data de Fundação */}
@@ -850,6 +864,9 @@ function Page() {
                 setUserData({ ...userData, email: event.target.value })
               }
             />
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
+            )}
           </div>
 
           {/* Whatsapp/Telefone */}

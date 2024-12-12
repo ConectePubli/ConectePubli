@@ -5,6 +5,7 @@ import { Brand } from "./Brand";
 
 export interface Campaign {
   paid_traffic: boolean | null;
+  paid_traffic_info: string;
   id: string;
   unique_name: string;
   name: string;
@@ -23,7 +24,7 @@ export interface Campaign {
   max_subscriptions: number;
   open_jobs?: number;
   objective?: "UGC" | "IGC" | "UGC+IGC";
-  status: "ready" | "in_progress" | "ended";
+  status: "draft" | "ready" | "in_progress" | "ended";
   niche: string[];
   cover_img?: string;
   gender?: string;

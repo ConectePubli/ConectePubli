@@ -5,24 +5,27 @@ import Modal from "./Modal";
 
 import pb from "@/lib/pb";
 import { Influencer } from "@/types/Influencer";
-import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { toast } from "react-toastify";
+import { Brand } from "@/types/Brand";
+import { Campaign } from "@/types/Campaign";
 
 interface Props {
   participant: Influencer;
-  selectedParticipation: CampaignParticipation;
+  brand: Brand;
+  campaign: Campaign;
   setModalType: React.ComponentState;
 }
 
-const RateParticipantModal: React.FC<Props> = ({
+const RateBrandModal: React.FC<Props> = ({
   participant,
-  selectedParticipation,
+  brand,
+  campaign,
   setModalType,
 }) => {
   const [ratings, setRatings] = useState({
-    creativeContent: 0,
-    punctuality: 0,
-    engagement: 0,
+    clarity: 0,
+    availability: 0,
+    realisticExpectations: 0,
   });
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,9 +34,9 @@ const RateParticipantModal: React.FC<Props> = ({
     setLoading(true);
     try {
       if (
-        !ratings.creativeContent ||
-        !ratings.punctuality ||
-        !ratings.engagement ||
+        !ratings.clarity ||
+        !ratings.availability ||
+        !ratings.realisticExpectations ||
         !comment.trim()
       ) {
         toast.error("Por favor, preencha todos os campos.");
@@ -42,26 +45,29 @@ const RateParticipantModal: React.FC<Props> = ({
 
       const feedback = [
         {
-          question: "Quão bem o conteúdo produzido atendeu às diretrizes?",
-          short_term: "Qualidade",
-          rating: ratings.creativeContent,
+          question:
+            "Quão claro foi o briefing fornecido pela marca em relação aos objetivos, público-alvo e diretrizes da campanha?",
+          short_term: "Clareza",
+          rating: ratings.clarity,
         },
         {
-          question: "Pontualidade e comunicação do influenciador?",
-          short_term: "Pontualidade",
-          rating: ratings.punctuality,
+          question:
+            "Como você avalia a disponibilidade e a agilidade da marca em responder às dúvidas ou solicitações durante o projeto?",
+          short_term: "Agilidade",
+          rating: ratings.availability,
         },
         {
-          question: "Como avalia o alcance e engajamento?",
-          short_term: "Performance",
-          rating: ratings.engagement,
+          question:
+            "A marca demonstrou expectativas realistas e lidou bem com ajustes necessários durante a campanha?",
+          short_term: "Expectativas",
+          rating: ratings.realisticExpectations,
         },
       ];
 
       await pb.collection("ratings").create({
-        to_influencer: participant.id,
-        from_brand: selectedParticipation.expand?.campaign?.brand,
-        campaign: selectedParticipation.expand?.campaign?.id,
+        to_brand: brand.id,
+        from_influencer: participant.id,
+        campaign: campaign.id,
         comment,
         feedback: feedback,
       });
@@ -79,7 +85,7 @@ const RateParticipantModal: React.FC<Props> = ({
   return (
     <Modal onClose={() => setModalType(null)}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Avaliar Influencer</h2>
+        <h2 className="text-xl font-semibold">Avaliar Marca</h2>
         <div className="border-t border-gray-300" />
         <div className="flex flex-wrap items-center gap-4">
           {participant.profile_img ? (
@@ -106,20 +112,21 @@ const RateParticipantModal: React.FC<Props> = ({
 
         <div className="flex flex-col gap-4">
           <div className="border-t border-gray-300" />
+          {/* Clarity */}
           <div>
             <p className="font-medium">
-              Quão bem o conteúdo produzido atendeu às diretrizes criativas e
-              aos objetivos da campanha?
+              Quão claro foi o briefing fornecido pela marca em relação aos
+              objetivos, público-alvo e diretrizes da campanha?
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
                 <button
                   key={value}
                   onClick={() =>
-                    setRatings((prev) => ({ ...prev, creativeContent: value }))
+                    setRatings((prev) => ({ ...prev, clarity: value }))
                   }
                   className={`flex-1 px-4 py-2 rounded border border-[#10438F] text-center ${
-                    ratings.creativeContent === value
+                    ratings.clarity === value
                       ? "bg-[#10438F] text-white"
                       : "bg-white text-[#10438F]"
                   }`}
@@ -128,27 +135,27 @@ const RateParticipantModal: React.FC<Props> = ({
                 </button>
               ))}
             </div>
-
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Não atendeu de forma alguma, 5 = Atendeu perfeitamente)
+              (1 = Nada claro, 5 = Extremamente claro)
             </p>
           </div>
 
           <div className="h-[1px] bg-gray-300 items-center" />
+          {/* Availability */}
           <div>
             <p className="font-medium">
-              Quão pontual e comprometido foi o influenciador em cumprir os
-              prazos e manter uma comunicação clara durante o processo?
+              Como você avalia a disponibilidade e a agilidade da marca em
+              responder às dúvidas ou solicitações durante o projeto?
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
                 <button
                   key={value}
                   onClick={() =>
-                    setRatings((prev) => ({ ...prev, punctuality: value }))
+                    setRatings((prev) => ({ ...prev, availability: value }))
                   }
                   className={`flex-1 px-4 py-2 rounded border border-[#10438F] text-center ${
-                    ratings.punctuality === value
+                    ratings.availability === value
                       ? "bg-[#10438F] text-white"
                       : "bg-white text-[#10438F]"
                   }`}
@@ -157,27 +164,30 @@ const RateParticipantModal: React.FC<Props> = ({
                 </button>
               ))}
             </div>
-
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Extremamente insatisfatório, 5 = Extremamente satisfatório)
+              (1 = Muito insatisfatória, 5 = Excelente)
             </p>
           </div>
 
           <div className="h-[1px] bg-gray-300 items-center" />
+          {/* Realistic Expectations */}
           <div>
             <p className="font-medium">
-              Como você avalia o alcance e o engajamento do conteúdo produzido
-              em termos de interações, cliques ou conversões?
+              A marca demonstrou expectativas realistas e lidou bem com ajustes
+              necessários durante a campanha?
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
                 <button
                   key={value}
                   onClick={() =>
-                    setRatings((prev) => ({ ...prev, engagement: value }))
+                    setRatings((prev) => ({
+                      ...prev,
+                      realisticExpectations: value,
+                    }))
                   }
                   className={`flex-1 px-4 py-2 rounded border border-[#10438F] text-center ${
-                    ratings.engagement === value
+                    ratings.realisticExpectations === value
                       ? "bg-[#10438F] text-white"
                       : "bg-white text-[#10438F]"
                   }`}
@@ -186,22 +196,20 @@ const RateParticipantModal: React.FC<Props> = ({
                 </button>
               ))}
             </div>
-
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Muito abaixo das expectativas, 5 = Muito acima das
-              expectativas)
+              (1 = Muito abaixo do esperado, 5 = Muito acima do esperado)
             </p>
           </div>
 
           <div className="h-[1px] bg-gray-300 items-center" />
           <div>
             <label className="block font-medium mb-2" htmlFor="comment">
-              Deixe um comentário sobre este creator*
+              Deixe um comentário sobre esta marca*
             </label>
             <textarea
               id="comment"
               className="w-full h-24 border border-gray-300 rounded p-2"
-              placeholder="Escreva aqui um comentário que será exibido no perfil do creator. Ex.: 'Excelente profissional, cumpriu todos os prazos com qualidade!'."
+              placeholder="Escreva aqui um comentário sobre a marca."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             ></textarea>
@@ -229,4 +237,4 @@ const RateParticipantModal: React.FC<Props> = ({
   );
 };
 
-export default RateParticipantModal;
+export default RateBrandModal;
