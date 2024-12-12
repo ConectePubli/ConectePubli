@@ -130,9 +130,7 @@ const CampaignsTable: React.FC = () => {
                         ? "Encerrado"
                         : campaign.status === "ready"
                           ? "Pronto para iniciar"
-                          : campaign.status === "pending"
-                            ? "Aguardamento pagamento"
-                            : ""}
+                          : ""}
                   </td>
                 </tr>
               );
