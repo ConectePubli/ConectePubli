@@ -1,96 +1,96 @@
-import { useState } from 'react'
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
-import { useMutation } from '@tanstack/react-query'
-import { Button } from '@/components/ui/button'
-import { Link } from '@tanstack/react-router'
-import logo from '@/assets/logo.svg'
+import { useState } from "react";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
+import logo from "@/assets/logo.svg";
 
-import register_influencer from '@/assets/register-influencer.webp'
+import register_influencer from "@/assets/register-influencer.webp";
 
-import pb from '@/lib/pb'
-import { formatPhoneNumber } from '@/utils/formatPhoneNumber'
-import { validateEmail } from '@/utils/validateEmail'
-import { getUserType } from '@/lib/auth'
+import pb from "@/lib/pb";
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
+import { validateEmail } from "@/utils/validateEmail";
+import { getUserType } from "@/lib/auth";
 
-export const Route = createFileRoute('/(auth)/cadastro/creator')({
+export const Route = createFileRoute("/(auth)/cadastro/creator")({
   component: Page,
   beforeLoad: async () => {
-    const userType = await getUserType()
+    const userType = await getUserType();
 
-    console.log(userType)
+    console.log(userType);
 
-    if (userType === 'Brands') {
+    if (userType === "Brands") {
       throw redirect({
-        to: '/dashboard-marca',
-      })
-    } else if (userType === 'Influencers') {
+        to: "/dashboard-marca",
+      });
+    } else if (userType === "Influencers") {
       throw redirect({
-        to: '/dashboard-creator',
-      })
+        to: "/dashboard-creator",
+      });
     }
   },
-})
+});
 
 function Page() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  })
+    name: "",
+    email: "",
+    phone: "",
+  });
 
-  const [termsAccepted, setTermsAccepted] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [showModal, setShowModal] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   const mutation = useMutation({
     mutationFn: async () => {
       if (!termsAccepted) {
-        setErrorMessage('Você deve aceitar os termos e condições.')
-        throw new Error('Você deve aceitar os termos e condições.')
+        setErrorMessage("Você deve aceitar os termos e condições.");
+        throw new Error("Você deve aceitar os termos e condições.");
       }
 
       if (!validateEmail(formData.email)) {
-        setErrorMessage('O e-mail inserido não é válido.')
-        throw new Error('O e-mail inserido não é válido.')
+        setErrorMessage("O e-mail inserido não é válido.");
+        throw new Error("O e-mail inserido não é válido.");
       }
 
       try {
         await pb
-          .collection('Influencers_Pre_Registration')
-          .getFirstListItem(`email="${formData.email}"`)
-        setErrorMessage('Este e-mail já está pré-registrado.')
-        throw new Error('Este e-mail já está pré-registrado.')
+          .collection("Influencers_Pre_Registration")
+          .getFirstListItem(`email="${formData.email}"`);
+        setErrorMessage("Este e-mail já está pré-registrado.");
+        throw new Error("Este e-mail já está pré-registrado.");
       } catch (e) {
-        console.error('Erro ao verificar e-mail:', e)
+        console.error("Erro ao verificar e-mail:", e);
       }
 
       const data = {
         name: formData.name,
         email: formData.email,
-        cell_phone: formData.phone.replace(/\D/g, ''),
-      }
+        cell_phone: formData.phone.replace(/\D/g, ""),
+      };
 
-      await pb.collection('Influencers_Pre_Registration').create(data)
+      await pb.collection("Influencers_Pre_Registration").create(data);
     },
     onSuccess: () => {
-      setShowModal(true)
-      setErrorMessage('')
+      setShowModal(true);
+      setErrorMessage("");
     },
     onError: (error) => {
-      console.log(error)
+      console.log(error);
     },
-  })
+  });
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedPhone = formatPhoneNumber(e.target.value)
-    setFormData({ ...formData, phone: formattedPhone })
-  }
+    const formattedPhone = formatPhoneNumber(e.target.value);
+    setFormData({ ...formData, phone: formattedPhone });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    mutation.mutate()
-  }
+    e.preventDefault();
+    mutation.mutate();
+  };
 
   return (
     <div className="relative">
@@ -99,7 +99,7 @@ function Page() {
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
             <h2 className="text-2xl font-bold text-center mb-4 break-words">
-              Bem-vindo{formData.name ? `, ${formData.name}` : ''}!
+              Bem-vindo{formData.name ? `, ${formData.name}` : ""}!
             </h2>
 
             <p className="text-gray-600 text-center mb-6">
@@ -111,13 +111,13 @@ function Page() {
               size="lg"
               className="w-full"
               onClick={() => {
-                setShowModal(false)
+                setShowModal(false);
                 setFormData({
-                  name: '',
-                  email: '',
-                  phone: '',
-                })
-                setTermsAccepted(false)
+                  name: "",
+                  email: "",
+                  phone: "",
+                });
+                setTermsAccepted(false);
               }}
             >
               Fechar
@@ -179,6 +179,12 @@ function Page() {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
+                onBlur={() =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    email: prevData.email.toLowerCase(),
+                  }))
+                }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Informe o e-mail de contato"
                 required
@@ -216,17 +222,17 @@ function Page() {
                 htmlFor="influencerTerms"
                 className="ml-2 block text-sm text-gray-900"
               >
-                Eu aceito os{' '}
+                Eu aceito os{" "}
                 <a
                   className="text-customLinkBlue underline cursor-pointer"
-                  onClick={() => navigate({ to: '/termos' })}
+                  onClick={() => navigate({ to: "/termos" })}
                 >
                   termos de uso
-                </a>{' '}
-                e a{' '}
+                </a>{" "}
+                e a{" "}
                 <a
                   className="text-customLinkBlue underline cursor-pointer"
-                  onClick={() => navigate({ to: '/privacidade' })}
+                  onClick={() => navigate({ to: "/privacidade" })}
                 >
                   política de privacidade
                 </a>
@@ -235,7 +241,7 @@ function Page() {
             </div>
 
             {mutation.isError && (
-              <p className="text-red-500" style={{ fontSize: '0.92rem' }}>
+              <p className="text-red-500" style={{ fontSize: "0.92rem" }}>
                 {errorMessage}
               </p>
             )}
@@ -246,25 +252,25 @@ function Page() {
               className="w-full"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? 'Enviando...' : 'Pré Cadastro Creators'}
+              {mutation.isPending ? "Enviando..." : "Pré Cadastro Creators"}
             </Button>
 
             <div className="text-left">
               <p className="text-sm hidden">
-                Já tem uma conta? (opção escondida até o pós lançamento){' '}
+                Já tem uma conta? (opção escondida até o pós lançamento){" "}
                 <a href="/login" className="text-customLinkBlue underline">
                   Faça login
                 </a>
                 .
               </p>
               <p className="text-sm mt-1">
-                É uma marca? Acesse o{' '}
+                É uma marca? Acesse o{" "}
                 <a
                   className="text-customLinkBlue underline cursor-pointer"
-                  onClick={() => navigate({ to: '/cadastro/marca' })}
+                  onClick={() => navigate({ to: "/cadastro/marca" })}
                 >
                   formulário de cadastro para marcas
-                </a>{' '}
+                </a>{" "}
                 aqui.
               </p>
             </div>
@@ -272,7 +278,7 @@ function Page() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Page
+export default Page;

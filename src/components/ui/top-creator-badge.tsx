@@ -19,13 +19,13 @@ const TopCreatorBadge: React.FC<BadgeProps> = ({ status }) => {
   return (
     <div
       onClick={handleClick}
-      className={`flex items-center px-2 py-1 rounded-full font-bold text-xs cursor-pointer ${
+      className={`inline-flex items-center gap-x-1 px-2 py-1 rounded-full font-bold text-xs cursor-pointer ${
         isActive
           ? "bg-blue-900 text-yellow-300"
           : "bg-white text-gray-700 border border-gray-700 hover:bg-gray-100"
       }`}
     >
-      <span className="mr-2 w-4 h-4">
+      <span>
         <img
           src={isActive ? GoldCheckIcon : GrayCheckIcon}
           alt={isActive ? "Gold Check" : "Gray Check"}
