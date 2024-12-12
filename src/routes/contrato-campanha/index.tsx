@@ -148,6 +148,65 @@ function ContratoDeCampanha() {
         resultantes da relação com a marca anunciante. Qualquer litígio ou
         controvérsia deverá ser resolvido diretamente com a marca envolvida.
       </p>
+
+      <h2 className="text-xl font-semibold mt-6 mb-2">
+        9 - Uso de Conteúdo em Tráfego Pago
+      </h2>
+
+      <div className="ml-4">
+        <h3 className="text-lg font-semibold mt-4 mb-2">
+          9.1 Termos de Veiculação:
+        </h3>
+        <p className="mb-4">
+          Ao aceitar a presente campanha publicitária, o(a) Creator concorda
+          que, no caso de tráfego pago, a utilização de seu conteúdo seguirá
+          rigorosamente os locais de exibição e o período de veiculação
+          estabelecidos na campanha no momento da candidatura e aceite.
+        </p>
+
+        <h3 className="text-lg font-semibold mt-4 mb-2">
+          9.2 Alterações nas Condições:
+        </h3>
+        <p className="mb-4">
+          Quaisquer alterações nos locais de veiculação ou extensão do período
+          previamente acordado deverão ser negociadas e formalizadas mediante
+          nova autorização e compensação financeira adicional, conforme acordado
+          entre as partes.
+        </p>
+
+        <h3 className="text-lg font-semibold mt-4 mb-2">
+          9.3 Remuneração e Direitos:
+        </h3>
+        <p className="mb-4">
+          A remuneração definida nesta campanha cobre exclusivamente o uso do
+          conteúdo para os fins e prazos especificados. Caso o conteúdo seja
+          reutilizado ou redistribuído além desses parâmetros, a marca estará
+          sujeita a pagamento adicional e à formalização de novo contrato.
+        </p>
+
+        <h3 className="text-lg font-semibold mt-4 mb-2">
+          9.4 Direitos e Responsabilidades:
+        </h3>
+        <ul className="list-disc list-inside mb-4">
+          <li>
+            O(a) Creator garante o cumprimento dos termos aceitos,
+            comprometendo-se com a entrega e qualidade do material conforme o
+            escopo da campanha.
+          </li>
+          <li>
+            A marca se compromete a utilizar o conteúdo estritamente dentro das
+            condições especificadas, respeitando os direitos autorais e de
+            imagem do(a) Creator.
+          </li>
+        </ul>
+
+        <h3 className="text-lg font-semibold mt-4 mb-2">9.5 Penalidades:</h3>
+        <p className="mb-4">
+          O descumprimento de qualquer uma das condições estabelecidas nesta
+          cláusula poderá acarretar sanções legais, incluindo indenização por
+          uso indevido da imagem do(a) Creator.
+        </p>
+      </div>
     </div>
   );
 }

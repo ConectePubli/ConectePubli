@@ -1,21 +1,14 @@
-import { useRouter, useNavigate } from "@tanstack/react-router";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import pb from "@/lib/pb";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import { getUserData } from "@/utils/getUserData";
+import { Question } from "phosphor-react";
 import axios from "axios";
 
-import FacebookIcon from "@/assets/icons/brands/facebook.svg";
-import InstagramIcon from "@/assets/icons/brands/instagram.svg";
-import KwaiIcon from "@/assets/icons/brands/kwai.svg";
-import LinkedInIcon from "@/assets/icons/brands/linkedin.svg";
-import PinterestIcon from "@/assets/icons/brands/pinterest.svg";
-import TiktokIcon from "@/assets/icons/brands/tiktok.svg";
-import TwitchIcon from "@/assets/icons/brands/twitch.svg";
-import TwitterIcon from "@/assets/icons/brands/twitter.svg";
-import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
-import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
+import pb from "@/lib/pb";
 
 import {
   objectiveOptions,
@@ -26,25 +19,22 @@ import {
   minVideoDurationOptions,
   maxVideoDurationOptions,
 } from "@/utils/campaignData/labels";
+import { channelIcons } from "@/utils/socialMediasIcons";
+import {
+  createCampaign,
+  generateUniqueName,
+  handleSubmit,
+  safeNavigate,
+  updateCampaign,
+  validateFields,
+} from "@/services/createCampaign";
+
 import { Niche } from "@/types/Niche";
 import { Campaign } from "@/types/Campaign";
-import { Question } from "phosphor-react";
+
 import { Button } from "./button";
 import FloatingHelpButton from "./FloatingHelpButton";
-
-const channelIcons = {
-  Instagram: InstagramIcon,
-  Tiktok: TiktokIcon,
-  YouTube: YouTubeIcon,
-  Pinterest: PinterestIcon,
-  LinkedIn: LinkedInIcon,
-  Facebook: FacebookIcon,
-  Twitter: TwitterIcon,
-  Twitch: TwitchIcon,
-  YourClub: YourClubIcon,
-  Kwai: KwaiIcon,
-  X: TwitterIcon,
-};
+import { ArrowLeft, File, Save } from "lucide-react";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -81,6 +71,7 @@ interface CampaignData {
     videoMinDuration: string;
     videoMaxDuration: string;
     paidTraffic: boolean;
+    paidTrafficInfo: string;
     audioFormat: "Música" | "Narração" | null;
   };
 }
@@ -102,15 +93,22 @@ interface ResponsibleInfo {
 interface CampaignFormProps {
   campaignId?: string;
   initialCampaignData?: Campaign;
+  campaignIdDraft?: string;
 }
 
 export const CampaignForm: React.FC<CampaignFormProps> = ({
   campaignId,
   initialCampaignData,
+  campaignIdDraft,
 }) => {
   const navigate = useNavigate();
+  const originalNavigate = navigate;
 
   const isEditMode = Boolean(campaignId);
+  const [isDraft] = useState(initialCampaignData?.status === "draft");
+  const [campaignIdDraftState] = useState(campaignIdDraft);
+
+  const [loadingCreate, setLoadingCreate] = useState(false);
 
   const [campaignData, setCampaignData] = useState<CampaignData>({
     basicInfo: {
@@ -137,6 +135,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       videoMinDuration: "",
       videoMaxDuration: "",
       paidTraffic: false,
+      paidTrafficInfo: "",
       audioFormat: null,
     },
   });
@@ -155,9 +154,190 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     cpf: "",
   });
 
-  // Prefill form data in edit mode
+  // control navigation
+  const [isDirty, setIsDirty] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
+
+  // Logo após preencher os estados com initialCampaignData:
+  const [initialCampaignDataState, setInitialCampaignDataState] =
+    useState<CampaignData | null>(null);
+  const [initialCampaignBudgetState, setInitialCampaignBudgetState] =
+    useState<CampaignBudget | null>(null);
+  const [initialResponsibleInfoState, setInitialResponsibleInfoState] =
+    useState<ResponsibleInfo | null>(null);
+
   useEffect(() => {
-    console.log(initialCampaignData);
+    if (!isEditMode) {
+      window.history.pushState({ antiBack: true }, "", window.location.href);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isDraft && initialCampaignData) {
+      setCampaignData({
+        basicInfo: {
+          campaignName: initialCampaignData.name || "",
+          format: initialCampaignData.objective || "UGC",
+          productUrl: initialCampaignData.product_url || "",
+          coverImage: initialCampaignData.cover_img || "",
+          briefing: initialCampaignData.briefing || "",
+          mandatory_deliverables:
+            initialCampaignData.mandatory_deliverables || "",
+          sending_products_or_services:
+            initialCampaignData.sending_products_or_services || "",
+          expected_actions: initialCampaignData.expected_actions || "",
+          avoid_actions: initialCampaignData.avoid_actions || "",
+          additional_information:
+            initialCampaignData.additional_information || "",
+          itinerary_suggestion: initialCampaignData.itinerary_suggestion || "",
+          disseminationChannels: initialCampaignData.channels || [],
+        },
+        audienceSegmentation: {
+          niche: initialCampaignData.niche || [],
+          minAge: initialCampaignData.min_age?.toString() || "",
+          maxAge: initialCampaignData.max_age?.toString() || "",
+          gender: initialCampaignData.gender || "",
+          minFollowers: initialCampaignData.min_followers?.toString() || "",
+          location: initialCampaignData.locality || [],
+          videoMinDuration: initialCampaignData.min_video_duration || "",
+          videoMaxDuration: initialCampaignData.max_video_duration || "",
+          paidTraffic: initialCampaignData.paid_traffic || false,
+          paidTrafficInfo: initialCampaignData.paid_traffic_info || "",
+          audioFormat: initialCampaignData.audio_format || null,
+        },
+      });
+
+      setCampaignBudget({
+        startDate: initialCampaignData.beginning || "",
+        endDate: initialCampaignData.end || "",
+        influencersCount: initialCampaignData.open_jobs || 0,
+        creatorFee: initialCampaignData.price || 0,
+      });
+
+      setResponsibleInfo({
+        name: initialCampaignData.responsible_name || "",
+        email: initialCampaignData.responsible_email || "",
+        phone: initialCampaignData.responsible_phone?.toString() || "",
+        cpf: initialCampaignData.responsible_cpf || "",
+      });
+
+      // Guardar os estados iniciais para comparação de 'isDirty'
+      setInitialCampaignDataState(
+        initialCampaignData as unknown as CampaignData
+      );
+      setInitialCampaignBudgetState({
+        startDate: initialCampaignData.beginning || "",
+        endDate: initialCampaignData.end || "",
+        influencersCount: initialCampaignData.open_jobs || 0,
+        creatorFee: initialCampaignData.price || 0,
+      });
+      setInitialResponsibleInfoState({
+        name: initialCampaignData.responsible_name || "",
+        email: initialCampaignData.responsible_email || "",
+        phone: initialCampaignData.responsible_phone?.toString() || "",
+        cpf: initialCampaignData.responsible_cpf || "",
+      });
+    }
+  }, [isDraft]);
+
+  useEffect(() => {
+    if (isEditMode && initialCampaignData && !initialCampaignDataState) {
+      setInitialCampaignDataState(JSON.parse(JSON.stringify(campaignData)));
+      setInitialCampaignBudgetState(JSON.parse(JSON.stringify(campaignBudget)));
+      setInitialResponsibleInfoState(
+        JSON.parse(JSON.stringify(responsibleInfo))
+      );
+    } else if (!isEditMode && !initialCampaignDataState) {
+      // Campanha nova
+      setInitialCampaignDataState(JSON.parse(JSON.stringify(campaignData)));
+      setInitialCampaignBudgetState(JSON.parse(JSON.stringify(campaignBudget)));
+      setInitialResponsibleInfoState(
+        JSON.parse(JSON.stringify(responsibleInfo))
+      );
+    }
+  }, [
+    isEditMode,
+    initialCampaignData,
+    campaignData,
+    campaignBudget,
+    responsibleInfo,
+  ]);
+
+  useEffect(() => {
+    if (
+      initialCampaignDataState &&
+      initialCampaignBudgetState &&
+      initialResponsibleInfoState
+    ) {
+      const isSameData =
+        JSON.stringify(campaignData) ===
+        JSON.stringify(initialCampaignDataState);
+      const isSameBudget =
+        JSON.stringify(campaignBudget) ===
+        JSON.stringify(initialCampaignBudgetState);
+      const isSameResponsible =
+        JSON.stringify(responsibleInfo) ===
+        JSON.stringify(initialResponsibleInfoState);
+
+      setIsDirty(!(isSameData && isSameBudget && isSameResponsible));
+    }
+  }, [
+    campaignData,
+    campaignBudget,
+    responsibleInfo,
+    initialCampaignDataState,
+    initialCampaignBudgetState,
+    initialResponsibleInfoState,
+  ]);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      const handlePopState = () => {
+        if (isDirty) {
+          window.history.pushState(
+            { antiBack: true },
+            "",
+            window.location.href
+          );
+          setShowLeaveModal(true);
+          setPendingNavigation({ to: "/dashboard" } as any);
+        } else {
+          safeNavigate(
+            { to: "/dashboard-marca" },
+            isDirty,
+            setPendingNavigation,
+            setShowLeaveModal,
+            originalNavigate
+          );
+        }
+      };
+
+      window.addEventListener("popstate", handlePopState);
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+      };
+    }
+  }, [isDirty]);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+        if (isDirty) {
+          e.preventDefault();
+          e.returnValue =
+            "Você tem dados não salvos, se recarregar vai perder tudo. Deseja recarregar?";
+        }
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }
+  }, [isDirty]);
+
+  useEffect(() => {
     if (isEditMode && initialCampaignData) {
       setCampaignData({
         basicInfo: {
@@ -187,6 +367,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           videoMinDuration: initialCampaignData.min_video_duration || "",
           videoMaxDuration: initialCampaignData.max_video_duration || "",
           paidTraffic: initialCampaignData.paid_traffic || false,
+          paidTrafficInfo: initialCampaignData.paid_traffic_info || "",
           audioFormat: initialCampaignData.audio_format || null,
         },
       });
@@ -215,7 +396,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     },
   });
 
-  const router = useRouter();
   const user = getUserData();
 
   const { data: brandInfo, isLoading: brandLoading } = useQuery({
@@ -260,246 +440,42 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         !hasSomeNetworkMedias
       ) {
         const username = user.model.username;
-        router.navigate({
-          to: `/marca/${username}/editar?from=CreateCampaign&error=MissingData`,
-        });
+        safeNavigate(
+          {
+            to: `/marca/${username}/editar?from=CreateCampaign&error=MissingData`,
+          },
+          isDirty,
+          setPendingNavigation,
+          setShowLeaveModal,
+          originalNavigate
+        );
       }
     }
-  }, [brandLoading, brandInfo, user.model.username, router]);
-
-  const generateUniqueName = (
-    baseName: string,
-    existingNames: string[]
-  ): string => {
-    let uniqueName = "";
-    let isUnique = false;
-
-    while (!isUnique) {
-      const randomNumber = Math.floor(100000 + Math.random() * 900000); // Número aleatório de 6 dígitos
-      uniqueName = `${baseName}${randomNumber}`;
-      if (!existingNames.includes(uniqueName)) {
-        isUnique = true;
-      }
-    }
-
-    return uniqueName;
-  };
-
-  // Helper function to populate shared fields
-  const populateCampaignFormData = (
-    formData: FormData,
-    campaignData: CampaignData,
-    campaignBudget: CampaignBudget,
-    responsibleInfo: ResponsibleInfo,
-    userId: string | undefined
-  ) => {
-    if (userId) formData.append("brand", userId);
-    formData.append("status", "ready");
-
-    formData.append("name", campaignData.basicInfo.campaignName);
-    if (campaignData.basicInfo.coverImage) {
-      formData.append("cover_img", campaignData.basicInfo.coverImage);
-    }
-    formData.append("objective", campaignData.basicInfo.format);
-    formData.append("product_url", campaignData.basicInfo.productUrl);
-    formData.append("briefing", campaignData.basicInfo.briefing);
-    formData.append(
-      "mandatory_deliverables",
-      campaignData.basicInfo.mandatory_deliverables
-    );
-    formData.append(
-      "sending_products_or_services",
-      campaignData.basicInfo.sending_products_or_services
-    );
-    formData.append(
-      "expected_actions",
-      campaignData.basicInfo.expected_actions
-    );
-    formData.append("avoid_actions", campaignData.basicInfo.avoid_actions);
-    formData.append(
-      "additional_information",
-      campaignData.basicInfo.additional_information
-    );
-    formData.append(
-      "itinerary_suggestion",
-      campaignData.basicInfo.itinerary_suggestion
-    );
-
-    if (Array.isArray(campaignData.basicInfo.disseminationChannels)) {
-      campaignData.basicInfo.disseminationChannels.forEach((channel) => {
-        formData.append("channels", channel);
-      });
-    } else {
-      formData.append("channels", campaignData.basicInfo.disseminationChannels);
-    }
-
-    if (campaignData.audienceSegmentation.niche.length === 0) {
-      formData.append("niche", "");
-    } else {
-      campaignData.audienceSegmentation.niche.forEach((nicheId) => {
-        formData.append("niche", nicheId);
-      });
-    }
-    formData.append("min_age", campaignData.audienceSegmentation.minAge);
-    formData.append("max_age", campaignData.audienceSegmentation.maxAge);
-    formData.append("gender", campaignData.audienceSegmentation.gender);
-    formData.append(
-      "min_followers",
-      campaignData.audienceSegmentation.minFollowers
-    );
-    if (Array.isArray(campaignData.audienceSegmentation.location)) {
-      if (campaignData.audienceSegmentation.location.length === 0) {
-        formData.append("locality", "");
-      } else {
-        campaignData.audienceSegmentation.location.forEach((locate) => {
-          formData.append("locality", locate);
-        });
-      }
-    } else {
-      formData.append(
-        "locality",
-        campaignData.audienceSegmentation.location || ""
-      );
-    }
-
-    formData.append(
-      "min_video_duration",
-      campaignData.audienceSegmentation.videoMinDuration
-    );
-    formData.append(
-      "max_video_duration",
-      campaignData.audienceSegmentation.videoMaxDuration
-    );
-    formData.append(
-      "paid_traffic",
-      campaignData.audienceSegmentation.paidTraffic ? "true" : "false"
-    );
-    formData.append(
-      "audio_format",
-      campaignData.audienceSegmentation.audioFormat || ""
-    );
-
-    // Campaign budget
-    formData.append("beginning", campaignBudget.startDate as string);
-    formData.append("end", campaignBudget.endDate as string);
-    formData.append("open_jobs", campaignBudget.influencersCount.toString());
-    if (!isEditMode) {
-      formData.append("price", (campaignBudget.creatorFee * 100).toString());
-    }
-
-    formData.append("responsible_name", responsibleInfo.name);
-    formData.append("responsible_email", responsibleInfo.email);
-    formData.append(
-      "responsible_phone",
-      responsibleInfo.phone.replace(/\D/g, "")
-    );
-    formData.append("responsible_cpf", responsibleInfo.cpf);
-  };
-
-  const prepareCampaignFormData = async (
-    formData: FormData,
-    user: ReturnType<typeof getUserData>,
-    campaignData: CampaignData,
-    campaignBudget: CampaignBudget,
-    responsibleInfo: ResponsibleInfo,
-    isNew: boolean,
-    currentUniqueName?: string
-  ): Promise<void> => {
-    if (!user.model.id) {
-      toast.error(
-        "Erro ao processar informação, por favor realize o login novamente"
-      );
-      throw new Error("User ID is missing");
-    }
-
-    let uniqueName = currentUniqueName;
-    if (
-      isNew ||
-      !currentUniqueName ||
-      campaignData.basicInfo.campaignName !==
-        currentUniqueName.replace(/_/g, " ")
-    ) {
-      const existingUniqueNames: string[] = await pb
-        .collection("Campaigns")
-        .getFullList<Campaign>({ fields: "unique_name" })
-        .then((campaigns) => campaigns.map((c) => c.unique_name));
-
-      const sanitizedName = campaignData.basicInfo.campaignName
-        .replace(/[^\p{L}\p{N}\s]/gu, "") // Remove pontuações
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "") // Remove acentuações
-        .trim()
-        .split(/\s+/); // Separa em palavras
-
-      // Mantém apenas as primeiras 5 palavras
-      const limitedWords = sanitizedName.slice(0, 5);
-
-      // Junta as palavras com underscore
-      const baseName = limitedWords.join("_");
-
-      uniqueName = generateUniqueName(baseName, existingUniqueNames);
-    }
-
-    if (uniqueName) {
-      formData.append("unique_name", uniqueName);
-    }
-
-    populateCampaignFormData(
-      formData,
-      campaignData,
-      campaignBudget,
-      responsibleInfo,
-      isNew ? user.model.id : undefined
-    );
-  };
-
-  const createCampaign = async (): Promise<Campaign> => {
-    const formData = new FormData();
-    await prepareCampaignFormData(
-      formData,
-      user,
-      campaignData,
-      campaignBudget,
-      responsibleInfo,
-      true
-    );
-
-    formData.append("paid", "false");
-
-    const createdCampaign: Campaign = await pb
-      .collection("Campaigns")
-      .create(formData);
-    return createdCampaign;
-  };
-
-  const updateCampaign = async (): Promise<Campaign> => {
-    if (!campaignId) {
-      throw new Error("Campaign ID not found");
-    }
-
-    const formData = new FormData();
-
-    const currentCampaign = await pb
-      .collection("Campaigns")
-      .getOne<Campaign>(campaignId);
-    const currentUniqueName = currentCampaign.unique_name;
-
-    await prepareCampaignFormData(
-      formData,
-      user,
-      campaignData,
-      campaignBudget,
-      responsibleInfo,
-      false,
-      currentUniqueName
-    );
-
-    return await pb.collection("Campaigns").update(campaignId, formData);
-  };
+  }, [brandLoading, brandInfo, user.model.username]);
 
   const mutate = useMutation<Campaign, Error, void>({
-    mutationFn: isEditMode ? updateCampaign : createCampaign,
+    mutationFn: isEditMode
+      ? () =>
+          updateCampaign(
+            campaignId as string,
+            pb,
+            user,
+            campaignData,
+            campaignBudget,
+            responsibleInfo,
+            toast,
+            isEditMode
+          )
+      : () =>
+          createCampaign(
+            user,
+            campaignData,
+            campaignBudget,
+            responsibleInfo,
+            toast,
+            pb,
+            isEditMode
+          ),
     onSuccess: async (createdCampaign: Campaign) => {
       if (isEditMode) {
         toast.success("Campanha atualizada com sucesso!");
@@ -509,6 +485,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         });
       } else {
         toast.success("Campanha criada com sucesso!");
+
+        setIsDirty(false);
 
         const response = await axios.post(
           `https://conecte-publi.pockethost.io/api/checkout_campaign`,
@@ -543,144 +521,306 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     },
   });
 
-  const isValidEmail = (email: string) => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
-  };
+  const saveDraftMutation = useMutation<void, Error, void>({
+    mutationFn: async () => {
+      const campaignName =
+        campaignData.basicInfo.campaignName.trim() !== ""
+          ? campaignData.basicInfo.campaignName
+          : `Campanha do(a) ${brandInfo?.name || "Sua Marca"}`;
 
-  const isValidURL = (url: string) => {
-    try {
-      const testUrl = url.includes("://") ? url : "http://" + url;
-      new URL(testUrl);
-      return true;
-    } catch (e) {
-      console.log(`invalid url ${e}`);
-      return false;
-    }
-  };
+      const creatorFee = campaignBudget.creatorFee
+        ? campaignBudget.creatorFee
+        : 0;
 
-  const handleSubmit = () => {
-    const missingFields: string[] = [];
+      const draftData = {
+        name: campaignName,
+        price: creatorFee,
+        brand: brandInfo?.id,
+        objective: campaignData.basicInfo.format,
+        product_url: campaignData.basicInfo.productUrl,
+        cover_img: campaignData.basicInfo.coverImage,
+        briefing: campaignData.basicInfo.briefing,
+        mandatory_deliverables: campaignData.basicInfo.mandatory_deliverables,
+        sending_products_or_services:
+          campaignData.basicInfo.sending_products_or_services,
+        expected_actions: campaignData.basicInfo.expected_actions,
+        avoid_actions: campaignData.basicInfo.avoid_actions,
+        additional_information: campaignData.basicInfo.additional_information,
+        itinerary_suggestion: campaignData.basicInfo.itinerary_suggestion,
+        channels: campaignData.basicInfo.disseminationChannels,
+        niche: campaignData.audienceSegmentation.niche,
+        min_age: campaignData.audienceSegmentation.minAge,
+        max_age: campaignData.audienceSegmentation.maxAge,
+        gender: campaignData.audienceSegmentation.gender,
+        min_followers: campaignData.audienceSegmentation.minFollowers,
+        locality: campaignData.audienceSegmentation.location,
+        min_video_duration: campaignData.audienceSegmentation.videoMinDuration,
+        max_video_duration: campaignData.audienceSegmentation.videoMaxDuration,
+        paid_traffic: campaignData.audienceSegmentation.paidTraffic,
+        paid_traffic_info: campaignData.audienceSegmentation.paidTrafficInfo,
+        audio_format: campaignData.audienceSegmentation.audioFormat,
+        beginning: campaignBudget.startDate,
+        end: campaignBudget.endDate,
+        open_jobs: campaignBudget.influencersCount,
+        responsible_name: responsibleInfo.name,
+        responsible_email: responsibleInfo.email,
+        responsible_phone: responsibleInfo.phone.replace(/\D/g, ""),
+        responsible_cpf: responsibleInfo.cpf,
+        status: "draft",
+      };
 
-    // Basic Info Section Required Fields
-    if (!campaignData.basicInfo.campaignName)
-      missingFields.push("Nome da Campanha");
-    if (!campaignData.basicInfo.format)
-      missingFields.push("Formato da Campanha");
-    if (!campaignData.basicInfo.coverImage) missingFields.push("Foto de Capa");
-    if (!campaignData.basicInfo.productUrl)
-      missingFields.push("URL do Produto ou Perfil");
-    if (!campaignData.basicInfo.briefing)
-      missingFields.push("Briefing da Campanha");
-    if (!campaignData.basicInfo.mandatory_deliverables)
-      missingFields.push("Entregáveis obrigatórios");
-    if (!campaignData.basicInfo.sending_products_or_services)
-      missingFields.push("Envio de produtos ou serviços");
-    if (!campaignData.basicInfo.expected_actions)
-      missingFields.push("Ações esperadas do creator");
-    if (!campaignData.basicInfo.avoid_actions)
-      missingFields.push("Ações a serem evitadas do creator");
-    if (!campaignData.basicInfo.additional_information)
-      missingFields.push("Informações adicionais da campanha");
-
-    // Campaign Budget Section Required Fields
-    if (!campaignBudget.startDate)
-      missingFields.push("Data de Início da Campanha");
-    if (!campaignBudget.endDate) missingFields.push("Data de Fim da Campanha");
-    if (
-      !campaignBudget.influencersCount ||
-      campaignBudget.influencersCount <= 0
-    )
-      missingFields.push("Quantidade de Creators");
-    if (!campaignBudget.creatorFee || campaignBudget.creatorFee <= 0)
-      missingFields.push("Valor por Criador");
-
-    // Responsible Info Section Required Fields
-    if (!responsibleInfo.name) missingFields.push("Nome do Responsável");
-    if (!responsibleInfo.email) missingFields.push("Email do Responsável");
-    if (!responsibleInfo.phone) missingFields.push("Telefone do Responsável");
-    if (!responsibleInfo.cpf) missingFields.push("CPF do Responsável");
-
-    if (campaignData.audienceSegmentation.paidTraffic === null) {
-      missingFields.push("Tráfego Pago");
-    }
-
-    if (
-      campaignData.audienceSegmentation.videoMinDuration &&
-      !campaignData.audienceSegmentation.videoMaxDuration
-    ) {
-      missingFields.push("Duração máxima do vídeo");
-    }
-
-    if (
-      campaignData.audienceSegmentation.minAge &&
-      !campaignData.audienceSegmentation.maxAge
-    ) {
-      missingFields.push("Idade máxima");
-    }
-
-    // Validate Missing Fields
-    if (missingFields.length > 0) {
-      const message =
-        missingFields.length > 3
-          ? `Campos obrigatórios não preenchidos: ${missingFields
-              .slice(0, 3)
-              .join(", ")}, etc.`
-          : `Campos obrigatórios não preenchidos: ${missingFields.join(", ")}`;
-
-      toast.warn(message);
-      return;
-    }
-
-    if (campaignBudget.creatorFee < 50) {
-      toast.warn("O valor mínimo por criador é R$50,00.");
-      return;
-    }
-
-    if (!isValidEmail(responsibleInfo.email)) {
-      toast.warn("Email do Responsável é inválido");
-      return;
-    }
-
-    if (!isValidURL(campaignData.basicInfo.productUrl)) {
-      toast.warn("URL do Produto ou Perfil é inválida");
-      return;
-    }
-
-    // Ensure creatorFee consistency in edit mode
-    if (isEditMode) {
-      const correctCreatorFee = initialCampaignData?.price || 0;
-
-      if (campaignBudget.creatorFee !== correctCreatorFee) {
-        setCampaignBudget((prev) => ({
-          ...prev,
-          creatorFee: correctCreatorFee,
-        }));
+      if (isDraft && campaignIdDraftState) {
+        await pb
+          .collection("Campaigns")
+          .update(campaignIdDraftState, draftData);
+      } else {
+        await pb.collection("Campaigns").create(draftData);
       }
+    },
+    onSuccess: () => {
+      toast.success("Rascunho salvo com sucesso!");
+
+      navigate({ to: "/dashboard" });
+    },
+    onError: (error) => {
+      console.error("Erro ao salvar o rascunho:", error);
+      toast.error("Erro ao salvar o rascunho. Tente novamente.");
+    },
+  });
+
+  // Dentro do componente CampaignForm
+  const handleFinalSubmit = async () => {
+    // Validação dos campos
+    const isValid = validateFields(
+      campaignData,
+      campaignBudget,
+      responsibleInfo,
+      toast
+    );
+    if (!isValid) {
+      return;
     }
 
-    mutate.mutate();
+    setIsDirty(false);
+
+    // atualizar rascunho final da campanha com os ultimos dados
+    if (isDraft && campaignIdDraftState) {
+      try {
+        setLoadingCreate(true);
+
+        const response = await axios.post(
+          `https://conecte-publi.pockethost.io/api/checkout_campaign`,
+          {
+            campaign_id: campaignIdDraftState,
+            campaign_name: campaignData.basicInfo.campaignName,
+            unit_amount:
+              campaignBudget.influencersCount * campaignBudget.creatorFee * 100,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          let uniqueName = campaignData.basicInfo.campaignName;
+
+          const existingUniqueNames: string[] = await pb
+            .collection("Campaigns")
+            .getFullList<Campaign>({ fields: "unique_name" })
+            .then((campaigns: any) =>
+              campaigns.map((c: { unique_name: any }) => c.unique_name)
+            );
+
+          const sanitizedName = campaignData.basicInfo.campaignName
+            .replace(/[^\p{L}\p{N}\s]/gu, "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim()
+            .split(/\s+/);
+
+          const limitedWords = sanitizedName.slice(0, 5);
+
+          const baseName = limitedWords.join("_");
+
+          uniqueName = generateUniqueName(baseName, existingUniqueNames);
+
+          const draftData = {
+            name: campaignData.basicInfo.campaignName,
+            price: campaignBudget.creatorFee,
+            brand: brandInfo?.id,
+            objective: campaignData.basicInfo.format,
+            product_url: campaignData.basicInfo.productUrl,
+            cover_img: campaignData.basicInfo.coverImage,
+            briefing: campaignData.basicInfo.briefing,
+            mandatory_deliverables:
+              campaignData.basicInfo.mandatory_deliverables,
+            sending_products_or_services:
+              campaignData.basicInfo.sending_products_or_services,
+            expected_actions: campaignData.basicInfo.expected_actions,
+            avoid_actions: campaignData.basicInfo.avoid_actions,
+            additional_information:
+              campaignData.basicInfo.additional_information,
+            itinerary_suggestion: campaignData.basicInfo.itinerary_suggestion,
+            channels: campaignData.basicInfo.disseminationChannels,
+            niche: campaignData.audienceSegmentation.niche,
+            min_age: campaignData.audienceSegmentation.minAge,
+            max_age: campaignData.audienceSegmentation.maxAge,
+            gender: campaignData.audienceSegmentation.gender,
+            min_followers: campaignData.audienceSegmentation.minFollowers,
+            locality: campaignData.audienceSegmentation.location,
+            min_video_duration:
+              campaignData.audienceSegmentation.videoMinDuration,
+            max_video_duration:
+              campaignData.audienceSegmentation.videoMaxDuration,
+            paid_traffic: campaignData.audienceSegmentation.paidTraffic,
+            paid_traffic_info:
+              campaignData.audienceSegmentation.paidTrafficInfo,
+            audio_format: campaignData.audienceSegmentation.audioFormat,
+            beginning: campaignBudget.startDate,
+            end: campaignBudget.endDate,
+            open_jobs: campaignBudget.influencersCount,
+            responsible_name: responsibleInfo.name,
+            responsible_email: responsibleInfo.email,
+            responsible_phone: responsibleInfo.phone.replace(/\D/g, ""),
+            responsible_cpf: responsibleInfo.cpf,
+            status: "draft",
+            unique_name: uniqueName,
+          };
+
+          await pb
+            .collection("Campaigns")
+            .update(campaignIdDraftState, draftData);
+
+          const link = response.data.link;
+          if (link) {
+            window.location.href = link;
+          } else {
+            toast.error("Erro ao iniciar o pagamento. Tente novamente.");
+          }
+        } else {
+          toast.error("Erro ao iniciar o pagamento. Tente novamente.");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Erro ao iniciar o pagamento. Tente novamente.");
+      } finally {
+        setLoadingCreate(false);
+      }
+    } else {
+      handleSubmit(
+        campaignData,
+        campaignBudget,
+        responsibleInfo,
+        isEditMode,
+        toast,
+        initialCampaignData as Campaign,
+        setCampaignBudget,
+        mutate
+      );
+    }
   };
 
   return (
     <div className="flex flex-col items-center justify-center">
+      {showLeaveModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-md w-full max-w-xl mx-4">
+            <h2 className="text-lg font-semibold">
+              Você tem dados não salvos, deseja realmente sair?
+            </h2>
+            <p className="mt-4 text-sm text-gray-900">
+              Sair da tela de criação de campanha sem salvar os dados pode fazer
+              você perder todo o progresso feito até agora.
+            </p>
+            <p className="mt-2 text-sm text-gray-900">
+              Para garantir que suas informações estejam seguras e você não
+              precise começar do zero, clique em "Salvar como Rascunho" antes de
+              sair. Assim, você pode continuar de onde parou, sem preocupações!
+              🚀
+            </p>
+            <div className="mt-6 flex justify-between items-center">
+              <button
+                onClick={() => setShowLeaveModal(false)}
+                className="text-sm text-gray-800 flex items-center space-x-1"
+              >
+                <ArrowLeft className="" />
+                <span>Voltar a Campanha</span>
+              </button>
+
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => {
+                    setIsDirty(false);
+                    setShowLeaveModal(false);
+                    if (pendingNavigation) {
+                      originalNavigate(pendingNavigation);
+                      setPendingNavigation(null);
+                    } else {
+                      window.location.href = "/";
+                    }
+                  }}
+                  className="px-4 py-2 bg-red-500 text-white rounded text-sm"
+                >
+                  Sair
+                </button>
+                <Button
+                  variant={"blue"}
+                  onClick={() => {
+                    saveDraftMutation.mutate();
+                  }}
+                  className="px-4 py-2 text-white rounded text-sm"
+                >
+                  {saveDraftMutation.isPending
+                    ? "Salvando..."
+                    : "Salvar como Rascunho"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDirty && !isEditMode && (
+        <div className="my-4 w-full flex justify-end px-10">
+          <Button
+            variant={"orange"}
+            onClick={() => {
+              saveDraftMutation.mutate();
+            }}
+          >
+            {saveDraftMutation.isPending ? (
+              "Salvando..."
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" /> Salvar como rascunho
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
       <BasicInfoSection
         data={campaignData.basicInfo}
-        onChange={(data) =>
-          setCampaignData((prev) => ({ ...prev, basicInfo: data }))
-        }
+        onChange={(data) => {
+          setCampaignData((prev) => ({ ...prev, basicInfo: data }));
+          setIsDirty(true);
+        }}
         initialCampaignData={initialCampaignData as Campaign}
         isEditMode={isEditMode}
       />
 
       <AudienceSegmentationSection
         data={campaignData.audienceSegmentation}
-        onChange={(data) =>
+        onChange={(data) => {
           setCampaignData((prev) => ({
             ...prev,
             audienceSegmentation: data,
-          }))
-        }
+          }));
+          setIsDirty(true);
+        }}
         niches={niches}
         nichesLoading={nichesLoading}
       />
@@ -690,23 +830,31 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         endDate={campaignBudget.endDate}
         influencersCount={campaignBudget.influencersCount}
         creatorFee={campaignBudget.creatorFee}
-        onChange={(data) => setCampaignBudget(data)}
+        onChange={(data) => {
+          setCampaignBudget(data);
+          setIsDirty(true);
+        }}
         isEditMode={isEditMode}
       />
 
       <ResponsibleInfoSection
         data={responsibleInfo}
-        onChange={setResponsibleInfo}
+        onChange={(e) => {
+          setResponsibleInfo(e);
+          setIsDirty(true);
+        }}
       />
 
       <div className="px-5 w-full flex justify-center">
         <Button
           variant={"blue"}
-          onClick={handleSubmit}
+          onClick={() => {
+            handleFinalSubmit();
+          }}
           className="w-auto text-white py-2 px-5 rounded-md mt-6 mb-8"
-          disabled={mutate.isPending}
+          disabled={mutate.isPending || loadingCreate}
         >
-          {mutate.isPending
+          {mutate.isPending || loadingCreate
             ? "Carregando..."
             : isEditMode
               ? "Atualizar Campanha"
@@ -1769,7 +1917,9 @@ function AudienceSegmentationSection({
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
 
@@ -2287,38 +2437,56 @@ function AudienceSegmentationSection({
         </div>
 
         <div>
-          <label className="block mb-2 text-gray-700 font-semibold">
-            Pretende utilizar o material para tráfego pago (anúncios)?*
-          </label>
-          <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-            <button
-              type="button"
-              onClick={() => handleToggleChange("paidTraffic", false)}
-              className={`flex-1 px-4 py-2 border rounded-md ${
-                data.paidTraffic === false
-                  ? "border-2 border-blue-500 text-blue-500"
-                  : "border-gray-300 text-gray-700"
-              }`}
-            >
-              Não
-            </button>
-            <button
-              type="button"
-              onClick={() => handleToggleChange("paidTraffic", true)}
-              className={`flex-1 px-4 py-2 border rounded-md ${
-                data.paidTraffic === true
-                  ? "border-2 border-blue-500 text-blue-500"
-                  : "border-gray-300 text-gray-700"
-              }`}
-            >
-              Sim
-            </button>
+          <div>
+            <label className="block mb-2 text-gray-700 font-semibold">
+              Pretende utilizar o material para tráfego pago (anúncios)?*
+            </label>
+            <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+              <button
+                type="button"
+                onClick={() => handleToggleChange("paidTraffic", false)}
+                className={`flex-1 px-4 py-2 border rounded-md ${
+                  data.paidTraffic === false
+                    ? "border-2 border-blue-500 text-blue-500"
+                    : "border-gray-300 text-gray-700"
+                }`}
+              >
+                Não
+              </button>
+              <button
+                type="button"
+                onClick={() => handleToggleChange("paidTraffic", true)}
+                className={`flex-1 px-4 py-2 border rounded-md ${
+                  data.paidTraffic === true
+                    ? "border-2 border-blue-500 text-blue-500"
+                    : "border-gray-300 text-gray-700"
+                }`}
+              >
+                Sim
+              </button>
+            </div>
+            <p className="text-gray-500 mt-2">
+              Tráfego pago: Anúncios na Meta Ads, Tiktok Ads, Google ou
+              Ecommerce. Tráfego orgânico: Veicular os conteúdos em qualquer
+              rede social de sua escolha.
+            </p>
           </div>
-          <p className="text-gray-500 mt-2">
-            Tráfego pago: Anúncios na Meta Ads, Tiktok Ads, Google ou Ecommerce.
-            Tráfego orgânico: Veicular os conteúdos em qualquer rede social de
-            sua escolha.
-          </p>
+
+          {data.paidTraffic && (
+            <div>
+              <label className="block mb-2 text-gray-700 font-semibold mt-4">
+                Quais locais será veiculado? Por quantos tempo?*
+              </label>
+
+              <textarea
+                name="paidTrafficInfo"
+                value={data.paidTrafficInfo || ""}
+                onChange={handleInputChange}
+                className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ex: 3 meses, 4 meses"
+              />
+            </div>
+          )}
         </div>
 
         <div>

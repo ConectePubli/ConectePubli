@@ -8,6 +8,7 @@ import { useCampaignStore } from "@/store/useCampaignStore";
 import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
 import Spinner from "@/components/ui/Spinner";
+import { File } from "phosphor-react";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/"
@@ -60,16 +61,27 @@ function Page() {
       <h1 className="font-bold">Minhas Campanhas</h1>
       <p className="mt-2">Visualize todas as suas campanhas ou crie uma.</p>
 
-      <Button
-        className="mt-4"
-        variant={"blue"}
-        onClick={() => {
-          navigate({ to: "/dashboard-marca/criar-campanha/" });
-        }}
-      >
-        <Plus className="mr-2" />
-        Criar Campanha
-      </Button>
+      <div className="w-full flex items-center justify-between flex-wrap max-sm:flex-col max-sm:items-start max-sm:space-y-3">
+        <Button
+          className="mt-4"
+          variant={"blue"}
+          onClick={() => {
+            navigate({ to: "/dashboard-marca/criar-campanha/" });
+          }}
+        >
+          <Plus className="mr-2" />
+          Criar Campanha
+        </Button>
+
+        <Button
+          variant={"orange"}
+          onClick={() => {
+            navigate({ to: "/dashboard-marca/rascunhos/" });
+          }}
+        >
+          <File className="w-5 h-5 mr-2" weight="bold" /> Rascunhos Salvos
+        </Button>
+      </div>
 
       <BrandCampaignFilter
         showSearch={true}
