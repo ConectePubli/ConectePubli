@@ -119,13 +119,11 @@ function Page() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validação adicional
-    if (!formData.knownFrom) {
-      setErrorMessage(
-        "Por favor, selecione como você conheceu a Conecte Publi."
-      );
+    if (!termsAccepted) {
+      setErrorMessage("Você deve aceitar os termos e condições.");
       return;
     }
+
     if (
       (formData.knownFrom === "indAmigos" ||
         formData.knownFrom === "indUsuario" ||
@@ -134,6 +132,14 @@ function Page() {
     ) {
       setErrorMessage(
         "Por favor, especifique como você conheceu a Conecte Publi."
+      );
+      return;
+    }
+
+    // Validação adicional
+    if (!formData.knownFrom) {
+      setErrorMessage(
+        "Por favor, selecione como você conheceu a Conecte Publi."
       );
       return;
     }
@@ -268,6 +274,12 @@ function Page() {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
+                onBlur={() =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    email: prevData.email.toLowerCase(),
+                  }))
+                }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Informe o e-mail de contato da empresa"
                 required
@@ -374,11 +386,12 @@ function Page() {
               </label>
             </div>
 
-            {mutation.isError && (
-              <p className="text-red-500" style={{ fontSize: "0.92rem" }}>
-                {errorMessage}
-              </p>
-            )}
+            {mutation.isError ||
+              (errorMessage && (
+                <p className="text-red-500" style={{ fontSize: "0.92rem" }}>
+                  {errorMessage}
+                </p>
+              ))}
 
             <Button
               variant="blue"

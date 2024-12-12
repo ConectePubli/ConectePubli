@@ -43,7 +43,7 @@ export async function loginWithEmailBrand(email: string, password: string) {
   try {
     const authData = await pb
       .collection("Brands")
-      .authWithPassword(email, password);
+      .authWithPassword(email.toLowerCase(), password);
     return authData;
   } catch (err) {
     pb.handleError(err as PocketBaseError);
@@ -58,7 +58,7 @@ export async function loginWithEmailInfluencer(
   try {
     const authData = await pb
       .collection("Influencers")
-      .authWithPassword(email, password);
+      .authWithPassword(email.toLowerCase(), password);
     return authData;
   } catch (err) {
     pb.handleError(err as PocketBaseError);
