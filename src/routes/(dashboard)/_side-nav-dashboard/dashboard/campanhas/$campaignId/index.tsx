@@ -142,7 +142,7 @@ function CampaignPage() {
         await pb
           .collection("ratings")
           .getFirstListItem(
-            `(from_influencer="${influencerId}" && to_brand="${campaignData.brand} && campaign="${campaignData.id}")`
+            `(from_influencer="${influencerId}" && to_brand="${campaignData.brand}" && campaign="${campaignData.id}")`
           );
         // Caso encontre, o influenciador já avaliou a marca
         setHasRatedBrand(true);
