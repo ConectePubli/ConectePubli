@@ -30,7 +30,7 @@ import Spinner from "@/components/ui/Spinner";
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
 )({
-  beforeLoad: async () => {
+  loader: async ({ params: { userName } }) => {
     const userType = await getUserType();
 
     if (!userType) {
@@ -38,8 +38,7 @@ export const Route = createFileRoute(
         to: "/login123new",
       });
     }
-  },
-  loader: async ({ params: { userName } }) => {
+
     try {
       const brandData = await pb
         .collection<Brand>("brands")
