@@ -132,9 +132,7 @@ const CampaignSubscribeButton: React.FC = () => {
     removeParticipation,
   } = useIndividualCampaignStore();
 
-  const vagasRestantes = campaign?.vagasRestantes;
   const isBrand = user?.collectionName === "Brands";
-  const isVagasEsgotadas = vagasRestantes === 0;
   const isOwner = campaign?.id === user?.id;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -227,17 +225,13 @@ const CampaignSubscribeButton: React.FC = () => {
   if (isBrand || isOwner) {
     // Não renderiza botão
   }
-  // 2. Caso não haja vagas ou status sold_out
-  else if (isVagasEsgotadas || participationStatus === "sold_out") {
-    // Não renderiza botão, e mostra a mensagem abaixo do return
-  }
-  // 3. Caso o usuário não tenha perfil completo
+  // 2. Caso o usuário não tenha perfil completo
   else if (userIsInfluencer && !userProfileIsComplete) {
     buttonText = "Completar Perfil";
     isDisabled = false;
     onClickHandler = navigateToCompleteProfile;
   }
-  // 4. Caso o usuário já esteja inscrito
+  // 3. Caso o usuário já esteja inscrito
   else if (isUserRegistered) {
     // Ajuste o texto com base no status
     switch (participationStatus) {
@@ -258,7 +252,7 @@ const CampaignSubscribeButton: React.FC = () => {
         isDisabled = true;
     }
   }
-  // 5. Caso o usuário possa se inscrever normalmente
+  // 4. Caso o usuário possa se inscrever normalmente
   else {
     buttonText = "Inscrever-se";
     onClickHandler = () => setIsModalOpen(true);
@@ -269,15 +263,6 @@ const CampaignSubscribeButton: React.FC = () => {
   // Caso seja marca ou dono da campanha, não mostra nada
   if (isBrand || isOwner) {
     return null;
-  }
-
-  // Caso as vagas estejam esgotadas ou o status do usuário seja sold_out
-  if (isVagasEsgotadas || participationStatus === "sold_out") {
-    return (
-      <p className="text-[#942A2A] font-semibold">
-        Não há mais vagas disponíveis para essa campanha.
-      </p>
-    );
   }
 
   // Caso usuário não tenha perfil completo

@@ -63,7 +63,7 @@ export const Route = createFileRoute(
       const campaignData = await pb
         .collection<Campaign>("campaigns")
         .getFirstListItem<Campaign>(
-          `unique_name="${campaignId}" && paid=true`,
+          `unique_name="${campaignId}" && status != "draft"`,
           {
             expand: "niche, brand",
           }

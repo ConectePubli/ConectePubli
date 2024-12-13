@@ -6,7 +6,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import { getUserData } from "@/utils/getUserData";
 import { Question } from "phosphor-react";
-import axios from "axios";
 
 import pb from "@/lib/pb";
 
@@ -35,6 +34,7 @@ import { Campaign } from "@/types/Campaign";
 import { Button } from "./button";
 import FloatingHelpButton from "./FloatingHelpButton";
 import { ArrowLeft, File, Save } from "lucide-react";
+import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -79,7 +79,6 @@ interface CampaignData {
 interface CampaignBudget {
   startDate: Date | string;
   endDate: Date | string;
-  influencersCount: number;
   creatorFee: number;
 }
 
@@ -143,7 +142,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   const [campaignBudget, setCampaignBudget] = useState<CampaignBudget>({
     startDate: "",
     endDate: "",
-    influencersCount: 0,
     creatorFee: 0,
   });
 
@@ -212,7 +210,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       setCampaignBudget({
         startDate: initialCampaignData.beginning || "",
         endDate: initialCampaignData.end || "",
-        influencersCount: initialCampaignData.open_jobs || 0,
         creatorFee: initialCampaignData.price || 0,
       });
 
@@ -230,7 +227,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       setInitialCampaignBudgetState({
         startDate: initialCampaignData.beginning || "",
         endDate: initialCampaignData.end || "",
-        influencersCount: initialCampaignData.open_jobs || 0,
         creatorFee: initialCampaignData.price || 0,
       });
       setInitialResponsibleInfoState({
@@ -376,7 +372,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       setCampaignBudget({
         startDate: initialCampaignData.beginning || "",
         endDate: initialCampaignData.end || "",
-        influencersCount: initialCampaignData.open_jobs || 0,
         creatorFee: initialCampaignData.price || 0,
       });
 
@@ -477,7 +472,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             pb,
             isEditMode
           ),
-    onSuccess: async (createdCampaign: Campaign) => {
+    onSuccess: async () => {
       if (isEditMode) {
         toast.success("Campanha atualizada com sucesso!");
         navigate({
@@ -488,32 +483,9 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         toast.success("Campanha criada com sucesso!");
 
         setIsDirty(false);
-
-        const response = await axios.post(
-          `https://conecte-publi.pockethost.io/api/checkout_campaign`,
-          {
-            campaign_id: createdCampaign.id,
-            campaign_name: createdCampaign.name,
-            unit_amount:
-              campaignBudget.influencersCount * campaignBudget.creatorFee * 100,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          const link = await response.data.link;
-          if (link) {
-            window.location.href = link;
-          } else {
-            toast.error("Erro ao iniciar o pagamento. Tente novamente.");
-          }
-        } else {
-          toast.error("Erro ao iniciar o pagamento. Tente novamente.");
-        }
+        navigate({
+          to: "/dashboard-marca",
+        });
       }
     },
     onError: (e) => {
@@ -562,7 +534,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         audio_format: campaignData.audienceSegmentation.audioFormat,
         beginning: campaignBudget.startDate,
         end: campaignBudget.endDate,
-        open_jobs: campaignBudget.influencersCount,
         responsible_name: responsibleInfo.name,
         responsible_email: responsibleInfo.email,
         responsible_phone: responsibleInfo.phone.replace(/\D/g, ""),
@@ -609,106 +580,77 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       try {
         setLoadingCreate(true);
 
-        const response = await axios.post(
-          `https://conecte-publi.pockethost.io/api/checkout_campaign`,
-          {
-            campaign_id: campaignIdDraftState,
-            campaign_name: campaignData.basicInfo.campaignName,
-            unit_amount:
-              campaignBudget.influencersCount * campaignBudget.creatorFee * 100,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
+        let uniqueName = campaignData.basicInfo.campaignName;
 
-        if (response.status === 200) {
-          let uniqueName = campaignData.basicInfo.campaignName;
+        const existingUniqueNames: string[] = await pb
+          .collection("Campaigns")
+          .getFullList<Campaign>({ fields: "unique_name" })
+          .then((campaigns: any) =>
+            campaigns.map((c: { unique_name: any }) => c.unique_name)
+          );
 
-          const existingUniqueNames: string[] = await pb
-            .collection("Campaigns")
-            .getFullList<Campaign>({ fields: "unique_name" })
-            .then((campaigns: any) =>
-              campaigns.map((c: { unique_name: any }) => c.unique_name)
-            );
+        const sanitizedName = campaignData.basicInfo.campaignName
+          .replace(/[^\p{L}\p{N}\s]/gu, "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim()
+          .split(/\s+/);
 
-          const sanitizedName = campaignData.basicInfo.campaignName
-            .replace(/[^\p{L}\p{N}\s]/gu, "")
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .trim()
-            .split(/\s+/);
+        const limitedWords = sanitizedName.slice(0, 5);
 
-          const limitedWords = sanitizedName.slice(0, 5);
+        const baseName = limitedWords.join("_");
 
-          const baseName = limitedWords.join("_");
+        uniqueName = generateUniqueName(baseName, existingUniqueNames);
 
-          uniqueName = generateUniqueName(baseName, existingUniqueNames);
+        const draftData = {
+          name: campaignData.basicInfo.campaignName,
+          price: campaignBudget.creatorFee,
+          brand: brandInfo?.id,
+          objective: campaignData.basicInfo.format,
+          product_url: campaignData.basicInfo.productUrl,
+          cover_img: campaignData.basicInfo.coverImage,
+          briefing: campaignData.basicInfo.briefing,
+          mandatory_deliverables: campaignData.basicInfo.mandatory_deliverables,
+          sending_products_or_services:
+            campaignData.basicInfo.sending_products_or_services,
+          expected_actions: campaignData.basicInfo.expected_actions,
+          avoid_actions: campaignData.basicInfo.avoid_actions,
+          additional_information: campaignData.basicInfo.additional_information,
+          itinerary_suggestion: campaignData.basicInfo.itinerary_suggestion,
+          channels: campaignData.basicInfo.disseminationChannels,
+          niche: campaignData.audienceSegmentation.niche,
+          min_age: campaignData.audienceSegmentation.minAge,
+          max_age: campaignData.audienceSegmentation.maxAge,
+          gender: campaignData.audienceSegmentation.gender,
+          min_followers: campaignData.audienceSegmentation.minFollowers,
+          locality: campaignData.audienceSegmentation.location,
+          min_video_duration:
+            campaignData.audienceSegmentation.videoMinDuration,
+          max_video_duration:
+            campaignData.audienceSegmentation.videoMaxDuration,
+          paid_traffic: campaignData.audienceSegmentation.paidTraffic,
+          paid_traffic_info: campaignData.audienceSegmentation.paidTrafficInfo,
+          audio_format: campaignData.audienceSegmentation.audioFormat,
+          beginning: campaignBudget.startDate,
+          end: campaignBudget.endDate,
+          responsible_name: responsibleInfo.name,
+          responsible_email: responsibleInfo.email,
+          responsible_phone: responsibleInfo.phone.replace(/\D/g, ""),
+          responsible_cpf: responsibleInfo.cpf,
+          status: "ready",
+          unique_name: uniqueName,
+        };
 
-          const draftData = {
-            name: campaignData.basicInfo.campaignName,
-            price: campaignBudget.creatorFee,
-            brand: brandInfo?.id,
-            objective: campaignData.basicInfo.format,
-            product_url: campaignData.basicInfo.productUrl,
-            cover_img: campaignData.basicInfo.coverImage,
-            briefing: campaignData.basicInfo.briefing,
-            mandatory_deliverables:
-              campaignData.basicInfo.mandatory_deliverables,
-            sending_products_or_services:
-              campaignData.basicInfo.sending_products_or_services,
-            expected_actions: campaignData.basicInfo.expected_actions,
-            avoid_actions: campaignData.basicInfo.avoid_actions,
-            additional_information:
-              campaignData.basicInfo.additional_information,
-            itinerary_suggestion: campaignData.basicInfo.itinerary_suggestion,
-            channels: campaignData.basicInfo.disseminationChannels,
-            niche: campaignData.audienceSegmentation.niche,
-            min_age: campaignData.audienceSegmentation.minAge,
-            max_age: campaignData.audienceSegmentation.maxAge,
-            gender: campaignData.audienceSegmentation.gender,
-            min_followers: campaignData.audienceSegmentation.minFollowers,
-            locality: campaignData.audienceSegmentation.location,
-            min_video_duration:
-              campaignData.audienceSegmentation.videoMinDuration,
-            max_video_duration:
-              campaignData.audienceSegmentation.videoMaxDuration,
-            paid_traffic: campaignData.audienceSegmentation.paidTraffic,
-            paid_traffic_info:
-              campaignData.audienceSegmentation.paidTrafficInfo,
-            audio_format: campaignData.audienceSegmentation.audioFormat,
-            beginning: campaignBudget.startDate,
-            end: campaignBudget.endDate,
-            open_jobs: campaignBudget.influencersCount,
-            responsible_name: responsibleInfo.name,
-            responsible_email: responsibleInfo.email,
-            responsible_phone: responsibleInfo.phone.replace(/\D/g, ""),
-            responsible_cpf: responsibleInfo.cpf,
-            status: "draft",
-            unique_name: uniqueName,
-          };
+        await pb
+          .collection("Campaigns")
+          .update(campaignIdDraftState, draftData);
 
-          await pb
-            .collection("Campaigns")
-            .update(campaignIdDraftState, draftData);
-
-          const link = response.data.link;
-          if (link) {
-            window.location.href = link;
-          } else {
-            toast.error("Erro ao iniciar o pagamento. Tente novamente.");
-          }
-        } else {
-          toast.error("Erro ao iniciar o pagamento. Tente novamente.");
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error("Erro ao iniciar o pagamento. Tente novamente.");
-      } finally {
-        setLoadingCreate(false);
+        navigate({
+          to: "/dashboard-marca",
+        });
+      } catch (e) {
+        toast.error("Erro ao salvar campanha: " + e);
       }
     } else {
       handleSubmit(
@@ -830,7 +772,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       <CampaignBudgetSection
         startDate={campaignBudget.startDate}
         endDate={campaignBudget.endDate}
-        influencersCount={campaignBudget.influencersCount}
         creatorFee={campaignBudget.creatorFee}
         onChange={(data) => {
           setCampaignBudget(data);
@@ -853,14 +794,14 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           onClick={() => {
             handleFinalSubmit();
           }}
-          className="w-auto text-white py-2 px-5 rounded-md mt-6 mb-8"
+          className="w-auto min-w-[200px] text-white py-2 px-5 rounded-md mt-6 mb-8"
           disabled={mutate.isPending || loadingCreate}
         >
           {mutate.isPending || loadingCreate
             ? "Carregando..."
             : isEditMode
               ? "Atualizar Campanha"
-              : "Concluir e prosseguir para o pagamento"}
+              : "Criar campanha"}
         </Button>
       </div>
 
@@ -2566,7 +2507,6 @@ function AudienceSegmentationSection({
 type CampaignBudgetSectionProps = {
   startDate: Date | string;
   endDate: Date | string;
-  influencersCount: number;
   creatorFee: number;
   onChange: (data: CampaignBudget) => void;
   isEditMode: boolean;
@@ -2575,7 +2515,6 @@ type CampaignBudgetSectionProps = {
 function CampaignBudgetSection({
   startDate,
   endDate,
-  influencersCount,
   creatorFee,
   onChange,
   isEditMode,
@@ -2587,13 +2526,11 @@ function CampaignBudgetSection({
   // Estados para tooltips
   const [tooltipOpenStartDate, setTooltipOpenStartDate] = useState(false);
   const [tooltipOpenFinalDate, setTooltipOpenFinalDate] = useState(false);
-  const [tooltipOpenOpenJobs, setTooltipOpenOpenJobs] = useState(false);
   const [tooltipOpenPrice, setTooltipOpenPrice] = useState(false);
 
   // Referências para tooltips
   const tooltipRefStartDate = useRef<HTMLDivElement>(null);
   const tooltipRefFinalDate = useRef<HTMLDivElement>(null);
-  const tooltipRefOpenJobs = useRef<HTMLDivElement>(null);
   const tooltipRefPrice = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -2610,13 +2547,6 @@ function CampaignBudgetSection({
         !tooltipRefFinalDate.current.contains(event.target as Node)
       ) {
         setTooltipOpenFinalDate(false);
-      }
-
-      if (
-        tooltipRefOpenJobs.current &&
-        !tooltipRefOpenJobs.current.contains(event.target as Node)
-      ) {
-        setTooltipOpenOpenJobs(false);
       }
 
       if (
@@ -2654,51 +2584,41 @@ function CampaignBudgetSection({
     return `${year}-${month}-${day}`;
   };
 
-  const formatCurrency = (value: number) => {
-    return value.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "creatorFee") {
       const digits = value.replace(/\D/g, "");
-      const numberValue = parseFloat(digits) / 100;
+      const numberValue = parseFloat(digits);
 
-      if (numberValue < 50) {
+      if (numberValue / 100 < 50) {
         setCreatorFeeError("O valor mínimo por criador é R$50,00.");
       } else {
         setCreatorFeeError("");
       }
 
       onChange({
-        ...{ startDate, endDate, influencersCount, creatorFee },
+        ...{ startDate, endDate, creatorFee },
         creatorFee: isNaN(numberValue) ? 0 : numberValue,
       });
     } else if (name === "influencersCount") {
       onChange({
-        ...{ startDate, endDate, influencersCount, creatorFee },
-        influencersCount: Number(value),
+        ...{ startDate, endDate, creatorFee },
       });
     } else if (name === "startDate") {
-      const newStartDate = value; // Use the value directly
+      const newStartDate = value;
       const newEndDate =
         endDate && endDate < newStartDate ? newStartDate : endDate;
 
       onChange({
         startDate: newStartDate,
         endDate: newEndDate,
-        influencersCount,
         creatorFee,
       });
     } else if (name === "endDate") {
       onChange({
         startDate,
-        endDate: value, // Use the value directly
-        influencersCount,
+        endDate: value,
         creatorFee,
       });
     }
@@ -2710,7 +2630,7 @@ function CampaignBudgetSection({
         Período da Campanha e Orçamento
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-2">
         <div>
           <label className="block mb-2 text-gray-700 font-semibold flex items-center">
             Data de Início*
@@ -2799,53 +2719,15 @@ function CampaignBudgetSection({
         </div>
       </div>
 
-      <div className={`px-5 mb-6 ${isEditMode ? "hidden" : ""}`}>
-        <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-          Quantos creators você deseja na campanha?*
-          <div className="relative inline-block">
-            <Question
-              size={18}
-              color="#00f"
-              className="ml-2 min-w-[2rem] cursor-pointer"
-              onClick={() => {
-                setTooltipOpenOpenJobs(!tooltipOpenOpenJobs);
-              }}
-            />
-
-            {tooltipOpenOpenJobs && (
-              <div
-                ref={tooltipRefOpenJobs}
-                className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
-                style={{
-                  top: "100%",
-                  left: "-100%",
-                  transform: "translateX(-80%)",
-                  width: "300px",
-                  marginTop: "0.5rem",
-                }}
-              >
-                <p className="text-gray-700 font-normal">
-                  O número de vagas representa quantos candidatos você irá
-                  aprovar.
-                </p>
-              </div>
-            )}
-          </div>
-        </label>
-        <input
-          type="number"
-          name="influencersCount"
-          value={influencersCount || ""}
-          onChange={handleInputChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Exemplo: 6"
-          min={1}
-          disabled={isEditMode}
-        />
+      <div className="px-5 mb-5">
+        <p className="text-gray-700 font-normal italic">
+          Período da campanha: O prazo máximo estabelecido para que o Creator
+          entregue todo o escopo obrigatório da campanha.
+        </p>
       </div>
 
       <div className={`px-5 mb-3 ${isEditMode ? "hidden" : ""}`}>
-        <label className="block mb-2 text-gray-700 font-semibold flex items-center">
+        <label className="block mb-1 text-gray-700 font-semibold flex items-center">
           Valor por criador*
           <div className="relative inline-block">
             <Question
@@ -2879,10 +2761,17 @@ function CampaignBudgetSection({
             )}
           </div>
         </label>
+        <p className="text-gray-500 text-sm mb-2">
+          Insira o valor que cada criador de conteúdo receberá pela realização
+          das atividades previstas na campanha, independente do número de
+          entregas ou portagens. Valor mínimo: R$50,00 por criador. Esse valor
+          representa o total que cada criador receberá ao concluir sua
+          participação completa na campanha
+        </p>
         <input
           type="text"
           name="creatorFee"
-          value={creatorFee ? formatCurrency(creatorFee) : ""}
+          value={creatorFee ? formatCentsToCurrency(creatorFee) : ""}
           onChange={handleInputChange}
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Exemplo: R$500,00"
@@ -2893,23 +2782,11 @@ function CampaignBudgetSection({
         )}
       </div>
 
-      <div
-        className={`px-5 text-gray-800 font-semibold ${isEditMode ? "hidden" : ""}`}
-      >
-        Orçamento total da campanha:{" "}
-        <span className="text-[#025c02]">
-          {formatCurrency(influencersCount * creatorFee)}
-        </span>
-        .
-      </div>
-
       {!isEditMode && (
-        <p className="px-5 mt-2 text-gray-700">
-          Observação importante: Este valor será pago antes da confirmação final
-          da campanha, garantindo que os fundos estejam reservados. Nota: Caso
-          algum creator não cumpra os requisitos, ou ocorra algum problema
-          comprovado, você poderá receber 100% do reembolso do valor pago a esse
-          creator.
+        <p className="px-5 mt-2 text-gray-700 italic">
+          Nota: Caso algum influenciador não cumpra os requisitos ou ocorra um
+          problema comprovado, você poderá receber 100% do reembolso
+          correspondente ao valor pago por esse influenciador
         </p>
       )}
     </div>

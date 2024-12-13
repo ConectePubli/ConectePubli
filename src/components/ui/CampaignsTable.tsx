@@ -2,28 +2,11 @@ import { useCampaignStore } from "@/store/useCampaignStore";
 import { format } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
 import { formatDateUTC } from "@/utils/formatDateUTC";
-import { CampaignParticipation } from "@/types/Campaign_Participations";
 
 const CampaignsTable: React.FC = () => {
   const { campaigns, isLoading, error } = useCampaignStore();
 
   const navigate = useNavigate();
-
-  const returnOpenJobs = (
-    participations: CampaignParticipation[],
-    openJobs: number
-  ) => {
-    const approvedParticipations = participations.filter(
-      (participation) => participation.status !== "waiting"
-    );
-
-    const restJobs = Math.max(
-      0,
-      (openJobs || 0) - approvedParticipations.length
-    );
-
-    return restJobs;
-  };
 
   return (
     <div>
@@ -35,7 +18,6 @@ const CampaignsTable: React.FC = () => {
             </th>
             <th className="py-3 px-4 text-left whitespace-nowrap">Objetivo</th>
             <th className="py-3 px-4 text-left whitespace-nowrap">Inscritos</th>
-            <th className="py-3 px-4 text-left whitespace-nowrap">Vagas</th>
             <th className="py-3 px-4 text-left whitespace-nowrap">Aprovados</th>
             <th className="py-3 px-4 text-left whitespace-nowrap">
               Início/Fim
@@ -96,13 +78,6 @@ const CampaignsTable: React.FC = () => {
                   </td>
 
                   <td className="py-2 px-4 font-semibold">{inscritos}</td>
-
-                  <td className="py-2 px-4 font-semibold">
-                    {returnOpenJobs(
-                      participations,
-                      (campaign.open_jobs as number) || 0
-                    )}
-                  </td>
 
                   <td className="py-2 px-4 font-semibold">{aprovados}</td>
 

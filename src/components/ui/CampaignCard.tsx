@@ -1,6 +1,6 @@
 import React from "react";
 import { Campaign } from "@/types/Campaign";
-import { Calendar, User, Tag } from "lucide-react";
+import { Calendar, Tag } from "lucide-react";
 import { Coins, Image } from "phosphor-react";
 import pb from "@/lib/pb";
 import SocialNetworks from "@/types/SocialNetworks";
@@ -19,7 +19,6 @@ interface CampaignCardProps {
 const CampaignCard: React.FC<CampaignCardProps> = ({
   campaignData,
   participationStatus,
-  fromMyCampaigns,
 }) => {
   const beginningDate = formatDateUTC(campaignData.beginning);
   const endDate = formatDateUTC(campaignData.end);
@@ -34,6 +33,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
         return "Trabalho Concluído";
       case "sold_out":
         return "Vagas Esgotadas";
+      case "analysing":
+        return "Campanha em análise";
       default:
         return "";
     }
@@ -118,16 +119,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
               {`${formatCentsToCurrency(campaignData.price)}`}
               /pessoa
             </div>
-
-            {!fromMyCampaigns &&
-              JSON.parse(
-                localStorage.getItem("pocketbase_auth") as string
-              )?.model?.id?.includes(campaignData.expand?.brand?.id) && (
-                <div className="flex items-center gap-2 text-gray-500">
-                  <User className="w-5 h-5" />
-                  {campaignData.open_jobs ?? 0} vagas abertas
-                </div>
-              )}
           </div>
 
           {participationStatus && (
@@ -138,12 +129,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
               }}
             >
               Status: {readTextStatus(participationStatus)}
-            </span>
-          )}
-
-          {campaignData.participationStatus === "sold_out" && (
-            <span className="font-semibold text-[#DC3545]">
-              Status: Vagas Esgotadas
             </span>
           )}
         </div>

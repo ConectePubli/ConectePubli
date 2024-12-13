@@ -11,9 +11,22 @@ import pb from "@/lib/pb";
 import { ClientResponseError } from "pocketbase";
 import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
-import { Info, MessageCircle, ThumbsUp, User } from "lucide-react";
+import {
+  Info,
+  LockIcon,
+  MessageCircle,
+  ShoppingBagIcon,
+  ThumbsUp,
+  User,
+} from "lucide-react";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
-import { Flag, Headset, MagnifyingGlassPlus } from "phosphor-react";
+import {
+  Confetti,
+  Flag,
+  Headset,
+  MagnifyingGlassPlus,
+  WhatsappLogo,
+} from "phosphor-react";
 import "react-toastify/ReactToastify.css";
 
 import GoBack from "@/assets/icons/go-back.svg";
@@ -34,6 +47,10 @@ import { toast, ToastContainer } from "react-toastify";
 import { createOrGetChat } from "@/services/chatService";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
 import Spinner from "@/components/ui/Spinner";
+import { formatDateUTC } from "@/utils/formatDateUTC";
+import { parseBrazilianDate } from "@/utils/parseBrDate";
+import { generateCampaignPayment } from "@/services/pagseguro";
+import { isDateAfter } from "@/utils/dateUtils";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -95,7 +112,7 @@ export const Route = createFileRoute(
       trabalhando para resolvê-lo!
     </div>
   ),
-  notFoundComponent: () => <div>Campanha não encontrada</div>,
+  notFoundComponent: () => <div className="p-10">Campanha não encontrada</div>,
 });
 
 function Page() {
@@ -113,6 +130,8 @@ function Page() {
     CampaignParticipation[]
   >(loaderData.campaignParticipations);
 
+  const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
+
   const navigate = useNavigate();
   const [selectedParticipation, setSelectedParticipation] =
     useState<CampaignParticipation | null>(null);
@@ -127,9 +146,9 @@ function Page() {
     | null
   >(null);
   const [hasRatedPlatform, setHasRatedPlatform] = useState(true);
+
   useEffect(() => {
     const checkRating = async () => {
-      console.log("Verificando se o usuário já avaliou a plataforma...");
       const userId = pb.authStore.model?.id;
       if (!userId) return;
 
@@ -142,12 +161,10 @@ function Page() {
 
         if (hasRating) {
           setHasRatedPlatform(true);
-          console.log("Já avaliou a plataforma?", hasRating);
         }
       } catch (error) {
         if (error instanceof ClientResponseError && error.status === 404) {
           // Nenhum rating encontrado, o usuário nunca avaliou a plataforma
-          console.log("Usuário ainda não avaliou a plataforma.");
           setHasRatedPlatform(false);
         } else {
           console.error("Erro ao verificar avaliação da plataforma:", error);
@@ -161,6 +178,7 @@ function Page() {
     if (hasRateParam) {
       checkRating();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasRateParam]);
 
   useEffect(() => {
@@ -303,18 +321,34 @@ function Page() {
     }
   );
 
-  const approvedParticipations = campaignParticipations.filter(
-    (participation) => participation.status !== "waiting"
-  );
+  // DEFINIR PREÇO DA CAMPANHA
+  const approvedParticipationsCount = campaignParticipations.filter(
+    (participation) => participation.status === "approved"
+  ).length;
 
-  const openJobs = Math.max(
-    0,
-    (campaignData?.open_jobs || 0) - approvedParticipations.length
-  );
+  const totalPrice =
+    (Number(campaignData?.price) / 100) * approvedParticipationsCount;
+
+  const formattedPrice = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(totalPrice);
 
   if (error === "not_found" || !campaignData) {
     return <div>Campanha não encontrada</div>;
   }
+
+  const campaignStartDateString = formatDateUTC(campaignData.beginning);
+  const campaignStartDate = parseBrazilianDate(campaignStartDateString);
+  const currentDate = new Date();
+
+  console.log(campaignStartDate);
+  console.log(currentDate);
+
+  const isBlocked =
+    !campaignData.paid &&
+    isDateAfter(currentDate, campaignStartDate) &&
+    approvedParticipationsCount >= 1;
 
   return (
     <div className="flex flex-col gap-4 p-4 max-sm:p-0">
@@ -358,13 +392,8 @@ function Page() {
           </p>
         )}
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4">
-          <div className="flex items-center gap-1 mb-4 sm:mb-0">
-            <User size={20} color="#222" />
-            <span className="text-gray-900">{openJobs} vagas abertas</span>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
-            {/* {campaignData.status !== "ended" && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 max-sm:space-y-2">
+          {/* {campaignData.status !== "ended" && (
               <Button
                 variant="brown"
                 className="bg-transparent text-[#942A2A] border-2 border-[#942A2A] hover:text-white"
@@ -373,17 +402,59 @@ function Page() {
                 Cancelar Campanha
               </Button>
             )} */}
+
+          <Button
+            variant={"blue"}
+            onClick={() =>
+              navigate({
+                to: `/dashboard/campanhas/${campaignData.unique_name}`,
+              })
+            }
+          >
+            Visualizar Campanha
+          </Button>
+
+          {!isBlocked && campaignData.paid === false && (
             <Button
-              variant={"blue"}
-              onClick={() =>
-                navigate({
-                  to: `/dashboard/campanhas/${campaignData.unique_name}`,
-                })
-              }
+              variant={"orange"}
+              className="font-semibold text-white sm:mt-0 sm:ml-4"
+              disabled={loadingPayment}
+              onClick={() => {
+                if (approvedParticipationsCount === 0) {
+                  toast.warn(
+                    "Precisa de no mínimo 1 creator aprovado para realizar o pagamento"
+                  );
+                } else {
+                  generateCampaignPayment(
+                    campaignData.id,
+                    campaignData.name,
+                    Math.round(
+                      (Number(campaignData?.price) / 100) *
+                        approvedParticipationsCount *
+                        100
+                    ),
+                    toast,
+                    setLoadingPayment
+                  );
+                }
+              }}
             >
-              Visualizar Campanha
+              {loadingPayment ? (
+                "Aguarde..."
+              ) : (
+                <>
+                  <ShoppingBagIcon className="w-5 h-5 mr-2" /> Valor a pagar:{" "}
+                  {formattedPrice}
+                </>
+              )}
             </Button>
-          </div>
+          )}
+
+          {campaignData.paid === true && (
+            <Button className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#338B13] hover:text-white transition flex items-center">
+              <Confetti weight="bold" className="w-5 h-5 mr-1" /> Campanha paga
+            </Button>
+          )}
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -437,218 +508,283 @@ function Page() {
         <div className="mt-4">
           <h3 className="font-semibold text-lg">
             {campaignParticipations.length}{" "}
-            {campaignParticipations.length === 1 ? "Inscrito" : "Inscritos"}
+            <span className="text-base text-gray-700">
+              {campaignParticipations.length === 1 ? "Inscrito" : "Inscritos"}
+            </span>{" "}
+            / {approvedParticipationsCount}{" "}
+            <span className="text-base text-gray-700">
+              {approvedParticipationsCount === 1
+                ? "Selecionado"
+                : "Selecionados"}
+            </span>
           </h3>
         </div>
 
-        {campaignParticipations.length === 0 ? (
-          <div className="mt-10 w-full flex flex-col items-center justify-center">
-            <p className="mb-4">
-              Não há creators inscritos nessa campanha no momento.
+        {/* CAMPANHA BLOQUEADA POR FALTA DE PAGAMENTO */}
+        {isBlocked && (
+          <div className="mt-10 p-6 bg-red-100 border border-red-400 text-red-700 rounded-lg flex flex-col items-center">
+            <LockIcon className="w-7 h-7 mb-2" />
+
+            <p className="text-lg mb-4">
+              Campanha bloqueada por falta de pagamento.
             </p>
-            <Button
-              variant={"blue"}
-              onClick={() =>
-                navigate({
-                  to: `/dashboard/campanhas/${campaignData.id}/editar`,
-                })
-              }
-            >
-              Editar Campanha
-            </Button>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                variant={"orange"}
+                className="font-semibold text-white sm:mt-0 sm:ml-4"
+                disabled={loadingPayment}
+                onClick={() => {
+                  generateCampaignPayment(
+                    campaignData.id,
+                    campaignData.name,
+                    Math.round(
+                      (Number(campaignData?.price) / 100) *
+                        approvedParticipationsCount *
+                        100
+                    ),
+                    toast,
+                    setLoadingPayment
+                  );
+                }}
+              >
+                {loadingPayment ? (
+                  "Aguarde..."
+                ) : (
+                  <>
+                    <ShoppingBagIcon className="w-5 h-5 mr-2" /> Valor a pagar:{" "}
+                    {formattedPrice}
+                  </>
+                )}
+              </Button>
+
+              <a
+                href="https://api.whatsapp.com/send?phone=5511913185849"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#008000] text-white rounded-lg flex items-center justify-center px-4 hover:bg-[#026902]"
+              >
+                <WhatsappLogo className="w-5 h-5 mr-1" /> Entrar em contato
+              </a>
+            </div>
           </div>
-        ) : filteredParticipations.length === 0 ? (
-          <div className="mt-10 w-full flex flex-col items-center justify-center">
-            <p className="mb-4">Nenhum resultado para os filtros aplicados.</p>
-            <Button
-              onClick={() => {
-                setSearchName("");
-                setFilterStatus("");
-                setFilterNiche("");
-                setFilterState("");
-              }}
-            >
-              Limpar Filtros
-            </Button>
-          </div>
-        ) : (
-          <div className="mt-6 flex flex-col gap-4">
-            {filteredParticipations.map((participation) => {
-              const influencer = participation.expand?.influencer;
-              if (!influencer) return null;
+        )}
 
-              const createdAt = new Date(participation.created as Date);
-              createdAt.setHours(createdAt.getHours() - 3);
-
-              const dateString = createdAt.toLocaleDateString();
-              const timeString = createdAt.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              });
-
-              const status = participation.status;
-              const proposalText = participation.description || "";
-              const isTextLong = proposalText.length > 100;
-              const displayedText = isTextLong
-                ? proposalText.slice(0, 100) + "..."
-                : proposalText;
-
-              return (
-                <div
-                  key={participation.id}
-                  className="border border-gray-300 rounded-lg p-4 shadow-sm flex flex-col gap-4"
+        {!isBlocked && (
+          <>
+            {campaignParticipations.length === 0 ? (
+              <div className="mt-10 w-full flex flex-col items-center justify-center">
+                <p className="mb-4">
+                  Não há creators inscritos nessa campanha no momento.
+                </p>
+                <Button
+                  variant={"blue"}
+                  onClick={() =>
+                    navigate({
+                      to: `/dashboard/campanhas/${campaignData.id}/editar`,
+                    })
+                  }
                 >
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="flex md:border-r border-gray-300 md:pr-2">
-                      {influencer.profile_img ? (
-                        <img
-                          src={pb.files.getUrl(
-                            influencer,
-                            influencer.profile_img
+                  Editar Campanha
+                </Button>
+              </div>
+            ) : filteredParticipations.length === 0 ? (
+              <div className="mt-10 w-full flex flex-col items-center justify-center">
+                <p className="mb-4">
+                  Nenhum resultado para os filtros aplicados.
+                </p>
+                <Button
+                  onClick={() => {
+                    setSearchName("");
+                    setFilterStatus("");
+                    setFilterNiche("");
+                    setFilterState("");
+                  }}
+                >
+                  Limpar Filtros
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-6 flex flex-col gap-4">
+                {filteredParticipations.map((participation) => {
+                  const influencer = participation.expand?.influencer;
+                  if (!influencer) return null;
+
+                  const createdAt = new Date(participation.created as Date);
+                  createdAt.setHours(createdAt.getHours() - 3);
+
+                  const dateString = createdAt.toLocaleDateString();
+                  const timeString = createdAt.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  });
+
+                  const status = participation.status;
+                  const proposalText = participation.description || "";
+                  const isTextLong = proposalText.length > 100;
+                  const displayedText = isTextLong
+                    ? proposalText.slice(0, 100) + "..."
+                    : proposalText;
+
+                  return (
+                    <div
+                      key={participation.id}
+                      className="border border-gray-300 rounded-lg p-4 shadow-sm flex flex-col gap-4"
+                    >
+                      <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex md:border-r border-gray-300 md:pr-2">
+                          {influencer.profile_img ? (
+                            <img
+                              src={pb.files.getUrl(
+                                influencer,
+                                influencer.profile_img
+                              )}
+                              alt="Foto do Creator"
+                              className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2"
+                            />
+                          ) : (
+                            <div className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
+                              <User size={20} color="#fff" />
+                            </div>
                           )}
-                          alt="Foto do Creator"
-                          className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
-                          <User size={20} color="#fff" />
-                        </div>
-                      )}
-                      <div>
-                        <p className="text-sm">
-                          {dateString} {timeString} / {influencer.state}
-                        </p>
-                        <h3 className="font-semibold text-lg text-gray-900">
-                          {influencer.name}
-                        </h3>
-                        <p
-                          className="text-sm mt-1 font-semibold"
-                          style={{
-                            color: getStatusColor(status),
-                          }}
-                        >
-                          Status:{" "}
-                          {status === "waiting"
-                            ? "Proposta Pendente"
-                            : status === "approved"
-                              ? "Trabalho em Progresso"
-                              : status === "completed"
-                                ? "Trabalho Concluído"
-                                : ""}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <p
-                        className="text-base"
-                        style={!displayedText ? { color: "#777" } : {}}
-                      >
-                        {displayedText || "Sem texto de proposta"}
-                      </p>
-                      {isTextLong && (
-                        <button
-                          className="text-blue-500"
-                          onClick={() => {
-                            setSelectedParticipation(participation);
-                            setModalType("viewProposal");
-                          }}
-                        >
-                          Ver mais
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col md:flex-row items-center md:justify-between border-t-2 pt-5 gap-2">
-                    <div>
-                      {(status === "approved" || status === "completed") &&
-                        campaignData.status !== "ended" && (
-                          <button
-                            className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
-                            onClick={() => {
-                              handleStartChat(
-                                participation.expand?.influencer?.id || "",
-                                participation.expand?.campaign?.brand || ""
-                              );
-                            }}
-                          >
-                            {loadingChat ? (
-                              "Aguarde..."
-                            ) : (
-                              <>
-                                <MessageCircle size={18} className="mr-1" />
-                                Enviar Mensagem
-                              </>
-                            )}
-                          </button>
-                        )}
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        variant={"blue"}
-                        className="text-base"
-                        onClick={() => {
-                          setSelectedParticipation(participation);
-                          setModalType("viewProposal");
-                        }}
-                      >
-                        <MagnifyingGlassPlus size={19} className="mr-1" />{" "}
-                        Visualizar
-                      </Button>
-
-                      {status === "waiting" &&
-                        campaignData.status !== "ended" &&
-                        openJobs >= 1 && (
-                          <Button
-                            variant={"blue"}
-                            className="px-4 py-2 text-base flex items-center"
-                            onClick={() => {
-                              setSelectedParticipation(participation);
-                              setModalType("choose");
-                            }}
-                          >
-                            <ThumbsUp size={19} className="mr-1" />
-                            Escolher para a Campanha
-                          </Button>
-                        )}
-
-                      {status === "approved" && (
-                        <>
-                          <Button
-                            variant={"brown"}
-                            className="px-4 py-2 rounded flex items-center text-base"
-                            onClick={() => {
-                              setSelectedParticipation(participation);
-                              setModalType("contactSupport");
-                            }}
-                          >
-                            <Headset size={18} className="mr-1" />
-                            Contatar Suporte
-                          </Button>
-
-                          {campaignData.status !== "ended" && (
-                            <button
-                              className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
-                              onClick={() => {
-                                setSelectedParticipation(participation);
-                                setModalType("conclude");
+                          <div>
+                            <p className="text-sm">
+                              {dateString} {timeString} / {influencer.state}
+                            </p>
+                            <h3 className="font-semibold text-lg text-gray-900">
+                              {influencer.name}
+                            </h3>
+                            <p
+                              className="text-sm mt-1 font-semibold"
+                              style={{
+                                color: getStatusColor(status),
                               }}
                             >
-                              <Flag size={18} className="mr-1" />
-                              Concluir Colaboração
+                              Status:{" "}
+                              {status === "waiting"
+                                ? "Proposta Pendente"
+                                : status === "approved"
+                                  ? "Trabalho em Progresso"
+                                  : status === "completed"
+                                    ? "Trabalho Concluído"
+                                    : ""}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <p
+                            className="text-base"
+                            style={!displayedText ? { color: "#777" } : {}}
+                          >
+                            {displayedText || "Sem texto de proposta"}
+                          </p>
+                          {isTextLong && (
+                            <button
+                              className="text-blue-500"
+                              onClick={() => {
+                                setSelectedParticipation(participation);
+                                setModalType("viewProposal");
+                              }}
+                            >
+                              Ver mais
                             </button>
                           )}
-                        </>
-                      )}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col md:flex-row items-center md:justify-between border-t-2 pt-5 gap-2">
+                        <div>
+                          {(status === "approved" || status === "completed") &&
+                            campaignData.status !== "ended" &&
+                            campaignData.paid === true && (
+                              <button
+                                className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
+                                onClick={() => {
+                                  handleStartChat(
+                                    participation.expand?.influencer?.id || "",
+                                    participation.expand?.campaign?.brand || ""
+                                  );
+                                }}
+                              >
+                                {loadingChat ? (
+                                  "Aguarde..."
+                                ) : (
+                                  <>
+                                    <MessageCircle size={18} className="mr-1" />
+                                    Enviar Mensagem
+                                  </>
+                                )}
+                              </button>
+                            )}
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            variant={"blue"}
+                            className="text-base"
+                            onClick={() => {
+                              setSelectedParticipation(participation);
+                              setModalType("viewProposal");
+                            }}
+                          >
+                            <MagnifyingGlassPlus size={19} className="mr-1" />{" "}
+                            Visualizar
+                          </Button>
+
+                          {status === "waiting" &&
+                            campaignData.status !== "ended" && (
+                              <Button
+                                variant={"blue"}
+                                className="px-4 py-2 text-base flex items-center"
+                                onClick={() => {
+                                  setSelectedParticipation(participation);
+                                  setModalType("choose");
+                                }}
+                              >
+                                <ThumbsUp size={19} className="mr-1" />
+                                Escolher para a Campanha
+                              </Button>
+                            )}
+
+                          {status === "approved" && (
+                            <>
+                              <Button
+                                variant={"brown"}
+                                className="px-4 py-2 rounded flex items-center text-base"
+                                onClick={() => {
+                                  setSelectedParticipation(participation);
+                                  setModalType("contactSupport");
+                                }}
+                              >
+                                <Headset size={18} className="mr-1" />
+                                Contatar Suporte
+                              </Button>
+
+                              {campaignData.status !== "ended" &&
+                                campaignData.paid === true && (
+                                  <button
+                                    className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
+                                    onClick={() => {
+                                      setSelectedParticipation(participation);
+                                      setModalType("conclude");
+                                    }}
+                                  >
+                                    <Flag size={18} className="mr-1" />
+                                    Concluir Colaboração
+                                  </button>
+                                )}
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
       </div>
 

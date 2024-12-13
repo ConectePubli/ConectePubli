@@ -41,7 +41,6 @@ interface CampaignData {
 interface CampaignBudget {
   startDate: Date | string;
   endDate: Date | string;
-  influencersCount: number;
   creatorFee: number;
 }
 
@@ -76,7 +75,7 @@ export const populateCampaignFormData = (
   isEditMode: boolean
 ) => {
   if (userId) formData.append("brand", userId);
-  formData.append("status", "draft");
+  formData.append("status", "ready");
 
   formData.append("name", campaignData.basicInfo.campaignName);
   if (campaignData.basicInfo.coverImage) {
@@ -165,9 +164,8 @@ export const populateCampaignFormData = (
   // Campaign budget
   formData.append("beginning", campaignBudget.startDate as string);
   formData.append("end", campaignBudget.endDate as string);
-  formData.append("open_jobs", campaignBudget.influencersCount.toString());
   if (!isEditMode) {
-    formData.append("price", (campaignBudget.creatorFee * 100).toString());
+    formData.append("price", campaignBudget.creatorFee.toString());
   }
 
   formData.append("responsible_name", responsibleInfo.name);
@@ -211,8 +209,7 @@ export const validateFields = (
   if (!campaignBudget.startDate)
     missingFields.push("Data de Início da Campanha");
   if (!campaignBudget.endDate) missingFields.push("Data de Fim da Campanha");
-  if (!campaignBudget.influencersCount || campaignBudget.influencersCount <= 0)
-    missingFields.push("Quantidade de Creators");
+
   if (!campaignBudget.creatorFee || campaignBudget.creatorFee <= 0)
     missingFields.push("Valor por Criador");
 
@@ -260,7 +257,7 @@ export const validateFields = (
     return false;
   }
 
-  if (campaignBudget.creatorFee < 50) {
+  if (campaignBudget.creatorFee / 100 < 50) {
     toast.warn("O valor mínimo por criador é R$50,00.");
     return false;
   }
@@ -476,7 +473,6 @@ export const handleSaveDraft = async (
   const formData = new FormData();
   formData.append("brand", user.model.id);
   formData.append("status", "draft");
-  formData.append("price", "0");
   formData.append("name", `Campanha da marca ${brandInfo?.name || ""}`);
 
   // Caso precise de um unique_name também:

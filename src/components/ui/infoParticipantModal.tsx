@@ -156,7 +156,8 @@ const InfoParticipantModal: React.FC<Props> = ({
           </button>
 
           {campaignData.status !== "ended" &&
-            selectedParticipation.status !== "waiting" && (
+            selectedParticipation.status !== "waiting" &&
+            campaignData.paid === true && (
               <button
                 className="flex items-center gap-1 text-gray-700 font-semibold hover:underline"
                 onClick={() => {
@@ -190,7 +191,7 @@ const InfoParticipantModal: React.FC<Props> = ({
           )}
         </div>
 
-        {selectedParticipation.status === "approved" && (
+        {selectedParticipation.status === "approved" && campaignData.paid === true && (
           <>
             <button
               className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center w-[215px]"

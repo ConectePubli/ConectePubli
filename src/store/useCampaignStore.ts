@@ -10,6 +10,9 @@ import {
   NicheFilterType,
 } from "@/types/Filters";
 import { UserAuth } from "@/types/UserAuth";
+import { isDateAfter } from "@/utils/dateUtils";
+import { formatDateUTC } from "@/utils/formatDateUTC";
+import { parseBrazilianDate } from "@/utils/parseBrDate";
 import { create } from "zustand";
 
 const ITEMS_PER_PAGE = 5;
@@ -87,10 +90,10 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
     try {
       const filters: string[] = [];
-      filters.push(`paid=true`);
+      filters.push(`status != "draft"`);
       const currentBrandId = pb.authStore.model?.id;
       if (currentBrandId) {
-        filters.push(`brand = "${currentBrandId}" && paid=true`);
+        filters.push(`brand = "${currentBrandId}" && status != "draft"`);
       } else {
         throw new Error("Brand ID not found in authentication.");
       }
@@ -135,7 +138,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
     try {
       const filters: string[] = [];
-      filters.push(`paid=true`);
+      filters.push(`status != "draft"`);
       if (campaignGoalFilter)
         filters.push(`objective = "${campaignGoalFilter}"`);
       if (searchTerm) filters.push(`name ~ "${searchTerm}"`);
@@ -184,43 +187,28 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
 
           for (const campaign of filteredCampaigns) {
             const userParticipation = participationMap[campaign.id];
-            const approvedCount = approvedCountMap[campaign.id] || 0;
-            const isSoldOut = (campaign.open_jobs || 0) <= approvedCount;
 
-            // Se o participante já está approved/completed (não waiting ou sold_out), remover a campanha
-            if (
-              userParticipation &&
-              userParticipation.status !== "waiting" &&
-              userParticipation.status !== "sold_out"
-            ) {
-              filteredCampaigns = filteredCampaigns.filter(
-                (c) => c.id !== campaign.id
-              );
-              continue;
-            }
-
-            // Se a campanha está sold_out
-            if (isSoldOut) {
-              // Se o participante está waiting, atualizar para sold_out
-              if (userParticipation && userParticipation.status === "waiting") {
-                await pb
-                  .collection("Campaigns_Participations")
-                  .update(userParticipation.id, {
-                    status: "sold_out",
-                  });
-                userParticipation.status = "sold_out";
-                campaign.participationStatus =
-                  ParticipationStatusFilter.Sold_out;
-              } else if (!userParticipation) {
-                campaign.participationStatus =
-                  ParticipationStatusFilter.Sold_out;
-              } else {
-                campaign.participationStatus =
-                  userParticipation.status as ParticipationStatusFilter;
+            if (userParticipation) {
+              // Se o usuário está participando, verificar o status
+              if (
+                userParticipation.status !== "waiting" &&
+                userParticipation.status !== "sold_out"
+              ) {
+                // Remover a campanha se o status não for "waiting" ou "sold_out"
+                filteredCampaigns = filteredCampaigns.filter(
+                  (c) => c.id !== campaign.id
+                );
+                continue;
               }
-            } else if (userParticipation) {
+
+              console.log(userParticipation.status);
+
               campaign.participationStatus =
                 userParticipation.status as ParticipationStatusFilter;
+            } else {
+              // Caso o usuário não esteja participando, definir um status padrão
+              // Por exemplo, "All" ou outro status que faça sentido na sua lógica
+              campaign.participationStatus = ParticipationStatusFilter.All;
             }
           }
         }
@@ -262,7 +250,9 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
         throw new Error("Influencer ID not found");
       }
 
-      filters.push(`influencer = "${user.model.id}" && campaign.paid=true`);
+      filters.push(
+        `influencer = "${user.model.id}" && campaign.status != "draft"`
+      );
       if (campaignGoalFilter)
         filters.push(`campaign.objective ~ "${campaignGoalFilter}"`);
       if (participationStatusFilter)
@@ -283,39 +273,58 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
           participationStatus: item.status,
         }));
 
-      // Contar quantos aprovados/completos há por campanha para checar sold_out
-      const allParticipations = await pb
-        .collection("Campaigns_Participations")
-        .getFullList();
-      const approvedCountMap: Record<string, number> = {};
+      // Obter a data atual
+      const currentDate = new Date();
 
-      allParticipations.forEach((part) => {
-        if (part.status === "approved" || part.status === "completed") {
-          approvedCountMap[part.campaign] =
-            (approvedCountMap[part.campaign] || 0) + 1;
+      // Preparar uma lista de IDs de campanhas únicas
+      const campaignIds = participationsResult.items.map((p) => p.campaign);
+      const uniqueCampaignIds = Array.from(new Set(campaignIds));
+
+      if (uniqueCampaignIds.length === 0) {
+        setCampaigns([]);
+        setTotalPages(1);
+        set({ isLoading: false });
+        return;
+      }
+
+      // Gerar filtro para campanhas aprovadas sem usar "IN"
+      const approvedFilter = uniqueCampaignIds
+        .map((id) => `campaign = "${id}"`)
+        .join(" || ");
+
+      const approvedParticipations = await pb
+        .collection("Campaigns_Participations")
+        .getList(1, 1000, {
+          // Defina um limite adequado
+          filter: `(${approvedFilter}) && status = "approved"`,
+          sort: "-created",
+        });
+
+      // Mapear contagens de participações aprovadas por campanha
+      const approvedCountMap: Record<string, number> = {};
+      uniqueCampaignIds.forEach((id) => {
+        approvedCountMap[id] = 0;
+      });
+      approvedParticipations.items.forEach((p) => {
+        if (approvedCountMap[p.campaign] !== undefined) {
+          approvedCountMap[p.campaign] += 1;
         }
       });
 
-      // Atualizar status de waiting para sold_out se a campanha estiver esgotada
-      for (const camp of mergedCampaigns) {
-        const approvedCount = approvedCountMap[camp.id] || 0;
-        const isSoldOut = (camp.open_jobs || 0) <= approvedCount;
-
-        if (isSoldOut && camp.participationStatus === "waiting") {
-          // Encontrar a participação para atualizar
-          const p = participationsResult.items.find(
-            (i) => i.campaign === camp.id
-          );
-          if (p) {
-            await pb.collection("Campaigns_Participations").update(p.id, {
-              status: "sold_out",
-            });
-            camp.participationStatus = ParticipationStatusFilter.Sold_out;
-          }
+      // Atualizar participationStatus localmente se a campanha estiver bloqueada
+      const updatedCampaigns = mergedCampaigns.map((campaign) => {
+        const approvedCount = approvedCountMap[campaign.id] || 0;
+        const blocked = isCampaignBlocked(campaign, approvedCount, currentDate);
+        if (blocked) {
+          return {
+            ...campaign,
+            participationStatus: ParticipationStatusFilter.Analysing,
+          };
         }
-      }
+        return campaign;
+      });
 
-      setCampaigns(mergedCampaigns);
+      setCampaigns(updatedCampaigns);
       setTotalPages(participationsResult.totalPages);
       set({ isLoading: false });
     } catch (error) {
@@ -339,3 +348,19 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
     });
   },
 }));
+
+export const isCampaignBlocked = (
+  campaign: Campaign,
+  approvedParticipationsCount: number,
+  currentDate: Date
+): boolean => {
+  const campaignStartDate = parseBrazilianDate(
+    formatDateUTC(campaign.beginning)
+  );
+
+  return (
+    !campaign.paid &&
+    isDateAfter(currentDate, campaignStartDate) && // Usando a função auxiliar
+    approvedParticipationsCount >= 1
+  );
+};

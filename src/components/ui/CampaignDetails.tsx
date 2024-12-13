@@ -2,7 +2,6 @@
 import React from "react";
 import TagIcon from "@/assets/icons/tag.svg";
 import Coins from "@/assets/icons/coins.svg";
-import UserIcon from "@/assets/icons/user.svg";
 import Calendar from "@/assets/icons/calendar.svg";
 import SocialNetworks from "@/types/SocialNetworks";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
@@ -103,16 +102,6 @@ const CampaignDetails: React.FC = () => {
             <img src={Coins} alt="Coins" className="w-4 h-4 mr-2" />
             {formatCentsToCurrency(campaign.price)}
             /pessoa
-          </p>
-        )}
-
-        {/* Vagas Restantes */}
-        {JSON.parse(
-          localStorage.getItem("pocketbase_auth") as string
-        )?.model?.id?.includes(campaign.expand?.brand?.id) && (
-          <p className="flex flex-row items-center font-semibold text-black">
-            <img src={UserIcon} alt="User" className="w-4 h-4 mr-2" />
-            Vagas: {campaign.vagasRestantes}
           </p>
         )}
 

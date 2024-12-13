@@ -8,6 +8,8 @@ export const getStatusColor = (type: string) => {
       return "#FFC107"; // Aguardando
     case "sold_out":
       return "#DC3545"; // Vagas esgotadas
+    case "analysing":
+      return "#DC3545"; // Bloqueada
     default:
       return "#000000"; // Cor padrão (preto)
   }

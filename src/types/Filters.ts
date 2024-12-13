@@ -14,13 +14,14 @@ export enum ParticipationStatusFilter {
   Approved = "approved",
   Sold_out = "sold_out",
   Waiting = "waiting",
+  Analysing = "analysing",
 }
 
 export enum CampaignGoalFilter {
   All = "",
   UGC = "UGC",
   IGC = "IGC",
-  Both = "UGC + IGC"
+  Both = "UGC + IGC",
 }
 
 // Create a ChannelFilter object instead of an enum
