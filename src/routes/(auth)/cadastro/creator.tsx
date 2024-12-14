@@ -1,16 +1,16 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
-
 import register_influencer from "@/assets/register-influencer.webp";
-
 import pb from "@/lib/pb";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { validateEmail } from "@/utils/validateEmail";
 import { getUserType } from "@/lib/auth";
+import { ClientResponseError } from "pocketbase";
+import { Eye, EyeOff } from "lucide-react";
 
 export const Route = createFileRoute("/(auth)/cadastro/creator")({
   component: Page,
@@ -37,11 +37,38 @@ function Page() {
     name: "",
     email: "",
     phone: "",
+    storiesPrice: "",
+    feedPrice: "",
+    reelsPrice: "",
+    ugcPrice: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const formatCurrency = (value: string) => {
+    if (!value) return "";
+    const numericValue = parseInt(value, 10);
+    if (isNaN(numericValue)) return "";
+    return (numericValue / 100).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    });
+  };
+
+  const handleCurrencyChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
+    const input = e.target.value;
+    const onlyDigits = input.replace(/\D/g, "");
+    setFormData({ ...formData, [field]: onlyDigits });
+  };
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -55,30 +82,49 @@ function Page() {
         throw new Error("O e-mail inserido não é válido.");
       }
 
-      try {
-        await pb
-          .collection("Influencers_Pre_Registration")
-          .getFirstListItem(`email="${formData.email}"`);
-        setErrorMessage("Este e-mail já está pré-registrado.");
-        throw new Error("Este e-mail já está pré-registrado.");
-      } catch (e) {
-        console.error("Erro ao verificar e-mail:", e);
+      const priceFields = [
+        { value: formData.storiesPrice, label: "stories IGC" },
+        { value: formData.feedPrice, label: "post no feed" },
+        { value: formData.reelsPrice, label: "reels" },
+        { value: formData.ugcPrice, label: "vídeo e combo de fotos UGC" },
+      ];
+
+      for (const field of priceFields) {
+        const numericValue = parseInt(field.value, 10);
+        if (isNaN(numericValue) || numericValue <= 0) {
+          setErrorMessage(
+            `O campo "Quanto você cobra por um ${field.label}?" deve conter um valor numérico positivo.`
+          );
+          throw new Error(`Valor inválido no campo ${field.label}.`);
+        }
       }
 
       const data = {
         name: formData.name,
         email: formData.email,
         cell_phone: formData.phone.replace(/\D/g, ""),
+        stories_price: parseInt(formData.storiesPrice, 10),
+        feed_price: parseInt(formData.feedPrice, 10),
+        reels_price: parseInt(formData.reelsPrice, 10),
+        ugc_price: parseInt(formData.ugcPrice, 10),
+        password: formData.password,
+        passwordConfirm: formData.confirmPassword,
       };
 
-      await pb.collection("Influencers_Pre_Registration").create(data);
+      await pb.collection("Influencers").create(data);
     },
     onSuccess: () => {
-      setShowModal(true);
+      navigate({ to: "/login" });
       setErrorMessage("");
     },
     onError: (error) => {
-      console.log(error);
+      const err = error as ClientResponseError;
+      console.error("Erro ao criar conta de marca:", JSON.stringify(err));
+      if (err.data.data.email.code === "validation_invalid_email") {
+        setErrorMessage("Este e-mail já está em uso ou é inválido.");
+      } else {
+        setErrorMessage(`Ocorreu um erro ao criar a conta. ${err.message}`);
+      }
     },
   });
 
@@ -89,43 +135,41 @@ function Page() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (
+      formData.storiesPrice === "" ||
+      formData.feedPrice === "" ||
+      formData.reelsPrice === "" ||
+      formData.ugcPrice === ""
+    ) {
+      setErrorMessage("Por favor, preencha todos os campos de preço.");
+      return;
+    }
+
+    if (!termsAccepted) {
+      setErrorMessage("Você deve aceitar os termos e condições.");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setErrorMessage("O e-mail inserido não é válido.");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setErrorMessage("A senha precisa ter mais que 8 caracteres.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage("As senhas não coincidem.");
+      return;
+    }
     mutation.mutate();
   };
 
   return (
     <div className="relative">
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-2xl font-bold text-center mb-4 break-words">
-              Bem-vindo{formData.name ? `, ${formData.name}` : ""}!
-            </h2>
-
-            <p className="text-gray-600 text-center mb-6">
-              Seu cadastro foi realizado com sucesso. Em breve liberaremos o
-              Login na plataforma para você entrar de maneira simples e rápida.
-            </p>
-            <Button
-              variant="blue"
-              size="lg"
-              className="w-full"
-              onClick={() => {
-                setShowModal(false);
-                setFormData({
-                  name: "",
-                  email: "",
-                  phone: "",
-                });
-                setTermsAccepted(false);
-              }}
-            >
-              Fechar
-            </Button>
-          </div>
-        </div>
-      )}
-
       <div className="grid lg:grid-cols-2 overflow-hidden items-center min-h-screen">
         <div
           className="hidden lg:block w-full h-full bg-cover bg-center"
@@ -150,6 +194,7 @@ function Page() {
                 htmlFor="influencerName"
               >
                 Nome Completo
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -161,6 +206,7 @@ function Page() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Digite o seu nome completo"
                 maxLength={50}
+                required
               />
             </div>
 
@@ -209,6 +255,141 @@ function Page() {
               />
             </div>
 
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="storiesPrice"
+              >
+                Quanto você cobra por um stories IGC?
+                <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="storiesPrice"
+                value={formatCurrency(formData.storiesPrice)}
+                onChange={(e) => handleCurrencyChange(e, "storiesPrice")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Ex: R$ 50,00"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="feedPrice"
+              >
+                Quanto você cobra por um post no feed?
+                <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="feedPrice"
+                value={formatCurrency(formData.feedPrice)}
+                onChange={(e) => handleCurrencyChange(e, "feedPrice")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Ex: R$ 100,00"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="reelsPrice"
+              >
+                Quanto você cobra por um reels?
+                <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="reelsPrice"
+                value={formatCurrency(formData.reelsPrice)}
+                onChange={(e) => handleCurrencyChange(e, "reelsPrice")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Ex: R$ 150,00"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="ugcPrice"
+              >
+                Quanto você cobra por um vídeo e combo de fotos UGC?
+                <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="ugcPrice"
+                value={formatCurrency(formData.ugcPrice)}
+                onChange={(e) => handleCurrencyChange(e, "ugcPrice")}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Ex: R$ 200,00"
+                required
+              />
+            </div>
+
+            <div className="relative">
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="creatorPassword"
+              >
+                Senha <span className="text-red-500">*</span>
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="creatorPassword"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                className="mt-1 block w-full pr-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Digite sua senha"
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-8 text-gray-500" // Ajuste a posição conforme necessário
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+              >
+                {showPassword ? <EyeOff /> : <Eye />}
+              </button>
+            </div>
+
+            {/* Campo de Confirmar Senha */}
+            <div className="relative">
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="creatorConfirmPassword"
+              >
+                Confirme a Senha <span className="text-red-500">*</span>
+              </label>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="creatorConfirmPassword"
+                value={formData.confirmPassword}
+                onChange={(e) =>
+                  setFormData({ ...formData, confirmPassword: e.target.value })
+                }
+                className="mt-1 block w-full pr-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Confirme sua senha"
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-8 text-gray-500" // Ajuste a posição conforme necessário
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                aria-label={
+                  showConfirmPassword ? "Ocultar senha" : "Mostrar senha"
+                }
+              >
+                {showConfirmPassword ? <EyeOff /> : <Eye />}
+              </button>
+            </div>
+
             <div className="flex items-start">
               <input
                 type="checkbox"
@@ -240,7 +421,7 @@ function Page() {
               </label>
             </div>
 
-            {mutation.isError && (
+            {(mutation.isError || errorMessage) && (
               <p className="text-red-500" style={{ fontSize: "0.92rem" }}>
                 {errorMessage}
               </p>
@@ -252,7 +433,7 @@ function Page() {
               className="w-full"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Enviando..." : "Pré Cadastro Creators"}
+              {mutation.isPending ? "Enviando..." : "Cadastro Creators"}
             </Button>
 
             <div className="text-left">

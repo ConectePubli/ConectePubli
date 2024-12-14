@@ -66,7 +66,7 @@ export const Route = createFileRoute(
       const currentBrandId = pb.authStore.model?.id;
 
       if (!currentBrandId) {
-        throw redirect({ to: "/login123new" });
+        throw redirect({ to: "/login" });
       }
 
       const campaignData = await pb
@@ -107,7 +107,7 @@ export const Route = createFileRoute(
   ),
   component: Page,
   errorComponent: () => (
-    <div>
+    <div className="px-4 py-4 h-full min-w-100 flex items-center justify-center text-center">
       Ocorreu um erro ao carregar essa página. Não se preocupe, estamos
       trabalhando para resolvê-lo!
     </div>
@@ -392,7 +392,7 @@ function Page() {
           </p>
         )}
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-4 max-sm:space-y-2">
+        <div className="flex flex-col sm:flex-row items-start justify-between mt-4 max-sm:space-y-2">
           {/* {campaignData.status !== "ended" && (
               <Button
                 variant="brown"
@@ -415,39 +415,47 @@ function Page() {
           </Button>
 
           {!isBlocked && campaignData.paid === false && (
-            <Button
-              variant={"orange"}
-              className="font-semibold text-white sm:mt-0 sm:ml-4"
-              disabled={loadingPayment}
-              onClick={() => {
-                if (approvedParticipationsCount === 0) {
-                  toast.warn(
-                    "Precisa de no mínimo 1 creator aprovado para realizar o pagamento"
-                  );
-                } else {
-                  generateCampaignPayment(
-                    campaignData.id,
-                    campaignData.name,
-                    Math.round(
-                      (Number(campaignData?.price) / 100) *
-                        approvedParticipationsCount *
-                        100
-                    ),
-                    toast,
-                    setLoadingPayment
-                  );
-                }
-              }}
-            >
-              {loadingPayment ? (
-                "Aguarde..."
-              ) : (
-                <>
-                  <ShoppingBagIcon className="w-5 h-5 mr-2" /> Valor a pagar:{" "}
-                  {formattedPrice}
-                </>
-              )}
-            </Button>
+            <div className="flex flex-col space-y-2 justify-end items-end max-sm:justify-start max-sm:items-start">
+              <Button
+                variant={"orange"}
+                className="font-semibold text-white sm:mt-0 sm:ml-4"
+                disabled={loadingPayment}
+                onClick={() => {
+                  if (approvedParticipationsCount === 0) {
+                    toast.warn(
+                      "Precisa de no mínimo 1 creator aprovado para realizar o pagamento"
+                    );
+                  } else {
+                    generateCampaignPayment(
+                      campaignData.id,
+                      campaignData.name,
+                      Math.round(
+                        (Number(campaignData?.price) / 100) *
+                          approvedParticipationsCount *
+                          100
+                      ),
+                      toast,
+                      setLoadingPayment
+                    );
+                  }
+                }}
+              >
+                {loadingPayment ? (
+                  "Aguarde..."
+                ) : (
+                  <>
+                    <ShoppingBagIcon className="w-5 h-5 mr-2" /> Valor a pagar:{" "}
+                    {formattedPrice}
+                  </>
+                )}
+              </Button>
+
+              <p className="text-sm text-gray-700 max-w-[400px]">
+                Você possui até o dia{" "}
+                <span className="text-black">{formatDateUTC(campaignData.beginning)}</span> para
+                realizar o pagamento e não ter a campanha bloqueada
+              </p>
+            </div>
           )}
 
           {campaignData.paid === true && (

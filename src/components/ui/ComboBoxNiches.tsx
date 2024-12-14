@@ -28,12 +28,14 @@ type ComboboxNichesProps = {
   niches: Niche[];
   selectedNiches?: string[];
   setSelectedNiches: (selectedNiches: string[] | undefined) => void;
+  setIsFormChangedStates?: React.ComponentState;
 };
 
 export function ComboboxNiches({
   niches,
   selectedNiches,
   setSelectedNiches,
+  setIsFormChangedStates,
 }: ComboboxNichesProps) {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -86,11 +88,19 @@ export function ComboboxNiches({
                           (value: string) => value !== currentValue
                         )
                       );
+                      setIsFormChangedStates((prev: React.ComponentState) => ({
+                        ...prev,
+                        basicData: true,
+                      }));
                     } else {
                       setSelectedNiches([
                         ...(selectedNiches || []),
                         currentValue,
                       ]);
+                      setIsFormChangedStates((prev: React.ComponentState) => ({
+                        ...prev,
+                        basicData: true,
+                      }));
                     }
                   }}
                 >

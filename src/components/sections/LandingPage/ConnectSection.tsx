@@ -26,26 +26,25 @@ export const ConnectSection: React.FC = () => {
         <div className="w-full">
           <h2 className="text-3xl font-bold mb-4">Conecte-se!</h2>
           <p className="text-gray-700 mb-4">
-            Ao se cadastrar no pré-lançamento, você garante acesso prioritário a
-            uma plataforma que facilita conexões estratégicas, permitindo que
-            você amplifique seu alcance e maximize seu impacto digital. Além de
-            garantir sua entrada na plataforma sem taxa de adesão!
+            Nossa plataforma está oficialmente disponível para você ampliar seu
+            alcance e maximizar seu impacto digital. Cadastre-se agora e
+            aproveite todos os benefícios, sem taxa de adesão!
           </p>
           <div className="flex flex-col lg:flex-row gap-4 justify-center lg:justify-start">
-            {/* <Button
+            <Button
               variant="orange"
               size="lg"
-              onClick={() => navigate({ to: "/login123new" })}
+              onClick={() => navigate({ to: "/login" })}
             >
               Fazer Login
-            </Button> */}
+            </Button>
             <Button
               variant="blue"
               className="w-fit"
               size="lg"
               onClick={() => navigate({ to: "/cadastro" })}
             >
-              Fazer Pré Cadastro
+              Fazer Cadastro
             </Button>
           </div>
         </div>

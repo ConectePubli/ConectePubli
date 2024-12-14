@@ -62,7 +62,7 @@ export const Route = createFileRoute(
   beforeLoad: async ({ params }) => {
     if (!(await getUserType())) {
       throw redirect({
-        to: "/login123new",
+        to: "/login",
       });
     }
     const { userName } = params;
@@ -369,9 +369,6 @@ function Page() {
         "web_site",
         "niche",
       ]);
-
-      console.log("email");
-      console.log(modifiedFields.email);
 
       if (Object.keys(modifiedFields).length === 0) {
         return;
@@ -728,7 +725,7 @@ function Page() {
           {/* BIO */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-lg font-semibold">Bio</h2>
+              <h2 className="text-lg font-semibold">Sobre nós</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <textarea

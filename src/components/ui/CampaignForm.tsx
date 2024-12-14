@@ -505,6 +505,9 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         ? campaignBudget.creatorFee
         : 0;
 
+      console.log("novo campo");
+      console.log(campaignData.audienceSegmentation.paidTrafficInfo);
+
       const draftData = {
         name: campaignName,
         price: creatorFee,
@@ -2784,9 +2787,16 @@ function CampaignBudgetSection({
 
       {!isEditMode && (
         <p className="px-5 mt-2 text-gray-700 italic">
-          Nota: Caso algum influenciador não cumpra os requisitos ou ocorra um
+          O pagamento da campanha deverá ser realizado somente após a marca
+          selecionar e aprovar todos os creators que deseja incluir na campanha.
+          O valor final será calculado com base na multiplicação do valor
+          definido por creator, informado no campo acima, pelo número de
+          creators aprovados. Após a confirmação do pagamento, a campanha será
+          iniciada conforme o planejamento aprovado. Nota: O pagamento deve ser
+          feito até a data inicial da campanha, caso contrário, será bloqueada e
+          caso algum influenciador não cumpra os requisitos ou ocorra um
           problema comprovado, você poderá receber 100% do reembolso
-          correspondente ao valor pago por esse influenciador
+          correspondente ao valor pago por esse influenciador.
         </p>
       )}
     </div>

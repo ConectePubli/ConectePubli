@@ -1,5 +1,5 @@
 import { useSearch, createFileRoute, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getChatsForUser,
   getChatDetails,
@@ -30,6 +30,9 @@ function ChatPage() {
   });
   const { decrementUnreadConversationsCount } = useMessageStore();
 
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+  const messagesRef = useRef<HTMLDivElement | null>(null);
+
   const [userType, setUserType] = useState<string | null>(null);
   const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
@@ -39,6 +42,25 @@ function ChatPage() {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [unreadChatIds, setUnreadChatIds] = useState<Set<string>>(new Set());
+
+  const scrollToEndBottom = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    if (messagesContainerRef.current && messagesRef.current) {
+      scrollToEndBottom();
+    } else {
+      const timer = setTimeout(() => {
+        scrollToEndBottom();
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messages, loadingChats]);
 
   useEffect(() => {
     async function fetchUserType() {
@@ -366,9 +388,12 @@ function ChatPage() {
               </header>
 
               {/* Mensagens e Input */}
-              <div className="flex flex-col flex-1">
+              <div className="flex flex-col flex-1 overflow-y-auto">
                 {/* Mensagens */}
-                <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
+                <div
+                  className="flex-1 overflow-y-auto p-4 flex flex-col gap-2"
+                  ref={messagesContainerRef}
+                >
                   {loadingMessages ? (
                     <div className="flex justify-center items-center h-full">
                       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#10438F]"></div>
@@ -376,6 +401,7 @@ function ChatPage() {
                   ) : (
                     messages.map((message) => (
                       <div
+                        ref={messagesRef}
                         key={message.id}
                         className={`flex ${
                           (userType === "Brands" && message.brand_sender) ||
@@ -394,7 +420,7 @@ function ChatPage() {
                               : "bg-gray-200"
                           }`}
                         >
-                          <p>{linkify(message.text)}</p>
+                          <p className="break-words">{linkify(message.text)}</p>
                         </div>
                       </div>
                     ))
@@ -477,6 +503,7 @@ function ChatPage() {
 }
 
 export default ChatPage;
+
 function scrollToBottom() {
   const messagesContainer = document.getElementById("messages-container");
   if (messagesContainer) {

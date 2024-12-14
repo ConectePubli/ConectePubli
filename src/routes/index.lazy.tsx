@@ -64,7 +64,7 @@ function Index() {
             </p>
           </div>
         }
-        buttonLabel="Pré cadastro de marcas"
+        buttonLabel="Cadastro Marcas"
         buttonVariant="blue"
         buttonOnClick={() => navigate({ to: "/cadastro/marca" })}
       />
@@ -91,7 +91,7 @@ function Index() {
             </p>
           </div>
         }
-        buttonLabel="Pré cadastro de creators"
+        buttonLabel="Cadastro Creators"
         buttonVariant="orange"
         buttonOnClick={() => navigate({ to: "/cadastro/creator" })}
         reverse
