@@ -29,7 +29,7 @@ export const HeroSection: React.FC = () => {
             Acessar Minha Conta
           </Button>
           <Button variant="blue" onClick={() => navigate({ to: "/cadastro" })}>
-            Faça seu Cadastro
+            Cadastre-se e Comece
           </Button>
         </div>
 

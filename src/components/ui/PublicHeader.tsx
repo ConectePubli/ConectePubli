@@ -16,19 +16,19 @@ export const PublicHeader = () => {
         </Link>
         <div className="gap-2 flex">
           <Button
+            variant="ghost"
+            className="font-semibold"
+            size="default"
+            onClick={() => navigate({ to: "/login" })}
+          >
+            Entrar
+          </Button>
+          <Button
             variant="orange"
             size="default"
             onClick={() => navigate({ to: "/cadastro" })}
           >
             Cadastro
-          </Button>
-          <Button
-            variant="blue"
-            className="font-semibold"
-            size="default"
-            onClick={() => navigate({ to: "/login" })}
-          >
-            Login
           </Button>
         </div>
       </div>
