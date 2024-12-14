@@ -7,13 +7,12 @@ import {
   useMatch,
   redirect,
 } from "@tanstack/react-router";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { CaretDown, CaretUp, Image, Plus, User, X } from "phosphor-react";
 import pb from "@/lib/pb";
 import { UserAuth } from "@/types/UserAuth";
 import { Influencer } from "@/types/Influencer";
 import Spinner from "@/components/ui/Spinner";
-import { Niche } from "@/types/Niche";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -31,6 +30,13 @@ import TwitchIcon from "@/assets/icons/brands/twitch.svg";
 import TwitterIcon from "@/assets/icons/brands/twitter.svg";
 import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
 import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
+import { ComboboxNiches } from "@/components/ui/ComboBoxNiches";
+import { Button } from "@/components/ui/button";
+
+interface Option {
+  value: string;
+  label: string;
+}
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/editar/"
@@ -124,6 +130,11 @@ function InfluencerEditProfilePage() {
     skills: false,
     accountInfo: false,
   });
+
+  // Estados adicionais para nichos
+  const [allNiches, setAllNiches] = useState<Option[]>([]);
+  const [isLoadingNiches, setIsLoadingNiches] = useState<boolean>(false);
+  const [nichesError, setNichesError] = useState<string | null>(null);
 
   function isFieldEmpty(value: any): boolean {
     if (value === undefined || value === null) {
@@ -219,7 +230,6 @@ function InfluencerEditProfilePage() {
           expand: "niche",
         });
 
-        console.log(influencerData);
         if (influencerData.length === 0) {
           navigate({ to: `/creator/${username}` });
           return;
@@ -234,6 +244,12 @@ function InfluencerEditProfilePage() {
 
         if (influencerInfo.birth_date) {
           influencerInfo.birth_date = influencerInfo.birth_date.split(" ")[0];
+        }
+
+        if (influencerInfo.expand?.niche) {
+          influencerInfo.niche = influencerInfo.expand.niche.map(
+            (niche: any) => niche.id
+          );
         }
 
         setInfluencer(influencerInfo);
@@ -260,6 +276,30 @@ function InfluencerEditProfilePage() {
 
     fetchUserAndInfluencer();
   }, [username]);
+
+  // Efeito para buscar todos os nichos disponíveis
+  useEffect(() => {
+    const fetchAllNiches = async () => {
+      setIsLoadingNiches(true);
+
+      try {
+        const nichesData = await pb.collection("niches").getFullList({
+          sort: "-created",
+        });
+        const formattedNiches = nichesData.map((niche: any) => ({
+          value: niche.id,
+          label: niche.niche,
+        }));
+        setAllNiches(formattedNiches);
+        setIsLoadingNiches(false);
+      } catch (error) {
+        console.error("Erro ao buscar nichos:", error);
+        setNichesError("Erro ao carregar nichos.");
+        setIsLoadingNiches(false);
+      }
+    };
+    fetchAllNiches();
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -401,8 +441,8 @@ function InfluencerEditProfilePage() {
           if (formData.bio) {
             updateData["bio"] = formData.bio;
           }
-          if (formData.niche) {
-            updateData["niche"] = formData.niche;
+          if (influencer && influencer.niche) {
+            updateData["niche"] = influencer.niche;
           }
         } else if (section === "about") {
           updateData["name"] = formData.name;
@@ -572,6 +612,11 @@ function InfluencerEditProfilePage() {
           loading={loadingStates.basicData}
           setLoadingStates={setLoadingStates}
           setFormData={setFormData}
+          allNiches={allNiches}
+          isLoadingNiches={isLoadingNiches}
+          nichesError={nichesError}
+          influencer={influencer as Influencer}
+          setInfluencer={setInfluencer}
         />
       </Section>
       <Section
@@ -769,6 +814,11 @@ interface FormProps {
   addressFieldsDisabled?: boolean;
   handleCepChange?: any;
   setLoadingStates: React.ComponentState;
+  allNiches?: Option[];
+  isLoadingNiches?: boolean;
+  nichesError?: string | null;
+  influencer?: Influencer;
+  setInfluencer?: React.ComponentState;
 }
 
 function BasicDataSection({
@@ -778,89 +828,16 @@ function BasicDataSection({
   isFormChanged,
   setIsFormChangedStates,
   loading,
-  setFormData,
+  allNiches = [],
+  isLoadingNiches = false,
+  nichesError = null,
+  influencer,
+  setInfluencer,
 }: FormProps) {
-  const [nicheInput, setNicheInput] = useState("");
-  const [niches, setNiches] = useState(formData?.expand?.niche || []);
-  const [suggestedNiches, setSuggestedNiches] = useState<Niche[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   const handleSectionInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     handleInputChange(e);
-    setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
-  };
-
-  const fetchNiches = async (query: string) => {
-    if (!query) {
-      setSuggestedNiches([]);
-      setIsDropdownOpen(false);
-      return;
-    }
-    try {
-      const response = await pb.collection("Niches").getFullList({
-        filter: `niche ~ "${query}"`,
-        limit: 10,
-      });
-      setSuggestedNiches(response as unknown as Niche[]);
-      setIsDropdownOpen(response.length > 0);
-    } catch (error) {
-      console.error("Erro ao buscar nichos:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (nicheInput) {
-      fetchNiches(nicheInput);
-    } else {
-      setSuggestedNiches([]);
-      setIsDropdownOpen(false);
-    }
-  }, [nicheInput]);
-
-  const addNiche = (niche: Niche) => {
-    if (!niches.some((n: { id: string }) => n.id === niche.id)) {
-      const updatedNiches = [...niches, niche];
-      setNiches(updatedNiches);
-      setFormData((prev: any) => ({
-        ...prev,
-        niche: updatedNiches.map((n) => n.id),
-      }));
-      setNicheInput("");
-      setSuggestedNiches([]);
-      setIsDropdownOpen(false);
-      setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
-
-      console.log("atualizou dados");
-    }
-  };
-
-  const removeNiche = (index: number) => {
-    const updatedNiches = niches.filter((_: any, i: number) => i !== index);
-    setNiches(updatedNiches);
-    setFormData((prev: any) => ({
-      ...prev,
-      niche: updatedNiches.map((n: { id: any }) => n.id),
-    }));
-
     setIsFormChangedStates((prev: any) => ({ ...prev, basicData: true }));
   };
 
@@ -939,54 +916,59 @@ function BasicDataSection({
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Nicho
-        </label>
-        <div className="relative" ref={dropdownRef}>
-          <input
-            type="text"
-            placeholder="Digite para buscar nichos"
-            value={nicheInput}
-            onChange={(e) => setNicheInput(e.target.value)}
-            className="border border-gray-300 p-2 rounded-lg w-full"
-          />
+      <div className="mt-6">
+        <div className="flex flex-row items-center mb-2">
+          <h2 className="text-sm font-semibold">Nicho</h2>
+          <p className="text-[#10438F] text-lg">*</p>
+        </div>
 
-          {isDropdownOpen && suggestedNiches.length > 0 && (
-            <div className="absolute bg-white border border-gray-300 rounded-lg mt-1 max-h-40 w-full overflow-y-auto shadow-lg z-10">
-              {suggestedNiches.map((niche) => (
-                <div
-                  key={niche.id}
-                  onClick={() => addNiche(niche)}
-                  className="p-2 hover:bg-blue-100 cursor-pointer"
+        {isLoadingNiches ? (
+          <div className="flex items-center justify-center w-full p-3 border rounded-md">
+            <p className="text-gray-500 text-center">Carregando nichos...</p>
+            <p className="text-xs text-gray-500">
+              * É necessário salvar as alterações de cada seção para que elas
+              sejam aplicadas.
+            </p>
+          </div>
+        ) : nichesError ? (
+          <p className="text-red-500">{nichesError}</p>
+        ) : (
+          <>
+            <ComboboxNiches
+              niches={allNiches}
+              selectedNiches={influencer?.niche || []}
+              setSelectedNiches={(selected) => {
+                setInfluencer({ ...influencer, niche: selected });
+              }}
+              setIsFormChangedStates={setIsFormChangedStates}
+            />
+
+            <div className="mt-2 flex flex-wrap gap-2 mb-8">
+              {influencer?.niche?.map((value) => (
+                <Button
+                  key={value}
+                  variant="blue"
+                  className="flex items-center gap-2 sm:max-w-sm"
+                  onClick={() => {
+                    setInfluencer({
+                      ...influencer,
+                      niche: influencer?.niche?.filter((f) => f !== value),
+                    });
+                    setIsFormChangedStates((prev: React.ComponentState) => ({
+                      ...prev,
+                      basicData: true,
+                    }));
+                  }}
                 >
-                  {niche.niche}
-                </div>
+                  <span className="flex-1 min-w-0 truncate">
+                    {allNiches.find((f) => f.value === value)?.label}
+                  </span>
+                  <span className="ml-1 flex-shrink-0">&times;</span>
+                </Button>
               ))}
             </div>
-          )}
-        </div>
-
-        <div className="flex flex-wrap gap-2 mt-3">
-          {niches.length > 0 ? (
-            niches.map((niche: Niche, index: number) => (
-              <div
-                key={niche.id}
-                className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-              >
-                {niche.niche}
-                <button
-                  onClick={() => removeNiche(index)}
-                  className="ml-2 text-red-500"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">Nenhum nicho adicionado</p>
-          )}
-        </div>
+          </>
+        )}
       </div>
 
       <button

@@ -357,7 +357,7 @@ function InfluencerProfilePage() {
           })}
         </div>
 
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap space-x-3">
           {/* MEDIA KIT LINK */}
           <div
             className={`mt-4 sm-medium:gap-2 ${influencer.media_kit_url ? "gap-3" : ""}`}

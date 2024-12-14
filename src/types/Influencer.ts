@@ -47,7 +47,7 @@ export interface Influencer {
   pinterest_url: string;
   pinterest_followers_number: string;
   languages: string[] | null;
-  niche: Niche[];
+  niche: string[];
   account_type: string;
   gender: string;
   verified: boolean;

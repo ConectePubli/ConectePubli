@@ -31,7 +31,7 @@ export const Route = createFileRoute(
 )({
   component: CampaignPage,
   errorComponent: () => (
-    <div>
+    <div className="px-4 py-4 h-full min-w-100 flex items-center justify-center text-center">
       Ocorreu um erro ao carregar a página. Por favor, tente novamente mais
       tarde.
     </div>
@@ -237,7 +237,7 @@ function CampaignPage() {
       <div className="text-center xl:text-left">
         <h1 className="text-lg xl:text-2xl font-bold">{campaign?.name}</h1>
       </div>
-      <div className="grid xl:grid-cols-2 xl:gap-4 mt-4">
+      <div className="grid xl:grid-cols-2 xl:gap-4 mt-4 max-sm:grid-cols-1">
         {/* Coluna esquerda - Tipo e Inscrição */}
         <div className="space-y-4">
           <CampaignDetails />
@@ -282,13 +282,13 @@ function CampaignPage() {
 
             {/* External Link */}
             {campaign?.product_url && (
-              <p className="mt-4 flex flex-wrap gap-2 font-medium">
+              <p className="mt-4 flex flex-wrap gap-2 font-medium break-words">
                 Link Relevante da Campanha:
                 <a
                   href={campaign?.product_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600"
+                  className="text-blue-600 break-all"
                 >
                   {campaign?.product_url}
                 </a>
@@ -321,6 +321,16 @@ function CampaignPage() {
               <p className="text-black">
                 Compartilhado nas redes sociais da marca com tráfego pago
               </p>
+            )}
+
+            {campaign?.paid_traffic && campaign.paid_traffic_info && (
+              <>
+                <h2 className="font-bold mt-4 mb-2">
+                  Quais locais será veiculado? Por quanto tempo?
+                </h2>
+
+                <FormattedText text={campaignData.paid_traffic_info || ""} />
+              </>
             )}
           </div>
 

@@ -330,7 +330,7 @@ function Page() {
 
         {/* BIOGRAFIA*/}
         <div className="mt-4 px-4">
-          <h2 className="text-lg font-bold">Biografia</h2>
+          <h2 className="text-lg font-bold">Sobre nós</h2>
           <p className="text-black text-md mt-2 break-all">
             {brand?.bio || "Biografia não informada."}
           </p>
