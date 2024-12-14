@@ -18,7 +18,7 @@ export const Route = createFileRoute(
 
     if (!userType) {
       throw redirect({
-        to: "/login123new",
+        to: "/login",
       });
     } else if (userType !== "Influencers") {
       throw redirect({

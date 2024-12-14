@@ -14,13 +14,23 @@ export const PublicHeader = () => {
         <Link to="/">
           <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
         </Link>
-        <Button
-          variant="orange"
-          size="default"
-          onClick={() => navigate({ to: "/cadastro" })}
-        >
-          Fazer Pré Cadastro
-        </Button>
+        <div className="gap-2 flex">
+          <Button
+            variant="orange"
+            size="default"
+            onClick={() => navigate({ to: "/cadastro" })}
+          >
+            Cadastro
+          </Button>
+          <Button
+            variant="blue"
+            className="font-semibold"
+            size="default"
+            onClick={() => navigate({ to: "/login" })}
+          >
+            Login
+          </Button>
+        </div>
       </div>
     </header>
   );

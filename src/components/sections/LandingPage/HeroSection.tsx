@@ -25,11 +25,11 @@ export const HeroSection: React.FC = () => {
         </p>
 
         <div className="flex gap-4">
-          {/* <Button variant="orange" onClick={() => navigate({ to: "/login123new" })}>
+          <Button variant="orange" onClick={() => navigate({ to: "/login" })}>
             Acessar Minha Conta
-          </Button> */}
+          </Button>
           <Button variant="blue" onClick={() => navigate({ to: "/cadastro" })}>
-            Faça seu Pré Cadastro
+            Faça seu Cadastro
           </Button>
         </div>
 
