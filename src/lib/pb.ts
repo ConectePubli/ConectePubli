@@ -24,7 +24,7 @@ class CustomPocketBase extends PocketBase {
   logout(redirect = true) {
     this.authStore.clear();
     if (redirect) {
-      window.location.replace("/login123new");
+      window.location.replace("/login");
     }
   }
 

@@ -18,6 +18,8 @@ import pb from "@/lib/pb";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { validateEmail } from "@/utils/validateEmail";
 import { getUserType } from "@/lib/auth";
+import { Eye, EyeOff } from "lucide-react";
+import { ClientResponseError } from "pocketbase";
 
 export const Route = createFileRoute("/(auth)/cadastro/marca")({
   component: Page,
@@ -45,6 +47,8 @@ interface Data {
   phone: string;
   knownFrom: string;
   knownFromDetails: string;
+  password: string;
+  confirmPassword: string;
 }
 
 function Page() {
@@ -57,11 +61,14 @@ function Page() {
     phone: "",
     knownFrom: "",
     knownFromDetails: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -75,22 +82,6 @@ function Page() {
         throw new Error("O e-mail inserido não é válido.");
       }
 
-      try {
-        await pb
-          .collection("Brands_Pre_Registration")
-          .getFirstListItem(`email="${formData.email}"`);
-        setErrorMessage("Este e-mail já está pré-registrado.");
-        throw new Error("Este e-mail já está pré-registrado.");
-      } catch (e) {
-        if (
-          e instanceof Error &&
-          e.message !== "Este e-mail já está pré-registrado."
-        ) {
-          console.error("Erro ao verificar e-mail:", e);
-        }
-        // Ignorar erro 404 (email não pré-registrado)
-      }
-
       const data = {
         name: formData.name,
         responsible_name: formData.responsible_name,
@@ -98,16 +89,25 @@ function Page() {
         cell_phone: formData.phone.replace(/\D/g, ""),
         known_from: formData.knownFrom,
         known_from_details: formData.knownFromDetails,
+        password: formData.password,
+        passwordConfirm: formData.confirmPassword,
       };
 
-      await pb.collection("Brands_Pre_Registration").create(data);
+      await pb.collection("Brands").create(data);
     },
     onSuccess: () => {
-      setShowModal(true);
+      navigate({ to: "/login" });
       setErrorMessage("");
     },
     onError: (error) => {
-      console.log(error);
+      const err = error as ClientResponseError;
+      console.error("Erro ao criar conta de marca:", JSON.stringify(err));
+      if (err.data.data.email.code === "validation_invalid_email") {
+        setErrorMessage("Este e-mail já está em uso ou é inválido.");
+      } else {
+        setErrorMessage(`Ocorreu um erro ao criar a conta. ${err.message}`);
+      }
+      mutation.reset();
     },
   });
 
@@ -133,6 +133,16 @@ function Page() {
       setErrorMessage(
         "Por favor, especifique como você conheceu a Conecte Publi."
       );
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setErrorMessage("A senha precisa ter mais que 8 caracteres.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage("As senhas não coincidem.");
       return;
     }
 
@@ -167,40 +177,6 @@ function Page() {
 
   return (
     <div className="relative">
-      {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-2xl font-bold text-center mb-4 break-words">
-              Bem-vindo{formData.name ? `, ${formData.name}` : ""}!
-            </h2>
-            <p className="text-gray-600 text-center mb-6">
-              Seu cadastro foi realizado com sucesso. Em breve liberaremos o
-              Login na plataforma para você entrar de maneira simples e rápida.
-            </p>
-            <Button
-              variant="blue"
-              size="lg"
-              className="w-full"
-              onClick={() => {
-                setShowModal(false);
-                setFormData({
-                  name: "",
-                  email: "",
-                  responsible_name: "",
-                  phone: "",
-                  knownFrom: "",
-                  knownFromDetails: "",
-                });
-                setTermsAccepted(false);
-              }}
-            >
-              Fechar
-            </Button>
-          </div>
-        </div>
-      )}
-
       <div className="grid lg:grid-cols-2 overflow-hidden items-center min-h-screen">
         <div
           className="hidden lg:block w-full h-full bg-cover bg-center"
@@ -225,6 +201,7 @@ function Page() {
                 htmlFor="brandName"
               >
                 Nome da Marca/Empresa
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -236,6 +213,7 @@ function Page() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Digite o nome da sua marca ou empresa"
                 maxLength={50}
+                required
               />
             </div>
 
@@ -245,6 +223,7 @@ function Page() {
                 htmlFor="responsibleName"
               >
                 Nome do Responsável
+                <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -256,6 +235,7 @@ function Page() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Nome do responsável da marca ou empresa"
                 maxLength={50}
+                required
               />
             </div>
 
@@ -339,6 +319,7 @@ function Page() {
                 <div className="mt-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Especifique:
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -351,9 +332,71 @@ function Page() {
                     }
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     placeholder="Forneça mais detalhes"
+                    required
                   />
                 </div>
               )}
+            </div>
+
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="password"
+              >
+                Senha <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Digite sua senha"
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-2 text-sm text-gray-500"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label
+                className="block text-sm font-medium text-gray-700"
+                htmlFor="confirmPassword"
+              >
+                Confirme a Senha <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Confirme sua senha"
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-2 text-sm text-gray-500"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                >
+                  {showConfirmPassword ? <EyeOff /> : <Eye />}
+                </button>
+              </div>
             </div>
 
             <div className="flex items-start">
@@ -399,7 +442,7 @@ function Page() {
               className="w-full"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Enviando..." : "Pré-Cadastro Marcas"}
+              {mutation.isPending ? "Enviando..." : "Cadastro Marcas"}
             </Button>
 
             <div className="text-left">

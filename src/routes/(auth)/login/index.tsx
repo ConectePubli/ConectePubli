@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Link, redirect } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 
 import logo from "@/assets/logo.svg";
@@ -12,32 +12,10 @@ import loginImage from "@/assets/login.webp";
 import pb from "@/lib/pb";
 import { getUserType } from "@/lib/auth";
 
-interface PreRegister {
-  id: string;
-  name: string;
-  email: string;
-  cell_phone: string;
-  responsible_name?: string;
-}
-
-interface BaseBody {
-  email: string;
-  name?: string;
-  cell_phone?: string;
-  password: string;
-  passwordConfirm: string;
-}
-
-interface BrandBody extends BaseBody {
-  responsible_name: string;
-}
-
-export const Route = createFileRoute("/(auth)/login123new/")({
+export const Route = createFileRoute("/(auth)/login/")({
   component: Page,
   beforeLoad: async () => {
     const userType = await getUserType();
-
-    console.log(userType);
 
     if (userType === "Brands") {
       throw redirect({
@@ -54,73 +32,19 @@ export const Route = createFileRoute("/(auth)/login123new/")({
 function Page() {
   const navigate = useNavigate();
 
-  // States for form data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Visibility and logic controls
   const [showPassword, setShowPassword] = useState(false);
-  const [isPreRegistered, setIsPreRegistered] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loginType, setLoginType] = useState<"brand" | "influencer">("brand");
 
-  // Pre registration
-  const [dataPreRegister, setDataPreRegister] = useState<PreRegister>({
-    id: "",
-    name: "",
-    email: "",
-    cell_phone: "",
-    responsible_name: "",
-  });
-
-  // Mutation for handling login and registration logic
   const mutation = useMutation({
     mutationFn: async () => {
       const collection = loginType === "brand" ? "Brands" : "Influencers";
-      if (isPreRegistered) {
-        if (password !== confirmPassword) {
-          throw new Error("As senhas não coincidem.");
-        }
-        if (password.length < 8) {
-          throw new Error("A senha deve ter pelo menos 8 caracteres.");
-        }
-
-        console.log(dataPreRegister);
-
-        const body: BaseBody | BrandBody = {
-          email,
-          password,
-          passwordConfirm: confirmPassword,
-        };
-
-        if (dataPreRegister.name) {
-          body.name = dataPreRegister.name;
-        }
-
-        if (dataPreRegister.cell_phone) {
-          body.cell_phone = dataPreRegister.cell_phone;
-        }
-
-        if (collection === "Brands") {
-          (body as BrandBody).responsible_name =
-            dataPreRegister.responsible_name!;
-        }
-
-        await pb.collection(collection).create(body);
-        await pb
-          .collection(collection)
-          .authWithPassword(email.toLowerCase(), password);
-        const preRegCollection =
-          loginType === "brand"
-            ? "Brands_Pre_Registration"
-            : "Influencers_Pre_Registration";
-        await pb.collection(preRegCollection).delete(dataPreRegister.id);
-      } else {
-        await pb
-          .collection(collection)
-          .authWithPassword(email.toLowerCase(), password);
-      }
+      await pb
+        .collection(collection)
+        .authWithPassword(email.toLowerCase(), password);
     },
     onSuccess: () => {
       navigate({ to: "/dashboard" });
@@ -133,35 +57,6 @@ function Page() {
       }
     },
   });
-
-  const checkPreRegistration = async () => {
-    if (email) {
-      try {
-        const collection =
-          loginType === "brand"
-            ? "Brands_Pre_Registration"
-            : "Influencers_Pre_Registration";
-        const preRegistration = await pb
-          .collection(collection)
-          .getFirstListItem(`email="${email}"`);
-        if (preRegistration) {
-          setIsPreRegistered(true);
-        } else {
-          setIsPreRegistered(false);
-        }
-
-        setDataPreRegister(preRegistration as unknown as PreRegister);
-      } catch (e) {
-        console.log(`error check pre-register: ${e}`);
-        setIsPreRegistered(false);
-      }
-    }
-  };
-
-  // Call checkPreRegistration when the user focuses on the password field
-  const handlePasswordFocus = () => {
-    checkPreRegistration();
-  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -234,13 +129,6 @@ function Page() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="Informe o e-mail"
               />
-
-              {/* Helper Text for Pre-registered Users */}
-              <p className="text-sm text-gray-500 mt-2">
-                Para usuários pré-cadastrados: O cadastramento já está aberto!
-                Use o e-mail do pré-cadastro para criar sua senha e finalizar
-                seu perfil.
-              </p>
             </div>
 
             <div>
@@ -255,7 +143,6 @@ function Page() {
                   type={showPassword ? "text" : "password"}
                   id="senha"
                   value={password}
-                  onFocus={handlePasswordFocus}
                   onChange={(e) => setPassword(e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   placeholder="Informe a senha"
@@ -272,27 +159,6 @@ function Page() {
                 </span>
               </div>
             </div>
-
-            {isPreRegistered && (
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="confirm-senha"
-                >
-                  Confirmar Senha
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    id="confirm-senha"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder="Confirme a senha"
-                  />
-                </div>
-              </div>
-            )}
 
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
@@ -312,12 +178,8 @@ function Page() {
               disabled={mutation.isPending}
             >
               {mutation.isPending
-                ? isPreRegistered
-                  ? "Cadastrando..."
-                  : "Entrando..."
-                : isPreRegistered
-                  ? "Cadastrar"
-                  : `Entrar como ${loginType === "brand" ? "Marca" : "Creator"}`}
+                ? "Entrando..."
+                : `Entrar como ${loginType === "brand" ? "Marca" : "Creator"}`}
             </Button>
 
             <div className="text-center">

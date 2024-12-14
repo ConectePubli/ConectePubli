@@ -66,7 +66,7 @@ export const Route = createFileRoute(
       const currentBrandId = pb.authStore.model?.id;
 
       if (!currentBrandId) {
-        throw redirect({ to: "/login123new" });
+        throw redirect({ to: "/login" });
       }
 
       const campaignData = await pb

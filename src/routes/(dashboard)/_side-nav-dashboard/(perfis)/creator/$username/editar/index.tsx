@@ -39,7 +39,7 @@ export const Route = createFileRoute(
   beforeLoad: async () => {
     if (!(await getUserType())) {
       throw redirect({
-        to: "/login123new",
+        to: "/login",
       });
     }
   },

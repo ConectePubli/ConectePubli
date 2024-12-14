@@ -92,7 +92,7 @@ function Page() {
               </p>
               <a
                 className="underline text-customLinkBlue text-sm cursor-pointer"
-                onClick={() => navigate({ to: "/login123new" })}
+                onClick={() => navigate({ to: "/login" })}
               >
                 Voltar para a página de login
               </a>
@@ -143,7 +143,7 @@ function Page() {
                 <div className="text-left">
                   <a
                     className="text-customLinkBlue underline text-sm cursor-pointer"
-                    onClick={() => navigate({ to: "/login123new" })}
+                    onClick={() => navigate({ to: "/login" })}
                   >
                     Voltar para a página de login
                   </a>
