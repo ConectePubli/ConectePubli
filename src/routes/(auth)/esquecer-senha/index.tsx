@@ -18,7 +18,7 @@ function Page() {
   const [userType, setUserType] = useState<"brands" | "influencers">(
     "influencers"
   );
-  const [successMessage, setSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
   const mutation = useMutation({
@@ -87,8 +87,8 @@ function Page() {
               <p className="text-gray-600 mb-4">
                 Clique no link enviado para o e-mail <strong>{email}</strong>.
               </p>
-              <p className="text-gray-600 mb-6">
-                Atenção: O e-mail pode cair na caixa de spam ou lixeira.
+              <p className="text-red-500 font-semibold mb-6">
+                Atenção: Caso não receba o e-mail, verifique sua caixa de spam ou lixeira.
               </p>
               <a
                 className="underline text-customLinkBlue text-sm cursor-pointer"
