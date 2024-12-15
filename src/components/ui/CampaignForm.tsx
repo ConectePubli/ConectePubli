@@ -459,8 +459,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             campaignData,
             campaignBudget,
             responsibleInfo,
-            toast,
-            isEditMode
+            toast
           )
       : () =>
           createCampaign(
@@ -469,8 +468,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             campaignBudget,
             responsibleInfo,
             toast,
-            pb,
-            isEditMode
+            pb
           ),
     onSuccess: async () => {
       if (isEditMode) {
@@ -660,10 +658,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         campaignData,
         campaignBudget,
         responsibleInfo,
-        isEditMode,
         toast,
-        initialCampaignData as Campaign,
-        setCampaignBudget,
         mutate
       );
     }
@@ -2629,6 +2624,7 @@ function CampaignBudgetSection({
 
   return (
     <div className="w-full mt-8">
+      <button onClick={() => console.log(creatorFee)}>teste</button>
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
         Período da Campanha e Orçamento
       </h2>
@@ -2729,7 +2725,7 @@ function CampaignBudgetSection({
         </p>
       </div>
 
-      <div className={`px-5 mb-3 ${isEditMode ? "hidden" : ""}`}>
+      <div className="px-5 mb-3">
         <label className="block mb-1 text-gray-700 font-semibold flex items-center">
           Valor por criador*
           <div className="relative inline-block">
@@ -2778,7 +2774,6 @@ function CampaignBudgetSection({
           onChange={handleInputChange}
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Exemplo: R$500,00"
-          disabled={isEditMode}
         />
         {creatorFeeError && creatorFee !== 0 && (
           <p className="text-red-500 text-sm mt-2">{creatorFeeError}</p>
