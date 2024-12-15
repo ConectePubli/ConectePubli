@@ -6,7 +6,7 @@ import { getUserData } from "@/utils/getUserData";
 import { isValidEmail } from "@/utils/isValidEmail";
 import { isValidURL } from "@/utils/isValidUrl";
 import { Brand } from "@/types/Brand";
-import React from "react";
+import * as React from "react"
 
 interface CampaignData {
   basicInfo: {
@@ -164,9 +164,9 @@ export const populateCampaignFormData = (
   // Campaign budget
   formData.append("beginning", campaignBudget.startDate as string);
   formData.append("end", campaignBudget.endDate as string);
-  if (!isEditMode) {
+
     formData.append("price", campaignBudget.creatorFee.toString());
-  }
+  
 
   formData.append("responsible_name", responsibleInfo.name);
   formData.append("responsible_email", responsibleInfo.email);
