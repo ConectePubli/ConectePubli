@@ -450,11 +450,15 @@ function Page() {
                 )}
               </Button>
 
-              <p className="text-sm text-gray-700 max-w-[400px]">
-                Você possui até o dia{" "}
-                <span className="text-black">{formatDateUTC(campaignData.beginning)}</span> para
-                realizar o pagamento e não ter a campanha bloqueada
-              </p>
+              {approvedParticipationsCount >= 1 && (
+                <p className="text-sm text-gray-700 max-w-[400px]">
+                  Você possui até o dia{" "}
+                  <span className="text-black">
+                    {formatDateUTC(campaignData.beginning)}
+                  </span>{" "}
+                  para realizar o pagamento e não ter a campanha bloqueada
+                </p>
+              )}
             </div>
           )}
 

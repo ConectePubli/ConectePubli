@@ -6,7 +6,7 @@ import { getUserData } from "@/utils/getUserData";
 import { isValidEmail } from "@/utils/isValidEmail";
 import { isValidURL } from "@/utils/isValidUrl";
 import { Brand } from "@/types/Brand";
-import * as React from "react"
+import * as React from "react";
 
 interface CampaignData {
   basicInfo: {
@@ -71,8 +71,7 @@ export const populateCampaignFormData = (
   campaignData: CampaignData,
   campaignBudget: CampaignBudget,
   responsibleInfo: ResponsibleInfo,
-  userId: string | undefined,
-  isEditMode: boolean
+  userId: string | undefined
 ) => {
   if (userId) formData.append("brand", userId);
   formData.append("status", "ready");
@@ -161,13 +160,12 @@ export const populateCampaignFormData = (
     campaignData.audienceSegmentation.audioFormat || ""
   );
 
+  console.log("price");
+  console.log(campaignBudget.creatorFee.toString());
   // Campaign budget
   formData.append("beginning", campaignBudget.startDate as string);
   formData.append("end", campaignBudget.endDate as string);
-  if (!isEditMode) {
-    formData.append("price", campaignBudget.creatorFee.toString());
-  }
-
+  formData.append("price", campaignBudget.creatorFee.toString());
   formData.append("responsible_name", responsibleInfo.name);
   formData.append("responsible_email", responsibleInfo.email);
   formData.append(
@@ -279,10 +277,7 @@ export const handleSubmit = (
   campaignData: CampaignData,
   campaignBudget: CampaignBudget,
   responsibleInfo: ResponsibleInfo,
-  isEditMode: boolean,
   toast: any,
-  initialCampaignData: Campaign,
-  setCampaignBudget: React.ComponentState,
   mutate: any
 ) => {
   const validation = validateFields(
@@ -294,18 +289,6 @@ export const handleSubmit = (
 
   if (!validation) {
     return;
-  }
-
-  // Ensure creatorFee consistency in edit mode
-  if (isEditMode) {
-    const correctCreatorFee = initialCampaignData?.price || 0;
-
-    if (campaignBudget.creatorFee !== correctCreatorFee) {
-      setCampaignBudget((prev: CampaignBudget) => ({
-        ...prev,
-        creatorFee: correctCreatorFee,
-      }));
-    }
   }
 
   mutate.mutate();
@@ -338,7 +321,6 @@ export const prepareCampaignFormData = async (
   isNew: boolean,
   toast: any,
   pb: Client,
-  isEditMode: boolean,
   currentUniqueName?: string
 ): Promise<void> => {
   if (!user.model.id) {
@@ -387,8 +369,7 @@ export const prepareCampaignFormData = async (
     campaignData,
     campaignBudget,
     responsibleInfo,
-    isNew ? user.model.id : undefined,
-    isEditMode
+    isNew ? user.model.id : undefined
   );
 };
 
@@ -398,8 +379,7 @@ export const createCampaign = async (
   campaignBudget: CampaignBudget,
   responsibleInfo: ResponsibleInfo,
   toast: any,
-  pb: Client,
-  isEditMode: boolean
+  pb: Client
 ): Promise<Campaign> => {
   const formData = new FormData();
   await prepareCampaignFormData(
@@ -410,8 +390,7 @@ export const createCampaign = async (
     responsibleInfo,
     true,
     toast,
-    pb,
-    isEditMode
+    pb
   );
 
   formData.append("paid", "false");
@@ -429,8 +408,7 @@ export const updateCampaign = async (
   campaignData: CampaignData,
   campaignBudget: CampaignBudget,
   responsibleInfo: ResponsibleInfo,
-  toast: any,
-  isEditMode: boolean
+  toast: any
 ): Promise<Campaign> => {
   if (!campaignId) {
     throw new Error("Campaign ID not found");
@@ -452,7 +430,6 @@ export const updateCampaign = async (
     false,
     toast,
     pb,
-    isEditMode,
     currentUniqueName
   );
 
