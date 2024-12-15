@@ -1,4 +1,3 @@
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import {
   createRootRouteWithContext,
   Outlet,
@@ -58,9 +57,9 @@ function RootPage() {
       <ToastContainer />
 
       {/* Exibe as Devtools apenas se não estiver no domínio principal */}
-      {window.location.hostname !== "conectepubli.com" && (
+      {/* {window.location.hostname !== "conectepubli.com" && (
         <TanStackRouterDevtools />
-      )}
+      )} */}
     </div>
   );
 }

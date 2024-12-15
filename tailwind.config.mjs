@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+import tailwindcssAnimate from "tailwindcss-animate";
+import tailwindScrollbarHide from "tailwind-scrollbar-hide";
+
 export default {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -67,7 +70,7 @@ export default {
         },
       },
       animation: {
-        slides: "slides 40s linear infinite",
+        slides: "slides 30s linear infinite",
       },
       container: {
         center: true,
@@ -81,5 +84,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
+  plugins: [tailwindcssAnimate, tailwindScrollbarHide],
 };
