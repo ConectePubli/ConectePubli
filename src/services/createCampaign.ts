@@ -6,7 +6,7 @@ import { getUserData } from "@/utils/getUserData";
 import { isValidEmail } from "@/utils/isValidEmail";
 import { isValidURL } from "@/utils/isValidUrl";
 import { Brand } from "@/types/Brand";
-import React from "react";
+import * as React from "react"
 
 interface CampaignData {
   basicInfo: {
