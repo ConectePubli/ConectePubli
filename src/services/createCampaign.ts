@@ -72,6 +72,7 @@ export const populateCampaignFormData = (
   campaignBudget: CampaignBudget,
   responsibleInfo: ResponsibleInfo,
   userId: string | undefined,
+  isEditMode: boolean
 ) => {
   if (userId) formData.append("brand", userId);
   formData.append("status", "ready");
@@ -163,9 +164,9 @@ export const populateCampaignFormData = (
   // Campaign budget
   formData.append("beginning", campaignBudget.startDate as string);
   formData.append("end", campaignBudget.endDate as string);
-
-  formData.append("price", campaignBudget.creatorFee.toString());
-  
+  if (!isEditMode) {
+    formData.append("price", campaignBudget.creatorFee.toString());
+  }
 
   formData.append("responsible_name", responsibleInfo.name);
   formData.append("responsible_email", responsibleInfo.email);
@@ -387,6 +388,7 @@ export const prepareCampaignFormData = async (
     campaignBudget,
     responsibleInfo,
     isNew ? user.model.id : undefined,
+    isEditMode
   );
 };
 
