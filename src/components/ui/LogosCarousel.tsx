@@ -6,6 +6,7 @@ import yourclub from "@/assets/sponsors/yourclub.png";
 import wyndham from "@/assets/sponsors/wyndham.png";
 import mariaMonteiro from "@/assets/sponsors/maria-monteiro.png";
 import phillipp from "@/assets/sponsors/phillipp.png";
+import natalia_beauty from "@/assets/sponsors/natalia-beauty.png";
 
 const LogosCarousel = () => {
   const logos = [
@@ -17,12 +18,13 @@ const LogosCarousel = () => {
     wyndham,
     mariaMonteiro,
     phillipp,
+    natalia_beauty
   ];
 
-  const allLogos = [...logos, ...logos];
+  const allLogos = [...logos, ...logos, ...logos, ...logos];
 
   return (
-    <div className="relative overflow-hidden py-8 px-4 sm:py-[30px] whitespace-nowrap  mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
+    <div className="relative overflow-hidden py-8 px-4 sm:py-[30px] whitespace-nowrap select-none mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
       {/* Left Overlay */}
       <div
         className="absolute top-0 left-0 h-full z-10 pointer-events-none"
@@ -45,7 +47,7 @@ const LogosCarousel = () => {
       <div
         className="inline-block animate-slides"
         onMouseEnter={(e) =>
-          (e.currentTarget.style.animationPlayState = "paused")
+          (e.currentTarget.style.animationPlayState = "running")
         }
         onMouseLeave={(e) =>
           (e.currentTarget.style.animationPlayState = "running")
@@ -58,6 +60,7 @@ const LogosCarousel = () => {
             alt={`Logo ${index + 1}`}
             className="inline-block max-h-[40px] sm:max-h-[60px] object-contain mx-10 sm:mx-16"
             style={{ width: "auto" }}
+            draggable="false"
           />
         ))}
       </div>

@@ -70,7 +70,7 @@ export default {
         },
       },
       animation: {
-        slides: "slides 40s linear infinite",
+        slides: "slides 30s linear infinite",
       },
       container: {
         center: true,
