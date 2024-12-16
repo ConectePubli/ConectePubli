@@ -2624,7 +2624,6 @@ function CampaignBudgetSection({
 
   return (
     <div className="w-full mt-8">
-      <button onClick={() => console.log(creatorFee)}>teste</button>
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
         Período da Campanha e Orçamento
       </h2>
