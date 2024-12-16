@@ -14,8 +14,7 @@ const CampaignRequirements: React.FC = () => {
     return null;
   }
 
-  const { gender, min_age, max_age, min_followers, expand, locality } =
-    campaign;
+  const { gender, min_age, max_age, min_followers, expand, address } = campaign;
   const niches: Niche[] | undefined = expand?.niche;
 
   // Verifique se existem requisitos
@@ -50,10 +49,10 @@ const CampaignRequirements: React.FC = () => {
         )}
 
         {/* Localidades */}
-        {locality && locality?.length > 0 && (
+        {address && (
           <div className="flex flex-wrap gap-2">
             <p>Localidades permitidas:</p>
-            <p>{locality.join(", ")}</p>
+            <p>{address}</p>
           </div>
         )}
 
