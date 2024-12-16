@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import { getUserData } from "@/utils/getUserData";
 import { Question } from "phosphor-react";
+import MuxPlayer from "@mux/mux-player-react";
 
 import pb from "@/lib/pb";
 
@@ -35,6 +36,7 @@ import { Button } from "./button";
 import FloatingHelpButton from "./FloatingHelpButton";
 import { ArrowLeft, File, Save } from "lucide-react";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import Modal from "./Modal";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -998,6 +1000,9 @@ function BasicInfoSection({
     });
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const playbackId = "xJse18KqR2Lg4P2guixklKkaW84UTwCqs5FnU87QJvU";
+
   return (
     <div className="w-full">
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
@@ -1134,6 +1139,37 @@ function BasicInfoSection({
         </div>
 
         <div className="col-span-1">
+          <div className="mb-4">
+            <Button
+              className="inline-flex items-center justify-start w-full whitespace-nowrap rounded-md text-sm font-medium transition-colors bg-[#10438F] text-white hover:bg-[#093474] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#10438F] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Como Criar Campanha
+            </Button>
+          </div>
+
+          {/* Modal */}
+          {isModalOpen && (
+            <Modal onClose={() => setIsModalOpen(false)}>
+              <h2 className="text-lg font-semibold mb-4 text-gray-800">
+                Como Criar Campanha
+              </h2>
+              <div className="flex justify-center items-center">
+                {/* Player do Mux */}
+                <MuxPlayer
+                  streamType="on-demand"
+                  playbackId={playbackId}
+                  metadataVideoTitle="Como Criar Campanha"
+                  style={{
+                    width: "100%",
+                    maxHeight: "500px",
+                    borderRadius: "10px",
+                  }}
+                />
+              </div>
+            </Modal>
+          )}
+
           <label className="block mb-2 text-gray-700 font-semibold">
             Foto de capa*
           </label>
