@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import bannerEXPO from "@/assets/banners/BannerPatrocinadorEXPO.jpg";
 import bannerIAPOI from "@/assets/banners/BannerPatrocinadorIAPOI.jpg";
 import bannerYcSummit from "@/assets/banners/BannerYcSummitparaCP.png";
-import bannerLuciano from "@/assets/banners/BannerLuciano.png";
+import bannerLuciano from "@/assets/banners/BannerLuciano.jpeg";
 
 type Sponsor = {
   id: string;
