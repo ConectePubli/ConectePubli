@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import bannerEXPO from "@/assets/banners/BannerPatrocinadorEXPO.jpg";
+import bannerIAPOI from "@/assets/banners/BannerPatrocinadorIAPOI.jpg";
+import bannerYcSummit from "@/assets/banners/BannerYcSummitparaCP.png";
 
 type Sponsor = {
   id: string;
@@ -7,13 +10,43 @@ type Sponsor = {
 };
 
 const SponsorBanner = () => {
-  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([
+    {
+      id: "1",
+      image: bannerEXPO,
+      url: "https://expoempreendedor.com.br/",
+    },
+    {
+      id: "2",
+      image: bannerIAPOI,
+      url: "https://wa.me/5569993312323?text=IAPOI+marcas",
+    },
+    {
+      id: "3",
+      image: bannerYcSummit,
+    },
+  ]);
   const [currentSponsorIndex, setCurrentSponsorIndex] = useState(0);
 
   useEffect(() => {
     // Dados mockados
-    const mockSponsors: Sponsor[] = [];
-    setSponsors(mockSponsors);
+    const sponsors: Sponsor[] = [
+      {
+        id: "1",
+        image: bannerEXPO,
+        url: "https://expoempreendedor.com.br/",
+      },
+      {
+        id: "2",
+        image: bannerIAPOI,
+        url: "https://wa.me/5569993312323?text=IAPOI+marcas",
+      },
+      {
+        id: "3",
+        image: bannerYcSummit,
+      },
+    ];
+    setSponsors(sponsors);
   }, []);
 
   useEffect(() => {
