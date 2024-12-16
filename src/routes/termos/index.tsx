@@ -76,7 +76,8 @@ function TermosDeUso() {
           devidamente comprovadas, como doença grave, roubo/furto de
           equipamento/material essencial a continuidade/realização da campanha,
           falência da Marca ou óbito, casos específicos que deverão serem
-          analisados caso a caso.
+          analisados caso a caso. Atenção: Você só conseguirá editar a sua
+          campanha enquanto não houver creators que se inscreveram na mesma
         </li>
         <li>
           <span className="font-semibold">1.6</span> Qualquer alteração no
@@ -140,7 +141,13 @@ function TermosDeUso() {
         2. Pagamento da campanha
       </h3>
       <p className="mb-4">
-        O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O pagamento deverá ser feito diretamente na plataforma Conecte Publi através do sistema de pagamento PagBank. O pagamento deve ser realizado automaticamente e imediamente após a Marca clicar em "valor a pagar", na tela de administração da campanha. O pagamento deve ser feito até a data inicial da campanha, caso contrário, será bloqueada.
+        O pagamento da campanha deverá ser realizado somente após a marca
+        selecionar e aprovar todos os creators que deseja incluir na campanha. O
+        pagamento deverá ser feito diretamente na plataforma Conecte Publi
+        através do sistema de pagamento PagBank. O pagamento deve ser realizado
+        automaticamente e imediamente após a Marca clicar em "valor a pagar", na
+        tela de administração da campanha. O pagamento deve ser feito até a data
+        inicial da campanha, caso contrário, será bloqueada.
       </p>
 
       <h3 className="text-lg font-semibold mt-4 mb-2">
