@@ -27,6 +27,7 @@ import { RecordModel } from "pocketbase";
 import { Rating as StarRating } from "react-simple-star-rating";
 import Spinner from "@/components/ui/Spinner";
 import TopCreatorBadge from "@/components/ui/top-creator-badge";
+
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/"
 )({

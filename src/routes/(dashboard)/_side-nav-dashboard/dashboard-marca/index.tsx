@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
@@ -9,6 +9,8 @@ import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
 import Spinner from "@/components/ui/Spinner";
 import { File } from "phosphor-react";
+import Modal from "@/components/ui/Modal";
+import MuxPlayer from "@mux/mux-player-react";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/"
@@ -56,25 +58,58 @@ function Page() {
     fetchCampaigns();
   }, [fetchCampaigns, statusFilter, campaignGoalFilter, searchTerm, page]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const playbackId = "xJse18KqR2Lg4P2guixklKkaW84UTwCqs5FnU87QJvU";
+
   return (
     <div className="p-4">
       <h1 className="font-bold">Minhas Campanhas</h1>
       <p className="mt-2">Visualize todas as suas campanhas ou crie uma.</p>
 
-      <div className="w-full flex items-center justify-between flex-wrap max-sm:flex-col max-sm:items-start max-sm:space-y-3">
-        <Button
-          className="mt-4"
-          variant={"blue"}
-          onClick={() => {
-            navigate({ to: "/dashboard-marca/criar-campanha/" });
-          }}
-        >
-          <Plus className="mr-2" />
-          Criar Campanha
-        </Button>
-
+      <div className="w-full flex items-center justify-between gap-4 flex-wrap max-sm:flex-col max-sm:items-stretch max-sm:gap-2">
+        <div className="flex items-center gap-4 max-sm:flex-col max-sm:w-full">
+          <Button
+            className="mt-4 max-sm:w-full"
+            variant={"blue"}
+            onClick={() => {
+              navigate({ to: "/dashboard-marca/criar-campanha/" });
+            }}
+          >
+            <Plus className="mr-2" />
+            Criar Campanha
+          </Button>
+          <Button
+            className="mt-4 max-sm:w-full"
+            variant={"blue"}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Como Criar Campanha
+          </Button>
+        </div>
+        {/* Modal */}
+        {isModalOpen && (
+          <Modal onClose={() => setIsModalOpen(false)}>
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Como Criar Campanha
+            </h2>
+            <div className="flex justify-center items-center">
+              {/* Player do Mux */}
+              <MuxPlayer
+                streamType="on-demand"
+                playbackId={playbackId}
+                metadataVideoTitle="Como Criar Campanha"
+                style={{
+                  width: "100%",
+                  maxHeight: "500px",
+                  borderRadius: "10px",
+                }}
+              />
+            </div>
+          </Modal>
+        )}
         <Button
           variant={"orange"}
+          className="mt-4 ml-auto max-sm:w-full"
           onClick={() => {
             navigate({ to: "/dashboard-marca/rascunhos/" });
           }}
