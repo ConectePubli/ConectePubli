@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import bannerEXPO from "@/assets/banners/BannerPatrocinadorEXPO.jpg";
 import bannerIAPOI from "@/assets/banners/BannerPatrocinadorIAPOI.jpg";
 import bannerYcSummit from "@/assets/banners/BannerYcSummitparaCP.png";
+import bannerLuciano from "@/assets/banners/BannerLuciano.png";
 
 type Sponsor = {
   id: string;
@@ -10,23 +11,7 @@ type Sponsor = {
 };
 
 const SponsorBanner = () => {
-  const [sponsors, setSponsors] = useState<Sponsor[]>([
-    {
-      id: "1",
-      image: bannerEXPO,
-      url: "https://expoempreendedor.com.br/",
-    },
-    {
-      id: "2",
-      image: bannerIAPOI,
-      url: "https://wa.me/5569993312323?text=IAPOI+marcas",
-    },
-    {
-      id: "3",
-      image: bannerYcSummit,
-      url: "https://yourclub.io/",
-    },
-  ]);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [currentSponsorIndex, setCurrentSponsorIndex] = useState(0);
 
   useEffect(() => {
@@ -45,6 +30,12 @@ const SponsorBanner = () => {
       {
         id: "3",
         image: bannerYcSummit,
+        url: "https://yourclub.io",
+      },
+      {
+        id: "4",
+        image: bannerLuciano,
+        url: "https://www.instagram.com/santiagobs.cont?igsh=aHZ5Y253NXdtbzN3",
       },
     ];
     setSponsors(sponsors);
