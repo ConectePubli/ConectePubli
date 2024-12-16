@@ -24,6 +24,7 @@ const SponsorBanner = () => {
     {
       id: "3",
       image: bannerYcSummit,
+      url: "https://yourclub.io/",
     },
   ]);
   const [currentSponsorIndex, setCurrentSponsorIndex] = useState(0);
