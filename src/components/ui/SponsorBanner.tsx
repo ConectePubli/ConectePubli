@@ -30,7 +30,7 @@ const SponsorBanner = () => {
       {
         id: "3",
         image: bannerYcSummit,
-        url: "https://yourclub.io",
+        url: "https://www.sympla.com.br/evento/yourclub-summit/2772293",
       },
       {
         id: "4",
@@ -62,7 +62,7 @@ const SponsorBanner = () => {
     <img
       src={imageUrl}
       alt={`Patrocinador ${currentSponsorIndex + 1}`}
-      className="w-full max-h-24 sm:max-h-32 object-contain"
+      className="w-full max-h-[90px] object-contain"
     />
   );
 
@@ -79,7 +79,7 @@ const SponsorBanner = () => {
             href={currentSponsor.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full max-h-24 sm:max-h-32 object-contain"
+            className="w-full max-h-[90px] sm:max-h-32 object-contain"
           >
             {SponsorImage}
           </a>
