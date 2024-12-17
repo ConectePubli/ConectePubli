@@ -89,6 +89,13 @@ const CampaignDetails: React.FC = () => {
           </p>
         )}
 
+        <div className="mb-2">
+          <p className="text-sm text-gray-700">
+            Período de Campanha: O prazo máximo estabelecido para que o creator
+            entregue todo o escopo obrigatório da campanha.
+          </p>
+        </div>
+
         {campaign.status && (
           <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
             <Clock className="w-4 h-4" />
