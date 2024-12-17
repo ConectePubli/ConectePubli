@@ -47,6 +47,7 @@ export interface Campaign {
   collectionName: string;
   vagasRestantes?: number;
   participationStatus?: ParticipationStatusFilter;
+  address: string;
   expand?: {
     Campaigns_Participations_via_campaign?: CampaignParticipation[];
     niche?: Niche[];

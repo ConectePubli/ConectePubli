@@ -35,6 +35,7 @@ interface CampaignData {
     paidTraffic: boolean;
     paidTrafficInfo: string;
     audioFormat: "Música" | "Narração" | null;
+    address: string;
   };
 }
 
@@ -124,20 +125,7 @@ export const populateCampaignFormData = (
     "min_followers",
     campaignData.audienceSegmentation.minFollowers
   );
-  if (Array.isArray(campaignData.audienceSegmentation.location)) {
-    if (campaignData.audienceSegmentation.location.length === 0) {
-      formData.append("locality", "");
-    } else {
-      campaignData.audienceSegmentation.location.forEach((locate) => {
-        formData.append("locality", locate);
-      });
-    }
-  } else {
-    formData.append(
-      "locality",
-      campaignData.audienceSegmentation.location || ""
-    );
-  }
+  formData.append("address", campaignData.audienceSegmentation.address);
 
   formData.append(
     "min_video_duration",

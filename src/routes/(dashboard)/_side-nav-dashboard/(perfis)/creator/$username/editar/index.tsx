@@ -1203,7 +1203,7 @@ function AddressSection({
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Rua*
+            Logradouro (Rua, Avenida, Alameda, etc.)*
           </label>
           <input
             type="text"

@@ -6,7 +6,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import { getUserData } from "@/utils/getUserData";
 import { Question } from "phosphor-react";
-import MuxPlayer from "@mux/mux-player-react";
 
 import pb from "@/lib/pb";
 
@@ -14,7 +13,6 @@ import {
   objectiveOptions,
   genderOptions,
   channelsOptions,
-  localityOptions,
   minFollowersOptions,
   minVideoDurationOptions,
   maxVideoDurationOptions,
@@ -36,7 +34,6 @@ import { Button } from "./button";
 import FloatingHelpButton from "./FloatingHelpButton";
 import { ArrowLeft, File, Save } from "lucide-react";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
-import Modal from "./Modal";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -75,6 +72,7 @@ interface CampaignData {
     paidTraffic: boolean;
     paidTrafficInfo: string;
     audioFormat: "Música" | "Narração" | null;
+    address: string;
   };
 }
 
@@ -138,6 +136,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       paidTraffic: false,
       paidTrafficInfo: "",
       audioFormat: null,
+      address: "",
     },
   });
 
@@ -206,6 +205,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           paidTraffic: initialCampaignData.paid_traffic || false,
           paidTrafficInfo: initialCampaignData.paid_traffic_info || "",
           audioFormat: initialCampaignData.audio_format || null,
+          address: initialCampaignData.address || "",
         },
       });
 
@@ -368,6 +368,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           paidTraffic: initialCampaignData.paid_traffic || false,
           paidTrafficInfo: initialCampaignData.paid_traffic_info || "",
           audioFormat: initialCampaignData.audio_format || null,
+          address: initialCampaignData.address || "",
         },
       });
 
@@ -529,7 +530,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         max_age: campaignData.audienceSegmentation.maxAge,
         gender: campaignData.audienceSegmentation.gender,
         min_followers: campaignData.audienceSegmentation.minFollowers,
-        locality: campaignData.audienceSegmentation.location,
+        address: campaignData.audienceSegmentation.address,
         min_video_duration: campaignData.audienceSegmentation.videoMinDuration,
         max_video_duration: campaignData.audienceSegmentation.videoMaxDuration,
         paid_traffic: campaignData.audienceSegmentation.paidTraffic,
@@ -627,7 +628,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           max_age: campaignData.audienceSegmentation.maxAge,
           gender: campaignData.audienceSegmentation.gender,
           min_followers: campaignData.audienceSegmentation.minFollowers,
-          locality: campaignData.audienceSegmentation.location,
+          address: campaignData.audienceSegmentation.address,
           min_video_duration:
             campaignData.audienceSegmentation.videoMinDuration,
           max_video_duration:
@@ -1000,9 +1001,6 @@ function BasicInfoSection({
     });
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const playbackId = "xJse18KqR2Lg4P2guixklKkaW84UTwCqs5FnU87QJvU";
-
   return (
     <div className="w-full">
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
@@ -1139,37 +1137,6 @@ function BasicInfoSection({
         </div>
 
         <div className="col-span-1">
-          <div className="mb-4">
-            <Button
-              className="inline-flex items-center justify-start w-full whitespace-nowrap rounded-md text-sm font-medium transition-colors bg-[#10438F] text-white hover:bg-[#093474] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#10438F] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Como Criar Campanha
-            </Button>
-          </div>
-
-          {/* Modal */}
-          {isModalOpen && (
-            <Modal onClose={() => setIsModalOpen(false)}>
-              <h2 className="text-lg font-semibold mb-4 text-gray-800">
-                Como Criar Campanha
-              </h2>
-              <div className="flex justify-center items-center">
-                {/* Player do Mux */}
-                <MuxPlayer
-                  streamType="on-demand"
-                  playbackId={playbackId}
-                  metadataVideoTitle="Como Criar Campanha"
-                  style={{
-                    width: "100%",
-                    maxHeight: "500px",
-                    borderRadius: "10px",
-                  }}
-                />
-              </div>
-            </Modal>
-          )}
-
           <label className="block mb-2 text-gray-700 font-semibold">
             Foto de capa*
           </label>
@@ -1627,15 +1594,9 @@ function AudienceSegmentationSection({
   const [nicheOptions, setNicheOptions] = useState<Niche[]>([]);
   const [selectedNiches, setSelectedNiches] = useState<Niche[]>([]);
 
-  // locate
-  const [locationOptions, setLocationOptions] = useState(localityOptions);
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
-
   const [nicheDropdownOpen, setNicheDropdownOpen] = useState(false);
-  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
   const nicheDropdownRef = useRef<HTMLDivElement>(null);
-  const locationDropdownRef = useRef<HTMLDivElement>(null);
 
   // Estados para tooltips
   const [tooltipOpenNiche, setTooltipOpenNiche] = useState(false);
@@ -1742,37 +1703,12 @@ function AudienceSegmentationSection({
   }, [niches, data.niche]);
 
   useEffect(() => {
-    // Sync selectedLocations with data.location
-    if (data.location) {
-      setSelectedLocations(data.location);
-    }
-  }, [data.location]);
-
-  useEffect(() => {
-    if (data.location.length > 0) {
-      const availableLocations = localityOptions.filter(
-        (loc) => !data.location.includes(loc.value)
-      );
-
-      setLocationOptions(availableLocations);
-    } else {
-      setLocationOptions(localityOptions);
-    }
-  }, [data.location]);
-
-  useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
         nicheDropdownRef.current &&
         !nicheDropdownRef.current.contains(event.target as Node)
       ) {
         setNicheDropdownOpen(false);
-      }
-      if (
-        locationDropdownRef.current &&
-        !locationDropdownRef.current.contains(event.target as Node)
-      ) {
-        setLocationDropdownOpen(false);
       }
     }
 
@@ -1800,100 +1736,8 @@ function AudienceSegmentationSection({
     });
   };
 
-  const handleLocationSelect = (locate: { label: string; value: string }) => {
-    if (locate.value === "Todas") {
-      setSelectedLocations(["Todas"]);
-      setLocationOptions([]);
-      onChange({
-        ...data,
-        location: ["Todas"],
-      });
-    } else {
-      if (selectedLocations.includes("Todas")) {
-        setSelectedLocations([locate.value]);
-        setLocationOptions(
-          localityOptions.filter(
-            (loc) => loc.value !== locate.value && loc.value !== "Todas"
-          )
-        );
-        onChange({
-          ...data,
-          location: [locate.value],
-        });
-      } else {
-        const newSelectedLocations = [...selectedLocations, locate.value];
-        setSelectedLocations(newSelectedLocations);
-        setLocationOptions(
-          locationOptions.filter((loc) => loc.value !== locate.value)
-        );
-        onChange({
-          ...data,
-          location: newSelectedLocations,
-        });
-
-        const individualLocalities = localityOptions.filter(
-          (loc) => loc.value !== "Todas"
-        );
-        if (newSelectedLocations.length === individualLocalities.length) {
-          setSelectedLocations(["Todas"]);
-          setLocationOptions([]);
-          onChange({
-            ...data,
-            location: ["Todas"],
-          });
-        }
-      }
-    }
-  };
-
-  const handleLocationRemove = (locateValue: string) => {
-    if (locateValue === "Todas") {
-      setSelectedLocations([]);
-      setLocationOptions([
-        ...locationOptions,
-        { label: "Todas", value: "Todas" },
-      ]);
-      onChange({
-        ...data,
-        location: [],
-      });
-    } else {
-      const newSelectedLocations = selectedLocations.filter(
-        (loc) => loc !== locateValue
-      );
-      setSelectedLocations(newSelectedLocations);
-
-      const removedLocation = localityOptions.find(
-        (loc) => loc.value === locateValue
-      );
-      if (removedLocation) {
-        setLocationOptions([...locationOptions, removedLocation]);
-      }
-
-      onChange({
-        ...data,
-        location: newSelectedLocations,
-      });
-
-      if (newSelectedLocations.length === localityOptions.length - 1) {
-        setSelectedLocations(["Todas"]);
-        setLocationOptions([]);
-        onChange({
-          ...data,
-          location: ["Todas"],
-        });
-      }
-    }
-  };
-
   const toggleNicheDropdown = () => {
     setNicheDropdownOpen((prev) => !prev);
-    setLocationDropdownOpen(false);
-  };
-
-  const toggleLocationDropdown = () => {
-    setLocationDropdownOpen((prev) => !prev);
-    setNicheDropdownOpen(false);
   };
 
   const handleInputChange = (
@@ -2285,58 +2129,18 @@ function AudienceSegmentationSection({
               )}
             </div>
           </label>
-          <div className="relative" ref={locationDropdownRef}>
-            <button
-              type="button"
-              onClick={toggleLocationDropdown}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
-            >
-              {selectedLocations.length > 0
-                ? selectedLocations.includes("Todas")
-                  ? "Todas as localidades selecionadas"
-                  : `${selectedLocations.length} localidade(s) selecionada(s)`
-                : "Selecionar localidade"}
-            </button>
 
-            {locationDropdownOpen && (
-              <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-auto">
-                {locationOptions.length > 0 ? (
-                  locationOptions.map((locate) => (
-                    <div
-                      key={locate.value}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => handleLocationSelect(locate)}
-                    >
-                      {locate.label}
-                    </div>
-                  ))
-                ) : (
-                  <div className="px-4 py-2 text-gray-500">
-                    Todas as localidades foram selecionadas
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {selectedLocations.map((locate) => (
-              <span
-                key={locate}
-                className="flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full"
-              >
-                {locate}
-                <button
-                  type="button"
-                  className="ml-2 text-blue-500"
-                  onClick={() => handleLocationRemove(locate)}
-                >
-                  x
-                </button>
-              </span>
-            ))}
-          </div>
-          <p className="text-gray-500 mt-2">
-            Escolha quais localidades os creators devem estar.
+          <input
+            type="text"
+            name="address"
+            value={data.address}
+            onChange={handleInputChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Estado, cidade, bairro"
+          />
+
+          <p className="text-gray-500 text-sm mt-2">
+            Insira o estado, cidade e bairro que o creator deve se candidatar
           </p>
         </div>
 
@@ -2660,7 +2464,6 @@ function CampaignBudgetSection({
 
   return (
     <div className="w-full mt-8">
-      <button onClick={() => console.log(creatorFee)}>teste</button>
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
         Período da Campanha e Orçamento
       </h2>
