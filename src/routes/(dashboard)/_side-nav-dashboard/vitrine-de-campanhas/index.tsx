@@ -14,7 +14,7 @@ export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/vitrine-de-campanhas/"
 )({
   component: Page,
-  beforeLoad: async () => {
+  loader: async () => {
     const userType = await getUserType();
 
     if (!userType) {
@@ -23,6 +23,11 @@ export const Route = createFileRoute(
       throw redirect({ to: "/dashboard" });
     }
   },
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen">
+      <Spinner />
+    </div>
+  ),
 });
 
 function Page() {
