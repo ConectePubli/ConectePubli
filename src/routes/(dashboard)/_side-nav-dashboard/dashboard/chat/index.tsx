@@ -271,6 +271,14 @@ function ChatPage() {
     });
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      router.history.back();
+    } else {
+      const defaultRoute = `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-creator"}`;
+      router.navigate({ to: defaultRoute });
+    }
+  };
   return (
     <div className="flex flex-col h-[calc(100vh-66px)] bg-gray-100 items-center lg:pt-4">
       <div className="flex w-[90%] max-lg:pt-4 rounded-lg xl:w-[80%] 2xl:w-[70%] h-full lg:h-[70vh] gap-3">
@@ -286,11 +294,7 @@ function ChatPage() {
             <Button
               className="text-gray-500 text-sm font-semibold flex flex-row gap-2 items-center justify-start w-28"
               variant={"ghost"}
-              onClick={() =>
-                router.navigate({
-                  to: `/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-creator"}`,
-                })
-              }
+              onClick={handleBack}
             >
               <Undo2 className="h-6 w-6" />
               Voltar

@@ -1,8 +1,9 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { Spinner } from "phosphor-react";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import Spinner from "@/components/ui/Spinner";
+import { Spinner as SpinnerPhosphor } from "phosphor-react";
 import pb from "@/lib/pb";
 import { Influencer } from "@/types/Influencer";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { createOrGetChat } from "@/services/chatService";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -29,16 +30,26 @@ export const Route = createFileRoute(
     return { page, q };
   },
   loader: async ({ deps: { page, q } }) => {
+    const userType = pb.authStore.model?.collectionName;
+    if (userType === "Influencers") {
+      throw redirect({
+        to: "/dashboard-creator",
+      });
+    }
+
     const perPage = 6;
 
     let filter = 'name != ""';
 
     if (q) {
-      filter += ` && (full_name ~ "${q}" || name ~ "${q}")`;
+      filter += ` && (full_name ~ "${q}" || name ~ "${q}" || neighborhood ~ "${q}" || city ~ "${q}" || state ~ "${q}" || country ~ "${q}" || account_type ~ "${q}")`;
     }
     const result = await pb
       .collection("Influencers")
-      .getList<Influencer>(page, perPage, { filter });
+      .getList<Influencer>(page, perPage, {
+        filter,
+        sort: "-top_creator,created",
+      });
     console.log(result);
 
     return {
@@ -49,8 +60,8 @@ export const Route = createFileRoute(
     };
   },
   pendingComponent: () => (
-    <div className="flex justify-center items-center h-screen">
-      <Spinner className="animate-spin w-6 h-6" />
+    <div className="flex justify-center items-center h-[calc(100vh-66px)] ">
+      <Spinner />
     </div>
   ),
   staleTime: Infinity,
@@ -61,7 +72,8 @@ export const Route = createFileRoute(
 function Page() {
   const { creators, totalPages, page } = Route.useLoaderData();
   const router = useRouter();
-  const [loadingChat, setLoadingChat] = useState(false);
+  const [loadingChatId, setLoadingChatId] = useState<string | null>(null);
+  const [loadingPage, setLoadingPage] = useState(false);
 
   const debouncedNavigate = useMemo(
     () =>
@@ -83,7 +95,12 @@ function Page() {
     debouncedNavigate(newValue);
   }
 
+  useEffect(() => {
+    setLoadingPage(false);
+  }, [page]);
+
   function setPage(newPage: number) {
+    setLoadingPage(true);
     router.navigate({
       // @ts-expect-error - Não sei como corrigir isso
       search: (prev) => ({
@@ -94,7 +111,7 @@ function Page() {
   }
 
   const handleStartChat = async (influencerId: string, brandId: string) => {
-    setLoadingChat(true);
+    setLoadingChatId(influencerId);
 
     try {
       const chat = await createOrGetChat("", influencerId, brandId);
@@ -113,7 +130,7 @@ function Page() {
         type: "error",
       });
     } finally {
-      setLoadingChat(false);
+      setLoadingChatId(null);
     }
   };
 
@@ -176,7 +193,7 @@ function Page() {
                   )}
                   {!creator.profile_img && (
                     <div className="w-24 h-24 rounded-full mr-3 bg-gray-200">
-                      <div className="flex items-center justify-center h-full text-gray-500 font-bold">
+                      <div className="flex items-center justify-center h-full text-gray-500 font-bold line-clamp-1">
                         {creator.name
                           .split(" ")
                           .map((name) => name[0])
@@ -187,7 +204,7 @@ function Page() {
                 </div>
                 <div className="flex flex-row">
                   <h2
-                    className="text-lg font-semibold mr-2 hover:cursor-pointer"
+                    className="text-lg font-semibold mr-2 hover:cursor-pointer line-clamp-1"
                     onClick={() =>
                       router.navigate({ to: `/creator/${creator.username}` })
                     }
@@ -198,12 +215,13 @@ function Page() {
                   </h2>
                   {creator.top_creator && (
                     <div
-                      className={`inline-flex items-center gap-x-1 px-2 py-1 rounded-full font-bold text-xs cursor-pointer bg-blue-900 text-yellow-300`}
+                      className={`inline-flex items-center gap-x-1 px-2 py-1 rounded-full font-bold text-xs cursor-default select-none bg-blue-900 text-yellow-300`}
                     >
                       <img
                         src={GoldCheckIcon}
                         alt={"Gold Check"}
                         className="w-4 h-4"
+                        draggable={false}
                       />
                       Top Creator
                     </div>
@@ -291,32 +309,40 @@ function Page() {
                 </div>
 
                 <div className="flex flex-wrap space-x-2 mb-4">
-                  {socialLinks.map((link) => {
-                    const Icon =
-                      channelIcons[link.name as keyof typeof channelIcons];
-                    return (
-                      <a
-                        key={link.name}
-                        href={link.url!}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-500 hover:text-gray-700"
-                      >
-                        <img src={Icon} className="w-5 h-5" alt={link.name} />
-                      </a>
-                    );
-                  })}
+                  {socialLinks.length > 0 ? (
+                    socialLinks.map((link) => {
+                      const Icon =
+                        channelIcons[link.name as keyof typeof channelIcons];
+                      return (
+                        <a
+                          key={link.name}
+                          href={link.url!}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          <img src={Icon} className="w-5 h-5" alt={link.name} />
+                        </a>
+                      );
+                    })
+                  ) : (
+                    <p className="text-gray-600 min-h-[20px]"></p>
+                  )}
                 </div>
 
                 <button
-                  className="bg-[#FF672F] text-white px-4 py-2 rounded hover:bg-[#FF672F]/90 font-bold mt-auto"
+                  className="bg-[#FF672F] text-white px-4 py-2 rounded hover:bg-[#FF672F]/90 font-bold mt-auto disabled:cursor-not-allowed"
                   onClick={() =>
                     handleStartChat(creator.id, pb.authStore.model?.id)
                   }
-                  disabled={loadingChat}
+                  disabled={
+                    loadingChatId === creator.id ||
+                    creator.id === pb.authStore.model?.id ||
+                    loadingChatId !== null
+                  }
                 >
-                  {loadingChat ? (
-                    <Spinner className="animate-spin w-6 h-6" />
+                  {loadingChatId === creator.id ? (
+                    <SpinnerPhosphor className="animate-spin w-6 h-6" />
                   ) : (
                     "Enviar mensagem"
                   )}
@@ -331,10 +357,14 @@ function Page() {
         <div className="flex justify-center space-x-4 items-center">
           <button
             onClick={() => setPage(Math.max(page - 1, 1))}
-            disabled={page === 1}
-            className="px-4 py-2 rounded disabled:opacity-50 bg-[#093474] text-white font-semibold"
+            disabled={page === 1 || loadingPage}
+            className="px-4 py-2 rounded disabled:opacity-50 bg-[#093474] text-white font-semibold w-24 flex justify-center items-center"
           >
-            Anterior
+            {loadingPage ? (
+              <SpinnerPhosphor className="animate-spin w-6 h-6" />
+            ) : (
+              "Anterior"
+            )}
           </button>
           <span className="text-gray-600">
             Página <span className="font-bold">{page}</span> de{" "}
@@ -342,10 +372,14 @@ function Page() {
           </span>
           <button
             onClick={() => setPage(Math.min(page + 1, totalPages))}
-            disabled={page === totalPages}
-            className="px-4 py-2  rounded disabled:opacity-50 bg-[disabled:opacity-50] bg-[#093474] text-white font-semibold"
+            disabled={page === totalPages || loadingPage}
+            className="px-4 py-2  rounded disabled:opacity-50 bg-[disabled:opacity-50] bg-[#093474] text-white font-semibold w-24 flex justify-center items-center"
           >
-            Próxima
+            {loadingPage ? (
+              <SpinnerPhosphor className="animate-spin w-6 h-6" />
+            ) : (
+              "Próxima"
+            )}
           </button>
         </div>
       )}
