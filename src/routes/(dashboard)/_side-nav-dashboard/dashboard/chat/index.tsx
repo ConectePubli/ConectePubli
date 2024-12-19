@@ -154,6 +154,46 @@ function ChatPage() {
         }
       }
       fetchChat();
+    } else if (influencerId && brandId && !campaignId) {
+      const chat = chats.find(
+        (c) =>
+          c.campaign === "" &&
+          c.influencer === influencerId &&
+          c.brand === brandId
+      );
+
+      if (chat) {
+        setSelectedChat(chat);
+      }
+
+      async function fetchChat() {
+        setLoadingMessages(true);
+        try {
+          const chatDetails = await getChatDetails("", influencerId, brandId);
+          setSelectedChat(chatDetails);
+
+          const fetchedMessages = await getMessages(chatDetails.id);
+          setMessages(fetchedMessages);
+
+          const hadUnreadMessages = fetchedMessages.some(
+            (message) =>
+              message.read === false &&
+              ((userType === "Brands" && message.influencer_sender) ||
+                (userType === "Influencers" && message.brand_sender))
+          );
+
+          await markMessagesAsRead(chatDetails.id, userType);
+
+          if (hadUnreadMessages) {
+            decrementUnreadConversationsCount();
+          }
+        } catch (error) {
+          console.error("Erro ao obter detalhes do chat ou mensagens:", error);
+        } finally {
+          setLoadingMessages(false);
+        }
+      }
+      fetchChat();
     } else {
       setSelectedChat(null);
       setMessages([]);
@@ -323,8 +363,7 @@ function ChatPage() {
                               chat.expand?.brand?.username}
                         </h2>
                         <p className="text-sm text-gray-500 truncate w-40">
-                          {chat.expand?.campaign?.name ||
-                            "Sem nome de campanha"}
+                          {chat.expand?.campaign?.name || ""}
                         </p>
                         <p className="text-xs text-gray-400">
                           {lastMessageDate}

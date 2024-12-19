@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link, Outlet } from "@tanstack/react-router";
-import { Folder, LayoutGrid, MessageCircle, Plus, X } from "lucide-react";
+import {
+  Folder,
+  LayoutGrid,
+  MessageCircle,
+  Plus,
+  Users,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSheetStore } from "@/store/useDashSheetStore";
 import pb from "@/lib/pb";
@@ -40,6 +47,20 @@ export function SideNavDashboard() {
                 >
                   <LayoutGrid className="w-6 h-6" />
                   Vitrine de Campanhas
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-creators"
+                  className="flex items-center gap-2"
+                >
+                  <Users className="w-6 h-6" />
+                  Vitrine de Creators
                 </Link>
               </Button>
             </li>
@@ -167,19 +188,20 @@ const Sheet = () => {
               </Button>
             </li>
           )}
-          {/* <li>
-            <Button
-              variant="ghost"
-              className="w-full justify-start"
-              asChild
-              onClick={closeSheet}
-            >
-              <Link to="/dashboard/profile" className="flex items-center gap-2">
-                <Users className="w-6 h-6" />
-                Vitrine de Creators
-              </Link>
-            </Button>
-          </li> */}
+
+          {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-creators"
+                  className="flex items-center gap-2"
+                >
+                  <Users className="w-6 h-6" />
+                  Vitrine de Creators
+                </Link>
+              </Button>
+            </li>
+          )}
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <a
