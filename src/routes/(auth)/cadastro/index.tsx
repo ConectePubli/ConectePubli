@@ -11,8 +11,6 @@ export const Route = createFileRoute("/(auth)/cadastro/")({
   beforeLoad: async () => {
     const userType = await getUserType();
 
-    console.log(userType);
-
     if (userType === "Brands") {
       throw redirect({
         to: "/dashboard-marca",

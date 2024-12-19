@@ -32,6 +32,7 @@ import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
 import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
 import { ComboboxNiches } from "@/components/ui/ComboBoxNiches";
 import { Button } from "@/components/ui/button";
+import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 
 interface Option {
   value: string;
@@ -89,6 +90,7 @@ function InfluencerEditProfilePage() {
     skills: ["languages"],
     accountInfo: [],
     portfolio: [],
+    prices: ["stories_price", "feed_price", "reels_price", "ugc_price"],
   };
 
   // State to manage isFormChanged and loading per section
@@ -100,6 +102,7 @@ function InfluencerEditProfilePage() {
     mediaKit: false,
     bankAccount: false,
     portfolio: false,
+    prices: false,
     skills: false,
     accountInfo: false,
   });
@@ -112,6 +115,7 @@ function InfluencerEditProfilePage() {
     mediaKit: false,
     bankAccount: false,
     portfolio: false,
+    prices: false,
     skills: false,
     accountInfo: false,
   });
@@ -127,6 +131,7 @@ function InfluencerEditProfilePage() {
     mediaKit: false,
     bankAccount: false,
     portfolio: false,
+    prices: false,
     skills: false,
     accountInfo: false,
   });
@@ -324,8 +329,6 @@ function InfluencerEditProfilePage() {
   ) => {
     e.preventDefault();
 
-    console.log("submit");
-
     // Função para validar campos
     const validateFields = () => {
       const missingFields: string[] = [];
@@ -386,6 +389,10 @@ function InfluencerEditProfilePage() {
                   pix_key: "Chave Pix",
                   media_kit_url: "Mídia Kit",
                   languages: "Idiomas",
+                  stories_price: "Preço por stories",
+                  feed_price: "Preço por post no feed",
+                  reels_price: "Preço por reels",
+                  ugc_price: "Preço por vídeo e combo UGC",
                 };
                 missingFields.push(fieldNames[field] || field);
               }
@@ -427,9 +434,6 @@ function InfluencerEditProfilePage() {
     if (formData) {
       try {
         const updateData: any = {};
-
-        console.log("account type");
-        console.log(formData.account_type);
 
         if (section === "basicData") {
           if (formData.background_img) {
@@ -485,12 +489,17 @@ function InfluencerEditProfilePage() {
           } else {
             updateData["previous_work_imgs"] = null;
           }
+        } else if (section === "prices") {
+          updateData["stories_price"] = formData.stories_price;
+          updateData["feed_price"] = formData.feed_price;
+          updateData["reels_price"] = formData.reels_price;
+          updateData["ugc_price"] = formData.ugc_price;
         } else if (section === "skills") {
           updateData["languages"] = formData.languages;
         }
 
         const data = new FormData();
-        console.log(updateData);
+
         for (const key in updateData) {
           const value = updateData[key];
 
@@ -710,6 +719,22 @@ function InfluencerEditProfilePage() {
           setIsFormChangedStates={setIsFormChangedStates}
           loading={loadingStates.portfolio}
           setLoadingStates={setLoadingStates}
+        />
+      </Section>
+      <Section
+        title="Preços para cada tipo de conteúdo"
+        completed={sectionCompletion.prices}
+        hasUnsavedChanges={isFormChangedStates.prices}
+      >
+        <PricesSection
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+          isFormChanged={isFormChangedStates.prices}
+          setIsFormChangedStates={setIsFormChangedStates}
+          loading={loadingStates.prices}
+          setLoadingStates={setLoadingStates}
+          handleInputChange={handleInputChange}
         />
       </Section>
       <Section
@@ -1787,6 +1812,121 @@ function PreviousWorksSection({
           <Plus size={24} />
         </label>
       </div>
+    </div>
+  );
+}
+
+function PricesSection({
+  formData,
+  setFormData,
+  handleSubmit,
+  isFormChanged,
+  setIsFormChangedStates,
+  loading,
+}: FormProps) {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    const digits = value.replace(/\D/g, "");
+    const numberValue = parseFloat(digits);
+
+    setFormData((prev: any) => {
+      const updatedFormData = {
+        ...prev,
+        [name]: isNaN(numberValue) ? 0 : numberValue,
+      };
+      return updatedFormData;
+    });
+  };
+
+  const handleSectionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleInputChange(e);
+    setIsFormChangedStates((prev: any) => ({ ...prev, prices: true }));
+  };
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Quanto você cobra por um stories IGC?*
+        </label>
+        <input
+          type="text"
+          name="stories_price"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder="Ex: R$50,00"
+          value={
+            formData.stories_price
+              ? formatCentsToCurrency(formData.stories_price)
+              : ""
+          }
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Quanto você cobra por um post no feed?*
+        </label>
+        <input
+          type="text"
+          name="feed_price"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder="Ex: R$100,00"
+          value={
+            formData.feed_price
+              ? formatCentsToCurrency(formData.feed_price)
+              : ""
+          }
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Quanto você cobra por um reels?*
+        </label>
+        <input
+          type="text"
+          name="reels_price"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder="Ex: R$150,00"
+          value={
+            formData.reels_price
+              ? formatCentsToCurrency(formData.reels_price)
+              : ""
+          }
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Quanto você cobra por um vídeo e um combo de fotos UGC?*
+        </label>
+        <input
+          type="text"
+          name="ugc_price"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder="Ex: R$200,00"
+          value={
+            formData.ugc_price
+              ? formatCentsToCurrency(formData.ugc_price)
+              : ""
+          }
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <button
+        className={`${
+          isFormChanged ? "bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+        } text-white py-2 px-4 rounded-lg mt-4`}
+        onClick={(e) => handleSubmit(e, "prices")}
+        disabled={!isFormChanged || loading}
+      >
+        {loading ? "Salvando..." : "Salvar Alterações"}
+      </button>
     </div>
   );
 }

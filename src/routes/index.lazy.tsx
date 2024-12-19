@@ -43,24 +43,31 @@ function Index() {
         description={
           <div className="space-y-1">
             <p>
-              <strong>Sem taxa no pagamento para creators</strong> - Realize
-              campanhas e pague os creators sem custo adicional por transações,
-              maximizando o retorno sobre o investimento.
+              <strong>Acesso a criadores qualificados</strong> - Encontre os
+              criadores certos para suas campanhas, independentemente do porte
+              ou nicho. Selecione por filtros detalhados e conecte-se
+              diretamente.
             </p>
             <p>
-              <strong>Anúncios de campanhas</strong> - Publique suas campanhas
-              na plataforma para que creators se candidatem a oportunidades
-              alinhadas ao seu negócio.
+              <strong>Custo-Benefício Real</strong> - Sem taxas ocultas.
+              Campanhas acessíveis para qualquer orçamento, desde pequenas ações
+              locais até grandes campanhas de impacto
             </p>
             <p>
-              <strong>Criadores alinhados com sua marca</strong> - Encontre
-              creators de acordo com os objetivos, estilo e público da sua
-              marca, garantindo parcerias estratégicas e eficazes.
+              <strong>Resultados autênticos e eficientes</strong> - Receba
+              conteúdos criativos e alinhados ao seu público, gerando mais
+              engajamento, confiança e retorno para sua marca.
             </p>
             <p>
-              <strong>Pagamento facilitado</strong> - Com o ConectePay
-              integrado, realize pagamentos de forma rápida e segura diretamente
-              pela plataforma.
+              <strong>Pagamentos protegidos com Conecte Pay</strong> - Seu
+              investimento fica seguro: o pagamento só é liberado após aprovação
+              do conteúdo entregue. Sem riscos.
+            </p>
+
+            <p>
+              <strong>Segurança Jurídica integrada</strong> - Contratos e termos
+              padronizados já estão integrados na plataforma, garantindo
+              segurança e transparência em todos os acordos. Zero burocracia.
             </p>
           </div>
         }
@@ -75,19 +82,29 @@ function Index() {
         description={
           <div className="space-y-2">
             <p>
-              <strong>Plataforma de oportunidades</strong> - Descubra uma
-              variedade de jobs exclusivos para monetizar seu conteúdo, com
-              entregáveis e pagamentos claros.
+              <strong>Oportunidades para todos os perfis</strong> - Seja UGC
+              Creator ou influenciador de qualquer porte, encontre campanhas que
+              combinam com você e monetize sua criatividade.
             </p>
             <p>
-              <strong>Campanhas</strong> - Candidate-se a quantas campanhas
-              publicitárias quiser, encontrando parcerias alinhadas ao seu
-              estilo e público.
+              <strong>Processo simples e transparente</strong> - Candidate-se ás
+              campanhas que fazem sentido para você, entregue com confiança e
+              acompanhe tudo em um só lugar.
             </p>
             <p>
-              <strong>Recebimento facilitado</strong> - Com o ConectePay
-              integrado, receba seus pagamentos de forma fácil e segura, sem
-              complicações.
+              <strong>Construa seu portfólio e cresça</strong> - Trabalhe com
+              marcas, receba avaliações positivas e fortaleça sua reputação na
+              Creator Economy.
+            </p>
+            <p>
+              <strong>Pagamentos Garantidos e sem complicação</strong> - O
+              Conecte Pay assegura que o pagamento esteja reservado antes de
+              você começar a produzir. Receba de forma rápida e segura.
+            </p>
+            <p>
+              <strong>Segurança jurídica em todas as entregas</strong> - A
+              plataforma inclui contratos e termos claros para proteger seu
+              trabalho e garantir relações profissionais com as marcas
             </p>
           </div>
         }

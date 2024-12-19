@@ -1,8 +1,8 @@
 import React from "react";
-import image1 from "@/assets/how-it-works1.webp";
-import image2 from "@/assets/how-it-works2.webp";
-import image3 from "@/assets/how-it-works3.webp";
-import alta_tecnologia from "@/assets/alta_tecnologia.jpeg";
+import image1 from "@/assets/how-it-works1.png";
+import image2 from "@/assets/how-it-works2.png";
+import image3 from "@/assets/how-it-works3.png";
+import image4 from "@/assets/how-it-works4.png";
 
 import { FeatureCard } from "@/components/LandingPage/FeaturesCard/FeaturesCard";
 
@@ -13,24 +13,27 @@ export const HowItWorksSection: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <FeatureCard
           imageSrc={image1}
-          title="Conexão estratégica simplificada"
-          description="Nossa plataforma conecta marcas e criadores de conteúdo digital de forma simples e direta."
-          carousel
+          title="1. Cadastre-se"
+          descriptionBrand={`Crie sua conta, configure o perfil da sua marca e publique campanhas rapidamente.`}
+          descriptionCreator="Cadastre-se, crie seu portfólio e explore oportunidades alinhadas ao seu estilo."
         />
         <FeatureCard
           imageSrc={image2}
-          title="Sem taxas para marcas"
-          description="Marcas não pagam taxas ao realizar pagamentos para creators, aumentando seus ganhos e simplificando a gestão financeira das campanhas."
+          title="2. Publique ou Candidate-se"
+          descriptionBrand="Descreva os detalhes da sua campanha e receba propostas de criadores qualificados."
+          descriptionCreator="Escolha campanhas, envie propostas e apresente seu diferencial."
         />
         <FeatureCard
           imageSrc={image3}
-          title="ConectePay integrado"
-          description="Com o ConectePay, pagamentos e recebimentos são realizados diretamente na plataforma, de forma rápida e segura."
+          title="3. Produza e Aprove"
+          descriptionBrand="Analise propostas, selecione os criadores ideais e aprove os conteúdos diretamente na plataforma."
+          descriptionCreator="Produza conteúdos alinhados ao escopo e entregue no prazo combinado."
         />
         <FeatureCard
-          imageSrc={alta_tecnologia}
-          title="Alta tecnologia"
-          description="Utilizamos alta tecnologia para facilitar a comunicação, gerenciar pagamentos de forma segura e oferecer ferramentas que tornam o marketing de influência acessível e eficiente."
+          imageSrc={image4}
+          title="4. Pagamento seguro com Conecte Pay"
+          descriptionBrand="Para Marcas: O pagamento só é liberado após a entrega aprovada, garantindo segurança total."
+          descriptionCreator="Receba de forma rápida, simples e protegida com o Conecte Pay."
         />
       </div>
     </section>

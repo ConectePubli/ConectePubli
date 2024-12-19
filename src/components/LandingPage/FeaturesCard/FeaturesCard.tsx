@@ -3,14 +3,16 @@ import React, { useState, useEffect, useRef } from "react";
 interface FeatureCardProps {
   imageSrc: string;
   title: string;
-  description: string;
+  descriptionBrand: string;
+  descriptionCreator: string;
   carousel?: boolean;
 }
 
 export const FeatureCard: React.FC<FeatureCardProps> = ({
   imageSrc,
   title,
-  description,
+  descriptionBrand,
+  descriptionCreator,
   carousel,
 }) => {
   const phrases = [
@@ -68,7 +70,14 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
       <img src={imageSrc} alt={title} className="w-full h-80 object-cover" />
       <div className="px-3 py-3">
         <h3 className="text-xl font-semibold">{title}</h3>
-        <p className="text-gray-600 mt-2">{description}</p>
+        <p className="text-gray-600 mt-2">
+          <span className="font-semibold text-gray-700">Para Marcas:</span>{" "}
+          {descriptionBrand}
+        </p>
+        <p className="text-gray-600 mt-2">
+          <span className="font-semibold text-gray-700">Para Criadores:</span>{" "}
+          {descriptionCreator}
+        </p>
 
         {carousel && (
           <div className="mt-4">

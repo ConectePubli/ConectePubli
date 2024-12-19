@@ -31,14 +31,11 @@ export const SectionInfo: React.FC<SectionInfoProps> = ({
           <img
             src={imageSrc}
             alt={title}
-            className="rounded-lg shadow-lg w-full h-auto object-cover"
+            className="rounded-lg shadow-lg w-full h-full object-cover"
           />
         </div>
 
-        <div
-          className="w-full lg:w-[60%]"
-          style={reverse ? { paddingRight: "15px" } : { paddingLeft: "15px" }}
-        >
+        <div className={`w-full lg:w-[60%]`}>
           <h2 className="text-2xl font-bold mb-4">{title}</h2>
           <div className="text-gray-700 mb-8 space-y-4">
             <div className="flex flex-col space-y-2">

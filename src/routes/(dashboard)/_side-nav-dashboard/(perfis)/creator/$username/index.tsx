@@ -32,7 +32,7 @@ export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/"
 )({
   component: InfluencerProfilePage,
-  beforeLoad: async () => {
+  loader: async () => {
     const userType = await getUserType();
 
     if (!userType) {
@@ -41,6 +41,11 @@ export const Route = createFileRoute(
       });
     }
   },
+  pendingComponent: () => (
+    <div className="flex justify-center items-center h-screen">
+      <Spinner />
+    </div>
+  ),
 });
 
 function InfluencerProfilePage() {

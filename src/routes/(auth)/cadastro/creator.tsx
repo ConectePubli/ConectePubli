@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -37,10 +37,6 @@ function Page() {
     name: "",
     email: "",
     phone: "",
-    storiesPrice: "",
-    feedPrice: "",
-    reelsPrice: "",
-    ugcPrice: "",
     password: "",
     confirmPassword: "",
   });
@@ -49,26 +45,6 @@ function Page() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const formatCurrency = (value: string) => {
-    if (!value) return "";
-    const numericValue = parseInt(value, 10);
-    if (isNaN(numericValue)) return "";
-    return (numericValue / 100).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 2,
-    });
-  };
-
-  const handleCurrencyChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    field: string
-  ) => {
-    const input = e.target.value;
-    const onlyDigits = input.replace(/\D/g, "");
-    setFormData({ ...formData, [field]: onlyDigits });
-  };
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -82,31 +58,10 @@ function Page() {
         throw new Error("O e-mail inserido não é válido.");
       }
 
-      const priceFields = [
-        { value: formData.storiesPrice, label: "stories IGC" },
-        { value: formData.feedPrice, label: "post no feed" },
-        { value: formData.reelsPrice, label: "reels" },
-        { value: formData.ugcPrice, label: "vídeo e combo de fotos UGC" },
-      ];
-
-      for (const field of priceFields) {
-        const numericValue = parseInt(field.value, 10);
-        if (isNaN(numericValue) || numericValue <= 0) {
-          setErrorMessage(
-            `O campo "Quanto você cobra por um ${field.label}?" deve conter um valor numérico positivo.`
-          );
-          throw new Error(`Valor inválido no campo ${field.label}.`);
-        }
-      }
-
       const data = {
         name: formData.name,
         email: formData.email,
         cell_phone: formData.phone.replace(/\D/g, ""),
-        stories_price: parseInt(formData.storiesPrice, 10),
-        feed_price: parseInt(formData.feedPrice, 10),
-        reels_price: parseInt(formData.reelsPrice, 10),
-        ugc_price: parseInt(formData.ugcPrice, 10),
         password: formData.password,
         passwordConfirm: formData.confirmPassword,
       };
@@ -135,16 +90,6 @@ function Page() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (
-      formData.storiesPrice === "" ||
-      formData.feedPrice === "" ||
-      formData.reelsPrice === "" ||
-      formData.ugcPrice === ""
-    ) {
-      setErrorMessage("Por favor, preencha todos os campos de preço.");
-      return;
-    }
 
     if (!termsAccepted) {
       setErrorMessage("Você deve aceitar os termos e condições.");
@@ -252,82 +197,6 @@ function Page() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder="(XX) XXXXX-XXXX"
                 maxLength={15}
-              />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
-                htmlFor="storiesPrice"
-              >
-                Quanto você cobra por um stories IGC?
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="storiesPrice"
-                value={formatCurrency(formData.storiesPrice)}
-                onChange={(e) => handleCurrencyChange(e, "storiesPrice")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Ex: R$ 50,00"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
-                htmlFor="feedPrice"
-              >
-                Quanto você cobra por um post no feed?
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="feedPrice"
-                value={formatCurrency(formData.feedPrice)}
-                onChange={(e) => handleCurrencyChange(e, "feedPrice")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Ex: R$ 100,00"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
-                htmlFor="reelsPrice"
-              >
-                Quanto você cobra por um reels?
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="reelsPrice"
-                value={formatCurrency(formData.reelsPrice)}
-                onChange={(e) => handleCurrencyChange(e, "reelsPrice")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Ex: R$ 150,00"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
-                htmlFor="ugcPrice"
-              >
-                Quanto você cobra por um vídeo e combo de fotos UGC?
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="ugcPrice"
-                value={formatCurrency(formData.ugcPrice)}
-                onChange={(e) => handleCurrencyChange(e, "ugcPrice")}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Ex: R$ 200,00"
-                required
               />
             </div>
 
