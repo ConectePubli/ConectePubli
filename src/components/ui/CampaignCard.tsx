@@ -1,6 +1,6 @@
 import React from "react";
 import { Campaign } from "@/types/Campaign";
-import { Calendar, Tag } from "lucide-react";
+import { Calendar, Tag, User } from "lucide-react";
 import { Coins, Image } from "phosphor-react";
 import pb from "@/lib/pb";
 import SocialNetworks from "@/types/SocialNetworks";
@@ -9,6 +9,7 @@ import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import { Link } from "@tanstack/react-router";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import { formatDateUTC } from "@/utils/formatDateUTC";
+import { Brand } from "@/types/Brand";
 
 interface CampaignCardProps {
   campaignData: Campaign;
@@ -19,6 +20,7 @@ interface CampaignCardProps {
 const CampaignCard: React.FC<CampaignCardProps> = ({
   campaignData,
   participationStatus,
+  fromMyCampaigns,
 }) => {
   const beginningDate = formatDateUTC(campaignData.beginning);
   const endDate = formatDateUTC(campaignData.end);
@@ -130,6 +132,33 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             >
               Status: {readTextStatus(participationStatus)}
             </span>
+          )}
+
+          {!fromMyCampaigns && (
+            <div className="flex items-center space-x-2 max-sm:mt-2">
+              {campaignData?.expand?.brand?.profile_img ? (
+                <img
+                  src={pb.files.getUrl(
+                    (campaignData.expand?.brand as Brand) || {},
+                    campaignData.expand?.brand?.profile_img || ""
+                  )}
+                  alt="brand logo"
+                  className="w-10 h-10 rounded-md object-cover"
+                  draggable={false}
+                />
+              ) : (
+                <div className="flex items-center justify-center w-10 h-10 rounded-md bg-gray-300">
+                  <User className="w-5 h-5" color="#fff" />
+                </div>
+              )}
+
+              <h3>
+                {campaignData.expand?.brand?.name &&
+                campaignData?.expand?.brand?.name?.length > 30
+                  ? `${campaignData?.expand?.brand?.name.slice(0, 30)}...`
+                  : campaignData?.expand?.brand?.name}
+              </h3>
+            </div>
           )}
         </div>
       </div>

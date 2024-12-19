@@ -2357,7 +2357,6 @@ function CampaignBudgetSection({
   onChange,
   isEditMode,
 }: CampaignBudgetSectionProps) {
-  console.log("startDate", startDate);
   const [today, setToday] = useState("");
   const [creatorFeeError, setCreatorFeeError] = useState("");
 

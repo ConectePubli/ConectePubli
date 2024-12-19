@@ -120,6 +120,15 @@ function TermosDeUso() {
           prévio antes de aderir a uma campanha, cabendo à plataforma e/ou Marca
           aceitar ou não.
         </li>
+        <li>
+          <span className="font-semibold">2.4</span> Ao aceitar os presentes
+          Termos de Uso, o Creator declara e concorda que autoriza, de forma
+          irrevogável e gratuita, a Conecte Publi a utilizar sua imagem, nome,
+          conteúdo criado e demais elementos associados à sua participação na
+          plataforma, exclusivamente para fins de divulgação nas redes sociais,
+          materiais promocionais, e outras ações de comunicação institucional da
+          Conecte Publi.
+        </li>
       </ul>
 
       <h2 className="text-lg font-semibold mt-6 mb-2">

@@ -25,6 +25,7 @@ import {
   Flag,
   Headset,
   MagnifyingGlassPlus,
+  Warning,
   WhatsappLogo,
 } from "phosphor-react";
 import "react-toastify/ReactToastify.css";
@@ -51,6 +52,7 @@ import { formatDateUTC } from "@/utils/formatDateUTC";
 import { parseBrazilianDate } from "@/utils/parseBrDate";
 import { generateCampaignPayment } from "@/services/pagseguro";
 import { isDateAfter } from "@/utils/dateUtils";
+import Modal from "@/components/ui/Modal";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -131,6 +133,7 @@ function Page() {
   >(loaderData.campaignParticipations);
 
   const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
+  const [showModalMinParticipant, setShowModalMinParticipant] = useState(false);
 
   const navigate = useNavigate();
   const [selectedParticipation, setSelectedParticipation] =
@@ -342,9 +345,6 @@ function Page() {
   const campaignStartDate = parseBrazilianDate(campaignStartDateString);
   const currentDate = new Date();
 
-  console.log(campaignStartDate);
-  console.log(currentDate);
-
   const isBlocked =
     !campaignData.paid &&
     isDateAfter(currentDate, campaignStartDate) &&
@@ -352,6 +352,28 @@ function Page() {
 
   return (
     <div className="flex flex-col gap-4 p-4 max-sm:p-0">
+      {showModalMinParticipant && (
+        <Modal onClose={() => setShowModalMinParticipant(false)}>
+          <div className="flex flex-col gap-4">
+            <h2 className="text-xl font-semibold flex items-center">
+              <Warning className="w-5 h-5 mr-1" weight="bold" /> Importante
+            </h2>
+
+            <p className="text-gray-700">
+              Antes de prosseguir com o pagamento, aguarde os creators se
+              candidatarem à sua campanha. Assim que os candidatos estiverem
+              disponíveis, você poderá selecioná-los e finalizar o pagamento com
+              o valor correto.
+            </p>
+
+            <p className="text-gray-700">
+              Sua campanha já está na vitrine, agora é só esperar os creators
+              certos se inscreverem!
+            </p>
+          </div>
+        </Modal>
+      )}
+
       <div className="p-4">
         <div className="flex items-center gap-1 mb-2">
           <button
@@ -422,9 +444,7 @@ function Page() {
                 disabled={loadingPayment}
                 onClick={() => {
                   if (approvedParticipationsCount === 0) {
-                    toast.warn(
-                      "Precisa de no mínimo 1 creator aprovado para realizar o pagamento"
-                    );
+                    setShowModalMinParticipant(true);
                   } else {
                     generateCampaignPayment(
                       campaignData.id,

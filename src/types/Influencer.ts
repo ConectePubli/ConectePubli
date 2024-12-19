@@ -52,6 +52,10 @@ export interface Influencer {
   gender: string;
   verified: boolean;
   top_creator: boolean;
+  stories_price: number;
+  feed_price: number;
+  reels_price: number;
+  ugc_price: number;
   created: Date;
   updated: Date;
   collectionId: string;

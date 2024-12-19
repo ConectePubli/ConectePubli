@@ -150,6 +150,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
         .getList<Campaign>(page, ITEMS_PER_PAGE, {
           filter: generateFilterString(filters),
           sort: "-created",
+          expand: "brand",
         });
 
       let filteredCampaigns = result.items;
