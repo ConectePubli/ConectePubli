@@ -43,8 +43,6 @@ export const Route = createFileRoute(
             throw new Error("A campanha está marcada como rascunho.");
           }
 
-          console.log(record);
-
           setCampaignData(record as unknown as Campaign);
 
           if (isDraftFromURL) {
