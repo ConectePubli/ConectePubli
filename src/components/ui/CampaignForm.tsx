@@ -34,6 +34,7 @@ import { Button } from "./button";
 import FloatingHelpButton from "./FloatingHelpButton";
 import { ArrowLeft, File, Save } from "lucide-react";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import CampaignSpotlight from "./CampaignSpotlight";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -95,6 +96,11 @@ interface CampaignFormProps {
   campaignIdDraft?: string;
 }
 
+interface SpotlightCampaign {
+  state: boolean;
+  campaign: Campaign | null;
+}
+
 export const CampaignForm: React.FC<CampaignFormProps> = ({
   campaignId,
   initialCampaignData,
@@ -108,6 +114,12 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   const [campaignIdDraftState] = useState(campaignIdDraft);
 
   const [loadingCreate, setLoadingCreate] = useState(false);
+
+  const [spotlightCampaignPlans, setSpotlightCampaignPlans] =
+    useState<SpotlightCampaign>({
+      state: false,
+      campaign: null,
+    });
 
   const [campaignData, setCampaignData] = useState<CampaignData>({
     basicInfo: {
@@ -473,7 +485,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             toast,
             pb
           ),
-    onSuccess: async () => {
+    onSuccess: async (createdCampaign: Campaign) => {
       if (isEditMode) {
         toast.success("Campanha atualizada com sucesso!");
         navigate({
@@ -484,9 +496,16 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         toast.success("Campanha criada com sucesso!");
 
         setIsDirty(false);
-        navigate({
-          to: "/dashboard-marca",
-        });
+
+        console.log(createdCampaign);
+
+        if (createdCampaign) {
+          setSpotlightCampaignPlans({
+            ...spotlightCampaignPlans,
+            state: true,
+            campaign: createdCampaign,
+          });
+        }
       }
     },
     onError: (e) => {
@@ -564,9 +583,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     },
   });
 
-  // Dentro do componente CampaignForm
   const handleFinalSubmit = async () => {
-    // Validação dos campos
     const isValid = validateFields(
       campaignData,
       campaignBudget,
@@ -646,12 +663,14 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           unique_name: uniqueName,
         };
 
-        await pb
+        const record: Campaign = await pb
           .collection("Campaigns")
           .update(campaignIdDraftState, draftData);
 
-        navigate({
-          to: "/dashboard-marca",
+        setSpotlightCampaignPlans({
+          ...spotlightCampaignPlans,
+          state: true,
+          campaign: record as Campaign,
         });
       } catch (e) {
         toast.error("Erro ao salvar campanha: " + e);
@@ -669,144 +688,155 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {showLeaveModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-md w-full max-w-xl mx-4">
-            <h2 className="text-lg font-semibold">
-              Você tem dados não salvos, deseja realmente sair?
-            </h2>
-            <p className="mt-4 text-sm text-gray-900">
-              Sair da tela de criação de campanha sem salvar os dados pode fazer
-              você perder todo o progresso feito até agora.
-            </p>
-            <p className="mt-2 text-sm text-gray-900">
-              Para garantir que suas informações estejam seguras e você não
-              precise começar do zero, clique em "Salvar como Rascunho" antes de
-              sair. Assim, você pode continuar de onde parou, sem preocupações!
-              🚀
-            </p>
-            <div className="mt-6 flex justify-between items-center">
-              <button
-                onClick={() => setShowLeaveModal(false)}
-                className="text-sm text-gray-800 flex items-center space-x-1"
-              >
-                <ArrowLeft className="" />
-                <span>Voltar a Campanha</span>
-              </button>
+      {!spotlightCampaignPlans.state && (
+        <>
+          {showLeaveModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white p-6 rounded-md w-full max-w-xl mx-4">
+                <h2 className="text-lg font-semibold">
+                  Você tem dados não salvos, deseja realmente sair?
+                </h2>
+                <p className="mt-4 text-sm text-gray-900">
+                  Sair da tela de criação de campanha sem salvar os dados pode
+                  fazer você perder todo o progresso feito até agora.
+                </p>
+                <p className="mt-2 text-sm text-gray-900">
+                  Para garantir que suas informações estejam seguras e você não
+                  precise começar do zero, clique em "Salvar como Rascunho"
+                  antes de sair. Assim, você pode continuar de onde parou, sem
+                  preocupações! 🚀
+                </p>
+                <div className="mt-6 flex justify-between items-center">
+                  <button
+                    onClick={() => setShowLeaveModal(false)}
+                    className="text-sm text-gray-800 flex items-center space-x-1"
+                  >
+                    <ArrowLeft className="" />
+                    <span>Voltar a Campanha</span>
+                  </button>
 
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => {
-                    setIsDirty(false);
-                    setShowLeaveModal(false);
-                    if (pendingNavigation) {
-                      originalNavigate(pendingNavigation);
-                      setPendingNavigation(null);
-                    } else {
-                      window.location.href = "/";
-                    }
-                  }}
-                  className="px-4 py-2 bg-red-500 text-white rounded text-sm"
-                >
-                  Sair
-                </button>
-                <Button
-                  variant={"blue"}
-                  onClick={() => {
-                    saveDraftMutation.mutate();
-                  }}
-                  className="px-4 py-2 text-white rounded text-sm"
-                >
-                  {saveDraftMutation.isPending
-                    ? "Salvando..."
-                    : "Salvar como Rascunho"}
-                </Button>
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => {
+                        setIsDirty(false);
+                        setShowLeaveModal(false);
+                        if (pendingNavigation) {
+                          originalNavigate(pendingNavigation);
+                          setPendingNavigation(null);
+                        } else {
+                          window.location.href = "/";
+                        }
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded text-sm"
+                    >
+                      Sair
+                    </button>
+                    <Button
+                      variant={"blue"}
+                      onClick={() => {
+                        saveDraftMutation.mutate();
+                      }}
+                      className="px-4 py-2 text-white rounded text-sm"
+                    >
+                      {saveDraftMutation.isPending
+                        ? "Salvando..."
+                        : "Salvar como Rascunho"}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {isDirty && !isEditMode && (
-        <div className="my-4 w-full flex justify-end px-10">
-          <Button
-            variant={"orange"}
-            onClick={() => {
-              saveDraftMutation.mutate();
+          {isDirty && !isEditMode && (
+            <div className="my-4 w-full flex justify-end px-10">
+              <Button
+                variant={"orange"}
+                onClick={() => {
+                  saveDraftMutation.mutate();
+                }}
+              >
+                {saveDraftMutation.isPending ? (
+                  "Salvando..."
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" /> Salvar como rascunho
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+
+          <BasicInfoSection
+            data={campaignData.basicInfo}
+            onChange={(data) => {
+              setCampaignData((prev) => ({ ...prev, basicInfo: data }));
+              setIsDirty(true);
             }}
-          >
-            {saveDraftMutation.isPending ? (
-              "Salvando..."
-            ) : (
-              <>
-                <Save className="w-4 h-4 mr-2" /> Salvar como rascunho
-              </>
-            )}
-          </Button>
-        </div>
+            initialCampaignData={initialCampaignData as Campaign}
+            isEditMode={isEditMode}
+            isDraft={isDraft}
+          />
+
+          <AudienceSegmentationSection
+            data={campaignData.audienceSegmentation}
+            onChange={(data) => {
+              setCampaignData((prev) => ({
+                ...prev,
+                audienceSegmentation: data,
+              }));
+              setIsDirty(true);
+            }}
+            niches={niches}
+            nichesLoading={nichesLoading}
+          />
+
+          <CampaignBudgetSection
+            startDate={campaignBudget.startDate}
+            endDate={campaignBudget.endDate}
+            creatorFee={campaignBudget.creatorFee}
+            onChange={(data) => {
+              setCampaignBudget(data);
+              setIsDirty(true);
+            }}
+            isEditMode={isEditMode}
+          />
+
+          <ResponsibleInfoSection
+            data={responsibleInfo}
+            onChange={(e) => {
+              setResponsibleInfo(e);
+              setIsDirty(true);
+            }}
+          />
+
+          <div className="px-5 w-full flex justify-center">
+            <Button
+              variant={"blue"}
+              onClick={() => {
+                handleFinalSubmit();
+              }}
+              className="w-auto min-w-[200px] text-white py-2 px-5 rounded-md mt-6 mb-8"
+              disabled={mutate.isPending || loadingCreate}
+            >
+              {mutate.isPending || loadingCreate
+                ? "Carregando..."
+                : isEditMode
+                  ? "Atualizar Campanha"
+                  : "Criar campanha"}
+            </Button>
+          </div>
+
+          {!isEditMode && <FloatingHelpButton />}
+        </>
       )}
 
-      <BasicInfoSection
-        data={campaignData.basicInfo}
-        onChange={(data) => {
-          setCampaignData((prev) => ({ ...prev, basicInfo: data }));
-          setIsDirty(true);
-        }}
-        initialCampaignData={initialCampaignData as Campaign}
-        isEditMode={isEditMode}
-        isDraft={isDraft}
-      />
-
-      <AudienceSegmentationSection
-        data={campaignData.audienceSegmentation}
-        onChange={(data) => {
-          setCampaignData((prev) => ({
-            ...prev,
-            audienceSegmentation: data,
-          }));
-          setIsDirty(true);
-        }}
-        niches={niches}
-        nichesLoading={nichesLoading}
-      />
-
-      <CampaignBudgetSection
-        startDate={campaignBudget.startDate}
-        endDate={campaignBudget.endDate}
-        creatorFee={campaignBudget.creatorFee}
-        onChange={(data) => {
-          setCampaignBudget(data);
-          setIsDirty(true);
-        }}
-        isEditMode={isEditMode}
-      />
-
-      <ResponsibleInfoSection
-        data={responsibleInfo}
-        onChange={(e) => {
-          setResponsibleInfo(e);
-          setIsDirty(true);
-        }}
-      />
-
-      <div className="px-5 w-full flex justify-center">
-        <Button
-          variant={"blue"}
-          onClick={() => {
-            handleFinalSubmit();
-          }}
-          className="w-auto min-w-[200px] text-white py-2 px-5 rounded-md mt-6 mb-8"
-          disabled={mutate.isPending || loadingCreate}
-        >
-          {mutate.isPending || loadingCreate
-            ? "Carregando..."
-            : isEditMode
-              ? "Atualizar Campanha"
-              : "Criar campanha"}
-        </Button>
-      </div>
-
-      {!isEditMode && <FloatingHelpButton />}
+      {spotlightCampaignPlans.state === true &&
+        spotlightCampaignPlans.campaign && (
+          <CampaignSpotlight
+            campaign={spotlightCampaignPlans.campaign as Campaign}
+          />
+        )}
 
       <ToastContainer />
     </div>

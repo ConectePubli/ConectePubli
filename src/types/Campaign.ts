@@ -48,6 +48,8 @@ export interface Campaign {
   vagasRestantes?: number;
   participationStatus?: ParticipationStatusFilter;
   address: string;
+  spotlightActive: boolean;
+  spotlightPurchasedAt: Date;
   expand?: {
     Campaigns_Participations_via_campaign?: CampaignParticipation[];
     niche?: Niche[];

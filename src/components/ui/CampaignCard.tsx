@@ -46,7 +46,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
     <Link
       to="/dashboard/campanhas/$campaignName"
       params={{ campaignName: campaignData.unique_name }}
-      className="flex flex-col md:flex-row bg-white rounded-lg border-2 h-auto"
+      className={`flex flex-col md:flex-row bg-white rounded-lg border-2 h-auto  ${campaignData.spotlightActive ? "border-blue-500" : "border-gray-200"} `}
     >
       <div className="w-full hidden md:block md:w-[32%] h-auto">
         {campaignData.cover_img ? (
