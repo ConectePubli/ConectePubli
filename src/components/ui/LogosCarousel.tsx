@@ -18,7 +18,7 @@ const LogosCarousel = () => {
     wyndham,
     mariaMonteiro,
     phillipp,
-    nataliaBeauty
+    nataliaBeauty,
   ];
 
   const allLogos = [...logos, ...logos, ...logos, ...logos];
