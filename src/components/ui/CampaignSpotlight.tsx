@@ -45,6 +45,7 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
             plans={plans}
             selectedOption={selectedOption}
             campaign={campaign}
+            type="buy_spotlight"
           />
         </Modal>
       )}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
@@ -12,35 +13,87 @@ import {
 
 import { SpotlightCampaignPlan } from "@/types/SpotlightCampaignPlan";
 import { Campaign } from "@/types/Campaign";
+import {
+  campaignPaymentByPagSeguro,
+  campaignPaymentByStripe,
+} from "@/services/pagseguro";
 
 interface Props {
-  plans: SpotlightCampaignPlan[];
-  selectedOption: string;
-  campaign: Campaign;
+  plans?: SpotlightCampaignPlan[];
+  selectedOption?: string;
+  campaign?: Campaign;
+  campaignData?: Campaign;
+  approvedParticipationsCount?: number;
+  toast?: any;
+  setLoadingPayment?: React.ComponentState;
+  type: "create_campaign" | "buy_spotlight";
 }
 
 const GatewayPaymentModal: React.FC<Props> = ({
   plans,
   selectedOption,
   campaign,
+  type,
+  campaignData,
+  approvedParticipationsCount,
+  toast,
+  setLoadingPayment,
 }) => {
   const [language, setLanguage] = useState<"pt" | "en">("pt");
 
-  const pagSeguroMutate = useMutation({
+  // COMPRAR DESTAQUE
+  const pagSeguroMutateSpotlight = useMutation({
     mutationFn: async () => {
-      const selectedPlan = plans.find((plan) => plan.id === selectedOption);
+      const selectedPlan = plans?.find((plan) => plan.id === selectedOption);
       if (!selectedPlan) throw new Error("Plano não encontrado");
 
-      await buyPlanByPagSeguro(selectedPlan, pb, campaign);
+      await buyPlanByPagSeguro(selectedPlan, pb, campaign as Campaign);
     },
   });
 
-  const stripeMutate = useMutation({
+  const stripeMutateSpotlight = useMutation({
     mutationFn: async () => {
-      const selectedPlan = plans.find((plan) => plan.id === selectedOption);
+      const selectedPlan = plans?.find((plan) => plan.id === selectedOption);
       if (!selectedPlan) throw new Error("Plano não encontrado");
 
-      await buyPlanByStripe(selectedPlan, pb, campaign);
+      await buyPlanByStripe(selectedPlan, pb, campaign as Campaign);
+    },
+  });
+
+  // PAGAR CLUBE
+  const pagSeguroMutateCampaign = useMutation({
+    mutationFn: async () => {
+      if (campaignData) {
+        await campaignPaymentByPagSeguro(
+          campaignData.id,
+          campaignData.name,
+          Math.round(
+            (Number(campaignData?.price) / 100) *
+              Number(approvedParticipationsCount) *
+              100
+          ),
+          toast,
+          setLoadingPayment
+        );
+      }
+    },
+  });
+
+  const stripeMutateCampaign = useMutation({
+    mutationFn: async () => {
+      if (campaignData) {
+        await campaignPaymentByStripe(
+          campaignData.id,
+          campaignData.name,
+          Math.round(
+            (Number(campaignData?.price) / 100) *
+              Number(approvedParticipationsCount) *
+              100
+          ),
+          toast,
+          setLoadingPayment
+        );
+      }
     },
   });
 
@@ -87,15 +140,26 @@ const GatewayPaymentModal: React.FC<Props> = ({
             </span>
           </div>
           <button
-            onClick={() => pagSeguroMutate.mutate()}
-            disabled={pagSeguroMutate.isPending}
+            onClick={() => {
+              if (type === "buy_spotlight") {
+                pagSeguroMutateSpotlight.mutate();
+              } else if (type === "create_campaign") {
+                pagSeguroMutateCampaign.mutate();
+              }
+            }}
+            disabled={
+              pagSeguroMutateSpotlight.isPending ||
+              pagSeguroMutateCampaign.isPending
+            }
             className={`px-4 py-2 rounded-lg text-white ${
-              pagSeguroMutate.isPending
+              pagSeguroMutateSpotlight.isPending ||
+              pagSeguroMutateCampaign.isPending
                 ? "bg-green-300 cursor-not-allowed"
                 : "bg-green-500 hover:bg-green-600"
             }`}
           >
-            {pagSeguroMutate.isPending
+            {pagSeguroMutateSpotlight.isPending ||
+            pagSeguroMutateCampaign.isPending
               ? `${language === "pt" ? "Processando..." : "Processing..."}`
               : "PagSeguro"}
           </button>
@@ -115,15 +179,23 @@ const GatewayPaymentModal: React.FC<Props> = ({
             </span>
           </div>
           <button
-            onClick={() => stripeMutate.mutate()}
-            disabled={stripeMutate.isPending}
+            onClick={() => {
+              if (type === "buy_spotlight") {
+                stripeMutateSpotlight.mutate();
+              } else if (type === "create_campaign") {
+                stripeMutateCampaign.mutate();
+              }
+            }}
+            disabled={
+              stripeMutateSpotlight.isPending || stripeMutateCampaign.isPending
+            }
             className={`px-4 py-2 rounded-lg text-white ${
-              stripeMutate.isPending
+              stripeMutateSpotlight.isPending || stripeMutateCampaign.isPending
                 ? "bg-blue-300 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
-            {stripeMutate.isPending
+            {stripeMutateSpotlight.isPending || stripeMutateCampaign.isPending
               ? `${language === "pt" ? "Processando..." : "Processing..."}`
               : "Stripe"}
           </button>
