@@ -3,6 +3,7 @@ import bannerEXPO from "@/assets/banners/BannerPatrocinadorEXPO.jpg";
 import bannerIAPOI from "@/assets/banners/BannerPatrocinadorIAPOI.jpg";
 import bannerYcSummit from "@/assets/banners/BannerYcSummitparaCP.png";
 import bannerLuciano from "@/assets/banners/BannerLuciano.jpeg";
+import bannerAnuncie from "@/assets/banners/BannerAnuncie.png";
 
 type Sponsor = {
   id: string;
@@ -37,8 +38,15 @@ const SponsorBanner = () => {
         image: bannerLuciano,
         url: "https://www.instagram.com/santiagobs.cont?igsh=aHZ5Y253NXdtbzN3",
       },
+      {
+        id: "5",
+        image: bannerAnuncie,
+        url: "https://wa.me/5511913185849",
+      },
     ];
-    setSponsors(sponsors);
+
+    // embaralhar os patrocinadores e set
+    setSponsors(sponsors.sort(() => Math.random() - 0.5));
   }, []);
 
   useEffect(() => {
