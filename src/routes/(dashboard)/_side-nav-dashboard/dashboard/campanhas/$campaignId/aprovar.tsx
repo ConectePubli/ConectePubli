@@ -50,9 +50,9 @@ import RatePlatformModal from "@/components/ui/RatePlatformModal";
 import Spinner from "@/components/ui/Spinner";
 import { formatDateUTC } from "@/utils/formatDateUTC";
 import { parseBrazilianDate } from "@/utils/parseBrDate";
-import { generateCampaignPayment } from "@/services/pagseguro";
 import { isDateAfter } from "@/utils/dateUtils";
 import Modal from "@/components/ui/Modal";
+import GatewayPaymentModal from "@/components/ui/GatewayPaymentModal";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -119,6 +119,7 @@ export const Route = createFileRoute(
 
 function Page() {
   const router = useRouter();
+
   const { rateConecte } = useSearch({
     from: "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar",
   });
@@ -134,6 +135,7 @@ function Page() {
 
   const [loadingPayment, setLoadingPayment] = useState<boolean>(false);
   const [showModalMinParticipant, setShowModalMinParticipant] = useState(false);
+  const [paymentModal, setPaymentModal] = useState(false);
 
   const navigate = useNavigate();
   const [selectedParticipation, setSelectedParticipation] =
@@ -352,6 +354,18 @@ function Page() {
 
   return (
     <div className="flex flex-col gap-4 p-4 max-sm:p-0">
+      {paymentModal && (
+        <Modal onClose={() => setPaymentModal(false)}>
+          <GatewayPaymentModal
+            type="create_campaign"
+            campaignData={campaignData}
+            approvedParticipationsCount={approvedParticipationsCount}
+            toast={toast}
+            setLoadingPayment={setLoadingPayment}
+          />
+        </Modal>
+      )}
+
       {showModalMinParticipant && (
         <Modal onClose={() => setShowModalMinParticipant(false)}>
           <div className="flex flex-col gap-4">
@@ -446,17 +460,7 @@ function Page() {
                   if (approvedParticipationsCount === 0) {
                     setShowModalMinParticipant(true);
                   } else {
-                    generateCampaignPayment(
-                      campaignData.id,
-                      campaignData.name,
-                      Math.round(
-                        (Number(campaignData?.price) / 100) *
-                          approvedParticipationsCount *
-                          100
-                      ),
-                      toast,
-                      setLoadingPayment
-                    );
+                    setPaymentModal(true);
                   }
                 }}
               >
@@ -567,17 +571,7 @@ function Page() {
                 className="font-semibold text-white sm:mt-0 sm:ml-4"
                 disabled={loadingPayment}
                 onClick={() => {
-                  generateCampaignPayment(
-                    campaignData.id,
-                    campaignData.name,
-                    Math.round(
-                      (Number(campaignData?.price) / 100) *
-                        approvedParticipationsCount *
-                        100
-                    ),
-                    toast,
-                    setLoadingPayment
-                  );
+                  setPaymentModal(true);
                 }}
               >
                 {loadingPayment ? (

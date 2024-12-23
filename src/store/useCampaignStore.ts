@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import pb from "@/lib/pb";
 import { Campaign } from "@/types/Campaign";
 import {
@@ -123,6 +124,9 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
   },
 
   // Fetch all campaigns without filtering by brand
+  // Dentro do create<CampaignState>({ ... }), substitua APENAS o bloco fetchAllCampaigns
+
+  // Ainda dentro do create<CampaignState>({ ... })
   fetchAllCampaigns: async () => {
     const {
       campaignGoalFilter,
@@ -137,6 +141,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
     set({ isLoading: true, error: null });
 
     try {
+      // Monta o filtro
       const filters: string[] = [];
       filters.push(`status != "draft"`);
       if (campaignGoalFilter)
@@ -145,21 +150,20 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       if (channelFilter) filters.push(`channels ~ "${channelFilter}"`);
       if (nicheFilter) filters.push(`niche ~ "${nicheFilter}"`);
 
-      const result = await pb
+      // 1. Pegamos *todas* as campanhas que atendem ao filtro
+      let allCampaigns = await pb
         .collection("campaigns")
-        .getList<Campaign>(page, ITEMS_PER_PAGE, {
+        .getFullList<Campaign>({
           filter: generateFilterString(filters),
           sort: "-created",
           expand: "brand",
         });
 
-      let filteredCampaigns = result.items;
       const userAuthString = localStorage.getItem("pocketbase_auth");
-
       if (userAuthString) {
         const user = JSON.parse(userAuthString) as UserAuth;
-
-        if (user && user.model) {
+        if (user?.model) {
+          // Busca participations do influencer
           const participations = await pb
             .collection("Campaigns_Participations")
             .getFullList({
@@ -174,6 +178,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
             participationMap[p.campaign] = { status: p.status, id: p.id };
           });
 
+          // Mapeia quantas participações aprovadas existem no geral
           const allParticipations = await pb
             .collection("Campaigns_Participations")
             .getFullList();
@@ -186,37 +191,92 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
             }
           });
 
-          for (const campaign of filteredCampaigns) {
+          // Ajusta o array allCampaigns levando em conta participations
+          for (const campaign of allCampaigns) {
             const userParticipation = participationMap[campaign.id];
-
             if (userParticipation) {
-              // Se o usuário está participando, verificar o status
+              // Remove a campanha se o status não for "waiting" ou "sold_out"
               if (
                 userParticipation.status !== "waiting" &&
                 userParticipation.status !== "sold_out"
               ) {
-                // Remover a campanha se o status não for "waiting" ou "sold_out"
-                filteredCampaigns = filteredCampaigns.filter(
-                  (c) => c.id !== campaign.id
-                );
+                allCampaigns = allCampaigns.filter((c) => c.id !== campaign.id);
                 continue;
               }
-
-              console.log(userParticipation.status);
-
               campaign.participationStatus =
                 userParticipation.status as ParticipationStatusFilter;
             } else {
-              // Caso o usuário não esteja participando, definir um status padrão
-              // Por exemplo, "All" ou outro status que faça sentido na sua lógica
               campaign.participationStatus = ParticipationStatusFilter.All;
             }
           }
         }
       }
 
-      setCampaigns(filteredCampaigns);
-      setTotalPages(result.totalPages);
+      // 3. Lógica de destaque (spotlight)
+      const now = new Date();
+      try {
+        // 3.1 Buscar todos os spotlights ativos
+        const activeSpotlights = await pb
+          .collection("purchased_campaigns_spotlights")
+          .getFullList({
+            filter: `spotlight_end >= "${now.toISOString()}"`,
+            sort: "created",
+          });
+
+        console.log("Spotlights ativos:", activeSpotlights);
+
+        // 3.2 Map para saber qual campanha está em destaque
+        const spotlightMap: Record<string, { created: string }> = {};
+        activeSpotlights.forEach((spotlight) => {
+          spotlightMap[spotlight.campaign] = { created: spotlight.created };
+        });
+
+        // 3.3 Marcar as campanhas que têm spotlight ativo
+        allCampaigns = allCampaigns.map((c) => {
+          if (spotlightMap[c.id]) {
+            return {
+              ...c,
+              spotlightActive: true,
+              spotlightPurchasedAt: spotlightMap[c.id].created,
+            };
+          }
+          return {
+            ...c,
+            spotlightActive: false,
+            spotlightPurchasedAt: null,
+          };
+        }) as any;
+
+        allCampaigns.sort((a, b) => {
+          // Primeiro, quem está em spotlight
+          if (a.spotlightActive && !b.spotlightActive) return -1;
+          if (!a.spotlightActive && b.spotlightActive) return 1;
+
+          // Se ambos têm spotlight, ordenamos pela data de compra baseado em DESC
+          if (a.spotlightActive && b.spotlightActive) {
+            const dateA = new Date(a.spotlightPurchasedAt!).getTime();
+            const dateB = new Date(b.spotlightPurchasedAt!).getTime();
+            return dateB - dateA;
+            // Se você realmente quiser o mais antigo primeiro, troque por (dateA - dateB).
+          }
+
+          // Se nenhum tem spotlight, mantém a ordem de "-created" (mais recente primeiro)
+          return 0;
+        });
+      } catch (spotlightError) {
+        console.error("Erro ao buscar spotlights:", spotlightError);
+      }
+
+      // 4. Paginação "em memória"
+      const totalItems = allCampaigns.length;
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      const startIndex = (page - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const paginatedCampaigns = allCampaigns.slice(startIndex, endIndex);
+
+      // Seta no estado
+      setCampaigns(paginatedCampaigns);
+      setTotalPages(totalPages);
       set({ isLoading: false });
     } catch (error) {
       set({

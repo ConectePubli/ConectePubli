@@ -386,6 +386,7 @@ export const createCampaign = async (
   const createdCampaign: Campaign = await pb
     .collection("Campaigns")
     .create(formData);
+
   return createdCampaign;
 };
 

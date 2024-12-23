@@ -45,6 +45,20 @@ export function SideNavDashboard() {
             </li>
           )}
 
+          {/* {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-creators"
+                  className="flex items-center gap-2"
+                >
+                  <Users className="w-6 h-6" />
+                  Vitrine de Creators
+                </Link>
+              </Button>
+            </li>
+          )} */}
+
           {/* Conditionally render "Criar Campanha" for brands */}
           {isBrand && (
             <li>
@@ -167,19 +181,21 @@ const Sheet = () => {
               </Button>
             </li>
           )}
-          {/* <li>
-            <Button
-              variant="ghost"
-              className="w-full justify-start"
-              asChild
-              onClick={closeSheet}
-            >
-              <Link to="/dashboard/profile" className="flex items-center gap-2">
-                <Users className="w-6 h-6" />
-                Vitrine de Creators
-              </Link>
-            </Button>
-          </li> */}
+
+          {/* {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-creators"
+                  className="flex items-center gap-2"
+                >
+                  <Users className="w-6 h-6" />
+                  Vitrine de Creators
+                </Link>
+              </Button>
+            </li>
+          )} */}
+
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
               <a

@@ -14,6 +14,7 @@ import influencers from "@/assets/influencers.webp";
 import { ConnectBrandsSection } from "@/components/sections/LandingPage/ConnectBrandsSection";
 import SponsorBanner from "@/components/ui/SponsorBanner";
 import LogosCarousel from "@/components/ui/LogosCarousel";
+import TopCreatorsCarousel from "@/components/ui/TopCreatorsCarousel";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -34,6 +35,14 @@ function Index() {
         Aprovado Por:
         <LogosCarousel />
       </p>
+
+      <div
+        className="text-left text-xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm
+                  md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl"
+      >
+        <h2 className="mb-4">Top Creators que estão na Conecte Publi:</h2>
+        <TopCreatorsCarousel />
+      </div>
 
       <HowItWorksSection />
 
