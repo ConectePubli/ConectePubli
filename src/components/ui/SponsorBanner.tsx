@@ -3,7 +3,7 @@ import bannerEXPO from "@/assets/banners/BannerPatrocinadorEXPO.jpg";
 import bannerIAPOI from "@/assets/banners/BannerPatrocinadorIAPOI.jpg";
 import bannerYcSummit from "@/assets/banners/BannerYcSummitparaCP.png";
 import bannerLuciano from "@/assets/banners/BannerLuciano.jpeg";
-import bannerAnuncie from "@/assets/banners/BannerAnuncie.png";
+import bannerAnuncie from "@/assets/banners/BannerPatrocine.jpeg";
 
 type Sponsor = {
   id: string;
