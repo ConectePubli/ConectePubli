@@ -45,7 +45,6 @@ const SponsorBanner = () => {
       },
     ];
 
-    // embaralhar os patrocinadores e set
     setSponsors(sponsors.sort(() => Math.random() - 0.5));
   }, []);
 
