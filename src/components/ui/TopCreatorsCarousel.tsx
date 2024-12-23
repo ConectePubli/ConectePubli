@@ -78,7 +78,9 @@ export default function TopCreatorsCarousel() {
                   className="h-60 w-full object-cover md:h-72 rounded-t-lg"
                 />
                 <div className="flex items-center justify-center p-4">
-                  <p className="mr-2 text-sm font-semibold">{creator.name}</p>
+                  <p className="mr-2 text-sm font-semibold cursor-default">
+                    {creator.name}
+                  </p>
                   <img
                     src={GoldCheckIcon}
                     alt={"Gold Check"}
