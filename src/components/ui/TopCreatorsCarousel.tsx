@@ -4,15 +4,15 @@ import Slider from "react-slick";
 import Lais from "@/assets/topcreators/Laís.png";
 import Vittoria from "@/assets/topcreators/Vittoria.png";
 import Thais from "@/assets/topcreators/Thaís.png";
-import Betinho from "@/assets/topcreators/Betinho.png";
 import GoldCheckIcon from "@/assets/icons/gold-check.svg";
+import Catarino from "@/assets/topcreators/Catarino.png";
 import { useMemo } from "react";
 
 const topCreatorsData = [
   { name: "Laís Crisostomo", imageUrl: Lais },
   { name: "Vittoria Dutra", imageUrl: Vittoria },
   { name: "Thaís Machado", imageUrl: Thais },
-  { name: "Betinho Alves", imageUrl: Betinho },
+  { name: "Diogo Catarino", imageUrl: Catarino },
 ];
 
 export default function TopCreatorsCarousel() {
@@ -47,7 +47,7 @@ export default function TopCreatorsCarousel() {
       },
       {
         // até ~440px (mobile)
-        breakpoint: 440,
+        breakpoint: 540,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -59,28 +59,30 @@ export default function TopCreatorsCarousel() {
   return (
     <section className="mx-auto mt-4">
       <Slider {...settings}>
-        {topCreators.map((creator) => (
-          <div key={creator.name} className="p-4">
-            <div className="rounded-lg bg-white shadow-sm border">
-              <img
-                src={creator.imageUrl}
-                alt={creator.name}
-                className="h-60 w-full object-cover md:h-72 max-sm:h-80 rounded-t-lg"
-              />
-              <div className="flex items-center justify-center p-4">
-                <p className="mr-2 text-sm font-semibold cursor-default">
-                  {creator.name}
-                </p>
+        {topCreators
+          .sort(() => Math.random() - 0.5)
+          .map((creator) => (
+            <div key={creator.name} className="p-4">
+              <div className="rounded-lg bg-white shadow-sm border">
                 <img
-                  src={GoldCheckIcon}
-                  alt="Gold Check"
-                  className="w-5 h-5"
-                  draggable={false}
+                  src={creator.imageUrl}
+                  alt={creator.name}
+                  className="h-60 w-full object-cover md:h-72 max-sm:h-80 rounded-t-lg"
                 />
+                <div className="flex items-center justify-center p-4">
+                  <p className="mr-2 text-sm font-semibold cursor-default">
+                    {creator.name}
+                  </p>
+                  <img
+                    src={GoldCheckIcon}
+                    alt="Gold Check"
+                    className="w-5 h-5"
+                    draggable={false}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </Slider>
     </section>
   );
