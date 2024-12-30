@@ -201,7 +201,7 @@ const InfoParticipantModal: React.FC<Props> = ({
               }}
             >
               <Flag size={18} className="mr-1" />
-              Concluir Colaboração
+              Trabalho concluído
             </button>
           </>
         )}

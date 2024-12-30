@@ -6,43 +6,35 @@ import Vittoria from "@/assets/topcreators/Vittoria.png";
 import Thais from "@/assets/topcreators/Thaís.png";
 import Betinho from "@/assets/topcreators/Betinho.png";
 import GoldCheckIcon from "@/assets/icons/gold-check.svg";
+import { useMemo } from "react";
 
-const topCreators = [
-  {
-    name: "Laís Crisostomo",
-    imageUrl: Lais,
-  },
-  {
-    name: "Vittoria Dutra",
-    imageUrl: Vittoria,
-  },
-  {
-    name: "Thaís Machado",
-    imageUrl: Thais,
-  },
-  {
-    name: "Betinho Alves",
-    imageUrl: Betinho,
-  },
-  // TODO: Adicionar mais creators
+const topCreatorsData = [
+  { name: "Laís Crisostomo", imageUrl: Lais },
+  { name: "Vittoria Dutra", imageUrl: Vittoria },
+  { name: "Thaís Machado", imageUrl: Thais },
+  { name: "Betinho Alves", imageUrl: Betinho },
 ];
 
 export default function TopCreatorsCarousel() {
+  const topCreators = useMemo(() => {
+    return topCreatorsData;
+  }, []);
+
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     autoplay: true,
     autoplaySpeed: 3000,
     slidesToShow: 4,
-    slidesToScroll: 2,
+    slidesToScroll: 1,
     responsive: [
       {
-        // até ~1280px
+        // até ~1480px
         breakpoint: 1480,
         settings: {
           slidesToShow: 3,
-          slideToScroll: 1,
+          slidesToScroll: 1,
         },
       },
       {
@@ -50,15 +42,15 @@ export default function TopCreatorsCarousel() {
         breakpoint: 1024,
         settings: {
           slidesToShow: 2,
-          slideToScroll: 1,
+          slidesToScroll: 1,
         },
       },
       {
-        // até ~640px (mobile)
+        // até ~440px (mobile)
         breakpoint: 440,
         settings: {
           slidesToShow: 1,
-          slideToScroll: 1,
+          slidesToScroll: 1,
         },
       },
     ],
@@ -67,30 +59,28 @@ export default function TopCreatorsCarousel() {
   return (
     <section className="mx-auto mt-4">
       <Slider {...settings}>
-        {topCreators
-          .sort(() => Math.random() - 0.5)
-          .map((creator) => (
-            <div key={creator.name} className="p-4">
-              <div className="rounded-lg bg-white shadow-sm border">
+        {topCreators.map((creator) => (
+          <div key={creator.name} className="p-4">
+            <div className="rounded-lg bg-white shadow-sm border">
+              <img
+                src={creator.imageUrl}
+                alt={creator.name}
+                className="h-60 w-full object-cover md:h-72 max-sm:h-80 rounded-t-lg"
+              />
+              <div className="flex items-center justify-center p-4">
+                <p className="mr-2 text-sm font-semibold cursor-default">
+                  {creator.name}
+                </p>
                 <img
-                  src={creator.imageUrl}
-                  alt={creator.name}
-                  className="h-60 w-full object-cover md:h-72 rounded-t-lg"
+                  src={GoldCheckIcon}
+                  alt="Gold Check"
+                  className="w-5 h-5"
+                  draggable={false}
                 />
-                <div className="flex items-center justify-center p-4">
-                  <p className="mr-2 text-sm font-semibold cursor-default">
-                    {creator.name}
-                  </p>
-                  <img
-                    src={GoldCheckIcon}
-                    alt={"Gold Check"}
-                    className="w-5 h-5"
-                    draggable={false}
-                  />
-                </div>
               </div>
             </div>
-          ))}
+          </div>
+        ))}
       </Slider>
     </section>
   );
