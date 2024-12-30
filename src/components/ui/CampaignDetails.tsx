@@ -33,6 +33,8 @@ const CampaignDetails: React.FC = () => {
         return "Pronta para começar";
       case "in_progress":
         return "Em progresso";
+      case "subscription_ended":
+        return "Inscrições encerradas";
       case "ended":
         return "Encerrada";
     }

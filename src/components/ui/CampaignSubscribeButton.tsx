@@ -251,6 +251,9 @@ const CampaignSubscribeButton: React.FC = () => {
         buttonText = "Status desconhecido";
         isDisabled = true;
     }
+  } else if (campaign?.status === "subscription_ended") {
+    buttonText = "Inscrições encerradas";
+    isDisabled = true;
   }
   // 4. Caso o usuário possa se inscrever normalmente
   else {

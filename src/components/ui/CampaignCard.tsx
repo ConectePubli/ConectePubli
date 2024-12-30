@@ -133,6 +133,17 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
               Status: {readTextStatus(participationStatus)}
             </span>
           )}
+          {!participationStatus &&
+            campaignData.status === "subscription_ended" && (
+              <span
+                className="font-semibold"
+                style={{
+                  color: "red",
+                }}
+              >
+                Status: Inscrições Encerradas
+              </span>
+            )}
 
           {!fromMyCampaigns && (
             <div className="flex items-center space-x-2 max-sm:mt-2">
