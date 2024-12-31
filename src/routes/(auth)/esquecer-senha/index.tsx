@@ -18,7 +18,7 @@ function Page() {
   const [userType, setUserType] = useState<"brands" | "influencers">(
     "influencers"
   );
-  const [successMessage, setSuccessMessage] = useState(true);
+  const [successMessage, setSuccessMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const mutation = useMutation({
