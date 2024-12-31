@@ -25,8 +25,8 @@ export const buyPlanByStripe = async (
     const response = await axios.post(
       `https://conecte-publi.pockethost.io/api/stripe/product_spotlight_checkout`,
       {
-        stripe_price_id: selectedPlan.test_stripe_price_id,
-        stripe_product_id: selectedPlan.test_stripe_product_id,
+        stripe_price_id: selectedPlan.stripe_price_id,
+        stripe_product_id: selectedPlan.stripe_product_id,
         campaign_id: campaign.id,
         spotlight_id: selectedPlan.id,
       },
@@ -37,6 +37,7 @@ export const buyPlanByStripe = async (
       }
     );
 
+    console.log(response);
     if (response) {
       const link = response?.data?.url;
 
