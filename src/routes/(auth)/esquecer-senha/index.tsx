@@ -63,7 +63,7 @@ function Page() {
               className={`px-4 py-2 font-semibold ${userType === "influencers" ? "border-b-2 border-blue-500" : "text-gray-500"}`}
               onClick={() => setUserType("influencers")}
             >
-              Influencer
+              Creator
             </button>
             <button
               className={`px-4 py-2 font-semibold ml-4 ${userType === "brands" ? "border-b-2 border-blue-500" : "text-gray-500"}`}
@@ -102,7 +102,7 @@ function Page() {
               <h2 className="text-3xl font-bold mb-4">Redefinir Senha</h2>
               <p className="text-gray-600 mb-6">
                 Digite o e-mail associado à sua conta de{" "}
-                {userType === "influencers" ? "influenciador" : "marca"} e
+                {userType === "influencers" ? "creator" : "marca"} e
                 enviaremos um link para redefinir sua senha.
               </p>
 
