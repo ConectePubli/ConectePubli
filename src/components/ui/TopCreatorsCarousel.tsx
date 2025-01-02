@@ -6,6 +6,8 @@ import Vittoria from "@/assets/topcreators/Vittoria.png";
 import Thais from "@/assets/topcreators/Thaís.png";
 import GoldCheckIcon from "@/assets/icons/gold-check.svg";
 import Catarino from "@/assets/topcreators/Catarino.png";
+import FelipeMaia from "@/assets/topcreators/FelipeMaia.png";
+import Stefano from "@/assets/topcreators/Stefano.png";
 import { useMemo } from "react";
 
 const topCreatorsData = [
@@ -13,6 +15,14 @@ const topCreatorsData = [
   { name: "Vittoria Dutra", imageUrl: Vittoria },
   { name: "Thaís Machado", imageUrl: Thais },
   { name: "Diogo Catarino", imageUrl: Catarino },
+  {
+    name: "Stéfano Agostini",
+    imageUrl: Stefano,
+  },
+  {
+    name: "Felipe Maia",
+    imageUrl: FelipeMaia,
+  },
 ];
 
 export default function TopCreatorsCarousel() {
@@ -22,19 +32,19 @@ export default function TopCreatorsCarousel() {
 
   const settings = {
     dots: true,
-    infinite: false,
+    infinite: true,
     speed: 500,
     autoplay: true,
     autoplaySpeed: 3000,
     slidesToShow: 4,
-    slidesToScroll: 1,
+    slidesToScroll: 2,
     responsive: [
       {
         // até ~1480px
         breakpoint: 1480,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 1,
+          slidesToScroll: 2,
         },
       },
       {
