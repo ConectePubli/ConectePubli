@@ -36,7 +36,18 @@ export const Route = createFileRoute(
         to: "/dashboard-creator",
       });
     }
-
+    const brandId = pb.authStore.model?.id;
+    let hasPlan = true;
+    try {
+      // Tenta buscar o registro usando a brandId
+      console.log("Buscando o plano da marca...", brandId);
+      await pb
+        .collection("purchased_brand_plans")
+        .getFirstListItem(`brand="${brandId}"`);
+    } catch (error) {
+      hasPlan = false;
+      console.error("Erro ao buscar o plano da marca:", error);
+    }
     const perPage = 6;
 
     let filter = 'name != ""';
@@ -56,6 +67,7 @@ export const Route = createFileRoute(
       creators: result.items,
       totalPages: result.totalPages,
       page,
+      hasPlan,
       q,
     };
   },
@@ -70,7 +82,7 @@ export const Route = createFileRoute(
 });
 
 function Page() {
-  const { creators, totalPages, page } = Route.useLoaderData();
+  const { creators, totalPages, page, hasPlan } = Route.useLoaderData();
   const router = useRouter();
   const [loadingChatId, setLoadingChatId] = useState<string | null>(null);
   const [loadingPage, setLoadingPage] = useState(false);
@@ -133,6 +145,34 @@ function Page() {
       setLoadingChatId(null);
     }
   };
+
+  if (!hasPlan) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-66px)] bg-gradient-to-b from-blue-50 to-blue-100">
+        <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+            Acesso Restrito
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Essa funcionalidade está disponível apenas para marcas do plano
+            <span className="text-[#FF672F] font-bold"> Premium</span>. Faça o
+            upgrade e aproveite todos os benefícios.
+          </p>
+
+          <button
+            onClick={() =>
+              router.navigate({ to: "/dashboard/assinatura-premium" })
+            }
+            className="bg-[#10438F] text-white px-6 py-3 rounded-lg hover:bg-[#10438F]/90 transition-all font-semibold opacity-50 cursor-not-allowed"
+            disabled={true}
+          >
+            {/* Conheça os Planos */}
+            Em Breve
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">

@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link, Outlet } from "@tanstack/react-router";
-import { Folder, LayoutGrid, MessageCircle, Plus, X } from "lucide-react";
+import {
+  Folder,
+  LayoutGrid,
+  MessageCircle,
+  Plus,
+  Users,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSheetStore } from "@/store/useDashSheetStore";
 import pb from "@/lib/pb";
@@ -45,7 +52,7 @@ export function SideNavDashboard() {
             </li>
           )}
 
-          {/* {isBrand && (
+          {isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link
@@ -57,7 +64,7 @@ export function SideNavDashboard() {
                 </Link>
               </Button>
             </li>
-          )} */}
+          )}
 
           {/* Conditionally render "Criar Campanha" for brands */}
           {isBrand && (
@@ -182,7 +189,7 @@ const Sheet = () => {
             </li>
           )}
 
-          {/* {isBrand && (
+          {isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link
@@ -194,7 +201,7 @@ const Sheet = () => {
                 </Link>
               </Button>
             </li>
-          )} */}
+          )}
 
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
