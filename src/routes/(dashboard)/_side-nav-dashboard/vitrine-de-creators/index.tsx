@@ -160,14 +160,10 @@ function Page() {
           </p>
 
           <button
-            onClick={() =>
-              router.navigate({ to: "/dashboard/assinatura-premium" })
-            }
-            className="bg-[#10438F] text-white px-6 py-3 rounded-lg hover:bg-[#10438F]/90 transition-all font-semibold opacity-50 cursor-not-allowed"
-            disabled={true}
+            onClick={() => router.navigate({ to: "/premium/marca" })}
+            className="bg-[#10438F] text-white px-6 py-3 rounded-lg hover:bg-[#10438F]/90 transition-all font-semibold"
           >
-            {/* Conheça os Planos */}
-            Em Breve
+            Ver Planos
           </button>
         </div>
       </div>
