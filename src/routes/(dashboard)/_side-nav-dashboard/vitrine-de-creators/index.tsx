@@ -149,7 +149,7 @@ function Page() {
   if (!hasPlan) {
     return (
       <div className="flex justify-center items-center h-[calc(100vh-66px)] bg-gradient-to-b from-blue-50 to-blue-100">
-        <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
+        <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md mb-[66px]">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">
             Acesso Restrito
           </h1>
