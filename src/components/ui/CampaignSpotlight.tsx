@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { addDays, formatISO } from "date-fns";
 
 import { Button } from "./button";
 import Spinner from "./Spinner";
@@ -25,10 +26,13 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
   const [selectedOption, setSelectedOption] = useState<string>("0");
   const [plans, setPlans] = useState<SpotlightCampaignPlan[]>([]);
   const [paymentModal, setPaymentModal] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
+
+  const [loadingSpotlightPremium, setLoadingSpotlightPremium] = useState(false);
 
   const getPlansMutate = useMutation({
     mutationFn: async () => {
-      await getPlans(setPlans, pb);
+      await getPlans(setPlans, pb, setIsPremium);
     },
   });
 
@@ -77,36 +81,65 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
             <p className="text-gray-500">Sua campanha não receberá destaque.</p>
           </div>
 
-          {plans.map((plan) => (
+          {isPremium && (
             <div
-              key={plan.id}
               className={`border p-4 rounded-lg cursor-pointer ${
-                selectedOption === plan.id
+                selectedOption === "premium"
                   ? "border-red-500 bg-red-50"
                   : "border-gray-300"
               }`}
-              onClick={() => setSelectedOption(plan.id)}
+              onClick={() => setSelectedOption("premium")}
             >
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">
-                  {plan.stripe_product_name}
+                  Destaque da assinatura{" "}
+                  <span className="text-[#FF672F]">Premium</span>
                 </span>
-                <span className="text-lg font-medium">
-                  {formatCentsToCurrency(plan.pagseguro_price)}
-                </span>
+                <span className="text-lg font-medium">R$ 0,00</span>
               </div>
               <p className="text-gray-500">
-                {`Sua campanha ficará no topo por ${
-                  plan.stripe_product_name.match(/\d+/)?.[0]
-                } dias.`}
+                Sua campanha receberá um destaque de 5 dias.
               </p>
             </div>
-          ))}
+          )}
+
+          {plans.map((plan) => {
+            // caso seja premium, mostrar apenas o plano de destaque de 10 dias
+            if (isPremium && plan.id !== "kquityadsmxv3x3") {
+              return;
+            }
+
+            return (
+              <div
+                key={plan.id}
+                className={`border p-4 rounded-lg cursor-pointer ${
+                  selectedOption === plan.id
+                    ? "border-red-500 bg-red-50"
+                    : "border-gray-300"
+                }`}
+                onClick={() => setSelectedOption(plan.id)}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-medium">
+                    {plan.stripe_product_name}
+                  </span>
+                  <span className="text-lg font-medium">
+                    {formatCentsToCurrency(plan.pagseguro_price)}
+                  </span>
+                </div>
+                <p className="text-gray-500">
+                  {`Sua campanha ficará no topo por ${
+                    plan.stripe_product_name.match(/\d+/)?.[0]
+                  } dias.`}
+                </p>
+              </div>
+            );
+          })}
 
           <Button
             variant={"blue"}
             className="mt-6 w-full text-white py-2 rounded-lg"
-            onClick={() => {
+            onClick={async () => {
               const selectedPlan = plans.find(
                 (plan) => plan.id === selectedOption
               );
@@ -114,14 +147,38 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
               if (selectedPlan) {
                 setPaymentModal(true);
               } else {
-                navigate({
-                  to: "/dashboard-marca",
-                });
+                // plano de 5 dias automaticamente para marcas premium
+                if (isPremium && selectedOption === "premium") {
+                  setLoadingSpotlightPremium(true);
+                  const spotlightEndDate = formatISO(addDays(new Date(), 5));
+
+                  try {
+                    await pb
+                      .collection("purchased_campaigns_spotlights")
+                      .create({
+                        campaign: campaign.id,
+                        spotlight: "9e5ytgp87a8ykwz", // destaque por 5 dias
+                        spotlight_end: spotlightEndDate,
+                      });
+                  } catch (e) {
+                    console.log(`error buy spotlight plan by premium`);
+                    console.log(e);
+                  } finally {
+                    setLoadingSpotlightPremium(false);
+                    navigate({
+                      to: "/dashboard-marca",
+                    });
+                  }
+                } else {
+                  navigate({
+                    to: "/dashboard-marca",
+                  });
+                }
               }
             }}
           >
-            {selectedOption === "0"
-              ? "Sem destaque"
+            {selectedOption === "0" || selectedOption === "premium"
+              ? `${selectedOption === "premium" ? `${loadingSpotlightPremium ? "Aguarde..." : "Destacar por 5 dias"}` : "Sem destaque"}`
               : `Destacar por (${
                   plans.find((plan) => plan.id === selectedOption)
                     ? formatCentsToCurrency(

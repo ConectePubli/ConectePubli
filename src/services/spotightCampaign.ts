@@ -4,13 +4,22 @@ import axios from "axios";
 
 import { SpotlightCampaignPlan } from "@/types/SpotlightCampaignPlan";
 import { Campaign } from "@/types/Campaign";
+import { isBrandPremium } from "./brandPremium";
 
-export const getPlans = async (setPlans: React.ComponentState, pb: Client) => {
+export const getPlans = async (
+  setPlans: React.ComponentState,
+  pb: Client,
+  setIsPremium: React.ComponentState
+) => {
   try {
     const plans: SpotlightCampaignPlan[] = await pb
       .collection("campaign_spotlight_products")
       .getFullList();
+
+    const premium = await isBrandPremium();
+
     setPlans(plans);
+    setIsPremium(premium);
   } catch (e) {
     console.log(`error get plans: ${e}`);
   }
