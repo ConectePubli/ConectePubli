@@ -12,13 +12,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSheetStore } from "@/store/useDashSheetStore";
 import pb from "@/lib/pb";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/(dashboard)/_side-nav-dashboard")({
   component: SideNavDashboard,
 });
 
 export function SideNavDashboard() {
+  const [hasPlan, setHasPlan] = useState(false);
   const isBrand = pb.authStore.model?.collectionName === "Brands";
+
+  useEffect(() => {
+    if (isBrand) {
+      pb.collection("purchased_brand_plans")
+        .getFirstListItem(`brand="${pb.authStore.model?.id}"`)
+        .then(() => setHasPlan(true))
+        .catch(() => {
+          setHasPlan(false);
+        });
+    }
+  }, [isBrand]);
 
   return (
     <div className="flex h-[calc(100vh-66px)]">
@@ -38,6 +51,7 @@ export function SideNavDashboard() {
               </Link>
             </Button>
           </li>
+
           {/* Conditionally render Vitrine de Campanhas for non-brand users */}
           {!isBrand && (
             <li>
@@ -48,20 +62,6 @@ export function SideNavDashboard() {
                 >
                   <LayoutGrid className="w-6 h-6" />
                   Vitrine de Campanhas
-                </Link>
-              </Button>
-            </li>
-          )}
-
-          {isBrand && (
-            <li>
-              <Button variant="ghost" className="w-full justify-start" asChild>
-                <Link
-                  to="/vitrine-de-creators"
-                  className="flex items-center gap-2"
-                >
-                  <Users className="w-6 h-6" />
-                  Vitrine de Creators
                 </Link>
               </Button>
             </li>
@@ -93,6 +93,20 @@ export function SideNavDashboard() {
             </li>
           )}
 
+          {isBrand && hasPlan && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-creators"
+                  className="flex items-center gap-2"
+                >
+                  <Users className="w-6 h-6" />
+                  Vitrine de Creators
+                </Link>
+              </Button>
+            </li>
+          )}
+
           {/* WhatsApp Support Link */}
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
@@ -113,12 +127,16 @@ export function SideNavDashboard() {
       <main className="lg:ml-64 w-full">
         <Outlet />
       </main>
-      <Sheet />
+      <Sheet hasPlan={hasPlan} />
     </div>
   );
 }
 
-const Sheet = () => {
+interface SheetProps {
+  hasPlan: boolean;
+}
+
+const Sheet = ({ hasPlan }: SheetProps) => {
   const { isOpen, closeSheet } = useSheetStore();
 
   if (!isOpen) return null;
@@ -198,6 +216,20 @@ const Sheet = () => {
             </li>
           )}
 
+          {isBrand && hasPlan && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-creators"
+                  className="flex items-center gap-2"
+                >
+                  <Users className="w-6 h-6" />
+                  Vitrine de Creators
+                </Link>
+              </Button>
+            </li>
+          )}
+
           {!isBrand && (
             <li>
               <Button
@@ -212,20 +244,6 @@ const Sheet = () => {
                 >
                   <LayoutGrid className="w-6 h-6" />
                   Vitrine de Campanhas
-                </Link>
-              </Button>
-            </li>
-          )}
-
-          {isBrand && (
-            <li>
-              <Button variant="ghost" className="w-full justify-start" asChild>
-                <Link
-                  to="/vitrine-de-creators"
-                  className="flex items-center gap-2"
-                >
-                  <Users className="w-6 h-6" />
-                  Vitrine de Creators
                 </Link>
               </Button>
             </li>
