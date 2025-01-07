@@ -7,11 +7,13 @@ import {
   createFileRoute,
   redirect,
   useLoaderData,
+  useNavigate,
 } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Spinner from "@/components/ui/Spinner";
 import { PurchasedPremiumPlan } from "@/types/PurchasedPremiumPlan";
+import { CaretRight } from "phosphor-react";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/premium/marca/"
@@ -65,6 +67,7 @@ export const Route = createFileRoute(
 });
 
 function Page() {
+  const navigate = useNavigate();
   const { plansData, brandPlan } = useLoaderData({ from: Route.id });
 
   const plans = plansData as BrandPremiumPlan[];
@@ -88,8 +91,19 @@ function Page() {
         </p>
       </div>
 
+      {currentPlan && (
+        <div className="max-w-4xl mx-auto text-left mt-4">
+          <p
+            className="border-2 border-[#10438F] w-[200px] px-3 py-1 flex items-center justify-center rounded-md hover:bg-[#10438F] hover:text-white cursor-pointer transition-colors"
+            onClick={() => navigate({ to: "/premium/ebooks" })}
+          >
+            Acessar e-books <CaretRight />
+          </p>
+        </div>
+      )}
+
       <div className="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-md:mt-0">
-        <div className="relative bg-white h-[440px] shadow rounded-md p-6 flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] max-md:mb-[50px]">
+        <div className="relative bg-white h-[440px] shadow rounded-md p-6 flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] order-2 md:order-1 max-md:translate-y-0">
           <div>
             <div>
               <h2 className="text-xl md:text-2xl font-semibold text-gray-700 text-left">
@@ -135,7 +149,7 @@ function Page() {
               </p>
             </div>
           </div>
-          
+
           {currentPlan && currentPlan.plan.includes(plans[0].id) ? (
             <Button className="mt-4 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]">
               Plano atual
@@ -160,7 +174,7 @@ function Page() {
           )}
         </div>
 
-        <div className="relative bg-white h-[485px] shadow rounded-md flex flex-col justify-between border-2 border-[#FF7A49]">
+        <div className="relative bg-white h-[485px] shadow rounded-md flex flex-col justify-between border-2 border-[#FF7A49] order-1 md:order-2 max-md:mt-[50px]">
           <div className="bg-[#ff7a49] px-3 h-[45px] flex items-center justify-center text-center font-semibold">
             <p className="text-white">MAIS POPULAR</p>
           </div>

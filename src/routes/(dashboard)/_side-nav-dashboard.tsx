@@ -3,7 +3,6 @@ import { Link, Outlet } from "@tanstack/react-router";
 import {
   Flame,
   Folder,
-  Grid2x2PlusIcon,
   LayoutGrid,
   MessageCircle,
   Plus,
@@ -89,20 +88,6 @@ export function SideNavDashboard() {
                 <Link to="/premium/marca" className="flex items-center gap-2">
                   <Flame className="w-6 h-6" />
                   Assinatura premium
-                </Link>
-              </Button>
-            </li>
-          )}
-
-          {isBrand && (
-            <li>
-              <Button variant="ghost" className="w-full justify-start" asChild>
-                <Link
-                  to="/premium/ebooks?redirect=false"
-                  className="flex items-center gap-2"
-                >
-                  <Grid2x2PlusIcon className="w-6 h-6" />
-                  Central de recursos
                 </Link>
               </Button>
             </li>
@@ -208,25 +193,6 @@ const Sheet = () => {
                 <Link to="/premium/marca" className="flex items-center gap-2">
                   <Flame className="w-6 h-6" />
                   Assinatura premium
-                </Link>
-              </Button>
-            </li>
-          )}
-
-          {isBrand && (
-            <li>
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                asChild
-                onClick={closeSheet}
-              >
-                <Link
-                  to="/premium/ebooks?redirect=false"
-                  className="flex items-center gap-2"
-                >
-                  <Grid2x2PlusIcon className="w-6 h-6" />
-                  Central de recursos
                 </Link>
               </Button>
             </li>
