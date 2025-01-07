@@ -91,7 +91,7 @@ function Page() {
       <div className="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-md:mt-0">
         <div className="relative bg-white h-[440px] shadow rounded-md p-6 flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] max-md:mb-[50px]">
           <div>
-            <div className="min-h-[100px]">
+            <div>
               <h2 className="text-xl md:text-2xl font-semibold text-gray-700 text-left">
                 Plano Mensal
               </h2>
