@@ -135,14 +135,15 @@ function Page() {
               </p>
             </div>
           </div>
+          
           {currentPlan && currentPlan.plan.includes(plans[0].id) ? (
-            <Button className="mt-6 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]">
+            <Button className="mt-4 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]">
               Plano atual
             </Button>
           ) : (
             <Button
               variant={"blue"}
-              className="mt-6 w-full text-white py-2 px-4 rounded-md text-base"
+              className="mt-4 w-full text-white py-2 px-4 rounded-md text-base"
               onClick={() =>
                 subscribeClubPremium(
                   plans[0],
