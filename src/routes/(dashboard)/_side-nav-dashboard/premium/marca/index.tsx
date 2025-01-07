@@ -127,6 +127,13 @@ function Page() {
                 Creator Economy 360° + Guia Completo para Marcas e Negócios
               </li>
             </ul>
+
+            <div className="py-4">
+              <p className="text-sm text-gray-700">
+                Conecte-se ao Futuro do Marketing de Influência com a Conecte
+                Publi
+              </p>
+            </div>
           </div>
           {currentPlan && currentPlan.plan.includes(plans[0].id) ? (
             <Button className="mt-6 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]">
@@ -169,7 +176,7 @@ function Page() {
                     /mês
                   </span>
                 </p>
-                <span className="ml-4 translate-y-0.5 bg-[#ff7949e6] text-white font-bold text-xs px-2 py-1 rounded">
+                <span className="ml-4 translate-y-0.5 bg-[#FF7A49] text-white font-bold text-xs px-2 py-1 rounded">
                   78% OFF
                 </span>
               </div>
