@@ -7,6 +7,7 @@ import {
   LayoutGrid,
   MessageCircle,
   Plus,
+  Users,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,7 @@ export function SideNavDashboard() {
             </li>
           )}
 
-          {/* {isBrand && (
+          {isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link
@@ -65,7 +66,7 @@ export function SideNavDashboard() {
                 </Link>
               </Button>
             </li>
-          )} */}
+          )}
 
           {/* Conditionally render "Criar Campanha" for brands */}
           {isBrand && (
@@ -220,7 +221,10 @@ const Sheet = () => {
                 asChild
                 onClick={closeSheet}
               >
-                <Link to="/premium/ebooks?redirect=false" className="flex items-center gap-2">
+                <Link
+                  to="/premium/ebooks?redirect=false"
+                  className="flex items-center gap-2"
+                >
                   <Grid2x2PlusIcon className="w-6 h-6" />
                   Central de recursos
                 </Link>
@@ -247,7 +251,7 @@ const Sheet = () => {
             </li>
           )}
 
-          {/* {isBrand && (
+          {isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link
@@ -259,7 +263,7 @@ const Sheet = () => {
                 </Link>
               </Button>
             </li>
-          )} */}
+          )}
 
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
