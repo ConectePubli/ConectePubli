@@ -89,7 +89,7 @@ function Page() {
       </div>
 
       <div className="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-md:mt-0">
-        <div className="relative bg-white h-[405px] shadow rounded-md p-6 flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] max-md:mb-[50px]">
+        <div className="relative bg-white h-[440px] shadow rounded-md p-6 flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] max-md:mb-[50px]">
           <div>
             <div className="min-h-[100px]">
               <h2 className="text-xl md:text-2xl font-semibold text-gray-700 text-left">
@@ -152,23 +152,27 @@ function Page() {
           )}
         </div>
 
-        <div className="relative bg-white h-[450px] shadow rounded-md flex flex-col justify-between border-2 border-[#FF7A49]">
-          <div className="bg-[#ff7a49] p-x-3 h-[45px] flex items-center justify-center text-center font-semibold">
+        <div className="relative bg-white h-[485px] shadow rounded-md flex flex-col justify-between border-2 border-[#FF7A49]">
+          <div className="bg-[#ff7a49] px-3 h-[45px] flex items-center justify-center text-center font-semibold">
             <p className="text-white">MAIS POPULAR</p>
           </div>
 
-          <div className="p-6">
-            <div className="min-h-[100px] flex flex-col align-top">
+          <div className="px-6 pb-4">
+            <div className="flex flex-col align-top">
               <h2 className="text-xl md:text-2xl font-semibold text-gray-700 text-left">
                 Plano Anual
               </h2>
-              <p className="mt-2 text-left text-[#FF7A49] text-2xl md:text-3xl font-bold">
-                R$ 14,90
-                <span className="text-base md:text-lg font-medium text-gray-700">
-                  {" "}
-                  /mês
+              <div className="flex items-center mt-2">
+                <p className="text-left text-[#FF7A49] text-2xl md:text-3xl font-bold">
+                  R$ 14,90
+                  <span className="text-base md:text-lg font-medium text-gray-700">
+                    /mês
+                  </span>
+                </p>
+                <span className="ml-4 translate-y-0.5 bg-[#ff7949e6] text-white font-bold text-xs px-2 py-1 rounded">
+                  78% OFF
                 </span>
-              </p>
+              </div>
             </div>
 
             <ul className="mt-4 space-y-2 text-sm md:text-base">
@@ -194,6 +198,13 @@ function Page() {
               </li>
             </ul>
 
+            <div className="py-4">
+              <p className="text-sm text-gray-700">
+                Conecte-se ao Futuro do Marketing de Influência com a Conecte
+                Publi
+              </p>
+            </div>
+
             {currentPlan && currentPlan.plan.includes(plans[1].id) ? (
               <Button
                 variant={"blue"}
@@ -204,7 +215,7 @@ function Page() {
             ) : (
               <Button
                 variant={"blue"}
-                className="mt-6 w-full text-white py-2 px-4 rounded-md text-base disabled:bg-gray-700 "
+                className="mt-6 w-full text-white py-2 px-4 rounded-md text-base disabled:bg-gray-700"
                 onClick={() =>
                   subscribeClubPremium(
                     plans[1],
