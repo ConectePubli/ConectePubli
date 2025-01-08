@@ -91,5 +91,17 @@ export default {
     "Receba de forma rápida, simples e protegida com o Conecte Pay.":
       "Receive quickly, simply, and securely with Conecte Pay.",
     "Como funciona": "How it works",
+    Notificações: "Notifications",
+    "Você tem {{count}} notificações não lidas":
+      "You have {{count}} unread notifications",
+    "Olá, {{name}}!": "Hello, {{name}}!",
+    Perfil: "Profile",
+    Sair: "Logout",
+    "Confirmar saída": "Confirm exit",
+    "Tem certeza que deseja sair? Esta ação irá encerrar sua sessão.":
+      "Are you sure you want to exit? This action will end your session.",
+    Cancelar: "Cancel",
+    Entrar: "Login",
+    Cadastrar: "Register",
   },
 };

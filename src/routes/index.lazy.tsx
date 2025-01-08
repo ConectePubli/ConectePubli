@@ -2,7 +2,6 @@ import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { WhatsappLogo } from "phosphor-react";
 
 import { HeroSection } from "@/components/sections/LandingPage/HeroSection";
-//import { BrandsSection } from "@/components/sections/LandingPage/BrandSection";
 import { HowItWorksSection } from "@/components/sections/LandingPage/HowItWorksSection";
 import { SectionInfo } from "@/components/sections/LandingPage/SectionInfo";
 import { ConnectSection } from "@/components/sections/LandingPage/ConnectSection";
