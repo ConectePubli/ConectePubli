@@ -4,6 +4,7 @@ import bannerIAPOI from "@/assets/banners/BannerPatrocinadorIAPOI.jpg";
 import bannerYcSummit from "@/assets/banners/BannerYcSummitparaCP.png";
 import bannerLuciano from "@/assets/banners/BannerLuciano.jpeg";
 import bannerAnuncie from "@/assets/banners/BannerPatrocine.jpeg";
+import Translator from "../i18n/Translator";
 
 type Sponsor = {
   id: string;
@@ -94,7 +95,7 @@ const SponsorBanner = () => {
           SponsorImage
         )}
         <div className="absolute top-0 right-0 bg-black bg-opacity-75 text-white text-xs text-[10px] px-[4px] py-[2px]">
-          Patrocinado
+          <Translator path="Patrocinado" />
         </div>
       </div>
     </div>

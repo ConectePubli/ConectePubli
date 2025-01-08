@@ -1,11 +1,13 @@
+import React from "react";
 import { useTranslation } from "react-i18next";
 
-const Translator = ({ path }: { path: string }) => {
-  const { t } = useTranslation(); // Função que traduz
+interface TranslatorProps {
+  path: string;
+}
 
-  // Retornamos a função passando como parametro o caminho (path)
-  // de onde está localizado o texto que desejamos traduzir
-  return t(path);
+const Translator: React.FC<TranslatorProps> = ({ path }) => {
+  const { t } = useTranslation();
+  return <>{t(path)}</>;
 };
 
 export default Translator;

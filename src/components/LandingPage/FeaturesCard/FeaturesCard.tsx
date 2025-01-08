@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import React, { useState, useEffect, useRef } from "react";
 
 interface FeatureCardProps {
@@ -71,11 +72,15 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
       <div className="px-3 py-3">
         <h3 className="text-xl font-semibold">{title}</h3>
         <p className="text-gray-600 mt-2">
-          <span className="font-semibold text-gray-700">Para Marcas:</span>{" "}
+          <span className="font-semibold text-gray-700">
+            {t("Para Marcas:")}
+          </span>{" "}
           {descriptionBrand}
         </p>
         <p className="text-gray-600 mt-2">
-          <span className="font-semibold text-gray-700">Para Criadores:</span>{" "}
+          <span className="font-semibold text-gray-700">
+            {t("Para Criadores:")}
+          </span>{" "}
           {descriptionCreator}
         </p>
 

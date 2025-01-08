@@ -16,6 +16,7 @@ import SponsorBanner from "@/components/ui/SponsorBanner";
 import LogosCarousel from "@/components/ui/LogosCarousel";
 import TopCreatorsCarousel from "@/components/ui/TopCreatorsCarousel";
 import Translator from "@/components/i18n/Translator";
+import { t } from "i18next";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -41,7 +42,7 @@ function Index() {
         className="text-left text-xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm
                   md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl"
       >
-        <h2 className="mb-4">Confira Alguns dos Nossos Top Creators:</h2>
+        <h2 className="mb-4">{t("Confira Alguns dos Nossos Top Creators:")}</h2>
         <TopCreatorsCarousel />
       </div>
 
@@ -49,35 +50,39 @@ function Index() {
 
       <SectionInfo
         imageSrc={brand}
-        title="Para marcas"
+        title={t("Para marcas")}
         description={
           <div className="space-y-1">
             <p>
-              <strong>Acesso a criadores qualificados</strong> - Encontre os
-              criadores certos para suas campanhas, independentemente do porte
-              ou nicho. Selecione por filtros detalhados e conecte-se
-              diretamente.
+              <strong>{t("Acesso a criadores qualificados")}</strong>
+              {t(
+                " - Encontre os criadores certos para suas campanhas, independentemente do porte ou nicho. Selecione por filtros detalhados e conecte-se diretamente."
+              )}
             </p>
             <p>
-              <strong>Custo-Benefício Real</strong> - Sem taxas ocultas.
-              Campanhas acessíveis para qualquer orçamento, desde pequenas ações
-              locais até grandes campanhas de impacto
+              <strong>{t("Custo-Benefício Real")}</strong>
+              {t(
+                " - Sem taxas ocultas. Campanhas acessíveis para qualquer orçamento, desde pequenas ações locais até grandes campanhas de impacto"
+              )}
             </p>
             <p>
-              <strong>Resultados autênticos e eficientes</strong> - Receba
-              conteúdos criativos e alinhados ao seu público, gerando mais
-              engajamento, confiança e retorno para sua marca.
+              <strong>{t("Resultados autênticos e eficientes")}</strong>
+              {t(
+                " - Receba conteúdos criativos e alinhados ao seu público, gerando mais engajamento, confiança e retorno para sua marca."
+              )}
             </p>
             <p>
-              <strong>Pagamentos protegidos com Conecte Pay</strong> - Seu
-              investimento fica seguro: o pagamento só é liberado após aprovação
-              do conteúdo entregue. Sem riscos.
+              <strong>{t("Pagamentos protegidos com Conecte Pay")}</strong>
+              {t(
+                " - Seu investimento fica seguro: o pagamento só é liberado após aprovação do conteúdo entregue. Sem riscos."
+              )}
             </p>
 
             <p>
-              <strong>Segurança Jurídica integrada</strong> - Contratos e termos
-              padronizados já estão integrados na plataforma, garantindo
-              segurança e transparência em todos os acordos. Zero burocracia.
+              <strong>{t("Segurança Jurídica integrada")}</strong>
+              {t(
+                " - Contratos e termos padronizados já estão integrados na plataforma, garantindo segurança e transparência em todos os acordos. Zero burocracia."
+              )}
             </p>
           </div>
         }
@@ -88,37 +93,42 @@ function Index() {
 
       <SectionInfo
         imageSrc={influencers}
-        title="Para creators"
+        title={t("Para creators")}
         description={
           <div className="space-y-2">
             <p>
-              <strong>Oportunidades para todos os perfis</strong> - Seja UGC
-              Creator ou influenciador de qualquer porte, encontre campanhas que
-              combinam com você e monetize sua criatividade.
+              <strong>{t("Oportunidades para todos os perfis")}</strong>
+              {t(
+                " - Seja UGC Creator ou influenciador de qualquer porte, encontre campanhas que combinam com você e monetize sua criatividade."
+              )}
             </p>
             <p>
-              <strong>Processo simples e transparente</strong> - Candidate-se ás
-              campanhas que fazem sentido para você, entregue com confiança e
-              acompanhe tudo em um só lugar.
+              <strong>{t("Processo simples e transparente")}</strong>
+              {t(
+                " - Candidate-se ás campanhas que fazem sentido para você, entregue com confiança e acompanhe tudo em um só lugar."
+              )}
             </p>
             <p>
-              <strong>Construa seu portfólio e cresça</strong> - Trabalhe com
-              marcas, receba avaliações positivas e fortaleça sua reputação na
-              Creator Economy.
+              <strong>{t("Construa seu portfólio e cresça")}</strong>
+              {t(
+                " - Trabalhe com marcas, receba avaliações positivas e fortaleça sua reputação na Creator Economy."
+              )}
             </p>
             <p>
-              <strong>Pagamentos Garantidos e sem complicação</strong> - O
-              Conecte Pay assegura que o pagamento esteja reservado antes de
-              você começar a produzir. Receba de forma rápida e segura.
+              <strong>{t("Pagamentos Garantidos e sem complicação")}</strong>
+              {t(
+                " - O Conecte Pay assegura que o pagamento esteja reservado antes de você começar a produzir. Receba de forma rápida e segura."
+              )}
             </p>
             <p>
-              <strong>Segurança jurídica em todas as entregas</strong> - A
-              plataforma inclui contratos e termos claros para proteger seu
-              trabalho e garantir relações profissionais com as marcas
+              <strong>{t("Segurança jurídica em todas as entregas")}</strong>
+              {t(
+                " - A plataforma inclui contratos e termos claros para proteger seu trabalho e garantir relações profissionais com as marcas"
+              )}
             </p>
           </div>
         }
-        buttonLabel="Cadastro Creators"
+        buttonLabel={t("Cadastro Creators")}
         buttonVariant="orange"
         buttonOnClick={() => navigate({ to: "/cadastro/creator" })}
         reverse
