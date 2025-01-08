@@ -15,6 +15,7 @@ import { ConnectBrandsSection } from "@/components/sections/LandingPage/ConnectB
 import SponsorBanner from "@/components/ui/SponsorBanner";
 import LogosCarousel from "@/components/ui/LogosCarousel";
 import TopCreatorsCarousel from "@/components/ui/TopCreatorsCarousel";
+import Translator from "@/components/i18n/Translator";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -32,7 +33,7 @@ function Index() {
       {/* <BrandsSection /> */}
 
       <p className="text-left text-xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
-        Aprovado Por:
+        <Translator path="Aprovado Por:" />
         <LogosCarousel />
       </p>
 

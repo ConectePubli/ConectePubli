@@ -42,7 +42,7 @@ export default function TopCreatorsCarousel() {
     autoplay: true,
     autoplaySpeed: 3000,
     slidesToShow: 4,
-    slidesToScroll: 2,
+    slidesToScroll: 4,
     responsive: [
       {
         // até ~1480px
