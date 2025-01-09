@@ -17,9 +17,11 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   carousel,
 }) => {
   const phrases = [
-    "Marcas cadastram campanhas e definem o perfil dos creators-alvo.",
-    "Criadores acessam oportunidades e se candidatam diretamente, agilizando o processo.",
-    "Marcas aprovam os criadores para participar das campanhas.",
+    t("Marcas cadastram campanhas e definem o perfil dos creators-alvo."),
+    t(
+      "Criadores acessam oportunidades e se candidatam diretamente, agilizando o processo."
+    ),
+    t("Marcas aprovam os criadores para participar das campanhas."),
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);

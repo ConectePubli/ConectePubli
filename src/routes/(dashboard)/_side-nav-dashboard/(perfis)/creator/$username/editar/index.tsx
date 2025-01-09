@@ -33,6 +33,7 @@ import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
 import { ComboboxNiches } from "@/components/ui/ComboBoxNiches";
 import { Button } from "@/components/ui/button";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import { t } from "i18next";
 
 interface Option {
   value: string;
@@ -187,7 +188,7 @@ function InfluencerEditProfilePage() {
           });
           if (!hasAtLeastOne) {
             missingFields.push(
-              "Pelo menos uma rede social deve ser preenchida."
+              t("Pelo menos uma rede social deve ser preenchida.")
             );
           }
         } else {
@@ -263,7 +264,9 @@ function InfluencerEditProfilePage() {
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error(
-          "Erro ao buscar dados do influenciador. Por favor, tente novamente.",
+          t(
+            "Erro ao buscar dados do influenciador. Por favor, tente novamente."
+          ),
           {
             position: "top-right",
             autoClose: 5000,
@@ -298,8 +301,8 @@ function InfluencerEditProfilePage() {
         setAllNiches(formattedNiches);
         setIsLoadingNiches(false);
       } catch (error) {
-        console.error("Erro ao buscar nichos:", error);
-        setNichesError("Erro ao carregar nichos.");
+        console.error(t("Erro ao buscar nichos:"), error);
+        setNichesError(t("Erro ao carregar nichos."));
         setIsLoadingNiches(false);
       }
     };
@@ -370,29 +373,29 @@ function InfluencerEditProfilePage() {
                   formData[field as keyof Influencer].trim() === "")
               ) {
                 const fieldNames: { [key: string]: string } = {
-                  background_img: "Foto de fundo",
-                  bio: "Bio",
-                  name: "Nome Completo",
-                  username: "Username",
-                  birth_date: "Data de Nascimento",
-                  email: "Email",
-                  cell_phone: "Telefone Celular",
-                  account_type: "Tipo de Conta",
-                  gender: "Gênero",
-                  country: "País",
-                  cep: "CEP",
-                  street: "Rua",
-                  neighborhood: "Bairro",
-                  city: "Cidade",
-                  state: "Estado",
-                  address_num: "Número",
-                  pix_key: "Chave Pix",
-                  media_kit_url: "Mídia Kit",
-                  languages: "Idiomas",
-                  stories_price: "Preço por stories",
-                  feed_price: "Preço por post no feed",
-                  reels_price: "Preço por reels",
-                  ugc_price: "Preço por vídeo e combo UGC",
+                  background_img: t("Foto de fundo"),
+                  bio: t("Bio"),
+                  name: t("Nome Completo"),
+                  username: t("Username"),
+                  birth_date: t("Data de Nascimento"),
+                  email: t("Email"),
+                  cell_phone: t("Telefone Celular"),
+                  account_type: t("Tipo de Conta"),
+                  gender: t("Gênero"),
+                  country: t("País"),
+                  cep: t("CEP"),
+                  street: t("Rua"),
+                  neighborhood: t("Bairro"),
+                  city: t("Cidade"),
+                  state: t("Estado"),
+                  address_num: t("Número"),
+                  pix_key: t("Chave Pix"),
+                  media_kit_url: t("Mídia Kit"),
+                  languages: t("Idiomas"),
+                  stories_price: t("Preço por stories"),
+                  feed_price: t("Preço por post no feed"),
+                  reels_price: t("Preço por reels"),
+                  ugc_price: t("Preço por vídeo e combo UGC"),
                 };
                 missingFields.push(fieldNames[field] || field);
               }
@@ -529,14 +532,15 @@ function InfluencerEditProfilePage() {
 
         const err = error as ClientResponseError;
 
-        let errorMessage =
-          "Erro ao salvar as alterações. Por favor, tente novamente.";
+        let errorMessage = t(
+          "Erro ao salvar as alterações. Por favor, tente novamente."
+        );
 
         if (err && err.data && err.data.data && err.data.data.username) {
           const usernameError = err.data.data.username;
 
           if (usernameError.code === "validation_invalid_username") {
-            errorMessage = "O nome de usuário é inválido ou já está em uso.";
+            errorMessage = t("O nome de usuário é inválido ou já está em uso.");
           }
         }
 
@@ -577,7 +581,7 @@ function InfluencerEditProfilePage() {
       } catch (error) {
         console.error("Error fetching CEP data:", error);
         toast.error(
-          "CEP não encontrado. Por favor, verifique o CEP informado.",
+          t("CEP não encontrado. Por favor, verifique o CEP informado."),
           {
             position: "top-right",
             autoClose: 5000,
@@ -607,7 +611,7 @@ function InfluencerEditProfilePage() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <Section
-        title="Dados básicos"
+        title={t("Dados básicos")}
         initiallyOpen
         completed={sectionCompletion.basicData}
         hasUnsavedChanges={isFormChangedStates.basicData}
@@ -629,7 +633,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Sobre você"
+        title={t("Sobre você")}
         completed={sectionCompletion.about}
         hasUnsavedChanges={isFormChangedStates.about}
       >
@@ -645,7 +649,7 @@ function InfluencerEditProfilePage() {
       </Section>
 
       <Section
-        title="Endereço"
+        title={t("Endereço")}
         completed={sectionCompletion.address}
         hasUnsavedChanges={isFormChangedStates.address}
       >
@@ -662,7 +666,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Redes sociais"
+        title={t("Redes sociais")}
         completed={sectionCompletion.socialMedia}
         hasUnsavedChanges={isFormChangedStates.socialMedia}
       >
@@ -677,7 +681,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Mídia kit"
+        title={t("Mídia kit")}
         completed={sectionCompletion.mediaKit}
         hasUnsavedChanges={isFormChangedStates.mediaKit}
       >
@@ -692,7 +696,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Conta bancária"
+        title={t("Conta bancária")}
         completed={sectionCompletion.bankAccount}
         hasUnsavedChanges={isFormChangedStates.bankAccount}
       >
@@ -707,7 +711,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Portfólio"
+        title={t("Portfólio")}
         completed={sectionCompletion.portfolio}
         hasUnsavedChanges={isFormChangedStates.portfolio}
       >
@@ -722,7 +726,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Preços para cada tipo de conteúdo"
+        title={t("Preços para cada tipo de conteúdo")}
         completed={sectionCompletion.prices}
         hasUnsavedChanges={isFormChangedStates.prices}
       >
@@ -738,7 +742,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Idiomas"
+        title={t("Idiomas")}
         completed={sectionCompletion.skills}
         hasUnsavedChanges={isFormChangedStates.skills}
       >
@@ -752,7 +756,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Configurações da Conta" isConfig={true}>
+      <Section title={t("Configurações da Conta")} isConfig={true}>
         <AccountInfoSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -814,7 +818,7 @@ function Section({
           </span>
           {hasUnsavedChanges && (
             <span className="text-red-500 text-sm font-semibold ml-2">
-              *Clique em "Salvar Alterações" ao final deste item
+              {t('*Clique em "Salvar Alterações" ao final deste item')}
             </span>
           )}
         </div>
@@ -871,7 +875,7 @@ function BasicDataSection({
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Foto de fundo*
+            {t("Foto de fundo*")}
           </label>
           {formData.background_img ? (
             <img
@@ -900,7 +904,7 @@ function BasicDataSection({
         </div>
         <div className="flex flex-col items-center">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Carregar nova imagem de perfil
+            {t("Carregar nova imagem de perfil")}
           </label>
           {formData.profile_img ? (
             <img
@@ -929,13 +933,13 @@ function BasicDataSection({
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Bio*
+          {t("Bio*")}
         </label>
         <textarea
           name="bio"
           className="border border-gray-300 p-2 rounded-lg w-full"
           rows={3}
-          placeholder="Escreva uma breve descrição sobre você"
+          placeholder={t("Escreva uma breve descrição sobre você")}
           value={formData.bio || ""}
           onChange={handleSectionInputChange}
         />
@@ -949,10 +953,13 @@ function BasicDataSection({
 
         {isLoadingNiches ? (
           <div className="flex items-center justify-center w-full p-3 border rounded-md">
-            <p className="text-gray-500 text-center">Carregando nichos...</p>
+            <p className="text-gray-500 text-center">
+              {t("Carregando nichos...")}
+            </p>
             <p className="text-xs text-gray-500">
-              * É necessário salvar as alterações de cada seção para que elas
-              sejam aplicadas.
+              {t(
+                "* É necessário salvar as alterações de cada seção para que elas sejam aplicadas."
+              )}
             </p>
           </div>
         ) : nichesError ? (
@@ -1910,9 +1917,7 @@ function PricesSection({
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder="Ex: R$200,00"
           value={
-            formData.ugc_price
-              ? formatCentsToCurrency(formData.ugc_price)
-              : ""
+            formData.ugc_price ? formatCentsToCurrency(formData.ugc_price) : ""
           }
           onChange={handleSectionInputChange}
         />

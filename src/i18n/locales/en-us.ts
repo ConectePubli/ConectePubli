@@ -1,3 +1,5 @@
+import Translator from "@/components/i18n/Translator";
+
 export default {
   translations: {
     "Aprovado Por:": "Approved By:",
@@ -103,5 +105,194 @@ export default {
     Cancelar: "Cancel",
     Entrar: "Login",
     Cadastrar: "Register",
+    "Cadastro para Creators": "Creators Registration",
+    "Junte-se à ConectePubli e faça parte de uma rede exclusiva de creators.":
+      "Join ConectePubli and be part of an exclusive network of creators.",
+    "Nome Completo": "Full Name",
+    "E-mail de Contato": "Contact Email",
+    "Marcas cadastram campanhas e definem o perfil dos creators-alvo.":
+      "Brands register campaigns and define the profile of the target creators.",
+    "Criadores acessam oportunidades e se candidatam diretamente, agilizando o processo.":
+      "Creators access opportunities and apply directly, streamlining the process.",
+    "Marcas aprovam os criadores para participar das campanhas.":
+      "Brands approve creators to participate in campaigns.",
+    "Número de Celular/Whatsapp": "Cell Phone/Whatsapp Number",
+    Senha: "Password",
+    "Pelo menos uma rede social deve ser preenchida.":
+      "At least one social network must be filled in.",
+    "Erro ao carregar nichos.": "Error loading niches.",
+    "Já tem uma conta? (opção escondida até o pós lançamento)":
+      "Already have an account? (hidden option until post-launch)",
+    "Confirme a Senha": "Confirm Password",
+    "Eu aceito os": "I accept the",
+    "termos de uso": "terms of use",
+    "e a": "and the",
+    "política de privacidade": "privacy policy",
+    "É uma marca? Acesse o": "Are you a brand? Access the",
+    "formulário de cadastro para marcas": "brands registration form",
+    "aqui.": "here.",
+    "Enviando...": "Sending...",
+    "Digite o seu nome completo": "Enter your full name",
+    "Informe o e-mail de contato": "Enter the contact email",
+    "Digite sua senha": "Enter your password",
+    "Confirme sua senha": "Confirm your password",
+    "Erro ao buscar nichos:": "Error fetching niches:",
+    "Erro ao buscar dados do influenciador. Por favor, tente novamente.":
+      "Error fetching influencer data. Please try again.",
+    "Foto de fundo": "Background photo",
+    Bio: "Bio",
+    Username: "Username",
+    "Data de Nascimento": "Birth Date",
+    Email: "Email",
+    "Telefone Celular": "Cell Phone",
+    "Tipo de Conta": "Account Type",
+    Gênero: "Gender",
+    País: "Country",
+    CEP: "Postal Code",
+    Rua: "Street",
+    Bairro: "Neighborhood",
+    Cidade: "City",
+    Estado: "State",
+    Número: "Number",
+    "Chave Pix": "Pix Key",
+    "Mídia Kit": "Media Kit",
+    Idiomas: "Languages",
+    "Preço por stories": "Price per Story",
+    "Preço por post no feed": "Price per Feed Post",
+    "Preço por reels": "Price per Reel",
+    "Preço por vídeo e combo UGC": "Price per UGC Video and Combo",
+    "Nome da Marca/Empresa": "Brand/Company Name",
+    "Nome do Responsável": "Responsible Person's Name",
+    "Como você conheceu a Conecte Publi?":
+      "How did you hear about Conecte Publi?",
+    "Especifique:": "Specify:",
+    "Eu aceito os termos de uso e a política de privacidade.":
+      "I accept the terms of use and the privacy policy.",
+
+    // Placeholders
+    "Digite o nome da sua marca ou empresa": "Enter your brand or company name",
+    "Nome do responsável da marca ou empresa":
+      "Name of the person responsible for the brand or company",
+    "Informe o e-mail de contato da empresa":
+      "Enter the company's contact email",
+    "(XX) XXXXX-XXXX": "(XX) XXXXX-XXXX",
+    Selecione: "Select",
+    "Forneça mais detalhes": "Provide more details",
+
+    // Buttons
+    "Cadastro Marcas": "Register Brand",
+    "Faça login": "Log in",
+    "Acesse o formulário de creators aqui.": "Access the creators' form here.",
+
+    // Titles and Descriptions
+    "Cadastro para Marcas": "Brand Registration",
+    "Junte-se à ConectePubli e conecte sua marca a creators que podem amplificar sua mensagem de forma autêntica.":
+      "Join ConectePubli and connect your brand with creators who can authentically amplify your message.",
+
+    // Error Messages
+    "Você deve aceitar os termos e condições.":
+      "You must accept the terms and conditions.",
+    "O e-mail inserido não é válido.": "The entered email is not valid.",
+    "Por favor, especifique como você conheceu a Conecte Publi.":
+      "Please specify how you heard about Conecte Publi.",
+    "A senha precisa ter mais que 8 caracteres.":
+      "The password must be longer than 8 characters.",
+    "As senhas não coincidem.": "Passwords do not match.",
+    "Por favor, selecione como você conheceu a Conecte Publi.":
+      "Please select how you heard about Conecte Publi.",
+    "Este e-mail já está em uso ou é inválido.":
+      "This email is already in use or invalid.",
+    "Ocorreu um erro ao criar a conta. {{errorMessage}}":
+      "An error occurred while creating the account. {{errorMessage}}",
+
+    // Select Options
+    "Indicação de amigos ou colegas": "Referral from friends or colleagues",
+    "Indicação de outro usuário na plataforma":
+      "Referral from another user on the platform",
+    Instagram: "Instagram",
+    Facebook: "Facebook",
+    LinkedIn: "LinkedIn",
+    YouTube: "YouTube",
+    TikTok: "TikTok",
+    Kwai: "Kwai",
+    "Twitter/X": "Twitter/X",
+    YourClub: "YourClub",
+    "E-mail marketing": "Email marketing",
+    Mídia: "Media",
+    "Pesquisa no Google": "Google Search",
+    "Pesquisa em outro buscador": "Search on another search engine",
+    Outra: "Other",
+
+    // Additional Texts
+    "Já tem uma conta? (opção escondida até o pós lançamento) Faça login.":
+      "Already have an account? (option hidden until post-launch) Log in.",
+    "É creator? Acesse o formulário de creators aqui.":
+      "Are you a creator? Access the creators' form here.",
+
+    "Campos Obrigatórios": "Required Fields",
+    "Erro ao salvar as alterações. Por favor, tente novamente.":
+      "Error saving changes. Please try again.",
+    "O nome de usuário é inválido ou já está em uso.":
+      "The username is invalid or already in use.",
+    "CEP não encontrado. Por favor, verifique o CEP informado.":
+      "Postal code not found. Please check the provided postal code.",
+    "Dados básicos": "Basic Information",
+    "Sobre você": "About You",
+    Endereço: "Address",
+    "Redes sociais": "Social Media",
+    "Mídia kit": "Media Kit",
+    "Conta bancária": "Bank Account",
+    Portfólio: "Portfolio",
+    "Preços para cada tipo de conteúdo": "Prices for Each Content Type",
+    "É creator? Acesse o": "Are you a creator? Access the",
+    "formulário de creators": "creators' form",
+    "Configurações da Conta": "Account Settings",
+    '*Clique em "Salvar Alterações" ao final deste item':
+      '*Click "Save Changes" at the end of this item',
+    "Foto de fundo*": "Background Photo*",
+    "Carregar nova imagem de perfil": "Upload New Profile Picture",
+    "Bio*": "Bio*",
+    "Quero me Cadastrar como uma Marca/Empresa":
+      "I Want to Register as a Brand/Company",
+    "Quero me Cadastrar como um Creator": "I Want to Register as a Creator",
+    "Selecione uma das opções abaixo para continuar.":
+      "Select one of the options below to continue.",
+    "Escolha seu Registro": "Choose Your Registration",
+    "Escreva uma breve descrição sobre você":
+      "Write a brief description about yourself",
+    Marca: "Brand",
+    "Carregando nichos...": "Loading niches...",
+    "* É necessário salvar as alterações de cada seção para que elas sejam aplicadas.":
+      "* You need to save changes in each section for them to be applied.",
+    "Se esse e-mail tiver cadastro na plataforma, enviaremos um link para redefinição de senha.":
+      "If this email is registered on the platform, we will send a password reset link.",
+    "Clique no link enviado para o e-mail":
+      "Click on the link sent to the email",
+    "Atenção: Caso não receba o e-mail, verifique sua caixa de spam ou lixeira.":
+      "Attention: If you do not receive the email, check your spam or trash folder.",
+    "Voltar para a página de login": "Back to the login page",
+    "Digite o e-mail associado à sua conta de":
+      "Enter the email associated with your",
+    "e enviaremos um link para redefinir sua senha.":
+      "account and we will send a link to reset your password.",
+    "Digite o e-mail da conta": "Enter the account email",
+    "Enviar Link de Recuperação": "Send Recovery Link",
+    "Redefinir Senha": "Reset Password",
+    marca: "brand",
+    "Bem-vindo de volta!": "Welcome back!",
+    "Conecte-se à sua conta e continue construindo parcerias estratégicas com marcas e creators.":
+      "Connect to your account and continue building strategic partnerships with brands and creators.",
+    "Lembrete: Certifique-se de selecionar a opção correta ao acessar sua conta. Se você se cadastrou como ":
+      "Reminder: Make sure to select the correct option when accessing your account. If you signed up as ",
+    " ou ": " or ",
+    ", escolha a opção correspondente.": ", choose the corresponding option.",
+    "Informe o e-mail": "Enter the email",
+    "Informe a senha": "Enter the password",
+    "Esqueci minha senha": "Forgot my password",
+    "Entrando...": "Logging in...",
+    "Entrar como Marca": "Login as Brand",
+    "Entrar como Creator": "Login as Creator",
+    "Novo por aqui?": "New here?",
+    "Crie sua conta gratuitamente!": "Create your account for free!",
   },
 };
