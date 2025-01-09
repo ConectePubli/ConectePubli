@@ -43,7 +43,7 @@ export const Route = createFileRoute(
       console.log("Buscando o plano da marca...", brandId);
       await pb
         .collection("purchased_brand_plans")
-        .getFirstListItem(`brand="${brandId}"`);
+        .getFirstListItem(`brand="${brandId}" && active=true`);
     } catch (error) {
       hasPlan = false;
       console.error("Erro ao buscar o plano da marca:", error);

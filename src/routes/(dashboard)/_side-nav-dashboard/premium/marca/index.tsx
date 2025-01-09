@@ -1,8 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { getUserType } from "@/lib/auth";
-import pb from "@/lib/pb";
-import { subscribeClubPremium } from "@/services/brandPremium";
-import { BrandPremiumPlan } from "@/types/BrandPremiumPlan";
 import {
   createFileRoute,
   redirect,
@@ -10,10 +6,25 @@ import {
   useNavigate,
 } from "@tanstack/react-router";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import Spinner from "@/components/ui/Spinner";
-import { PurchasedPremiumPlan } from "@/types/PurchasedPremiumPlan";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 import { CaretRight } from "phosphor-react";
+
+import Spinner from "@/components/ui/Spinner";
+import Modal from "@/components/ui/Modal";
+
+import { PurchasedPremiumPlan } from "@/types/PurchasedPremiumPlan";
+import { BrandPremiumPlan } from "@/types/BrandPremiumPlan";
+
+import { getUserType } from "@/lib/auth";
+import pb from "@/lib/pb";
+
+import {
+  subscribeClubPremium,
+  unsubscribeClubPremium,
+} from "@/services/brandPremium";
+import { formatDateUTC } from "@/utils/formatDateUTC";
+import { Info } from "lucide-react";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/premium/marca/"
@@ -40,7 +51,7 @@ export const Route = createFileRoute(
       const purchasedPlan = await pb
         .collection("purchased_brand_plans")
         .getFullList({
-          filter: `brand="${pb.authStore?.model?.id}"`,
+          filter: `brand="${pb.authStore?.model?.id}" && active=true`,
         });
 
       return {
@@ -78,8 +89,50 @@ function Page() {
     year: false,
   });
 
+  const [seeModalCancel, setSeeModalCancel] = useState(false);
+  const [loadingCancel, setLoadingCancel] = useState(false);
+
   return (
     <div className="w-full p-4 md:p-8">
+      {seeModalCancel && (
+        <Modal onClose={() => setSeeModalCancel(false)}>
+          <div className="flex flex-col gap-4">
+            <h2 className="text-xl font-semibold">
+              Tem certeza que deseja cancelar a assinatura?
+            </h2>
+
+            <p className="text-gray-700">
+              O cancelamento impedirá futuras cobranças, mas o acesso aos
+              benefícios permanecerá ativo até o termino do período (mensal ou
+              anual)
+            </p>
+
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setSeeModalCancel(false)}
+                className="text-gray-600 hover:underline"
+              >
+                Fechar
+              </button>
+              <button
+                className={`bg-[#942A2A] text-white px-4 py-2 rounded hover:bg-red-700 transition hover:cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed ${
+                  loadingCancel && "opacity-30 cursor-not-allowed"
+                }`}
+                onClick={() => {
+                  unsubscribeClubPremium(
+                    setLoadingCancel,
+                    currentPlan.subscription_stripe_id,
+                    toast
+                  );
+                }}
+              >
+                {loadingCancel ? "Aguarde..." : "Cancelar"}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       <div className="max-w-4xl mx-auto text-left">
         <h1 className="text-xl md:text-3xl font-semibold text-gray-800">
           Acesso Premium: Eleve Suas Campanhas ao Próximo Nível!
@@ -102,8 +155,20 @@ function Page() {
         </div>
       )}
 
+      {currentPlan && currentPlan.cancel_at && (
+        <div className="max-w-4xl mx-auto text-left mt-4 bg-red-200 py-2 px-4 rounded-md">
+          <p className="flex items-center">
+            <Info className="w-4 h-4 min-w-[1rem] mr-2" /> Sua assinatura foi
+            cancelada, ela continuará ativa até o dia{" "}
+            {formatDateUTC(currentPlan.cancel_at)}
+          </p>
+        </div>
+      )}
+
       <div className="max-w-4xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-md:mt-0">
-        <div className="relative bg-white h-[440px] shadow rounded-md p-6 flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] order-2 md:order-1 max-md:translate-y-0">
+        <div
+          className={`relative bg-white ${currentPlan && !currentPlan.cancel_at ? "h-[485px]" : "h-[440px]"} shadow rounded-md p-6 flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] order-2 md:order-1 max-md:translate-y-0`}
+        >
           <div>
             <div>
               <h2 className="text-xl md:text-2xl font-semibold text-gray-700 text-left">
@@ -151,9 +216,20 @@ function Page() {
           </div>
 
           {currentPlan && currentPlan.plan.includes(plans[0].id) ? (
-            <Button className="mt-4 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]">
-              Plano atual
-            </Button>
+            <div>
+              <Button className="mt-4 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]">
+                Plano atual
+              </Button>
+
+              {!currentPlan.cancel_at && (
+                <p
+                  className="mt-4 text-center text-red-600 text-base hover:underline cursor-pointer"
+                  onClick={() => setSeeModalCancel(true)}
+                >
+                  Cancelar o plano
+                </p>
+              )}
+            </div>
           ) : (
             <Button
               variant={"blue"}
@@ -174,7 +250,9 @@ function Page() {
           )}
         </div>
 
-        <div className="relative bg-white h-[485px] shadow rounded-md flex flex-col justify-between border-2 border-[#FF7A49] order-1 md:order-2 max-md:mt-[50px]">
+        <div
+          className={`relative bg-white shadow ${currentPlan && !currentPlan.cancel_at ? "h-[530px]" : "h-[485px]"} rounded-md flex flex-col justify-between border-2 border-[#FF7A49] order-1 md:order-2 max-md:mt-[50px]`}
+        >
           <div className="bg-[#ff7a49] px-3 h-[45px] flex items-center justify-center text-center font-semibold">
             <p className="text-white">MAIS POPULAR</p>
           </div>
@@ -228,12 +306,23 @@ function Page() {
             </div>
 
             {currentPlan && currentPlan.plan.includes(plans[1].id) ? (
-              <Button
-                variant={"blue"}
-                className="mt-6 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]"
-              >
-                Plano atual
-              </Button>
+              <div>
+                <Button
+                  variant={"blue"}
+                  className="mt-6 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]"
+                >
+                  Plano atual
+                </Button>
+
+                {!currentPlan.cancel_at && (
+                  <p
+                    className="mt-4 text-center text-red-600 text-base hover:underline cursor-pointer"
+                    onClick={() => setSeeModalCancel(true)}
+                  >
+                    Cancelar o plano
+                  </p>
+                )}
+              </div>
             ) : (
               <Button
                 variant={"blue"}
@@ -255,6 +344,8 @@ function Page() {
           </div>
         </div>
       </div>
+
+      <ToastContainer />
     </div>
   );
 }
