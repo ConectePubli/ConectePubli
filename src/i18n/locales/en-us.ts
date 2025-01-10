@@ -762,5 +762,80 @@ export default {
     "Confirme sua nova senha": "Confirm your new password",
     "Alterando...": "Changing...",
     "Alterar Senha": "Change Password",
+    // aqui pra baixo tira
+    "Email e/ou senha incorretos.": "Incorrect email and/or password.",
+    "Faça o download do Regulamento": "Download the Regulation",
+    "Clique no botão e um arquivo PDF será baixado automaticamente no seu dispositivo. Esse arquivo contém: Os requisitos necessários para se tornar um Top Creator. Um formulário para assinatura.":
+      "Click the button and a PDF file will be automatically downloaded to your device. This file contains: The requirements to become a Top Creator. A form for signature.",
+    "Leia o documento e prepare os requisitos":
+      "Read the document and prepare the requirements",
+    "Abra o PDF baixado e leia com atenção todas as informações e requisitos. Certifique-se de atender a todos os critérios solicitados antes de prosseguir.":
+      "Open the downloaded PDF and carefully read all the information and requirements. Make sure you meet all the criteria requested before proceeding.",
+    "Envie o formulário preenchido": "Send the completed form",
+    "Reúna os documentos necessários, assine e envie para":
+      "Gather the necessary documents, sign and send to",
+    ". Após aprovação, seu perfil será atualizado com o selo de Top Creator, destacando sua posição na plataforma.":
+      ". After approval, your profile will be updated with the Top Creator seal, highlighting your position on the platform.",
+    "Descubra Como Funciona": "Discover How It Works",
+    "Baixar Regulamento": "Download Regulation",
+    "Aconteceu um erro ao carregar essa página, não se preocupe o erro é do nosso lado e vamos trabalhar para resolve-lo!":
+      "An error occurred while loading this page, don't worry the error is on our side and we will work to resolve it!",
+    "Acesso Premium: Eleve Suas Campanhas ao Próximo Nível!":
+      "Premium Access: Take Your Campaigns to the Next Level!",
+    "Desbloqueie o poder total da Conecte Publi com a Assinatura Premium para Marcas. Tenha acesso a ferramentas avançadas e maior visibilidade para suas campanhas, insights estratégicos e muito mais.":
+      "Unlock the full power of Conecte Publi with the Premium Subscription for Brands. Get access to advanced tools and greater visibility for your campaigns, strategic insights, and much more.",
+    "Acessar e-books": "Access e-books",
+    "Plano Mensal": "Monthly Plan",
+    "/mês": "/month",
+    "Destaque de campanha 5 dias por campanha":
+      "Campaign highlight 5 days per campaign",
+    "Acesso à Vitrine de Creators": "Access to the Creators Showcase",
+    "Guia de Precificação UGC e IGC": "UGC and IGC Pricing Guide",
+    "Dicionário da Creator Economy": "Creator Economy Dictionary",
+    "Creator Economy 360° + Guia Completo para Marcas e Negócios":
+      "Creator Economy 360° + Complete Guide for Brands and Businesses",
+    "Conecte-se ao Futuro do Marketing de Influência com a Conecte Publi":
+      "Connect to the Future of Influencer Marketing with Conecte Publi",
+    "Plano atual": "Current plan",
+    "Escolher Plano": "Choose Plan",
+    "Aguarde...": "Wait...",
+    "MAIS POPULAR": "MOST POPULAR",
+    "Plano Anual": "Annual Plan",
+    "O Guia Completo para Marcas e Negócios":
+      "The Complete Guide for Brands and Businesses",
+    "Tenha em mãos todos os termos e conceitos do universo Creator":
+      "Have all the terms and concepts of the Creator universe at your fingertips",
+    "Aprenda a definir o valor do seu conteúdo de forma estratégica":
+      "Learn how to strategically define the value of your content",
+    Baixar: "Download",
+    "Você ainda não se inscreveu em nenhuma campanha. Navegue pelas campanhas disponíveis e comece a participar agora mesmo!":
+      "You haven't signed up for any campaigns yet. Browse the available campaigns and start participating now!",
+    "Explorar Campanhas": "Explore Campaigns",
+    "Minhas Participações": "My Participations",
+    "Acompanhe todas as campanhas nas quais você se inscreveu e gerencie suas participações.":
+      "Track all campaigns you've signed up for and manage your participations.",
+    "Visualize todas as suas campanhas ou crie uma.":
+      "View all your campaigns or create one.",
+    "Como Criar Campanha": "How to Create Campaign",
+    "Rascunhos Salvos": " Saved Drafts",
+    Nome: "Name",
+    Inscritos: "Subscribers",
+    Aprovados: "Approved",
+    "Início/Fim": "Start/End",
+    "Carregando campanhas...": "Loading campaigns...",
+    "Nenhuma campanha disponível.": "No campaigns available.",
+    "Pronto para iniciar": "Ready to start",
+    "Em andamento": "In progress",
+    Encerrado: "Closed",
+    "Minhas Campanhas": "My Campaigns",
+    "Rascunho de Campanhas": "Campaign Drafts",
+    "Finalize as suas campanhas para que os creators possam se candidatar":
+      "Finalize your campaigns so creators can apply",
+    "Carregando dados...": "Loading data...",
+    Data: "Date",
+    Status: "Status",
+    "Status desconhecido": "Unknown status",
+    "Você não salvou nenhuma campanha como rascunho ainda":
+      "You haven't saved any campaigns as drafts yet",
   },
 };
