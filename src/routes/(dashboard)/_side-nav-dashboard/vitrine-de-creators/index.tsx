@@ -145,31 +145,31 @@ function Page() {
     }
   };
 
-  // if (!hasPlan) {
-  //   return (
-  //     <div className="flex justify-center items-center h-[calc(100vh-66px)] bg-gradient-to-b from-blue-50 to-blue-100">
-  //       <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md mb-[66px]">
-  //         <h1 className="text-2xl font-bold text-gray-800 mb-4">
-  //           {t("Acesso Restrito")}
-  //         </h1>
-  //         <p className="text-gray-600 mb-6">
-  //           {t(
-  //             "Essa funcionalidade está disponível apenas para marcas do plano"
-  //           )}
-  //           <span className="text-[#FF672F] font-bold">{t(" Premium")}</span>
-  //           {t(". Faça o upgrade e aproveite todos os benefícios.")}
-  //         </p>
+  if (!hasPlan) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-66px)] bg-gradient-to-b from-blue-50 to-blue-100">
+        <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md mb-[66px]">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+            {t("Acesso Restrito")}
+          </h1>
+          <p className="text-gray-600 mb-6">
+            {t(
+              "Essa funcionalidade está disponível apenas para marcas do plano"
+            )}
+            <span className="text-[#FF672F] font-bold">{t(" Premium")}</span>
+            {t(". Faça o upgrade e aproveite todos os benefícios.")}
+          </p>
 
-  //         <button
-  //           onClick={() => router.navigate({ to: "/premium/marca" })}
-  //           className="bg-[#10438F] text-white px-6 py-3 rounded-lg hover:bg-[#10438F]/90 transition-all font-semibold"
-  //         >
-  //           {t("Ver Planos")}
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+          <button
+            onClick={() => router.navigate({ to: "/premium/marca" })}
+            className="bg-[#10438F] text-white px-6 py-3 rounded-lg hover:bg-[#10438F]/90 transition-all font-semibold"
+          >
+            {t("Ver Planos")}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
