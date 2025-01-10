@@ -679,5 +679,88 @@ export default {
     "Trabalho Concluído": "Work Completed",
     "Campanha em análise": "Campaign under review",
     "/pessoa": "/person",
+    "Salvando...": "Saving...",
+    "Salvar Alterações": "Save Changes",
+    "O username deve conter apenas letras, números e underscores, sem espaços.":
+      "The username must contain only letters, numbers, and underscores, without spaces.",
+    "Nome Completo*": "Full Name*",
+    "Username*": "Username*",
+    "Nome completo": "Full name",
+    "Data de Nascimento*": "Date of Birth*",
+    "DD/MM/AAAA": "DD/MM/YYYY",
+    "Email*": "Email*",
+    "Whatsapp*": "Whatsapp*",
+    "Número do Whatsapp": "Whatsapp number",
+    "Tipo de Conta*": "Account Type*",
+    "Selecione o tipo de conta": "Select the account type",
+    "UGC (Creator)": "UGC (Creator)",
+    "IGC (Nano, Micro e Macro)": "IGC (Nano, Micro and Macro)",
+    "UGC + IGC": "UGC + IGC",
+    "UGC (Creators):": "UGC (Creators):",
+    "Você cria vídeos ou fotos que serão entregues para as marcas utilizarem em suas campanhas, anúncios ou redes sociais.":
+      "You create videos or photos that will be delivered to brands to use in their campaigns, ads, or social networks.",
+    "IGC (Nano, Micro e Macro influenciadores):":
+      "IGC (Nano, Micro and Macro influencers):",
+    "Você cria e compartilha o conteúdo diretamente nas suas redes sociais, promovendo produtos e serviços para seu público.":
+      "You create and share content directly on your social networks, promoting products and services to your audience.",
+    "UGC + IGC:": "UGC + IGC:",
+    "Você tanto cria o conteúdo para as marcas utilizarem quanto compartilha esse conteúdo nas suas próprias redes sociais, atuando nas duas frentes.":
+      "You both create content for brands to use and share that content on your own social networks, acting on both fronts.",
+    "Gênero*": "Gender*",
+    "Selecione o seu gênero": "Select your gender",
+    Masculino: "Male",
+    Feminino: "Female",
+    "Não binário": "Non-binary",
+    Outro: "Other",
+    "País*": "Country*",
+    "CEP*": "ZIP Code*",
+    "Digite seu CEP": "Enter your ZIP Code",
+    "Logradouro (Rua, Avenida, Alameda, etc.)*":
+      "Street (Street, Avenue, Boulevard, etc.)*",
+    "Bairro*": "Neighborhood*",
+    "Cidade*": "City*",
+    "Estado*": "State*",
+    Complemento: "Complement",
+    "Número*": "Number*",
+    "Preencha pelo menos uma rede social. Todas as redes sociais são opcionais, mas é necessário que ao menos um campo esteja preenchido.":
+      "Fill in at least one social network. All social networks are optional, but at least one field must be filled in.",
+    "Insira o URL do seu perfil": "Enter your profile URL",
+    "Insira o URL do seu mídia kit": "Enter your media kit URL",
+    "Insira sua chave Pix": "Enter your Pix key",
+    "Chave Pix*": "Pix Key*",
+    "Trabalhos anteriores": "Previous works",
+    "Quanto você cobra por um stories IGC?*":
+      "How much do you charge for an IGC stories?",
+    "Ex: R$50,00": "E.g. R$50.00",
+    "Quanto você cobra por um post no feed?*":
+      "How much do you charge for a feed post?",
+    "Ex: R$100,00": "E.g. R$100.00",
+    "Quanto você cobra por um reels?*": "How much do you charge for a reels?",
+    "Ex: R$150,00": "E.g. R$150.00",
+    "Quanto você cobra por um vídeo e um combo de fotos UGC?*":
+      "How much do you charge for a video and a UGC photo combo?",
+    "Ex: R$200,00": "E.g. R$200.00",
+    "Insira os idiomas que você domina": "Enter the languages you master",
+    "Nenhuma linguagem adicionada": "No language added",
+    "Por favor, preencha todos os campos de senha.":
+      "Please fill in all password fields.",
+    "A nova senha e a confirmação não coincidem.":
+      "The new password and confirmation do not match.",
+    "A nova senha deve ter pelo menos 8 caracteres.":
+      "The new password must be at least 8 characters long.",
+    "Senha atualizada com sucesso! Faça o login novamente.":
+      "Password updated successfully! Log in again.",
+    "Senha atual incorreta.": "Current password incorrect.",
+    "Por favor, verifique e tente novamente.": "Please check and try again.",
+    "Erro ao atualizar a senha. Por favor, tente novamente.":
+      "Error updating password. Please try again.",
+    "Senha Atual": "Current Password",
+    "Digite sua senha atual": "Enter your current password",
+    "Nova Senha": "New Password",
+    "Digite sua nova senha": "Enter your new password",
+    "Confirmar Nova Senha": "Confirm New Password",
+    "Confirme sua nova senha": "Confirm your new password",
+    "Alterando...": "Changing...",
+    "Alterar Senha": "Change Password",
   },
 };
