@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useSheetStore } from "@/store/useDashSheetStore";
 import pb from "@/lib/pb";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/(dashboard)/_side-nav-dashboard")({
   component: SideNavDashboard,
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/(dashboard)/_side-nav-dashboard")({
 export function SideNavDashboard() {
   const [hasPlan, setHasPlan] = useState(false);
   const isBrand = pb.authStore.model?.collectionName === "Brands";
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isBrand) {
@@ -44,10 +46,10 @@ export function SideNavDashboard() {
                 to={`${`/${pb.authStore.model?.collectionName === "Brands" ? "dashboard-marca" : "dashboard-creator"}`}`}
                 className="flex items-center gap-2"
               >
-                <Folder className="w-6 h-6" /> Minhas{" "}
+                <Folder className="w-6 h-6" /> {t("Minhas")}{" "}
                 {pb.authStore.model?.collectionName === "Brands"
-                  ? "Campanhas"
-                  : "Participações"}
+                  ? t("Campanhas")
+                  : t("Participações")}
               </Link>
             </Button>
           </li>
@@ -61,7 +63,7 @@ export function SideNavDashboard() {
                   className="flex items-center gap-2"
                 >
                   <LayoutGrid className="w-6 h-6" />
-                  Vitrine de Campanhas
+                  {t("Vitrine de Campanhas")}
                 </Link>
               </Button>
             </li>
@@ -76,7 +78,7 @@ export function SideNavDashboard() {
                   className="flex items-center gap-2"
                 >
                   <Plus className="w-6 h-6" />
-                  Criar Campanha
+                  {t("Criar Campanha")}
                 </Link>
               </Button>
             </li>
@@ -87,7 +89,7 @@ export function SideNavDashboard() {
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link to="/premium/marca" className="flex items-center gap-2">
                   <Flame className="w-6 h-6" />
-                  Assinatura premium
+                  {t("Assinatura premium")}
                 </Link>
               </Button>
             </li>
@@ -101,7 +103,7 @@ export function SideNavDashboard() {
                   className="flex items-center gap-2"
                 >
                   <Users className="w-6 h-6" />
-                  Vitrine de Creators
+                  {t("Vitrine de Creators")}
                 </Link>
               </Button>
             </li>
@@ -117,7 +119,7 @@ export function SideNavDashboard() {
                 className="flex items-center gap-2"
               >
                 <MessageCircle className="w-6 h-6" />
-                Suporte/Whatsapp
+                {t("Suporte/Whatsapp")}
               </a>
             </Button>
           </li>
@@ -138,6 +140,7 @@ interface SheetProps {
 
 const Sheet = ({ hasPlan }: SheetProps) => {
   const { isOpen, closeSheet } = useSheetStore();
+  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -173,10 +176,10 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                 onClick={handleNavigation}
               >
                 <Folder className="w-6 h-6" />
-                Minhas{" "}
+                {t("Minhas")}{" "}
                 {pb.authStore.model?.collectionName === "Brands"
-                  ? "Campanhas"
-                  : "Participações"}
+                  ? t("Campanhas")
+                  : t("Participações")}
               </Link>
             </Button>
           </li>
@@ -194,7 +197,7 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                   className="flex items-center gap-2"
                 >
                   <Plus className="w-6 h-6" />
-                  Criar Campanha
+                  {t("Criar Campanha")}
                 </Link>
               </Button>
             </li>
@@ -210,7 +213,7 @@ const Sheet = ({ hasPlan }: SheetProps) => {
               >
                 <Link to="/premium/marca" className="flex items-center gap-2">
                   <Flame className="w-6 h-6" />
-                  Assinatura premium
+                  {t("Assinatura premium")}
                 </Link>
               </Button>
             </li>
@@ -224,7 +227,7 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                   className="flex items-center gap-2"
                 >
                   <Users className="w-6 h-6" />
-                  Vitrine de Creators
+                  {t("Vitrine de Creators")}
                 </Link>
               </Button>
             </li>
@@ -243,7 +246,7 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                   className="flex items-center gap-2"
                 >
                   <LayoutGrid className="w-6 h-6" />
-                  Vitrine de Campanhas
+                  {t("Vitrine de Campanhas")}
                 </Link>
               </Button>
             </li>
@@ -258,7 +261,7 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                 className="flex items-center gap-2"
               >
                 <MessageCircle className="w-6 h-6" />
-                Suporte/Whatsapp
+                {t("Suporte/Whatsapp")}
               </a>
             </Button>
           </li>

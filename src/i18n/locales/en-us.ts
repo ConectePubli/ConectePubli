@@ -596,5 +596,13 @@ export default {
       "These Terms of Use are governed by and interpreted in accordance with the laws of the country and state in which the Conecte Publi platform is registered.",
     "Se você tiver alguma dúvida, entre em contato conosco através dos canais de suporte.":
       "If you have any questions, please contact us through the support channels.",
+    Campanhas: "Campaigns",
+    Participações: "Participations",
+    Minhas: "My",
+    "Vitrine de Campanhas": "Campaign Showcase",
+    "Vitrine de Creators": "Creators Showcase",
+    "Criar Campanha": "Create Campaign",
+    "Assinatura premium": "Premium subscription",
+    "Suporte/Whatsapp": "Support/Whatsapp",
   },
 };
