@@ -7,6 +7,7 @@ import pb from "@/lib/pb";
 import passwordResetImage from "@/assets/password-reset.svg";
 import { validateEmail } from "@/utils/validateEmail";
 import { CheckCircle } from "lucide-react";
+import { t } from "i18next";
 
 export const Route = createFileRoute("/(auth)/esquecer-senha/")({
   component: Page,
@@ -63,13 +64,13 @@ function Page() {
               className={`px-4 py-2 font-semibold ${userType === "influencers" ? "border-b-2 border-blue-500" : "text-gray-500"}`}
               onClick={() => setUserType("influencers")}
             >
-              Creator
+              {t("Creator")}
             </button>
             <button
               className={`px-4 py-2 font-semibold ml-4 ${userType === "brands" ? "border-b-2 border-blue-500" : "text-gray-500"}`}
               onClick={() => setUserType("brands")}
             >
-              Marca
+              {t("Marca")}
             </button>
           </div>
 
@@ -78,32 +79,38 @@ function Page() {
               <CheckCircle color="#008000" size={40} className="mb-2" />
 
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                E-mail de recuperação enviado!
+                {t("E-mail de recuperação enviado!")}
               </h2>
               <p className="text-gray-600 my-4">
-                Se esse e-mail tiver cadastro na plataforma, enviaremos um link
-                para redefinição de senha.
+                {t(
+                  "Se esse e-mail tiver cadastro na plataforma, enviaremos um link para redefinição de senha."
+                )}
               </p>
               <p className="text-gray-600 mb-4">
-                Clique no link enviado para o e-mail <strong>{email}</strong>.
+                {t("Clique no link enviado para o e-mail")}{" "}
+                <strong>{email}</strong>.
               </p>
               <p className="text-red-500 font-semibold mb-6">
-                Atenção: Caso não receba o e-mail, verifique sua caixa de spam ou lixeira.
+                {t(
+                  "Atenção: Caso não receba o e-mail, verifique sua caixa de spam ou lixeira."
+                )}
               </p>
               <a
                 className="underline text-customLinkBlue text-sm cursor-pointer"
                 onClick={() => navigate({ to: "/login" })}
               >
-                Voltar para a página de login
+                {t("Voltar para a página de login")}
               </a>
             </div>
           ) : (
             <div>
-              <h2 className="text-3xl font-bold mb-4">Redefinir Senha</h2>
+              <h2 className="text-3xl font-bold mb-4">
+                {t("Redefinir Senha")}
+              </h2>
               <p className="text-gray-600 mb-6">
-                Digite o e-mail associado à sua conta de{" "}
-                {userType === "influencers" ? "creator" : "marca"} e
-                enviaremos um link para redefinir sua senha.
+                {t("Digite o e-mail associado à sua conta de")}{" "}
+                {userType === "influencers" ? "creator" : t("marca")}{" "}
+                {t("e enviaremos um link para redefinir sua senha.")}
               </p>
 
               <form className="space-y-6" onSubmit={handleSubmit}>
@@ -112,7 +119,7 @@ function Page() {
                     className="block text-sm font-medium text-gray-700"
                     htmlFor="email"
                   >
-                    E-mail
+                    {t("E-mail")}
                   </label>
                   <input
                     type="email"
@@ -120,7 +127,7 @@ function Page() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder="Digite o e-mail da conta"
+                    placeholder={t("Digite o e-mail da conta")}
                     required
                   />
                 </div>
@@ -136,8 +143,8 @@ function Page() {
                   disabled={mutation.isPending}
                 >
                   {mutation.isPending
-                    ? "Enviando..."
-                    : "Enviar Link de Recuperação"}
+                    ? t("Enviando...")
+                    : t("Enviar Link de Recuperação")}
                 </Button>
 
                 <div className="text-left">
@@ -145,7 +152,7 @@ function Page() {
                     className="text-customLinkBlue underline text-sm cursor-pointer"
                     onClick={() => navigate({ to: "/login" })}
                   >
-                    Voltar para a página de login
+                    {t("Voltar para a página de login")}
                   </a>
                 </div>
               </form>

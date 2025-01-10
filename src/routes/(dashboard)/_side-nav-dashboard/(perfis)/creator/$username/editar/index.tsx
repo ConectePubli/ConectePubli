@@ -33,6 +33,7 @@ import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
 import { ComboboxNiches } from "@/components/ui/ComboBoxNiches";
 import { Button } from "@/components/ui/button";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import { t } from "i18next";
 
 interface Option {
   value: string;
@@ -187,7 +188,7 @@ function InfluencerEditProfilePage() {
           });
           if (!hasAtLeastOne) {
             missingFields.push(
-              "Pelo menos uma rede social deve ser preenchida."
+              t("Pelo menos uma rede social deve ser preenchida.")
             );
           }
         } else {
@@ -263,7 +264,9 @@ function InfluencerEditProfilePage() {
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error(
-          "Erro ao buscar dados do influenciador. Por favor, tente novamente.",
+          t(
+            "Erro ao buscar dados do influenciador. Por favor, tente novamente."
+          ),
           {
             position: "top-right",
             autoClose: 5000,
@@ -298,8 +301,8 @@ function InfluencerEditProfilePage() {
         setAllNiches(formattedNiches);
         setIsLoadingNiches(false);
       } catch (error) {
-        console.error("Erro ao buscar nichos:", error);
-        setNichesError("Erro ao carregar nichos.");
+        console.error(t("Erro ao buscar nichos:"), error);
+        setNichesError(t("Erro ao carregar nichos."));
         setIsLoadingNiches(false);
       }
     };
@@ -370,29 +373,29 @@ function InfluencerEditProfilePage() {
                   formData[field as keyof Influencer].trim() === "")
               ) {
                 const fieldNames: { [key: string]: string } = {
-                  background_img: "Foto de fundo",
-                  bio: "Bio",
-                  name: "Nome Completo",
-                  username: "Username",
-                  birth_date: "Data de Nascimento",
-                  email: "Email",
-                  cell_phone: "Telefone Celular",
-                  account_type: "Tipo de Conta",
-                  gender: "Gênero",
-                  country: "País",
-                  cep: "CEP",
-                  street: "Rua",
-                  neighborhood: "Bairro",
-                  city: "Cidade",
-                  state: "Estado",
-                  address_num: "Número",
-                  pix_key: "Chave Pix",
-                  media_kit_url: "Mídia Kit",
-                  languages: "Idiomas",
-                  stories_price: "Preço por stories",
-                  feed_price: "Preço por post no feed",
-                  reels_price: "Preço por reels",
-                  ugc_price: "Preço por vídeo e combo UGC",
+                  background_img: t("Foto de fundo"),
+                  bio: t("Bio"),
+                  name: t("Nome Completo"),
+                  username: t("Username"),
+                  birth_date: t("Data de Nascimento"),
+                  email: t("Email"),
+                  cell_phone: t("Telefone Celular"),
+                  account_type: t("Tipo de Conta"),
+                  gender: t("Gênero"),
+                  country: t("País"),
+                  cep: t("CEP"),
+                  street: t("Rua"),
+                  neighborhood: t("Bairro"),
+                  city: t("Cidade"),
+                  state: t("Estado"),
+                  address_num: t("Número"),
+                  pix_key: t("Chave Pix"),
+                  media_kit_url: t("Mídia Kit"),
+                  languages: t("Idiomas"),
+                  stories_price: t("Preço por stories"),
+                  feed_price: t("Preço por post no feed"),
+                  reels_price: t("Preço por reels"),
+                  ugc_price: t("Preço por vídeo e combo UGC"),
                 };
                 missingFields.push(fieldNames[field] || field);
               }
@@ -529,14 +532,15 @@ function InfluencerEditProfilePage() {
 
         const err = error as ClientResponseError;
 
-        let errorMessage =
-          "Erro ao salvar as alterações. Por favor, tente novamente.";
+        let errorMessage = t(
+          "Erro ao salvar as alterações. Por favor, tente novamente."
+        );
 
         if (err && err.data && err.data.data && err.data.data.username) {
           const usernameError = err.data.data.username;
 
           if (usernameError.code === "validation_invalid_username") {
-            errorMessage = "O nome de usuário é inválido ou já está em uso.";
+            errorMessage = t("O nome de usuário é inválido ou já está em uso.");
           }
         }
 
@@ -577,7 +581,7 @@ function InfluencerEditProfilePage() {
       } catch (error) {
         console.error("Error fetching CEP data:", error);
         toast.error(
-          "CEP não encontrado. Por favor, verifique o CEP informado.",
+          t("CEP não encontrado. Por favor, verifique o CEP informado."),
           {
             position: "top-right",
             autoClose: 5000,
@@ -607,7 +611,7 @@ function InfluencerEditProfilePage() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <Section
-        title="Dados básicos"
+        title={t("Dados básicos")}
         initiallyOpen
         completed={sectionCompletion.basicData}
         hasUnsavedChanges={isFormChangedStates.basicData}
@@ -629,7 +633,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Sobre você"
+        title={t("Sobre você")}
         completed={sectionCompletion.about}
         hasUnsavedChanges={isFormChangedStates.about}
       >
@@ -645,7 +649,7 @@ function InfluencerEditProfilePage() {
       </Section>
 
       <Section
-        title="Endereço"
+        title={t("Endereço")}
         completed={sectionCompletion.address}
         hasUnsavedChanges={isFormChangedStates.address}
       >
@@ -662,7 +666,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Redes sociais"
+        title={t("Redes sociais")}
         completed={sectionCompletion.socialMedia}
         hasUnsavedChanges={isFormChangedStates.socialMedia}
       >
@@ -677,7 +681,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Mídia kit"
+        title={t("Mídia kit")}
         completed={sectionCompletion.mediaKit}
         hasUnsavedChanges={isFormChangedStates.mediaKit}
       >
@@ -692,7 +696,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Conta bancária"
+        title={t("Conta bancária")}
         completed={sectionCompletion.bankAccount}
         hasUnsavedChanges={isFormChangedStates.bankAccount}
       >
@@ -707,7 +711,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Portfólio"
+        title={t("Portfólio")}
         completed={sectionCompletion.portfolio}
         hasUnsavedChanges={isFormChangedStates.portfolio}
       >
@@ -722,7 +726,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Preços para cada tipo de conteúdo"
+        title={t("Preços para cada tipo de conteúdo")}
         completed={sectionCompletion.prices}
         hasUnsavedChanges={isFormChangedStates.prices}
       >
@@ -738,7 +742,7 @@ function InfluencerEditProfilePage() {
         />
       </Section>
       <Section
-        title="Idiomas"
+        title={t("Idiomas")}
         completed={sectionCompletion.skills}
         hasUnsavedChanges={isFormChangedStates.skills}
       >
@@ -752,7 +756,7 @@ function InfluencerEditProfilePage() {
           setLoadingStates={setLoadingStates}
         />
       </Section>
-      <Section title="Configurações da Conta" isConfig={true}>
+      <Section title={t("Configurações da Conta")} isConfig={true}>
         <AccountInfoSection
           formData={formData}
           handleInputChange={handleInputChange}
@@ -814,7 +818,7 @@ function Section({
           </span>
           {hasUnsavedChanges && (
             <span className="text-red-500 text-sm font-semibold ml-2">
-              *Clique em "Salvar Alterações" ao final deste item
+              {t('*Clique em "Salvar Alterações" ao final deste item')}
             </span>
           )}
         </div>
@@ -871,7 +875,7 @@ function BasicDataSection({
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Foto de fundo*
+            {t("Foto de fundo*")}
           </label>
           {formData.background_img ? (
             <img
@@ -900,7 +904,7 @@ function BasicDataSection({
         </div>
         <div className="flex flex-col items-center">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Carregar nova imagem de perfil
+            {t("Carregar nova imagem de perfil")}
           </label>
           {formData.profile_img ? (
             <img
@@ -929,13 +933,13 @@ function BasicDataSection({
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Bio*
+          {t("Bio*")}
         </label>
         <textarea
           name="bio"
           className="border border-gray-300 p-2 rounded-lg w-full"
           rows={3}
-          placeholder="Escreva uma breve descrição sobre você"
+          placeholder={t("Escreva uma breve descrição sobre você")}
           value={formData.bio || ""}
           onChange={handleSectionInputChange}
         />
@@ -949,10 +953,13 @@ function BasicDataSection({
 
         {isLoadingNiches ? (
           <div className="flex items-center justify-center w-full p-3 border rounded-md">
-            <p className="text-gray-500 text-center">Carregando nichos...</p>
+            <p className="text-gray-500 text-center">
+              {t("Carregando nichos...")}
+            </p>
             <p className="text-xs text-gray-500">
-              * É necessário salvar as alterações de cada seção para que elas
-              sejam aplicadas.
+              {t(
+                "* É necessário salvar as alterações de cada seção para que elas sejam aplicadas."
+              )}
             </p>
           </div>
         ) : nichesError ? (
@@ -1003,7 +1010,7 @@ function BasicDataSection({
         onClick={(e) => handleSubmit(e, "basicData")}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </>
   );
@@ -1029,7 +1036,9 @@ function AboutSection({
     if (name === "username") {
       if (!usernameRegex.test(value)) {
         setUsernameError(
-          "O username deve conter apenas letras, números e underscores, sem espaços."
+          t(
+            "O username deve conter apenas letras, números e underscores, sem espaços."
+          )
         );
       } else {
         setUsernameError("");
@@ -1043,13 +1052,13 @@ function AboutSection({
     <>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Nome Completo*
+          {t("Nome Completo*")}
         </label>
         <input
           type="text"
           name="name"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Nome completo"
+          placeholder={t("Nome completo")}
           value={formData.name || ""}
           onChange={handleSectionInputChange}
         />
@@ -1057,13 +1066,13 @@ function AboutSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Username*
+          {t("Username*")}
         </label>
         <input
           type="text"
           name="username"
           className={`border ${usernameError ? "border-red-500" : "border-gray-300"} p-2 rounded-lg w-full`}
-          placeholder="Username"
+          placeholder={t("Username")}
           value={formData.username || ""}
           onChange={handleSectionInputChange}
         />
@@ -1074,13 +1083,13 @@ function AboutSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Data de Nascimento*
+          {t("Data de Nascimento*")}
         </label>
         <input
           type="date"
           name="birth_date"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="DD/MM/AAAA"
+          placeholder={t("DD/MM/AAAA")}
           value={formData.birth_date || ""}
           onChange={handleSectionInputChange}
         />
@@ -1088,13 +1097,13 @@ function AboutSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Email*
+          {t("Email*")}
         </label>
         <input
           type="email"
           name="email"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Email"
+          placeholder={t("Email")}
           value={formData.email || ""}
           onChange={handleSectionInputChange}
         />
@@ -1102,13 +1111,13 @@ function AboutSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Whatsapp*
+          {t("Whatsapp*")}
         </label>
         <input
           type="tel"
           name="cell_phone"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Número do Whatsapp"
+          placeholder={t("Número do Whatsapp")}
           value={formData.cell_phone || ""}
           onChange={handleSectionInputChange}
         />
@@ -1116,7 +1125,7 @@ function AboutSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Tipo de Conta*
+          {t("Tipo de Conta*")}
         </label>
         <select
           name="account_type"
@@ -1125,30 +1134,35 @@ function AboutSection({
           onChange={handleSectionInputChange}
         >
           <option value="" disabled>
-            Selecione o tipo de conta
+            {t("Selecione o tipo de conta")}
           </option>
-          <option value="UGC">UGC (Creator)</option>
-          <option value="IGC">IGC (Nano, Micro e Macro)</option>
-          <option value="UGC + IGC">UGC + IGC</option>
+          <option value="UGC">{t("UGC (Creator)")}</option>
+          <option value="IGC">{t("IGC (Nano, Micro e Macro)")}</option>
+          <option value="UGC + IGC">{t("UGC + IGC")}</option>
         </select>
         <p className="text-sm text-gray-500 mt-2">
-          <strong>UGC (Creators):</strong> Você cria vídeos ou fotos que serão
-          entregues para as marcas utilizarem em suas campanhas, anúncios ou
-          redes sociais.
+          <strong>{t("UGC (Creators):")}</strong>{" "}
+          {t(
+            "Você cria vídeos ou fotos que serão entregues para as marcas utilizarem em suas campanhas, anúncios ou redes sociais."
+          )}
           <br />
-          <strong>IGC (Nano, Micro e Macro influenciadores):</strong> Você cria
-          e compartilha o conteúdo diretamente nas suas redes sociais,
-          promovendo produtos e serviços para seu público.
+          <strong>
+            {t("IGC (Nano, Micro e Macro influenciadores):")}
+          </strong>{" "}
+          {t(
+            "Você cria e compartilha o conteúdo diretamente nas suas redes sociais, promovendo produtos e serviços para seu público."
+          )}
           <br />
-          <strong>UGC + IGC:</strong> Você tanto cria o conteúdo para as marcas
-          utilizarem quanto compartilha esse conteúdo nas suas próprias redes
-          sociais, atuando nas duas frentes.
+          <strong>{t("UGC + IGC:")}</strong>{" "}
+          {t(
+            "Você tanto cria o conteúdo para as marcas utilizarem quanto compartilha esse conteúdo nas suas próprias redes sociais, atuando nas duas frentes."
+          )}
         </p>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Gênero*
+          {t("Gênero*")}
         </label>
         <select
           name="gender"
@@ -1157,12 +1171,12 @@ function AboutSection({
           onChange={handleSectionInputChange}
         >
           <option value="" disabled>
-            Selecione o seu gênero
+            {t("Selecione o seu gênero")}
           </option>
-          <option value="male">Masculino</option>
-          <option value="female">Feminino</option>
-          <option value="non_binary">Não binário</option>
-          <option value="other">Outro</option>
+          <option value="male">{t("Masculino")}</option>
+          <option value="female">{t("Feminino")}</option>
+          <option value="non_binary">{t("Não binário")}</option>
+          <option value="other">{t("Outro")}</option>
         </select>
       </div>
 
@@ -1175,7 +1189,7 @@ function AboutSection({
         onClick={(e) => handleSubmit(e, "about")}
         disabled={!isFormChanged || !!usernameError || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </>
   );
@@ -1202,104 +1216,104 @@ function AddressSection({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            País*
+            {t("País*")}
           </label>
           <input
             type="text"
             name="country"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="País"
+            placeholder={t("País")}
             value={formData.country || ""}
             onChange={handleSectionInputChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            CEP*
+            {t("CEP*")}
           </label>
           <input
             type="text"
             name="cep"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Digite seu CEP"
+            placeholder={t("Digite seu CEP")}
             value={formData.cep || ""}
             onChange={handleCepChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Logradouro (Rua, Avenida, Alameda, etc.)*
+            {t("Logradouro (Rua, Avenida, Alameda, etc.)*")}
           </label>
           <input
             type="text"
             name="street"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Rua"
+            placeholder={t("Rua")}
             value={formData.street || ""}
             onChange={handleSectionInputChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Bairro*
+            {t("Bairro*")}
           </label>
           <input
             type="text"
             name="neighborhood"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Bairro"
+            placeholder={t("Bairro")}
             value={formData.neighborhood || ""}
             onChange={handleSectionInputChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Cidade*
+            {t("Cidade*")}
           </label>
           <input
             type="text"
             name="city"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Cidade"
+            placeholder={t("Cidade")}
             value={formData.city || ""}
             onChange={handleSectionInputChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Estado*
+            {t("Estado*")}
           </label>
           <input
             type="text"
             name="state"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Estado"
+            placeholder={t("Estado")}
             value={formData.state || ""}
             onChange={handleSectionInputChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Complemento
+            {t("Complemento")}
           </label>
           <input
             type="text"
             name="complement"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Complemento"
+            placeholder={t("Complemento")}
             value={formData.complement || ""}
             onChange={handleSectionInputChange}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Número*
+            {t("Número*")}
           </label>
           <input
             type="text"
             name="address_num"
             className="border border-gray-300 p-2 rounded-lg w-full"
-            placeholder="Número"
+            placeholder={t("Número")}
             value={formData.address_num || ""}
             onChange={handleSectionInputChange}
           />
@@ -1312,7 +1326,7 @@ function AddressSection({
         onClick={(e) => handleSubmit(e, "address")}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </>
   );
@@ -1336,8 +1350,9 @@ function SocialMediaSection({
   return (
     <>
       <p className="text-gray-500 text-sm mb-4">
-        Preencha pelo menos uma rede social. Todas as redes sociais são
-        opcionais, mas é necessário que ao menos um campo esteja preenchido.
+        {t(
+          "Preencha pelo menos uma rede social. Todas as redes sociais são opcionais, mas é necessário que ao menos um campo esteja preenchido."
+        )}
       </p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Instagram */}
@@ -1350,14 +1365,14 @@ function SocialMediaSection({
               type="url"
               name="instagram_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.instagram_url || ""}
               onChange={handleSectionInputChange}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <img
                 src={InstagramIcon}
-                alt="Instagram"
+                alt={t("Instagram")}
                 className="h-5 w-5 text-gray-400"
               />
             </div>
@@ -1374,7 +1389,7 @@ function SocialMediaSection({
               type="url"
               name="youtube_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.youtube_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1398,7 +1413,7 @@ function SocialMediaSection({
               type="url"
               name="linkedin_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.linkedin_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1422,7 +1437,7 @@ function SocialMediaSection({
               type="url"
               name="yourclub_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.yourclub_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1446,7 +1461,7 @@ function SocialMediaSection({
               type="url"
               name="kwai_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.kwai_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1470,7 +1485,7 @@ function SocialMediaSection({
               type="url"
               name="tiktok_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.tiktok_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1494,7 +1509,7 @@ function SocialMediaSection({
               type="url"
               name="facebook_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.facebook_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1518,7 +1533,7 @@ function SocialMediaSection({
               type="url"
               name="twitter_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.twitter_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1542,7 +1557,7 @@ function SocialMediaSection({
               type="url"
               name="twitch_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.twitch_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1566,7 +1581,7 @@ function SocialMediaSection({
               type="url"
               name="pinterest_url"
               className="border border-gray-300 p-2 rounded-lg w-full pl-10"
-              placeholder="Insira o URL do seu perfil"
+              placeholder={t("Insira o URL do seu perfil")}
               value={formData.pinterest_url || ""}
               onChange={handleSectionInputChange}
             />
@@ -1589,7 +1604,7 @@ function SocialMediaSection({
         onClick={(e) => handleSubmit(e, "socialMedia")}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </>
   );
@@ -1618,7 +1633,7 @@ function MediaKitSection({
           type="url"
           name="media_kit_url"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Insira o URL do seu mídia kit"
+          placeholder={t("Insira o URL do seu mídia kit")}
           value={formData.media_kit_url || ""}
           onChange={handleSectionInputChange}
         />
@@ -1630,7 +1645,7 @@ function MediaKitSection({
         onClick={(e) => handleSubmit(e, "mediaKit")}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </>
   );
@@ -1653,13 +1668,13 @@ function BankAccountSection({
     <>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Chave Pix*
+          {t("Chave Pix*")}
         </label>
         <input
           type="text"
           name="pix_key"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Insira sua chave Pix"
+          placeholder={t("Insira sua chave Pix")}
           value={formData.pix_key || ""}
           onChange={handleSectionInputChange}
         />
@@ -1671,7 +1686,7 @@ function BankAccountSection({
         onClick={(e) => handleSubmit(e, "bankAccount")}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </>
   );
@@ -1705,7 +1720,7 @@ function PortfolioSection({
         onClick={(e) => handleSubmit(e, "portfolio")}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </div>
   );
@@ -1749,7 +1764,9 @@ function PreviousWorksSection({
 
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-2">Trabalhos anteriores</h3>
+      <h3 className="text-lg font-semibold mb-2">
+        {t("Trabalhos anteriores")}
+      </h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {workImages.map((file: any, index: number) => {
           let fileType = "";
@@ -1848,13 +1865,13 @@ function PricesSection({
     <div className="space-y-8">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Quanto você cobra por um stories IGC?*
+          {t("Quanto você cobra por um stories IGC?*")}
         </label>
         <input
           type="text"
           name="stories_price"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Ex: R$50,00"
+          placeholder={t("Ex: R$50,00")}
           value={
             formData.stories_price
               ? formatCentsToCurrency(formData.stories_price)
@@ -1866,13 +1883,13 @@ function PricesSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Quanto você cobra por um post no feed?*
+          {t("Quanto você cobra por um post no feed?*")}
         </label>
         <input
           type="text"
           name="feed_price"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Ex: R$100,00"
+          placeholder={t("Ex: R$100,00")}
           value={
             formData.feed_price
               ? formatCentsToCurrency(formData.feed_price)
@@ -1884,13 +1901,13 @@ function PricesSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Quanto você cobra por um reels?*
+          {t("Quanto você cobra por um reels?*")}
         </label>
         <input
           type="text"
           name="reels_price"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Ex: R$150,00"
+          placeholder={t("Ex: R$150,00")}
           value={
             formData.reels_price
               ? formatCentsToCurrency(formData.reels_price)
@@ -1902,17 +1919,15 @@ function PricesSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Quanto você cobra por um vídeo e um combo de fotos UGC?*
+          {t("Quanto você cobra por um vídeo e um combo de fotos UGC?*")}
         </label>
         <input
           type="text"
           name="ugc_price"
           className="border border-gray-300 p-2 rounded-lg w-full"
-          placeholder="Ex: R$200,00"
+          placeholder={t("Ex: R$200,00")}
           value={
-            formData.ugc_price
-              ? formatCentsToCurrency(formData.ugc_price)
-              : ""
+            formData.ugc_price ? formatCentsToCurrency(formData.ugc_price) : ""
           }
           onChange={handleSectionInputChange}
         />
@@ -1925,7 +1940,7 @@ function PricesSection({
         onClick={(e) => handleSubmit(e, "prices")}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </div>
   );
@@ -1994,13 +2009,13 @@ function SkillsSection({
     <div>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Idiomas
+          {t("Idiomas")}
         </label>
 
         <div className="flex gap-2">
           <input
             type="text"
-            placeholder="Insira os idiomas que você domina"
+            placeholder={t("Insira os idiomas que você domina")}
             value={languageInput}
             onChange={(e) => setLanguageInput(e.target.value)}
             className="border border-gray-300 p-2 rounded-lg w-full"
@@ -2028,7 +2043,7 @@ function SkillsSection({
               </div>
             ))
           ) : (
-            <p className="text-gray-500">Nenhuma linguagem adicionada</p>
+            <p className="text-gray-500">{t("Nenhuma linguagem adicionada")}</p>
           )}
         </div>
       </div>
@@ -2040,7 +2055,7 @@ function SkillsSection({
         onClick={(e) => handleSubmit(e, "skills")}
         disabled={!isFormChanged || loading}
       >
-        {loading ? "Salvando..." : "Salvar Alterações"}
+        {loading ? t("Salvando...") : t("Salvar Alterações")}
       </button>
     </div>
   );
@@ -2063,18 +2078,18 @@ function AccountInfoSection({
   const handlePasswordSubmit = async () => {
     // Validate fields
     if (!currentPassword || !newPassword || !confirmPassword) {
-      toast.warning("Por favor, preencha todos os campos de senha.");
+      toast.warning(t("Por favor, preencha todos os campos de senha."));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      toast.warning("A nova senha e a confirmação não coincidem.");
+      toast.warning(t("A nova senha e a confirmação não coincidem."));
       return;
     }
 
     // (Optional) Add password complexity validations
     if (newPassword.length < 8) {
-      toast.info("A nova senha deve ter pelo menos 8 caracteres.");
+      toast.info(t("A nova senha deve ter pelo menos 8 caracteres."));
       return;
     }
 
@@ -2088,7 +2103,7 @@ function AccountInfoSection({
       toast.success(
         <div className="flex items-center gap-2">
           <span className="font-semibold">
-            Senha atualizada com sucesso! Faça o login novamente.
+            {t("Senha atualizada com sucesso! Faça o login novamente.")}
           </span>
         </div>,
         {
@@ -2113,8 +2128,12 @@ function AccountInfoSection({
         ) {
           toast.error(
             <div className="flex flex-col items-start gap-2">
-              <span className="font-semibold">Senha atual incorreta.</span>
-              <p className="text-sm">Por favor, verifique e tente novamente.</p>
+              <span className="font-semibold">
+                {t("Senha atual incorreta.")}
+              </span>
+              <p className="text-sm">
+                {t("Por favor, verifique e tente novamente.")}
+              </p>
             </div>,
             {
               style: {
@@ -2127,10 +2146,13 @@ function AccountInfoSection({
           );
         }
       } else {
-        toast.error("Erro ao atualizar a senha. Por favor, tente novamente.", {
-          position: "top-center",
-          autoClose: 5000,
-        });
+        toast.error(
+          t("Erro ao atualizar a senha. Por favor, tente novamente."),
+          {
+            position: "top-center",
+            autoClose: 5000,
+          }
+        );
       }
     } finally {
       setLoadingStates((prev: any) => ({ ...prev, accountInfo: false }));
@@ -2141,7 +2163,7 @@ function AccountInfoSection({
     <div>
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Senha Atual
+          {t("Senha Atual")}
         </label>
         <div className="relative flex items-center">
           <input
@@ -2149,7 +2171,7 @@ function AccountInfoSection({
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
-            placeholder="Digite sua senha atual"
+            placeholder={t("Digite sua senha atual")}
           />
           <button
             type="button"
@@ -2164,7 +2186,7 @@ function AccountInfoSection({
 
       <div className="mt-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Nova Senha
+          {t("Nova Senha")}
         </label>
 
         <div className="relative flex items-center">
@@ -2173,7 +2195,7 @@ function AccountInfoSection({
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
-            placeholder="Digite sua nova senha"
+            placeholder={t("Digite sua nova senha")}
           />
           <button
             type="button"
@@ -2188,7 +2210,7 @@ function AccountInfoSection({
 
       <div className="relative mt-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Confirmar Nova Senha
+          {t("Confirmar Nova Senha")}
         </label>
 
         <div className="relative flex items-center">
@@ -2197,7 +2219,7 @@ function AccountInfoSection({
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="no-password-eye border border-gray-300 p-2 rounded-lg w-full pr-10"
-            placeholder="Confirme sua nova senha"
+            placeholder={t("Confirme sua nova senha")}
           />
           <button
             type="button"
@@ -2222,7 +2244,7 @@ function AccountInfoSection({
           !currentPassword || !newPassword || !confirmPassword || loading
         }
       >
-        {loading ? "Alterando..." : "Alterar Senha"}
+        {loading ? t("Alterando...") : t("Alterar Senha")}
       </button>
     </div>
   );

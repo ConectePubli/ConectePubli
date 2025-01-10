@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import TopCreatorBadge from "@/components/ui/top-creator-badge";
 import DownloadIcon from "@/assets/icons/dowload-icon.svg";
 import RegulamentoPdf from "@/assets/pdfs/regulamento-selo-top-creator-conecte-publi.pdf";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/top-creator/"
@@ -11,6 +12,7 @@ export const Route = createFileRoute(
 });
 
 function TopCreator() {
+  const { t } = useTranslation();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -18,30 +20,33 @@ function TopCreator() {
   const steps = [
     {
       number: "1",
-      title: "Faça o download do Regulamento",
-      description:
-        "Clique no botão e um arquivo PDF será baixado automaticamente no seu dispositivo. Esse arquivo contém: Os requisitos necessários para se tornar um Top Creator. Um formulário para assinatura.",
+      title: t("Faça o download do Regulamento"),
+      description: t(
+        "Clique no botão e um arquivo PDF será baixado automaticamente no seu dispositivo. Esse arquivo contém: Os requisitos necessários para se tornar um Top Creator. Um formulário para assinatura."
+      ),
     },
     {
       number: "2",
-      title: "Leia o documento e prepare os requisitos",
-      description:
-        "Abra o PDF baixado e leia com atenção todas as informações e requisitos. Certifique-se de atender a todos os critérios solicitados antes de prosseguir.",
+      title: t("Leia o documento e prepare os requisitos"),
+      description: t(
+        "Abra o PDF baixado e leia com atenção todas as informações e requisitos. Certifique-se de atender a todos os critérios solicitados antes de prosseguir."
+      ),
     },
     {
       number: "3",
-      title: "Envie o formulário preenchido",
+      title: t("Envie o formulário preenchido"),
       description: (
         <>
-          Reúna os documentos necessários, assine e envie para{" "}
+          {t("Reúna os documentos necessários, assine e envie para")}{" "}
           <a
             href="mailto:creators@conectepubli.com"
             className="text-blue-600 hover:underline"
           >
             creators@conectepubli.com
           </a>
-          . Após aprovação, seu perfil será atualizado com o selo de Top
-          Creator, destacando sua posição na plataforma.
+          {t(
+            ". Após aprovação, seu perfil será atualizado com o selo de Top Creator, destacando sua posição na plataforma."
+          )}
         </>
       ),
     },
@@ -53,7 +58,7 @@ function TopCreator() {
       <div className="flex flex-col items-start gap-2 mb-6">
         <TopCreatorBadge status={true} />
         <h1 className="text-2xl font-bold text-gray-900">
-          Descubra Como Funciona
+          {t("Descubra Como Funciona")}
         </h1>
       </div>
 
@@ -69,7 +74,7 @@ function TopCreator() {
             alt="Ícone de Download"
             className="w-4 h-4 mr-2"
           />
-          Baixar Regulamento
+          {t("Baixar Regulamento")}
         </a>
       </div>
 

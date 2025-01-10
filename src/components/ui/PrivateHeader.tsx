@@ -15,6 +15,7 @@ import { Notification } from "@/types/Notification";
 import { useNavigate } from "@tanstack/react-router";
 import { useMessageStore } from "@/store/useMessageStore";
 import { getUserType } from "@/lib/auth";
+import { t } from "i18next";
 
 export const PrivateHeader = () => {
   const { openSheet } = useSheetStore();
@@ -106,7 +107,9 @@ export const PrivateHeader = () => {
               <PopoverTrigger asChild>
                 <button
                   className="focus:outline-none relative"
-                  aria-label={`Você tem ${unreadCount} notificações não lidas`}
+                  aria-label={t("Você tem {{count}} notificações não lidas", {
+                    count: unreadCount,
+                  })}
                 >
                   <Bell className="w-5 h-5 md:w-6 md:h-6 cursor-pointer hover:text-gray-600 transition duration-200" />
                   {unreadCount > 0 && (
@@ -119,7 +122,7 @@ export const PrivateHeader = () => {
               <PopoverContent className="w-80 md:w-96 p-0 mr-16">
                 <div className="bg-[#10438F] rounded-t-md pl-3">
                   <h3 className="text-base font-semibold py-2 text-white">
-                    Notificações
+                    {t("Notificações")}
                   </h3>
                 </div>
                 <ul className="space-y-0 max-h-60 overflow-y-auto">

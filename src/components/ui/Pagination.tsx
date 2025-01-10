@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { t } from "i18next";
 
 interface PaginationProps {
   page: number;
@@ -7,7 +8,11 @@ interface PaginationProps {
   setPage: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ page, totalPages, setPage }) => {
+const Pagination: React.FC<PaginationProps> = ({
+  page,
+  totalPages,
+  setPage,
+}) => {
   const handlePreviousPage = () => {
     if (page > 1) {
       setPage(page - 1);
@@ -26,26 +31,32 @@ const Pagination: React.FC<PaginationProps> = ({ page, totalPages, setPage }) =>
         onClick={handlePreviousPage}
         disabled={page === 1 || page === 0}
         className={`flex items-center px-4 py-2 rounded-lg ${
-          page === 1 ? "bg-gray-200 cursor-not-allowed" : "bg-[#10438F] text-white"
+          page === 1
+            ? "bg-gray-200 cursor-not-allowed"
+            : "bg-[#10438F] text-white"
         }`}
       >
         <ChevronLeft className="h-5 w-5" />
-        Anterior
+        {t("Anterior")}
       </button>
       <div className="flex items-center flex-row gap-1">
-        <p className="hidden sm-plus:block">Página</p>
+        <p className="hidden sm-plus:block">{t("Página")}</p>
         <span>
-          {totalPages === 0 ? 0 : page} de {totalPages}
+          {totalPages === 0 ? 0 : page}
+          {t(" de ")}
+          {totalPages}
         </span>
       </div>
       <button
         onClick={handleNextPage}
         disabled={page === totalPages || page === 0 || totalPages === 0}
         className={`flex items-center px-4 py-2 rounded-lg ${
-          page === totalPages ? "bg-gray-200 cursor-not-allowed" : "bg-[#10438F] text-white"
+          page === totalPages
+            ? "bg-gray-200 cursor-not-allowed"
+            : "bg-[#10438F] text-white"
         }`}
       >
-        Próxima
+        {t("Próxima")}
         <ChevronRight className="h-5 w-5" />
       </button>
     </div>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import connect1 from "@/assets/connect1.webp";
 import connect2 from "@/assets/connect2.jpeg";
+import Translator from "@/components/i18n/Translator";
 
 export const ConnectSection: React.FC = () => {
   const navigate = useNavigate();
@@ -24,11 +25,11 @@ export const ConnectSection: React.FC = () => {
         />
 
         <div className="w-full">
-          <h2 className="text-3xl font-bold mb-4">Conecte-se!</h2>
+          <h2 className="text-3xl font-bold mb-4">
+            <Translator path="Conecte-se" />
+          </h2>
           <p className="text-gray-700 mb-4">
-            Nossa plataforma está oficialmente disponível para você ampliar seu
-            alcance e maximizar seu impacto digital. Cadastre-se agora e
-            aproveite todos os benefícios, sem taxa de adesão!
+            <Translator path="Nossa plataforma está oficialmente disponível para você ampliar seu alcance e maximizar seu impacto digital. Cadastre-se agora e aproveite todos os benefícios, sem taxa de adesão!" />
           </p>
           <div className="flex flex-col lg:flex-row gap-4 justify-center lg:justify-start">
             <Button
@@ -36,7 +37,7 @@ export const ConnectSection: React.FC = () => {
               size="lg"
               onClick={() => navigate({ to: "/login" })}
             >
-              Fazer Login
+              <Translator path="Fazer Login" />
             </Button>
             <Button
               variant="blue"
@@ -44,7 +45,7 @@ export const ConnectSection: React.FC = () => {
               size="lg"
               onClick={() => navigate({ to: "/cadastro" })}
             >
-              Fazer Cadastro
+              <Translator path="Fazer Cadastro" />
             </Button>
           </div>
         </div>

@@ -11,6 +11,7 @@ import download1 from "@/assets/ebooks/downloads/Ebook Creator Economy 360° - U
 import download2 from "@/assets/ebooks/downloads/Dicionário da Creator Economy.pdf";
 import download3 from "@/assets/ebooks/downloads/GuiaTabela de Precificação UGC e IGC.pdf";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/premium/ebooks/"
@@ -52,6 +53,7 @@ export const Route = createFileRoute(
 });
 
 function Page() {
+  const { t } = useTranslation();
   const [pageTitle, setPageTitle] = useState("Compra realizada com sucesso");
 
   useEffect(() => {
@@ -70,7 +72,7 @@ function Page() {
           {pageTitle}
         </h1>
         <p className="mt-3 text-gray-700">
-          Faça o download dos produtos abaixo
+          {t("Faça o download dos produtos abaixo")}
         </p>
 
         <div className="w-full mt-8 gap-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
@@ -82,18 +84,19 @@ function Page() {
             />
             <h2 className="text-xl font-semibold text-[#10438F] mb-1">
               Creator Economy 360°
-              <br /> O Guia Completo para Marcas e Negócios
+              <br /> {t("O Guia Completo para Marcas e Negócios")}
             </h2>
             <p className="text-gray-600 mb-4">
-              Conecte-se ao Futuro do Marketing de Influência com a Conecte
-              Publi
+              {t(
+                "Conecte-se ao Futuro do Marketing de Influência com a Conecte Publi"
+              )}
             </p>
             <a
               href={download1}
               className="mt-auto inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold text-center py-2 px-4 rounded-md"
               download
             >
-              Download
+              {t("Baixar")}
             </a>
           </div>
 
@@ -107,14 +110,16 @@ function Page() {
               Creator Economy 360° Dicionário
             </h2>
             <p className="text-gray-600 mb-4">
-              Tenha em mãos todos os termos e conceitos do universo Creator
+              {t(
+                "Tenha em mãos todos os termos e conceitos do universo Creator"
+              )}
             </p>
             <a
               href={download2}
               className="mt-auto inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold text-center py-2 px-4 rounded-md"
               download
             >
-              Download
+              {t("Baixar")}
             </a>
           </div>
 
@@ -125,17 +130,19 @@ function Page() {
               className="w-full h-auto object-cover rounded-md mb-4"
             />
             <h2 className="text-xl font-semibold text-[#10438F] mb-1">
-              Guia de Precificação UGC e IGC
+              {t("Guia de Precificação UGC e IGC")}
             </h2>
             <p className="text-gray-600 mb-4">
-              Aprenda a definir o valor do seu conteúdo de forma estratégica
+              {t(
+                "Aprenda a definir o valor do seu conteúdo de forma estratégica"
+              )}
             </p>
             <a
               href={download3}
               className="mt-auto inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold text-center py-2 px-4 rounded-md"
               download
             >
-              Download
+              {t("Baixar")}
             </a>
           </div>
         </div>

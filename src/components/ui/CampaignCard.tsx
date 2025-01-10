@@ -10,6 +10,7 @@ import { Link } from "@tanstack/react-router";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import { formatDateUTC } from "@/utils/formatDateUTC";
 import { Brand } from "@/types/Brand";
+import { t } from "i18next";
 
 interface CampaignCardProps {
   campaignData: Campaign;
@@ -28,15 +29,15 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
   const readTextStatus = (type: string) => {
     switch (type) {
       case "waiting":
-        return "Proposta Pendente";
+        return t("Proposta Pendente");
       case "approved":
-        return "Trabalho em Progresso";
+        return t("Trabalho em Progresso");
       case "completed":
-        return "Trabalho Concluído";
+        return t("Trabalho Concluído");
       case "sold_out":
-        return "Vagas Esgotadas";
+        return t("Vagas Esgotadas");
       case "analysing":
-        return "Campanha em análise";
+        return t("Campanha em análise");
       default:
         return "";
     }
@@ -119,7 +120,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             <div className="flex items-center gap-2 text-purple-600 font-semibold">
               <Coins className="w-5 h-5" />
               {`${formatCentsToCurrency(campaignData.price)}`}
-              /pessoa
+              {t("/pessoa")}
             </div>
           </div>
 
@@ -141,7 +142,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
                   color: "red",
                 }}
               >
-                Status: Inscrições Encerradas
+                {t("Status: Inscrições Encerradas")}
               </span>
             )}
 

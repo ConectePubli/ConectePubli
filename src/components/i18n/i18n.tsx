@@ -17,6 +17,7 @@ const I18n = () => {
   const handleChangeLanguage: HandleChangeLanguage = (language) => {
     // Trocando o idioma na chamada da função
     i18n.changeLanguage(language);
+    window.location.reload();
   };
 
   const selectedLanguage = i18n.language; // Idioma selecionado

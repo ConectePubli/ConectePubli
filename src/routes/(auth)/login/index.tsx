@@ -11,6 +11,7 @@ import loginImage from "@/assets/login.webp";
 
 import pb from "@/lib/pb";
 import { getUserType } from "@/lib/auth";
+import { t } from "i18next";
 
 export const Route = createFileRoute("/(auth)/login/")({
   component: Page,
@@ -51,7 +52,7 @@ function Page() {
     },
     onError: (error: any) => {
       if (error.message === "Failed to authenticate.") {
-        setErrorMessage("Email e/ou senha incorretos.");
+        setErrorMessage(t("Email e/ou senha incorretos."));
       } else {
         setErrorMessage(error.message || "Ocorreu um erro ao fazer login.");
       }
@@ -77,10 +78,13 @@ function Page() {
             <img src={logo} alt="ConectePubli" className="h-7" />
           </Link>
 
-          <h2 className="text-3xl font-bold mb-4">Bem-vindo de volta!</h2>
+          <h2 className="text-3xl font-bold mb-4">
+            {t("Bem-vindo de volta!")}
+          </h2>
           <p className="text-gray-600 mb-6">
-            Conecte-se à sua conta e continue construindo parcerias estratégicas
-            com marcas e creators.
+            {t(
+              "Conecte-se à sua conta e continue construindo parcerias estratégicas com marcas e creators."
+            )}
           </p>
 
           <div className="mb-6">
@@ -93,7 +97,7 @@ function Page() {
                 }`}
                 onClick={() => setLoginType("brand")}
               >
-                Marca
+                {t("Marca")}
               </button>
               <button
                 className={`px-4 py-2 text-sm font-semibold ml-4 ${
@@ -103,13 +107,17 @@ function Page() {
                 }`}
                 onClick={() => setLoginType("influencer")}
               >
-                Creator
+                {t("Creator")}
               </button>
             </div>
             <p className="text-sm text-gray-500 mt-4">
-              Lembrete: Certifique-se de selecionar a opção correta ao acessar
-              sua conta. Se você se cadastrou como <strong>Marca</strong> ou{" "}
-              <strong>Creator</strong>, escolha a opção correspondente.
+              {t(
+                "Lembrete: Certifique-se de selecionar a opção correta ao acessar sua conta. Se você se cadastrou como "
+              )}
+              <strong>{t("Marca")}</strong>
+              {t(" ou ")}
+              <strong>Creator</strong>
+              {t(", escolha a opção correspondente.")}
             </p>
           </div>
 
@@ -127,7 +135,7 @@ function Page() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Informe o e-mail"
+                placeholder={t("Informe o e-mail")}
               />
             </div>
 
@@ -136,7 +144,7 @@ function Page() {
                 className="block text-sm font-medium text-gray-700"
                 htmlFor="senha"
               >
-                Senha
+                {t("Senha")}
               </label>
               <div className="relative">
                 <input
@@ -145,7 +153,7 @@ function Page() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Informe a senha"
+                  placeholder={t("Informe a senha")}
                 />
                 <span
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer"
@@ -167,7 +175,7 @@ function Page() {
                 className="text-customLinkBlue underline text-sm cursor-pointer"
                 onClick={() => navigate({ to: "/esquecer-senha" })}
               >
-                Esqueci minha senha
+                {t("Esqueci minha senha")}
               </a>
             </div>
 
@@ -178,18 +186,20 @@ function Page() {
               disabled={mutation.isPending}
             >
               {mutation.isPending
-                ? "Entrando..."
-                : `Entrar como ${loginType === "brand" ? "Marca" : "Creator"}`}
+                ? t("Entrando...")
+                : t(
+                    `Entrar como ${loginType === "brand" ? "Marca" : "Creator"}`
+                  )}
             </Button>
 
             <div className="text-center">
               <p className="text-sm">
-                Novo por aqui?{" "}
+                {t("Novo por aqui?")}{" "}
                 <a
                   className="text-customLinkBlue underline cursor-pointer"
                   onClick={() => navigate({ to: "/cadastro" })}
                 >
-                  Crie sua conta gratuitamente!
+                  {t("Crie sua conta gratuitamente!")}
                 </a>
               </p>
             </div>
