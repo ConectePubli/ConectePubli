@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { formatDateUTC } from "@/utils/formatDateUTC";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/rascunhos/"
@@ -36,6 +37,7 @@ export const Route = createFileRoute(
 
 function Page() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -73,14 +75,18 @@ function Page() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-semibold mb-4">Rascunho de Campanhas</h2>
+      <h2 className="text-2xl font-semibold mb-4">
+        {t("Rascunho de Campanhas")}
+      </h2>
       <p className="text-gray-600 mb-6">
-        Finalize as suas campanhas para que os creators possam se candidatar
+        {t(
+          "Finalize as suas campanhas para que os creators possam se candidatar"
+        )}
       </p>
       {isLoading && (
         <div className="flex flex-col items-center justify-center space-y-3 w-full mt-4">
           <Spinner />
-          <p className="text-center">Carregando dados...</p>
+          <p className="text-center">{t("Carregando dados...")}</p>
         </div>
       )}
 
@@ -91,9 +97,9 @@ function Page() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-[#10438F]">
-                  <th className="border p-2 text-white">Data</th>
-                  <th className="border p-2 text-white">Nome</th>
-                  <th className="border p-2 text-white">Status</th>
+                  <th className="border p-2 text-white">{t("Data")}</th>
+                  <th className="border p-2 text-white">{t("Nome")}</th>
+                  <th className="border p-2 text-white">{"Status"}</th>
                 </tr>
               </thead>
               <tbody>
@@ -120,8 +126,8 @@ function Page() {
                           }}
                         >
                           {campaign.status === "draft"
-                            ? "Finalizar campanha"
-                            : "Status desconhecido"}
+                            ? t("Finalizar campanha")
+                            : t("Status desconhecido")}
                         </Button>
                       </td>
                     </tr>
@@ -131,7 +137,9 @@ function Page() {
 
             {campaigns.length === 0 && (
               <div className="flex items-center justify-center min-h-[100px]">
-                <p>Você não salvou nenhuma campanha como rascunho ainda</p>
+                <p>
+                  {t("Você não salvou nenhuma campanha como rascunho ainda")}
+                </p>
               </div>
             )}
           </div>
@@ -141,9 +149,9 @@ function Page() {
             <table className="w-full border-collapse min-w-[600px]">
               <thead>
                 <tr className="bg-[#10438F]">
-                  <th className="border p-2 text-white">Status</th>
-                  <th className="border p-2 text-white">Nome</th>
-                  <th className="border p-2 text-white">Data</th>
+                  <th className="border p-2 text-white">{t("Status")}</th>
+                  <th className="border p-2 text-white">{t("Nome")}</th>
+                  <th className="border p-2 text-white">{t("Data")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -166,8 +174,8 @@ function Page() {
                           }}
                         >
                           {campaign.status === "draft"
-                            ? "Finalizar campanha"
-                            : "Status desconhecido"}
+                            ? t("Finalizar campanha")
+                            : t("Status desconhecido")}
                         </Button>
                       </td>
                       <td className="border p-2">{campaign.name}</td>
@@ -181,7 +189,9 @@ function Page() {
 
             {campaigns.length === 0 && (
               <div className="flex items-center justify-center min-h-[100px]">
-                <p>Você não salvou nenhuma campanha como rascunho ainda</p>
+                <p>
+                  {t("Você não salvou nenhuma campanha como rascunho ainda")}
+                </p>
               </div>
             )}
           </div>

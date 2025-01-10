@@ -4,6 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
 import logo from "@/assets/logo.svg";
+import { t } from "i18next";
 
 export const PublicHeader = () => {
   const navigate = useNavigate();
@@ -21,14 +22,14 @@ export const PublicHeader = () => {
             size="default"
             onClick={() => navigate({ to: "/login" })}
           >
-            Entrar
+            {t("Entrar")}
           </Button>
           <Button
             variant="orange"
             size="default"
             onClick={() => navigate({ to: "/cadastro" })}
           >
-            Cadastro
+            {t("Cadastrar")}
           </Button>
         </div>
       </div>

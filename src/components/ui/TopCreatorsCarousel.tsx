@@ -7,7 +7,7 @@ import Thais from "@/assets/topcreators/Thaís.png";
 import GoldCheckIcon from "@/assets/icons/gold-check.svg";
 import Catarino from "@/assets/topcreators/Catarino.png";
 import FelipeMaia from "@/assets/topcreators/FelipeMaia.png";
-import Stefano from "@/assets/topcreators/Stefano.png";
+import Stefano from "@/assets/topcreators/Stefano.jpg";
 import ViviamCostta from "@/assets/topcreators/Viviam.png";
 import { useMemo } from "react";
 
@@ -42,7 +42,7 @@ export default function TopCreatorsCarousel() {
     autoplay: true,
     autoplaySpeed: 3000,
     slidesToShow: 4,
-    slidesToScroll: 2,
+    slidesToScroll: 4,
     responsive: [
       {
         // até ~1480px

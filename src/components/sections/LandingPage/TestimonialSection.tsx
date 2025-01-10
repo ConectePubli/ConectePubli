@@ -6,6 +6,7 @@ import Testimonial from "@/components/LandingPage/Testimonial/Testimonial";
 import mundo_marketing from "@/assets/influencers.jpeg";
 import valor_business from "@/assets/valor-business.jpg";
 import forbes_vip from "@/assets/forbes_vip.jpg";
+import { t } from "i18next";
 
 interface Testimonial {
   quote: string;
@@ -15,20 +16,23 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
   {
-    quote:
-      "Com parcerias estratégicas e eliminando barreiras burocráticas, a Conecte Publi busca oferecer segurança e liberdade para todos os seus usuários",
+    quote: t(
+      "Com parcerias estratégicas e eliminando barreiras burocráticas, a Conecte Publi busca oferecer segurança e liberdade para todos os seus usuários"
+    ),
     citedBy: "Mundo do Marketing",
     imageSrc: mundo_marketing,
   },
   {
-    quote:
-      "Com sua abordagem disruptiva, a Conecte Publi já é considerada uma das maiores inovações no marketing digital em 2025",
+    quote: t(
+      "Com sua abordagem disruptiva, a Conecte Publi já é considerada uma das maiores inovações no marketing digital em 2025"
+    ),
     citedBy: "Valor Business",
     imageSrc: valor_business,
   },
   {
-    quote:
-      "Conecte Publi: A Nova Referência em Marketing de Influência e Conteúdo",
+    quote: t(
+      "Conecte Publi: A Nova Referência em Marketing de Influência e Conteúdo"
+    ),
     citedBy: "Forbes VIP",
     imageSrc: forbes_vip,
   },

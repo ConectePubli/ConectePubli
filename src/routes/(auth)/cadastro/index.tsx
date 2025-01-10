@@ -1,3 +1,5 @@
+// src/pages/CadastroEscolha.tsx
+
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
@@ -5,6 +7,7 @@ import logo from "@/assets/logo.svg";
 
 import register from "@/assets/register.webp";
 import { getUserType } from "@/lib/auth";
+import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/(auth)/cadastro/")({
   component: Page,
@@ -24,6 +27,7 @@ export const Route = createFileRoute("/(auth)/cadastro/")({
 });
 
 function Page() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -38,9 +42,9 @@ function Page() {
           <img src={logo} alt="ConectePubli" className="h-7" />
         </Link>
 
-        <h2 className="text-3xl font-bold mb-4">Escolha seu Registro</h2>
+        <h2 className="text-3xl font-bold mb-4">{t("Escolha seu Registro")}</h2>
         <p className="text-gray-600 mb-6">
-          Selecione uma das opções abaixo para continuar.
+          {t("Selecione uma das opções abaixo para continuar.")}
         </p>
 
         <div className="flex flex-col gap-4 w-full">
@@ -50,7 +54,7 @@ function Page() {
             className="w-full whitespace-normal h-fit py-4"
             onClick={() => navigate({ to: "/cadastro/marca" })}
           >
-            Quero me Cadastrar como uma Marca/Empresa
+            {t("Quero me Cadastrar como uma Marca/Empresa")}
           </Button>
           <Button
             variant="blue"
@@ -58,10 +62,12 @@ function Page() {
             className="w-full whitespace-normal h-fit py-4"
             onClick={() => navigate({ to: "/cadastro/creator" })}
           >
-            Quero me Cadastrar como um Creator
+            {t("Quero me Cadastrar como um Creator")}
           </Button>
         </div>
       </div>
     </div>
   );
 }
+
+export default Page;

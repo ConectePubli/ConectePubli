@@ -7,6 +7,7 @@ import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { ParticipationStatusFilter } from "@/types/Filters";
+import { t } from "i18next";
 
 // Route creation
 export const Route = createFileRoute(
@@ -65,10 +66,11 @@ function Page() {
 
   return (
     <div className="mx-auto py-6 px-4">
-      <h1 className="text-2xl font-bold mb-2">Minhas Participações</h1>
+      <h1 className="text-2xl font-bold mb-2">{t("Minhas Participações")}</h1>
       <p className="text-gray-700 mb-6">
-        Acompanhe todas as campanhas nas quais você se inscreveu e gerencie suas
-        participações.
+        {t(
+          "Acompanhe todas as campanhas nas quais você se inscreveu e gerencie suas participações."
+        )}
       </p>
 
       <BrandCampaignFilter
@@ -84,7 +86,7 @@ function Page() {
       {isLoading ? (
         <div className="flex flex-col items-center justify-center my-10">
           <Spinner />
-          <p className="mt-2 text-gray-600">Carregando...</p>
+          <p className="mt-2 text-gray-600">{t("Carregando...")}</p>
         </div>
       ) : error ? (
         <p className="text-red-500">{error}</p>
@@ -93,8 +95,9 @@ function Page() {
           {campaigns.length === 0 ? (
             <div className="flex flex-col items-center justify-center my-10">
               <p className="text-center text-gray-700 text-base">
-                Você ainda não se inscreveu em nenhuma campanha. Navegue pelas
-                campanhas disponíveis e comece a participar agora mesmo!
+                {t(
+                  "Você ainda não se inscreveu em nenhuma campanha. Navegue pelas campanhas disponíveis e comece a participar agora mesmo!"
+                )}
               </p>
               <button
                 onClick={() => {
@@ -102,7 +105,7 @@ function Page() {
                 }}
                 className="mt-4 px-4 py-2 bg-[#FF672F] text-white rounded font-semibold"
               >
-                Explorar Campanhas
+                {t("Explorar Campanhas")}
               </button>
             </div>
           ) : (
