@@ -2,8 +2,10 @@ import { useCampaignStore } from "@/store/useCampaignStore";
 import { format } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
 import { formatDateUTC } from "@/utils/formatDateUTC";
+import { useTranslation } from "react-i18next";
 
 const CampaignsTable: React.FC = () => {
+  const { t } = useTranslation();
   const { campaigns, isLoading, error } = useCampaignStore();
 
   const navigate = useNavigate();
@@ -14,16 +16,22 @@ const CampaignsTable: React.FC = () => {
         <thead className="bg-[#10438F] text-white rounded-t-lg">
           <tr>
             <th className="py-3 px-4 text-left whitespace-nowrap rounded-tl-lg">
-              Nome
+              {t("Nome")}
             </th>
-            <th className="py-3 px-4 text-left whitespace-nowrap">Objetivo</th>
-            <th className="py-3 px-4 text-left whitespace-nowrap">Inscritos</th>
-            <th className="py-3 px-4 text-left whitespace-nowrap">Aprovados</th>
             <th className="py-3 px-4 text-left whitespace-nowrap">
-              Início/Fim
+              {t("Objetivo")}
+            </th>
+            <th className="py-3 px-4 text-left whitespace-nowrap">
+              {t("Inscritos")}
+            </th>
+            <th className="py-3 px-4 text-left whitespace-nowrap">
+              {t("Aprovados")}
+            </th>
+            <th className="py-3 px-4 text-left whitespace-nowrap">
+              {t("Início/Fim")}
             </th>
             <th className="py-3 px-4 text-left whitespace-nowrap rounded-tr-lg">
-              Status
+              {t("Status")}
             </th>
           </tr>
         </thead>
@@ -31,7 +39,7 @@ const CampaignsTable: React.FC = () => {
           {isLoading ? (
             <tr>
               <td colSpan={7} className="py-4 px-4 text-center text-gray-500">
-                Carregando campanhas...
+                {t("Carregando campanhas...")}
               </td>
             </tr>
           ) : error ? (
@@ -100,11 +108,11 @@ const CampaignsTable: React.FC = () => {
                   >
                     Status:{" "}
                     {campaign.status === "in_progress"
-                      ? "Em andamento"
+                      ? t("Em andamento")
                       : campaign.status === "ended"
-                        ? "Encerrado"
+                        ? t("Encerrado")
                         : campaign.status === "ready"
-                          ? "Pronto para iniciar"
+                          ? t("Pronto para iniciar")
                           : ""}
                   </td>
                 </tr>
@@ -113,7 +121,7 @@ const CampaignsTable: React.FC = () => {
           ) : (
             <tr>
               <td colSpan={7} className="py-4 px-4 text-center text-gray-500">
-                Nenhuma campanha disponível.
+                {t("Nenhuma campanha disponível.")}
               </td>
             </tr>
           )}

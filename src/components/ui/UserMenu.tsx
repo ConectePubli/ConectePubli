@@ -123,18 +123,20 @@ export function UserMenu() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t("Confirmar saída")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja sair? Esta ação irá encerrar sua sessão.
+              {t(
+                "Tem certeza que deseja sair? Esta ação irá encerrar sua sessão."
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setOpen(false)}>
-              Cancelar
+              {t("Cancelar")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleLogout}
               className="bg-[#001D7E] hover:bg-[#091DD3]"
             >
-              Sair
+              {t("Sair")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

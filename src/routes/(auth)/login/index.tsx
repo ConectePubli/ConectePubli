@@ -52,7 +52,7 @@ function Page() {
     },
     onError: (error: any) => {
       if (error.message === "Failed to authenticate.") {
-        setErrorMessage("Email e/ou senha incorretos.");
+        setErrorMessage(t("Email e/ou senha incorretos."));
       } else {
         setErrorMessage(error.message || "Ocorreu um erro ao fazer login.");
       }
