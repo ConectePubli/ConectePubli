@@ -15,7 +15,6 @@ import Modal from "@/components/ui/Modal";
 
 import { PurchasedPremiumPlan } from "@/types/PurchasedPremiumPlan";
 
-import { CaretRight } from "phosphor-react";
 import { t } from "i18next";
 import { BrandPremiumPlan } from "@/types/BrandPremiumPlan";
 import { getUserType } from "@/lib/auth";
@@ -223,7 +222,7 @@ function Page() {
           {currentPlan && currentPlan.plan.includes(plans[0].id) ? (
             <div>
               <Button className="mt-4 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]">
-                 {t("Plano atual")}
+                {t("Plano atual")}
               </Button>
 
               {!currentPlan.cancel_at && (
@@ -319,7 +318,7 @@ function Page() {
                   variant={"blue"}
                   className="mt-6 w-full text-white bg-[#00B64C] py-2 px-4 rounded-md text-base cursor-default hover:bg-[#00B64C]"
                 >
-                   {t("Plano atual")}
+                  {t("Plano atual")}
                 </Button>
 
                 {!currentPlan.cancel_at && (
