@@ -27,7 +27,7 @@ export function SideNavDashboard() {
   useEffect(() => {
     if (isBrand) {
       pb.collection("purchased_brand_plans")
-        .getFirstListItem(`brand="${pb.authStore.model?.id}"`)
+        .getFirstListItem(`brand="${pb.authStore.model?.id}" && active=true`)
         .then(() => setHasPlan(true))
         .catch(() => {
           setHasPlan(false);

@@ -36,7 +36,7 @@ export const Route = createFileRoute(
 
     try {
       purchasedPlan = await pb.collection("purchased_brand_plans").getFullList({
-        filter: `brand="${pb.authStore?.model?.id}"`,
+        filter: `brand="${pb.authStore?.model?.id}" && active=true`,
       });
     } catch (e) {
       console.log(`error fetch club premium plan`);

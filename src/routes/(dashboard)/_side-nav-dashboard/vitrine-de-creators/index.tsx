@@ -42,7 +42,7 @@ export const Route = createFileRoute(
     try {
       await pb
         .collection("purchased_brand_plans")
-        .getFirstListItem(`brand="${brandId}"`);
+        .getFirstListItem(`brand="${brandId}" && active=true`);
     } catch (error) {
       hasPlan = false;
       console.error("Erro ao buscar o plano da marca:", error);

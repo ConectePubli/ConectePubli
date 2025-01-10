@@ -32,8 +32,6 @@ export const subscribeClubPremium = async (
       }
     );
 
-    console.log(response);
-
     if (response.status === 200 || response.status === 201) {
       const link = await response.data.url;
 
@@ -52,12 +50,48 @@ export const subscribeClubPremium = async (
   }
 };
 
+export const unsubscribeClubPremium = async (
+  setLoadingCancel: React.ComponentState,
+  subscription_id: string,
+  toast: any
+) => {
+  setLoadingCancel(true);
+
+  try {
+    await axios.post(
+      `https://conecte-publi.pockethost.io/api/stripe/subscription_cancel_end_period`,
+      {
+        subscription_id: subscription_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${pb.authStore.token}`,
+        },
+      }
+    );
+
+    toast("Cancelamento realizado com sucesso", {
+      autoClose: 2500,
+    });
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  } catch (e) {
+    console.log(`error unsubscribe premium`);
+    console.log(e);
+    toast.error("Erro ao cancelar plano, tente novamente mais tarde");
+  } finally {
+    setLoadingCancel(false);
+  }
+};
+
 export const isBrandPremium = async () => {
   try {
     const purchasedPlan = await pb
       .collection("purchased_brand_plans")
       .getFullList({
-        filter: `brand="${pb.authStore?.model?.id}"`,
+        filter: `brand="${pb.authStore?.model?.id}" && active=true`,
       });
 
     if (purchasedPlan && purchasedPlan.length >= 1) {
