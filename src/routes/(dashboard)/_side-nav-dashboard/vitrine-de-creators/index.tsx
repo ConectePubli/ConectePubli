@@ -14,6 +14,7 @@ import GoldCheckIcon from "@/assets/icons/gold-check.svg";
 import LocationPin from "@/assets/icons/location-pin.svg";
 import Tag from "@/assets/icons/tag.svg";
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const searchSchema = z.object({
   page: z.number().optional(),
@@ -39,8 +40,6 @@ export const Route = createFileRoute(
     const brandId = pb.authStore.model?.id;
     let hasPlan = true;
     try {
-      // Tenta buscar o registro usando a brandId
-      console.log("Buscando o plano da marca...", brandId);
       await pb
         .collection("purchased_brand_plans")
         .getFirstListItem(`brand="${brandId}"`);
@@ -61,7 +60,6 @@ export const Route = createFileRoute(
         filter,
         sort: "-top_creator,created",
       });
-    console.log(result);
 
     return {
       creators: result.items,
@@ -82,6 +80,7 @@ export const Route = createFileRoute(
 });
 
 function Page() {
+  const { t } = useTranslation();
   const { creators, totalPages, page, hasPlan } = Route.useLoaderData();
   const router = useRouter();
   const [loadingChatId, setLoadingChatId] = useState<string | null>(null);
@@ -146,36 +145,39 @@ function Page() {
     }
   };
 
-  if (!hasPlan) {
-    return (
-      <div className="flex justify-center items-center h-[calc(100vh-66px)] bg-gradient-to-b from-blue-50 to-blue-100">
-        <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md mb-[66px]">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            Acesso Restrito
-          </h1>
-          <p className="text-gray-600 mb-6">
-            Essa funcionalidade está disponível apenas para marcas do plano
-            <span className="text-[#FF672F] font-bold"> Premium</span>. Faça o
-            upgrade e aproveite todos os benefícios.
-          </p>
+  // if (!hasPlan) {
+  //   return (
+  //     <div className="flex justify-center items-center h-[calc(100vh-66px)] bg-gradient-to-b from-blue-50 to-blue-100">
+  //       <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md mb-[66px]">
+  //         <h1 className="text-2xl font-bold text-gray-800 mb-4">
+  //           {t("Acesso Restrito")}
+  //         </h1>
+  //         <p className="text-gray-600 mb-6">
+  //           {t(
+  //             "Essa funcionalidade está disponível apenas para marcas do plano"
+  //           )}
+  //           <span className="text-[#FF672F] font-bold">{t(" Premium")}</span>
+  //           {t(". Faça o upgrade e aproveite todos os benefícios.")}
+  //         </p>
 
-          <button
-            onClick={() => router.navigate({ to: "/premium/marca" })}
-            className="bg-[#10438F] text-white px-6 py-3 rounded-lg hover:bg-[#10438F]/90 transition-all font-semibold"
-          >
-            Ver Planos
-          </button>
-        </div>
-      </div>
-    );
-  }
+  //         <button
+  //           onClick={() => router.navigate({ to: "/premium/marca" })}
+  //           className="bg-[#10438F] text-white px-6 py-3 rounded-lg hover:bg-[#10438F]/90 transition-all font-semibold"
+  //         >
+  //           {t("Ver Planos")}
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-4">Vitrine de Creators</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("Vitrine de Creators")}</h1>
       <p className="mb-4">
-        Descubra os creators da nossa plataforma e entre em contato com os que
-        mais se alinham à sua marca.
+        {t(
+          "Descubra os creators da nossa plataforma e entre em contato com os que mais se alinham à sua marca."
+        )}
       </p>
 
       <div className="relative z-0 mb-4">
@@ -185,14 +187,14 @@ function Page() {
         <input
           id="campaignSearch"
           type="text"
-          placeholder="Pesquisar pelo nome do Creator"
+          placeholder={t("Pesquisar pelo nome do Creator")}
           onChange={handleSearchChange}
           className="w-full pl-10 p-2 border-black/40 border border-gray-300 rounded-lg"
         />
       </div>
 
       {creators.length === 0 ? (
-        <p className="text-gray-600">Nenhum creator encontrado.</p>
+        <p className="text-gray-600">{t("Nenhum creator encontrado.")}</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
           {creators.map((creator) => {
@@ -281,7 +283,7 @@ function Page() {
                         alt="Tipo de conta"
                         className="w-4 h-4 mr-1"
                       />
-                      Não informado
+                      {t("Não informado")}
                     </p>
                   )}
                   {(creator.city && creator.state && creator.country && (
@@ -300,13 +302,13 @@ function Page() {
                         alt="Localização"
                         className="w-4 h-4 mr-1"
                       />
-                      Localização não informada
+                      {t("Localização não informada")}
                     </p>
                   )}
                 </div>
 
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3 min-h-[60px]">
-                  {creator.bio || "Biografia não informada."}
+                  {creator.bio || t("Biografia não informada.")}
                 </p>
 
                 <div className="text-sm text-gray-800 mb-4">
@@ -319,7 +321,7 @@ function Page() {
                     })}
                   </p>
                   <p>
-                    <strong>1 Vídeo + Combo de Fotos UGC:</strong>{" "}
+                    <strong>{t("1 Vídeo + Combo de Fotos UGC:")}</strong>{" "}
                     {(creator.feed_price / 100).toLocaleString("pt-BR", {
                       style: "currency",
                       currency: "BRL",
@@ -380,7 +382,7 @@ function Page() {
                   {loadingChatId === creator.id ? (
                     <SpinnerPhosphor className="animate-spin w-6 h-6" />
                   ) : (
-                    "Enviar mensagem"
+                    t("Enviar mensagem")
                   )}
                 </button>
               </div>
@@ -399,12 +401,12 @@ function Page() {
             {loadingPage ? (
               <SpinnerPhosphor className="animate-spin w-6 h-6" />
             ) : (
-              "Anterior"
+              t("Anterior")
             )}
           </button>
           <span className="text-gray-600">
-            Página <span className="font-bold">{page}</span> de{" "}
-            <span className="font-bold">{totalPages}</span>
+            {t("Página")} <span className="font-bold">{page}</span>
+            {t(" de")} <span className="font-bold">{totalPages}</span>
           </span>
           <button
             onClick={() => setPage(Math.min(page + 1, totalPages))}
@@ -414,7 +416,7 @@ function Page() {
             {loadingPage ? (
               <SpinnerPhosphor className="animate-spin w-6 h-6" />
             ) : (
-              "Próxima"
+              t("Próxima")
             )}
           </button>
         </div>

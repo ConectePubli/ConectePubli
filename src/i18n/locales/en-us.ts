@@ -604,5 +604,25 @@ export default {
     "Criar Campanha": "Create Campaign",
     "Assinatura premium": "Premium subscription",
     "Suporte/Whatsapp": "Support/Whatsapp",
+    "Acesso Restrito": "Restricted Access",
+    "Essa funcionalidade está disponível apenas para marcas do plano":
+      "This feature is only available for brands on the plan",
+    " Premium": " Premium",
+    ". Faça o upgrade e aproveite todos os benefícios.":
+      ". Upgrade and enjoy all the benefits.",
+    "Ver Planos": "View Plans",
+    "Descubra os creators da nossa plataforma e entre em contato com os que mais se alinham à sua marca.":
+      "Discover the creators on our platform and get in touch with those who best align with your brand.",
+    "Pesquisar pelo nome do Creator": "Search by Creator name",
+    "Nenhum creator encontrado.": "No creators found.",
+    "Não informado": "Not informed",
+    "Localização não informada": "Location not informed",
+    "1 Vídeo + Combo de Fotos UGC:": "1 Video + UGC Photos Combo:",
+    "Enviar mensagem": "Send message",
+    "Biografia não informada.": "Biography not informed.",
+    Próxima: "Next",
+    Anterior: "Previous",
+    Página: "Page",
+    " de": " of",
   },
 };
