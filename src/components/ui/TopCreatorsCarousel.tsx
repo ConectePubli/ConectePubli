@@ -9,6 +9,7 @@ import Catarino from "@/assets/topcreators/Catarino.png";
 import FelipeMaia from "@/assets/topcreators/FelipeMaia.png";
 import Stefano from "@/assets/topcreators/Stefano.jpg";
 import ViviamCostta from "@/assets/topcreators/Viviam.png";
+import FabioBraz from "@/assets/topcreators/FabioBraz.png";
 import { useMemo } from "react";
 
 const topCreatorsData = [
@@ -27,6 +28,10 @@ const topCreatorsData = [
   {
     name: "Vìviam Costta",
     imageUrl: ViviamCostta,
+  },
+  {
+    name: "Fabio Braz",
+    imageUrl: FabioBraz,
   },
 ];
 
