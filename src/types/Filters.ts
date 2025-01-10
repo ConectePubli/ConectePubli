@@ -36,7 +36,7 @@ export const ChannelFilter = {
 export type ChannelFilterType = keyof typeof ChannelFilter;
 
 export const NicheFilter = {
-  All: "",
+  "": "Todos",
   wbjwvgn35jl2iu9: "Alimentação Saudável e Nutrição",
   a0ncq9dg4v7cmz9: "Arte e Cultura",
   lpm6yrf4urto14w: "Automóveis e Carros",
@@ -68,7 +68,7 @@ export const NicheFilter = {
   i43dbddebc57fit: "Sustentabilidade e Meio Ambiente",
   "57bppfj91zexo6n": "Tecnologia e Eletrônicos",
   jhpjpepuyull7x2: "Viagens e Turismo",
-} as const;
+};
 
 // Type for NicheFilter to use for type-checking
 export type NicheFilterType = keyof typeof NicheFilter;
