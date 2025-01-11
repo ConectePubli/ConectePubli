@@ -22,7 +22,7 @@ const DEFAULT_FILTERS = {
   statusFilter: StatusFilter.All,
   campaignGoalFilter: CampaignGoalFilter.All,
   channelFilter: ChannelFilter.All as ChannelFilterType,
-  nicheFilter: NicheFilter.All as NicheFilterType,
+  nicheFilter: NicheFilter[""] as NicheFilterType,
   participationStatusFilter: ParticipationStatusFilter.All,
   searchTerm: "",
   page: 1,
@@ -158,6 +158,12 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
           sort: "-created",
           expand: "brand",
         });
+
+      console.log("filtros");
+      console.log(filters);
+
+      console.log("campanhas");
+      console.log(allCampaigns);
 
       const userAuthString = localStorage.getItem("pocketbase_auth");
       if (userAuthString) {
@@ -403,7 +409,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       participationStatusFilter: ParticipationStatusFilter.All,
       campaignGoalFilter: CampaignGoalFilter.All,
       channelFilter: ChannelFilter.All as ChannelFilterType,
-      nicheFilter: NicheFilter.All as NicheFilterType,
+      nicheFilter: NicheFilter[""] as NicheFilterType,
       searchTerm: "",
       page: 1,
     });
