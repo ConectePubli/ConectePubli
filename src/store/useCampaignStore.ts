@@ -159,12 +159,6 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
           expand: "brand",
         });
 
-      console.log("filtros");
-      console.log(filters);
-
-      console.log("campanhas");
-      console.log(allCampaigns);
-
       const userAuthString = localStorage.getItem("pocketbase_auth");
       if (userAuthString) {
         const user = JSON.parse(userAuthString) as UserAuth;
@@ -228,8 +222,6 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
             filter: `spotlight_end >= "${now.toISOString()}"`,
             sort: "created",
           });
-
-        console.log("Spotlights ativos:", activeSpotlights);
 
         // 3.2 Map para saber qual campanha está em destaque
         const spotlightMap: Record<string, { created: string }> = {};
