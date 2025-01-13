@@ -1135,5 +1135,51 @@ export default {
     "Carregar Imagem": "Upload Image",
     "Perfil não encontrado": "Profile not found",
     "Ver Reviews da Marca": "View Brand Reviews",
+    "Ocorreu um erro ao carregar essa página. Não se preocupe, estamos trabalhando para resolvê-lo!":
+      "An error occurred while loading this page. Don't worry, we're working to resolve it!",
+    "Campanha não encontrada": "Campaign not found",
+    "Ocorreu um erro ao verificar sua avaliação da plataforma.":
+      "An error occurred while checking your platform rating.",
+    "Não foi possível iniciar o chat": "Could not start the chat",
+    "Não foi possível atualizar o status": "Could not update status",
+    Importante: "Important",
+    "Antes de prosseguir com o pagamento, aguarde os creators se candidatarem à sua campanha. Assim que os candidatos estiverem disponíveis, você poderá selecioná-los e finalizar o pagamento com o valor correto.":
+      "Before proceeding with the payment, wait for the creators to apply to your campaign. Once the candidates are available, you can select them and finalize the payment with the correct amount.",
+    "Sua campanha já está na vitrine, agora é só esperar os creators certos se inscreverem!":
+      "Your campaign is already in the showcase, now just wait for the right creators to sign up!",
+    "Visualize todos os inscritos dessa campanha.":
+      "View all subscribers for this campaign.",
+    "Esta campanha terminou, então você pode apenas visualizá-la!":
+      "This campaign has ended, so you can only view it!",
+    "Visualizar Campanha": "View Campaign",
+    "Valor a pagar: ": "Amount to pay: ",
+    "Você possui até o dia ": "You have until the day ",
+    "para realizar o pagamento e não ter a campanha bloqueada":
+      "to make the payment and not have the campaign blocked",
+    "Campanha paga": "Campaign paid",
+    "Pesquisar pelo nome do influencer": "Search by influencer name",
+    Pendente: "Pending",
+    "Em Progresso": "In Progress",
+    Concluído: "Completed",
+    Esgotado: "Sold out",
+    Selecionado: "Selected",
+    Selecionados: "Selected",
+    Inscrito: "Subscribed",
+    "Campanha bloqueada por falta de pagamento.":
+      "Campaign blocked due to lack of payment.",
+    "Entrar em contato": "Contact",
+    "Você só poderá editar esta campanha enquanto não tiverem inscritos":
+      "You can only edit this campaign while there are no subscribers",
+    "Editar Campanha": "Edit Campaign",
+    "Nenhum resultado para os filtros aplicados.":
+      "No results for the applied filters.",
+    "Limpar Filtros": "Clear Filters",
+    "Sem texto de proposta": "No proposal text",
+    "Ver mais": "See more",
+    "Enviar Mensagem": "Send Message",
+    Visualizar: "View",
+    "Escolher para a Campanha": "Choose for the Campaign",
+    "Contatar Suporte": "Contact Support",
+    "Trabalho concluído": "Work completed",
   },
 };

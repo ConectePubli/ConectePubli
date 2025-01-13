@@ -53,6 +53,7 @@ import { parseBrazilianDate } from "@/utils/parseBrDate";
 import { isDateAfter } from "@/utils/dateUtils";
 import Modal from "@/components/ui/Modal";
 import GatewayPaymentModal from "@/components/ui/GatewayPaymentModal";
+import { t } from "i18next";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -110,11 +111,14 @@ export const Route = createFileRoute(
   component: Page,
   errorComponent: () => (
     <div className="px-4 py-4 h-full min-w-100 flex items-center justify-center text-center">
-      Ocorreu um erro ao carregar essa página. Não se preocupe, estamos
-      trabalhando para resolvê-lo!
+      {t(
+        "Ocorreu um erro ao carregar essa página. Não se preocupe, estamos trabalhando para resolvê-lo!"
+      )}
     </div>
   ),
-  notFoundComponent: () => <div className="p-10">Campanha não encontrada</div>,
+  notFoundComponent: () => (
+    <div className="p-10">{t("Campanha não encontrada")}</div>
+  ),
 });
 
 function Page() {
@@ -174,7 +178,7 @@ function Page() {
         } else {
           console.error("Erro ao verificar avaliação da plataforma:", error);
           toast.error(
-            "Ocorreu um erro ao verificar sua avaliação da plataforma."
+            t("Ocorreu um erro ao verificar sua avaliação da plataforma.")
           );
         }
       }
@@ -224,7 +228,7 @@ function Page() {
       });
     } catch (error) {
       console.error("Erro ao iniciar o chat:", error);
-      toast("Não foi possível iniciar o chat", {
+      toast(t("Não foi possível iniciar o chat"), {
         type: "error",
       });
     } finally {
@@ -254,7 +258,7 @@ function Page() {
       );
     } catch (error) {
       console.error("Erro ao atualizar o status:", error);
-      toast("Não foi possível atualizar o status", {
+      toast(t("Não foi possível atualizar o status"), {
         type: "error",
       });
     }
@@ -340,7 +344,7 @@ function Page() {
   }).format(totalPrice);
 
   if (error === "not_found" || !campaignData) {
-    return <div>Campanha não encontrada</div>;
+    return <div>{t("Campanha não encontrada")}</div>;
   }
 
   const campaignStartDateString = formatDateUTC(campaignData.beginning);
@@ -370,19 +374,20 @@ function Page() {
         <Modal onClose={() => setShowModalMinParticipant(false)}>
           <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold flex items-center">
-              <Warning className="w-5 h-5 mr-1" weight="bold" /> Importante
+              <Warning className="w-5 h-5 mr-1" weight="bold" />{" "}
+              {t("Importante")}
             </h2>
 
             <p className="text-gray-700">
-              Antes de prosseguir com o pagamento, aguarde os creators se
-              candidatarem à sua campanha. Assim que os candidatos estiverem
-              disponíveis, você poderá selecioná-los e finalizar o pagamento com
-              o valor correto.
+              {t(
+                "Antes de prosseguir com o pagamento, aguarde os creators se candidatarem à sua campanha. Assim que os candidatos estiverem disponíveis, você poderá selecioná-los e finalizar o pagamento com o valor correto."
+              )}
             </p>
 
             <p className="text-gray-700">
-              Sua campanha já está na vitrine, agora é só esperar os creators
-              certos se inscreverem!
+              {t(
+                "Sua campanha já está na vitrine, agora é só esperar os creators certos se inscreverem!"
+              )}
             </p>
           </div>
         </Modal>
@@ -412,19 +417,19 @@ function Page() {
               }
             }}
           >
-            Voltar
+            {t("Voltar")}
           </button>
         </div>
 
         <h1 className="text-2xl font-bold">{campaignData.name}</h1>
         <p className="text-gray-600">
-          Visualize todos os inscritos dessa campanha.
+          {t("Visualize todos os inscritos dessa campanha.")}
         </p>
 
         {campaignData.status === "ended" && (
           <p className="flex items-center text-red-500 mt-3">
-            <Info size={18} color="#e61919" className="mr-1" /> Esta campanha
-            terminou, então você pode apenas visualizá-la!
+            <Info size={18} color="#e61919" className="mr-1" />{" "}
+            {t("Esta campanha terminou, então você pode apenas visualizá-la!")}
           </p>
         )}
 
@@ -447,7 +452,7 @@ function Page() {
               })
             }
           >
-            Visualizar Campanha
+            {t("Visualizar Campanha")}
           </Button>
 
           {!isBlocked && campaignData.paid === false && (
@@ -468,7 +473,8 @@ function Page() {
                   "Aguarde..."
                 ) : (
                   <>
-                    <ShoppingBagIcon className="w-5 h-5 mr-2" /> Valor a pagar:{" "}
+                    <ShoppingBagIcon className="w-5 h-5 mr-2" />{" "}
+                    {t("Valor a pagar: ")}
                     {formattedPrice}
                   </>
                 )}
@@ -476,11 +482,13 @@ function Page() {
 
               {approvedParticipationsCount >= 1 && (
                 <p className="text-sm text-gray-700 max-w-[400px]">
-                  Você possui até o dia{" "}
+                  {t("Você possui até o dia ")}
                   <span className="text-black">
                     {formatDateUTC(campaignData.beginning)}
                   </span>{" "}
-                  para realizar o pagamento e não ter a campanha bloqueada
+                  {t(
+                    "para realizar o pagamento e não ter a campanha bloqueada"
+                  )}
                 </p>
               )}
             </div>
@@ -488,7 +496,8 @@ function Page() {
 
           {campaignData.paid === true && (
             <Button className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#338B13] hover:text-white transition flex items-center">
-              <Confetti weight="bold" className="w-5 h-5 mr-1" /> Campanha paga
+              <Confetti weight="bold" className="w-5 h-5 mr-1" />{" "}
+              {t("Campanha paga")}
             </Button>
           )}
         </div>
@@ -496,7 +505,7 @@ function Page() {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-4">
           <input
             type="text"
-            placeholder="Pesquisar pelo nome do influencer"
+            placeholder={t("Pesquisar pelo nome do influencer")}
             className="w-full border border-gray-300 rounded p-2 md:col-span-4"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
@@ -507,11 +516,11 @@ function Page() {
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
-            <option value="">Status</option>
-            <option value="waiting">Pendente</option>
-            <option value="approved">Em Progresso</option>
-            <option value="completed">Concluído</option>
-            <option value="sold_out">Esgotado</option>
+            <option value="">{t("Status")}</option>
+            <option value="waiting">{t("Pendente")}</option>
+            <option value="approved">{t("Em Progresso")}</option>
+            <option value="completed">{t("Concluído")}</option>
+            <option value="sold_out">{t("Esgotado")}</option>
           </select>
 
           <select
@@ -519,7 +528,7 @@ function Page() {
             value={filterNiche}
             onChange={(e) => setFilterNiche(e.target.value)}
           >
-            <option value="">Nicho</option>
+            <option value="">{t("Nicho")}</option>
             {niches.map((niche) => (
               <option key={niche.id} value={niche.id}>
                 {niche.niche}
@@ -532,7 +541,7 @@ function Page() {
             value={filterState}
             onChange={(e) => setFilterState(e.target.value)}
           >
-            <option value="">Estado</option>
+            <option value="">{t("Estado")}</option>
             {states.map((state) => (
               <option key={state} value={state}>
                 {state}
@@ -545,13 +554,15 @@ function Page() {
           <h3 className="font-semibold text-lg">
             {campaignParticipations.length}{" "}
             <span className="text-base text-gray-700">
-              {campaignParticipations.length === 1 ? "Inscrito" : "Inscritos"}
+              {campaignParticipations.length === 1
+                ? t("Inscrito")
+                : t("Inscritos")}
             </span>{" "}
             / {approvedParticipationsCount}{" "}
             <span className="text-base text-gray-700">
               {approvedParticipationsCount === 1
-                ? "Selecionado"
-                : "Selecionados"}
+                ? t("Selecionado")
+                : t("Selecionados")}
             </span>
           </h3>
         </div>
@@ -562,7 +573,7 @@ function Page() {
             <LockIcon className="w-7 h-7 mb-2" />
 
             <p className="text-lg mb-4">
-              Campanha bloqueada por falta de pagamento.
+              {t("Campanha bloqueada por falta de pagamento.")}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -575,10 +586,11 @@ function Page() {
                 }}
               >
                 {loadingPayment ? (
-                  "Aguarde..."
+                  t("Aguarde...")
                 ) : (
                   <>
-                    <ShoppingBagIcon className="w-5 h-5 mr-2" /> Valor a pagar:{" "}
+                    <ShoppingBagIcon className="w-5 h-5 mr-2" />{" "}
+                    {t("Valor a pagar: ")}
                     {formattedPrice}
                   </>
                 )}
@@ -590,7 +602,8 @@ function Page() {
                 rel="noopener noreferrer"
                 className="bg-[#008000] text-white rounded-lg flex items-center justify-center px-4 hover:bg-[#026902]"
               >
-                <WhatsappLogo className="w-5 h-5 mr-1" /> Entrar em contato
+                <WhatsappLogo className="w-5 h-5 mr-1" />{" "}
+                {t("Entrar em contato")}
               </a>
             </div>
           </div>
@@ -601,8 +614,9 @@ function Page() {
             {campaignParticipations.length === 0 ? (
               <div className="mt-10 w-full flex flex-col items-center justify-center">
                 <p className="mb-4 text-center">
-                  Você só poderá editar esta campanha enquanto não tiverem
-                  inscritos
+                  {t(
+                    "Você só poderá editar esta campanha enquanto não tiverem inscritos"
+                  )}
                 </p>
                 <Button
                   variant={"blue"}
@@ -612,13 +626,13 @@ function Page() {
                     })
                   }
                 >
-                  Editar Campanha
+                  {t("Editar Campanha")}
                 </Button>
               </div>
             ) : filteredParticipations.length === 0 ? (
               <div className="mt-10 w-full flex flex-col items-center justify-center">
                 <p className="mb-4">
-                  Nenhum resultado para os filtros aplicados.
+                  {t("Nenhum resultado para os filtros aplicados.")}
                 </p>
                 <Button
                   onClick={() => {
@@ -628,7 +642,7 @@ function Page() {
                     setFilterState("");
                   }}
                 >
-                  Limpar Filtros
+                  {t("Limpar Filtros")}
                 </Button>
               </div>
             ) : (
@@ -690,11 +704,11 @@ function Page() {
                             >
                               Status:{" "}
                               {status === "waiting"
-                                ? "Proposta Pendente"
+                                ? t("Proposta Pendente")
                                 : status === "approved"
-                                  ? "Trabalho em Progresso"
+                                  ? t("Trabalho em Progresso")
                                   : status === "completed"
-                                    ? "Trabalho Concluído"
+                                    ? t("Trabalho Concluído")
                                     : ""}
                             </p>
                           </div>
@@ -705,7 +719,7 @@ function Page() {
                             className="text-base"
                             style={!displayedText ? { color: "#777" } : {}}
                           >
-                            {displayedText || "Sem texto de proposta"}
+                            {displayedText || t("Sem texto de proposta")}
                           </p>
                           {isTextLong && (
                             <button
@@ -715,7 +729,7 @@ function Page() {
                                 setModalType("viewProposal");
                               }}
                             >
-                              Ver mais
+                              {t("Ver mais")}
                             </button>
                           )}
                         </div>
@@ -736,11 +750,11 @@ function Page() {
                                 }}
                               >
                                 {loadingChat ? (
-                                  "Aguarde..."
+                                  t("Aguarde...")
                                 ) : (
                                   <>
                                     <MessageCircle size={18} className="mr-1" />
-                                    Enviar Mensagem
+                                    {t("Enviar Mensagem")}
                                   </>
                                 )}
                               </button>
@@ -757,7 +771,7 @@ function Page() {
                             }}
                           >
                             <MagnifyingGlassPlus size={19} className="mr-1" />{" "}
-                            Visualizar
+                            {t("Visualizar")}
                           </Button>
 
                           {status === "waiting" &&
@@ -771,7 +785,7 @@ function Page() {
                                 }}
                               >
                                 <ThumbsUp size={19} className="mr-1" />
-                                Escolher para a Campanha
+                                {t("Escolher para a Campanha")}
                               </Button>
                             )}
 
@@ -786,7 +800,7 @@ function Page() {
                                 }}
                               >
                                 <Headset size={18} className="mr-1" />
-                                Contatar Suporte
+                                {t("Contatar Suporte")}
                               </Button>
 
                               {campaignData.status !== "ended" &&
@@ -799,7 +813,7 @@ function Page() {
                                     }}
                                   >
                                     <Flag size={18} className="mr-1" />
-                                    Trabalho concluído
+                                    {t("Trabalho concluído")}
                                   </button>
                                 )}
                             </>
