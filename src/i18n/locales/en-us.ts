@@ -1037,5 +1037,101 @@ export default {
     "Ex: 3 meses, 4 meses": "E.g. 3 months, 4 months",
     "Exemplo: Publicar conteúdos semanais, interagir com os seguidores, compartilhar insights sobre a campanha, colocar CTA, marcar o @ da marca nas redes sociais, usar hashtags específicos.":
       "Example: Publish weekly content, interact with followers, share insights about the campaign, place CTA, tag the brand's @ on social networks, use specific hashtags.",
+    Homem: "Man",
+    Mulher: "Woman",
+    "Não-binário": "Non-binary",
+    "Erro ao carregar as informações do Creator":
+      "Error loading Creator information",
+    "Esta página ou não existe ou foi removida, tente novamente!":
+      "This page either does not exist or has been removed, try again!",
+    "Creator/Influencer": "Creator/Influencer",
+    Avaliações: {
+      one: "({{count}} Review)",
+      other: "({{count}} Reviews)",
+    },
+    "Ver Reviews do Usuário": "View User Reviews",
+    "Acessar mídia kit": "Access media kit",
+    "Editar Perfil": "Edit Profile",
+    Biografia: "Biography",
+    "Idioma:": "Idiom:",
+    "Idade:": "Age:",
+    "Este usuário ainda não adicionou uma biografia.":
+      "This user has not added a biography yet.",
+    "Este usuário ainda não adicionou nenhum trabalho ao portfólio.":
+      "This user has not added any work to the portfolio yet.",
+    "Falha ao carregar os nichos. Tente novamente mais tarde.":
+      "Failed to load niches. Try again later.",
+    "Nenhuma alteração detectada para salvar.": "No changes detected to save.",
+    "Dados pessoais salvos com sucesso!": "Personal data saved successfully!",
+    "O tamanho da capa excede o limite permitido. Por favor, tente novamente com um arquivo menor.":
+      "The cover size exceeds the allowed limit. Please try again with a smaller file.",
+    "O tamanho da imagem de perfil excede o limite permitido. Por favor, tente novamente com um arquivo menor.":
+      "The profile image size exceeds the allowed limit. Please try again with a smaller file.",
+    "Erro ao salvar dados pessoais. Tente novamente.":
+      "Error saving personal data. Try again.",
+    "O username deve ser único e não pode conter espaços ou caracteres especiais. Use apenas letras, números e underscore.":
+      "The username must be unique and cannot contain spaces or special characters. Use only letters, numbers, and underscore.",
+    "Por favor, insira um e-mail válido.": "Please enter a valid email.",
+    "Por favor, corrija os erros antes de salvar.":
+      "Please correct the errors before saving.",
+    "Dados 'Sobre você' salvos com sucesso!":
+      "Data 'About you' saved successfully!",
+    "Erro ao salvar dados da seção 'Sobre você'. Tente novamente.":
+      "Error saving data from the 'About you' section. Try again.",
+    "Endereço salvo com sucesso!": "Address saved successfully!",
+    "Erro ao salvar dados da seção 'Endereço'. Tente novamente.":
+      "Error saving data from the 'Address' section. Try again.",
+    "Por favor, preencha pelo menos uma rede social.":
+      "Please fill in at least one social network.",
+    "Redes sociais salvas com sucesso!": "Social networks saved successfully!",
+    "Erro ao salvar dados da seção 'Redes sociais'. Tente novamente.":
+      "Error saving data from the 'Social networks' section. Try again.",
+    "Dados do usuário não estão disponíveis.": "User data is not available.",
+    "Conta bancária salva com sucesso!": "Bank account saved successfully!",
+    "Erro ao salvar dados da seção 'Conta bancária'. Tente novamente.":
+      "Error saving data from the 'Bank account' section. Try again.",
+    Voltar: "Back",
+    "Preencha os dados do perfil para criar sua primeira campanha":
+      "Fill in the profile data to create your first campaign",
+    "Preencher Perfil": "Fill Profile",
+    "Carregar uma nova imagem de perfil": "Upload a new profile image",
+    "Sobre nós": "About us",
+    "Escreva uma breve descrição sobre a empresa.":
+      "Write a brief description about the company.",
+    "Nome da Empresa": "Company Name",
+    "Nome da empresa": "Company name",
+    "Registro da Empresa (CNPJ ou CPF)": "Company Registration (CNPJ or CPF)",
+    "Insira o CNPJ ou o endereço fiscal no exterior":
+      "Enter the CNPJ or foreign fiscal address",
+    "Email da empresa": "Company email",
+    "Whatsapp/Telefone": "Whatsapp/Phone",
+    Website: "Website",
+    "Insira a URL do website da empresa": "Enter the company's website URL",
+    "Digite o CEP": "Enter the ZIP Code",
+    "Logradouro (Rua, Avenida, Alameda, etc.)":
+      "Street (Street, Avenue, Boulevard, etc.)",
+    "Digite o nome da rua": "Enter the street name",
+    "Digite o número da residência": "Enter the residence number",
+    "Digite o complemento (opcional)": "Enter the complement (optional)",
+    "Digite o nome do bairro": "Enter the neighborhood name",
+    "Digite o nome da cidade": "Enter the city name",
+    "Preencha pelo menos uma rede social. Embora todas sejam opcionais, é necessário que pelo menos um campo esteja preenchido.":
+      "Fill in at least one social network. Although all are optional, at least one field must be filled in.",
+    "https://instagram.com/usuario": "https://instagram.com/username",
+    "https://youtube.com/c/usuario": "https://youtube.com/c/username",
+    "https://linkedin.com/in/usuario": "https://linkedin.com/in/username",
+    "https://yourclub.io/usuario": "https://yourclub.io/username",
+    "https://kwai.com/@usuario": "https://kwai.com/@username",
+    "https://tiktok.com/@usuario": "https://tiktok.com/@username",
+    "https://facebook.com/usuario": "https://facebook.com/username",
+    "https://twitter.com/usuario": "https://twitter.com/username",
+    "https://twitch.tv/usuario": "https://twitch.tv/username",
+    "https://pinterest.com/usuario": "https://pinterest.com/username",
+    "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça sua chave Pix. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada à sua chave Pix.":
+      "To facilitate the refund process, if the campaign expires with vacancies unfilled or you decide to stop the campaign, provide your Pix key. If necessary, you will receive the refund of the corresponding amount directly into the account associated with your Pix key.",
+    "Escolha uma foto de fundo": "Choose a background photo",
+    "Escolha uma foto de fundo para o perfil. Tamanho recomendado: 1500 x 256 para garantir melhor qualidade. Tamanho máximo permitido: 5MB.":
+      "Choose a background photo for the profile. Recommended size: 1500 x 256 for better quality. Maximum allowed size: 5MB.",
+    "Carregar Imagem": "Upload Image",
   },
 };

@@ -36,6 +36,7 @@ import TwitchIcon from "@/assets/icons/brands/twitch.svg";
 import TwitterIcon from "@/assets/icons/brands/twitter.svg";
 import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
 import YouTubeIcon from "@/assets/icons/brands/youtube.svg";
+import { t } from "i18next";
 
 interface Option {
   value: string;
@@ -194,7 +195,7 @@ function Page() {
       } catch (error) {
         console.error("Erro ao buscar nichos:", error);
         setNichesError(
-          "Falha ao carregar os nichos. Tente novamente mais tarde."
+          t("Falha ao carregar os nichos. Tente novamente mais tarde.")
         );
         setIsLoadingNiches(false);
       }
@@ -284,7 +285,7 @@ function Page() {
         !selectedProfileImageFile &&
         !selectedCoverImageFile
       ) {
-        alert("Nenhuma alteração detectada para salvar.");
+        alert(t("Nenhuma alteração detectada para salvar."));
         return;
       }
 
@@ -312,22 +313,26 @@ function Page() {
       setUserData(updatedUserData);
       setOriginalData(updatedUserData);
 
-      toast.success("Dados pessoais salvos com sucesso!");
+      toast.success(t("Dados pessoais salvos com sucesso!"));
     } catch (e) {
       const error = e as ClientResponseError;
       console.error("Erro ao salvar dados pessoais:", error.data);
       if (error.data.data?.cover_img?.code === "validation_file_size_limit") {
         toast.error(
-          "O tamanho da capa excede o limite permitido. Por favor, tente novamente com um arquivo menor."
+          t(
+            "O tamanho da capa excede o limite permitido. Por favor, tente novamente com um arquivo menor."
+          )
         );
       } else if (
         error.data.data?.profile_img?.code === "validation_file_size_limit"
       ) {
         toast.error(
-          "O tamanho da imagem de perfil excede o limite permitido. Por favor, tente novamente com um arquivo menor."
+          t(
+            "O tamanho da imagem de perfil excede o limite permitido. Por favor, tente novamente com um arquivo menor."
+          )
         );
       } else {
-        toast.error("Erro ao salvar dados pessoais. Tente novamente.");
+        toast.error(t("Erro ao salvar dados pessoais. Tente novamente."));
       }
     } finally {
       toggleSaving("basicData", false);
@@ -344,16 +349,18 @@ function Page() {
 
     if (!userData.username || !usernameRegex.test(userData.username)) {
       setUsernameError(
-        "O username deve ser único e não pode conter espaços ou caracteres especiais. Use apenas letras, números e underscore."
+        t(
+          "O username deve ser único e não pode conter espaços ou caracteres especiais. Use apenas letras, números e underscore."
+        )
       );
     }
 
     if (!userData.email || !emailRegex.test(userData.email)) {
-      setEmailError("Por favor, insira um e-mail válido.");
+      setEmailError(t("Por favor, insira um e-mail válido."));
     }
 
     if (usernameError || emailError || !userData.username || !userData.email) {
-      toast.error("Por favor, corrija os erros antes de salvar.");
+      toast.error(t("Por favor, corrija os erros antes de salvar."));
       return;
     }
 
@@ -400,7 +407,7 @@ function Page() {
       setUserData(updatedUserData);
       setOriginalData(updatedUserData);
 
-      toast.success("Dados 'Sobre você' salvos com sucesso!");
+      toast.success(t("Dados 'Sobre você' salvos com sucesso!"));
     } catch (error) {
       console.error("Erro ao salvar dados da seção 'Sobre você':", error);
 
@@ -414,13 +421,13 @@ function Page() {
           usernameError.code === "validation_invalid_username" ||
           usernameError.code === "validation_match_invalid"
         ) {
-          toast.error("O nome de usuário é inválido ou já está em uso.");
+          toast.error(t("O nome de usuário é inválido ou já está em uso."));
         } else {
           toast.error(usernameError.message || "Erro no campo 'username'.");
         }
       } else {
         toast.error(
-          "Erro ao salvar dados da seção 'Sobre você'. Tente novamente."
+          t("Erro ao salvar dados da seção 'Sobre você'. Tente novamente.")
         );
       }
     } finally {
@@ -468,10 +475,12 @@ function Page() {
       setUserData(updatedUserData);
       setOriginalData(updatedUserData);
 
-      toast.success("Endereço salvo com sucesso!");
+      toast.success(t("Endereço salvo com sucesso!"));
     } catch (error) {
       console.error("Erro ao salvar dados da seção 'Endereço':", error);
-      toast.error("Erro ao salvar dados da seção 'Endereço'. Tente novamente.");
+      toast.error(
+        t("Erro ao salvar dados da seção 'Endereço'. Tente novamente.")
+      );
     } finally {
       toggleSaving("address", false);
     }
@@ -500,7 +509,7 @@ function Page() {
     );
 
     if (!isAtLeastOneFilled) {
-      toast.info("Por favor, preencha pelo menos uma rede social.");
+      toast.info(t("Por favor, preencha pelo menos uma rede social."));
       return;
     }
 
@@ -534,10 +543,12 @@ function Page() {
       setUserData(updatedUserData);
       setOriginalData(updatedUserData);
 
-      toast.success("Redes sociais salvas com sucesso!");
+      toast.success(t("Redes sociais salvas com sucesso!"));
     } catch (error) {
       console.error("Erro ao salvar dados da seção 'Redes sociais':", error);
-      alert("Erro ao salvar dados da seção 'Redes sociais'. Tente novamente.");
+      alert(
+        t("Erro ao salvar dados da seção 'Redes sociais'. Tente novamente.")
+      );
     } finally {
       toggleSaving("socialMedia", false);
     }
@@ -545,7 +556,7 @@ function Page() {
 
   const saveBankAccount = async () => {
     if (!userData || !originalData) {
-      alert("Dados do usuário não estão disponíveis.");
+      alert(t("Dados do usuário não estão disponíveis."));
       return;
     }
 
@@ -573,11 +584,11 @@ function Page() {
       setUserData(updatedUserData);
       setOriginalData(updatedUserData);
 
-      toast.success("Conta bancária salva com sucesso!");
+      toast.success(t("Conta bancária salva com sucesso!"));
     } catch (error) {
       console.error("Erro ao salvar dados da seção 'Conta bancária':", error);
       toast.error(
-        "Erro ao salvar dados da seção 'Conta bancária'. Tente novamente."
+        t("Erro ao salvar dados da seção 'Conta bancária'. Tente novamente.")
       );
     } finally {
       toggleSaving("bankInfo", false);
@@ -587,18 +598,18 @@ function Page() {
   const saveAccountInfo = async () => {
     // Validação dos campos
     if (!currentPassword || !newPassword || !confirmNewPassword) {
-      toast.error("Por favor, preencha todos os campos de senha.");
+      toast.error(t("Por favor, preencha todos os campos de senha."));
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      toast.error("A nova senha e a confirmação não coincidem.");
+      toast.error(t("A nova senha e a confirmação não coincidem."));
       return;
     }
 
     // (Opcional) Adicionar validações de complexidade de senha
     if (newPassword.length < 8) {
-      toast.info("A nova senha deve ter pelo menos 8 caracteres.");
+      toast.info(t("A nova senha deve ter pelo menos 8 caracteres."));
       return;
     }
 
@@ -613,7 +624,7 @@ function Page() {
         <div className="flex items-center gap-2">
           <User className="text-green-500 text-xl" />
           <span className="font-semibold">
-            Senha atualizada com sucesso! Faça o login novamente.
+            {t("Senha atualizada com sucesso! Faça o login novamente.")}
           </span>
         </div>
       );
@@ -635,13 +646,17 @@ function Page() {
           toast.error(
             <div className="flex items-center gap-2">
               <MessageCircleWarning className="text-red-500 text-xl" />
-              <span className="font-semibold">Senha atual incorreta.</span>
-              <p className="text-sm">Por favor, verifique e tente novamente.</p>
+              <span className="font-semibold">
+                {t("Senha atual incorreta.")}
+              </span>
+              <p className="text-sm">
+                {t("Por favor, verifique e tente novamente.")}
+              </p>
             </div>
           );
         }
       } else {
-        alert("Erro ao atualizar a senha. Por favor, tente novamente.");
+        alert(t("Erro ao atualizar a senha. Por favor, tente novamente."));
       }
     } finally {
       toggleSaving("accountInfo", false);
@@ -657,20 +672,20 @@ function Page() {
             className="flex items-center text-blue-500"
           >
             <ArrowLeft className="mr-1" />
-            Voltar
+            {t("Voltar")}
           </button>
         </div>
         <div className="bg-white p-8 rounded shadow-md text-center rounded-md border-2 border-gray-300">
           <AlertTriangle className="text-yellow-500 mx-auto mb-4" size={48} />
           <h2 className="text-lg font-semibold mb-4">
-            Preencha os dados do perfil para criar sua primeira campanha
+            {t("Preencha os dados do perfil para criar sua primeira campanha")}
           </h2>
           <Button
             variant={"blue"}
             onClick={() => setShowNotice(false)}
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Preencher Perfil
+            {t("Preencher Perfil")}
           </Button>
         </div>
       </div>
@@ -683,8 +698,9 @@ function Page() {
       <div className="mt-1" />
 
       <p className="text-xs text-gray-500 px-4">
-        * É necessário salvar as alterações de cada seção para que elas sejam
-        aplicadas.
+        {t(
+          "* É necessário salvar as alterações de cada seção para que elas sejam aplicadas."
+        )}
       </p>
       {/* 
       <div className="flex flex-row items-center gap-1 px-4">
@@ -705,7 +721,7 @@ function Page() {
       </div> */}
 
       <ProfileEditDropdown
-        sectionName="Dados básicos"
+        sectionName={t("Dados básicos")}
         isComplete={isUserDataComplete}
       >
         <div className="space-y-4">
@@ -714,7 +730,7 @@ function Page() {
             onImageChange={(file) => setSelectedProfileImageFile(file)}
           />
           <p className="text-sm mt-3 font-semibold text-zinc-700">
-            Carregar uma nova imagem de perfil
+            {t("Carregar uma nova imagem de perfil")}
           </p>
 
           <CoverImageSelector
@@ -725,12 +741,12 @@ function Page() {
           {/* BIO */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-lg font-semibold">Sobre nós</h2>
+              <h2 className="text-lg font-semibold">{t("Sobre nós")}</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <textarea
               className="w-full h-24 p-3 border border-gray-300 rounded-md mt-1"
-              placeholder="Escreva uma breve descrição sobre a empresa."
+              placeholder={t("Escreva uma breve descrição sobre a empresa.")}
               value={userData?.bio || ""}
               maxLength={500}
               onChange={(event) =>
@@ -752,35 +768,36 @@ function Page() {
             {savingStates.basicData ? (
               <span className="flex items-center gap-2">
                 <LoaderIcon className="animate-spin h-5 w-5" />
-                Salvando...
+                {t("Salvando...")}
               </span>
             ) : (
-              "Salvar Alterações"
+              t("Salvar Alterações")
             )}
           </button>
           <p className="text-xs text-gray-500">
-            * É necessário salvar as alterações de cada seção para que elas
-            sejam aplicadas.
+            {t(
+              "* É necessário salvar as alterações de cada seção para que elas sejam aplicadas."
+            )}
           </p>
         </div>
       </ProfileEditDropdown>
 
       {/* Sobre você */}
       <ProfileEditDropdown
-        sectionName="Sobre você"
+        sectionName={t("Sobre você")}
         isComplete={isAboutYouComplete}
       >
         <div className="space-y-4 mt-4">
           {/* Nome da Empresa */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-sm font-semibold">Nome da Empresa</h2>
+              <h2 className="text-sm font-semibold">{t("Nome da Empresa")}</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
               type="text"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500"
-              placeholder="Nome da empresa"
+              placeholder={t("Nome da empresa")}
               value={userData?.name || ""}
               maxLength={65}
               onChange={(event) =>
@@ -792,13 +809,13 @@ function Page() {
           {/* Username da Empresa */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-sm font-semibold">Username</h2>
+              <h2 className="text-sm font-semibold">{t("Username")}</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
               type="text"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500"
-              placeholder="Nome da empresa"
+              placeholder={t("Nome da empresa")}
               value={userData?.username || ""}
               maxLength={65}
               onChange={(event) =>
@@ -828,14 +845,14 @@ function Page() {
           <div>
             <div className="flex flex-row items-center">
               <h2 className="text-sm font-semibold">
-                Registro da Empresa (CNPJ ou CPF)
+                {t("Registro da Empresa (CNPJ ou CPF)")}
               </h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
               type="text"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500"
-              placeholder="Insira o CNPJ ou o endereço fiscal no exterior"
+              placeholder={t("Insira o CNPJ ou o endereço fiscal no exterior")}
               value={userData?.company_register || ""}
               onChange={(event) =>
                 setUserData({
@@ -849,13 +866,13 @@ function Page() {
           {/* Email */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-sm font-semibold">Email</h2>
+              <h2 className="text-sm font-semibold">{t("Email")}</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <input
               type="email"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-              placeholder="Email da empresa"
+              placeholder={t("Email da empresa")}
               value={userData?.email || ""}
               onChange={(event) =>
                 setUserData({ ...userData, email: event.target.value })
@@ -869,7 +886,9 @@ function Page() {
           {/* Whatsapp/Telefone */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-sm font-semibold">Whatsapp/Telefone</h2>
+              <h2 className="text-sm font-semibold">
+                {t("Whatsapp/Telefone")}
+              </h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <PhoneInput
@@ -887,12 +906,12 @@ function Page() {
           {/* Website */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-sm font-semibold">Website</h2>
+              <h2 className="text-sm font-semibold">{t("Website")}</h2>
             </div>
             <input
               type="url"
               className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-              placeholder="Insira a URL do website da empresa"
+              placeholder={t("Insira a URL do website da empresa")}
               value={userData?.web_site || ""}
               onChange={(event) =>
                 setUserData({ ...userData, web_site: event.target.value })
@@ -903,18 +922,19 @@ function Page() {
           {/* Nicho */}
           <div>
             <div className="flex flex-row items-center">
-              <h2 className="text-sm font-semibold">Nicho</h2>
+              <h2 className="text-sm font-semibold">{t("Nicho")}</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
 
             {isLoadingNiches ? (
               <div className="flex items-center justify-center w-full p-3 border rounded-md">
                 <p className="text-gray-500 text-center">
-                  Carregando nichos...
+                  {t("Carregando nichos...")}
                 </p>
                 <p className="text-xs text-gray-500">
-                  * É necessário salvar as alterações de cada seção para que
-                  elas sejam aplicadas.
+                  {t(
+                    "* É necessário salvar as alterações de cada seção para que elas sejam aplicadas."
+                  )}
                 </p>
               </div>
             ) : nichesError ? (
@@ -967,10 +987,10 @@ function Page() {
             {savingStates.aboutYou ? (
               <span className="flex items-center gap-2">
                 <LoaderIcon className="animate-spin h-5 w-5" />
-                Salvando...
+                {t("Salvando...")}
               </span>
             ) : (
-              "Salvar Alterações"
+              t("Salvar Alterações")
             )}
           </button>
         </div>
@@ -978,7 +998,7 @@ function Page() {
 
       {/* Endereço */}
       <ProfileEditDropdown
-        sectionName="Endereço"
+        sectionName={t("Endereço")}
         isComplete={isAddressInfoComplete}
       >
         <div className="flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0">
@@ -986,7 +1006,7 @@ function Page() {
           <div className="flex-1">
             <div>
               <div className="flex items-center mt-4">
-                <h2 className="text-sm font-semibold">País</h2>
+                <h2 className="text-sm font-semibold">{t("País")}</h2>
                 <p className="text-[#10438F] text-lg">*</p>
               </div>
               <ComboboxCountries
@@ -1002,14 +1022,14 @@ function Page() {
           {/* Campo de CEP */}
           <div className="flex-1">
             <div className="flex items-center mt-4">
-              <h2 className="text-sm font-semibold">CEP</h2>
+              <h2 className="text-sm font-semibold">"{t("CEP")}"</h2>
               <p className="text-[#10438F] text-lg">*</p>
             </div>
             <MaskedInput
               mask={[/\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/]}
               value={userData?.cep || ""}
               onChange={handleCEPChange}
-              placeholder="Digite o CEP"
+              placeholder={t("Digite o CEP")}
               className="pr-10 w-full p-3 border rounded-md mt-1 placeholder:text-sm placeholder:text-gray-500 focus-visible:ring-0 focus:ring-0 focus:border-black focus:border-2 border-gray-300"
             />
           </div>
@@ -1018,14 +1038,14 @@ function Page() {
         <div>
           <div className="flex flex-row items-center mt-4">
             <h2 className="text-sm font-semibold">
-              Logradouro (Rua, Avenida, Alameda, etc.)
+              {t("Logradouro (Rua, Avenida, Alameda, etc.)")}
             </h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Digite o nome da rua"
+            placeholder={t("Digite o nome da rua")}
             value={userData?.street || ""}
             onChange={(event) =>
               setUserData((prev) =>
@@ -1037,12 +1057,12 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Número</h2>
+            <h2 className="text-sm font-semibold">{t("Número")}</h2>
           </div>
           <input
             type="number"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Digite o número da residência"
+            placeholder={t("Digite o número da residência")}
             value={userData?.address_num || ""}
             onChange={(event) => {
               const value = event.target.value;
@@ -1060,12 +1080,12 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Complemento</h2>
+            <h2 className="text-sm font-semibold">{t("Complemento")}</h2>
           </div>
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Digite o complemento (opcional)"
+            placeholder={t("Digite o complemento (opcional)")}
             value={userData?.complement || ""}
             onChange={(event) =>
               setUserData((prev) =>
@@ -1077,12 +1097,12 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Bairro</h2>
+            <h2 className="text-sm font-semibold">{t("Bairro")}</h2>
           </div>
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Digite o nome do bairro"
+            placeholder={t("Digite o nome do bairro")}
             value={userData?.neighborhood || ""}
             onChange={(event) =>
               setUserData((prev) =>
@@ -1094,13 +1114,13 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Cidade</h2>
+            <h2 className="text-sm font-semibold">{t("Cidade")}</h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
             type="text" // Corrigido para "text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Digite o nome da cidade"
+            placeholder={t("Digite o nome da cidade")}
             value={userData?.city || ""}
             onChange={(event) =>
               setUserData((prev) =>
@@ -1112,7 +1132,7 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Estado</h2>
+            <h2 className="text-sm font-semibold">{t("Estado")}</h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <div className="mb-6 mt-1">
@@ -1139,10 +1159,10 @@ function Page() {
           {savingStates.address ? (
             <span className="flex items-center gap-2">
               <LoaderIcon className="animate-spin h-5 w-5" />
-              Salvando...
+              {t("Salvando...")}
             </span>
           ) : (
-            "Salvar Alterações"
+            t("Salvar Alterações")
           )}
         </button>
       </ProfileEditDropdown>
@@ -1150,12 +1170,13 @@ function Page() {
       {/* Redes sociais */}
       {/* Redes sociais */}
       <ProfileEditDropdown
-        sectionName="Redes sociais"
+        sectionName={t("Redes sociais")}
         isComplete={isSocialMediaComplete}
       >
         <p className="text-sm mt-3 font-semibold text-zinc-700">
-          Preencha pelo menos uma rede social. Embora todas sejam opcionais, é
-          necessário que pelo menos um campo esteja preenchido.
+          {t(
+            "Preencha pelo menos uma rede social. Embora todas sejam opcionais, é necessário que pelo menos um campo esteja preenchido."
+          )}
         </p>
 
         {/* Instagram */}
@@ -1169,7 +1190,7 @@ function Page() {
                 type="text"
                 name="instagram_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://instagram.com/usuario"
+                placeholder={t("https://instagram.com/usuario")}
                 value={userData?.instagram_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1197,7 +1218,7 @@ function Page() {
                 type="text"
                 name="youtube_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://youtube.com/c/usuario"
+                placeholder={t("https://youtube.com/c/usuario")}
                 value={userData?.youtube_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1225,7 +1246,7 @@ function Page() {
                 type="text"
                 name="linkedin_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://linkedin.com/in/usuario"
+                placeholder={t("https://linkedin.com/in/usuario")}
                 value={userData?.linkedin_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1253,7 +1274,7 @@ function Page() {
                 type="text"
                 name="yourclub_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://yourclub.io/usuario"
+                placeholder={t("https://yourclub.io/usuario")}
                 value={userData?.yourclub_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1281,7 +1302,7 @@ function Page() {
                 type="text"
                 name="kwai_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://kwai.com/@usuario"
+                placeholder={t("https://kwai.com/@usuario")}
                 value={userData?.kwai_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1309,7 +1330,7 @@ function Page() {
                 type="text"
                 name="tiktok_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://tiktok.com/@usuario"
+                placeholder={t("https://tiktok.com/@usuario")}
                 value={userData?.tiktok_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1337,7 +1358,7 @@ function Page() {
                 type="text"
                 name="facebook_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://facebook.com/usuario"
+                placeholder={t("https://facebook.com/usuario")}
                 value={userData?.facebook_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1365,7 +1386,7 @@ function Page() {
                 type="text"
                 name="twitter_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://twitter.com/usuario"
+                placeholder={t("https://twitter.com/usuario")}
                 value={userData?.twitter_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1393,7 +1414,7 @@ function Page() {
                 type="text"
                 name="twitch_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://twitch.tv/usuario"
+                placeholder={t("https://twitch.tv/usuario")}
                 value={userData?.twitch_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1421,7 +1442,7 @@ function Page() {
                 type="text"
                 name="pinterest_url"
                 className="w-full p-3 border border-gray-300 rounded-md placeholder:text-sm pl-10"
-                placeholder="https://pinterest.com/usuario"
+                placeholder={t("https://pinterest.com/usuario")}
                 value={userData?.pinterest_url || ""}
                 onChange={(event) =>
                   setUserData((prev) =>
@@ -1454,35 +1475,34 @@ function Page() {
           {savingStates.socialMedia ? (
             <span className="flex items-center gap-2">
               <LoaderIcon className="animate-spin h-5 w-5" />
-              Salvando...
+              {t("Salvando...")}
             </span>
           ) : (
-            "Salvar Alterações"
+            t("Salvar Alterações")
           )}
         </button>
       </ProfileEditDropdown>
 
       {/* Conta bancária */}
       <ProfileEditDropdown
-        sectionName="Conta bancária"
+        sectionName={t("Conta bancária")}
         isComplete={isBankAccountComplete}
       >
         <p className="text-sm mt-3 font-semibold text-zinc-700">
-          Para facilitar o processo de reembolso, caso a campanha expire com
-          vagas não preenchidas ou você decida interromper a campanha, forneça
-          sua chave Pix. Se necessário, você receberá o reembolso do valor
-          correspondente diretamente na conta associada à sua chave Pix.
+          {t(
+            "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça sua chave Pix. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada à sua chave Pix."
+          )}
         </p>
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Chave Pix</h2>
+            <h2 className="text-sm font-semibold">{t("Chave Pix")}</h2>
             <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
             type="text"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Insira sua chave Pix"
+            placeholder={t("Insira sua chave Pix")}
             value={userData?.pix_key || ""}
             onChange={(event) =>
               setUserData({ ...userData, pix_key: event.target.value })
@@ -1503,29 +1523,29 @@ function Page() {
           {savingStates.bankInfo ? (
             <span className="flex items-center gap-2">
               <LoaderIcon className="animate-spin h-5 w-5" />
-              Salvando...
+              {t("Salvando...")}
             </span>
           ) : (
-            "Salvar Alterações"
+            t("Salvar Alterações")
           )}
         </button>
       </ProfileEditDropdown>
 
       {/* Config conta */}
       <ProfileEditDropdown
-        sectionName="Configurações da Conta"
+        sectionName={t("Configurações da Conta")}
         isComplete={false}
         showProgress={false}
         isConfig={true}
       >
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Senha Atual</h2>
+            <h2 className="text-sm font-semibold">{t("Senha Atual")}</h2>
           </div>
           <input
             type="password"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Digite sua senha atual"
+            placeholder={t("Digite sua senha atual")}
             value={currentPassword}
             onChange={(event) => setCurrentPassword(event.target.value)}
           />
@@ -1533,12 +1553,12 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Nova Senha</h2>
+            <h2 className="text-sm font-semibold">{t("Nova Senha")}</h2>
           </div>
           <input
             type="password"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Digite sua nova senha"
+            placeholder={t("Digite sua nova senha")}
             value={newPassword}
             onChange={(event) => setNewPassword(event.target.value)}
           />
@@ -1546,12 +1566,14 @@ function Page() {
 
         <div>
           <div className="flex flex-row items-center mt-4">
-            <h2 className="text-sm font-semibold">Confirmar Nova Senha</h2>
+            <h2 className="text-sm font-semibold">
+              {t("Confirmar Nova Senha")}
+            </h2>
           </div>
           <input
             type="password"
             className="w-full p-3 border border-gray-300 rounded-md mt-1 placeholder:text-sm"
-            placeholder="Confirme sua nova senha"
+            placeholder={t("Confirme sua nova senha")}
             value={confirmNewPassword}
             onChange={(event) => setConfirmNewPassword(event.target.value)}
           />
@@ -1570,10 +1592,10 @@ function Page() {
           {savingStates.accountInfo ? (
             <span className="flex items-center gap-2">
               <LoaderIcon className="animate-spin h-5 w-5" />
-              Alterando...
+              {t("Alterando...")}
             </span>
           ) : (
-            "Alterar Senha"
+            t("Alterar Senha")
           )}
         </button>
       </ProfileEditDropdown>
@@ -1711,7 +1733,7 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
           <div className="w-full h-full flex items-center justify-center text-center">
             <span className="text-gray-500 text-sm">
               <Upload className="mx-auto mb-2" size={24} />
-              Escolha uma foto de fundo
+              {t("Escolha uma foto de fundo")}
             </span>
           </div>
         )}
@@ -1726,10 +1748,11 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
       </div>
 
       <div className="mt-4 px-4">
-        <h2 className="text-lg font-semibold">Foto de fundo</h2>
+        <h2 className="text-lg font-semibold">{t("Foto de fundo")}</h2>
         <p className="text-sm text-zinc-700 mt-1">
-          Escolha uma foto de fundo para o perfil. Tamanho recomendado: 1500 x
-          256 para garantir melhor qualidade. Tamanho máximo permitido: 5MB.
+          {
+            "Escolha uma foto de fundo para o perfil. Tamanho recomendado: 1500 x 256 para garantir melhor qualidade. Tamanho máximo permitido: 5MB."
+          }
         </p>
 
         <button
@@ -1738,7 +1761,7 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
           onClick={handleImageClick}
         >
           <Upload className="mr-2" size={18} />
-          Carregar Imagem
+          {t("Carregar Imagem")}
         </button>
       </div>
     </div>
