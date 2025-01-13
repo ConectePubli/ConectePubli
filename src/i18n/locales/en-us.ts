@@ -1181,6 +1181,29 @@ export default {
     "Escolher para a Campanha": "Choose for the Campaign",
     "Contatar Suporte": "Contact Support",
     "Trabalho concluído": "Work completed",
-    
+    "Ocorreu um erro ao carregar a página. Por favor, tente novamente mais tarde.":
+      "An error occurred while loading the page. Please try again later.",
+    "A campanha que você estava procurando ainda não iniciou, foi encerrada ou removida.":
+      "The campaign you were looking for has not started yet, has ended or has been removed.",
+    "Ocorreu um erro ao verificar sua avaliação da marca.":
+      "An error occurred while checking your brand rating.",
+    "Briefing da Campanha": "Campaign Briefing",
+    "Entregavéis obrigatórios": "Mandatory Deliverables",
+    "Envio de Produtos ou Serviços": "Product or Service Shipping",
+    "Ações Esperadas do Creator (Do's)":
+      "Expected Actions from the Creator (Do's)",
+    "Ações a Serem Evitadas (Don'ts)": "Actions to Be Avoided (Don'ts)",
+    "Informações adicionais": "Additional Information",
+    "Sugestão de roteiro": "Script suggestion",
+    "Link Relevante da Campanha:": "Relevant Campaign Link:",
+    "Atenção: Todas as interações e pagamentos desta campanha estão protegidos pelo nosso sistema de garantia. Evite contato fora da plataforma para garantir sua segurança e o pagamento integral.":
+      "Attention: All interactions and payments of this campaign are protected by our guarantee system. Avoid contact outside the platform to ensure your safety and full payment.",
+    "Trafego da Campanha": "Campaign Traffic",
+    "Compartilhado nas redes sociais da marca de forma orgânica":
+      "Shared on the brand's social networks organically",
+    "Compartilhado nas redes sociais da marca com tráfego pago":
+      "Shared on the brand's social networks with paid traffic",
+    "Quais locais será veiculado? Por quanto tempo?":
+      "Which locations will it be broadcast? For how long?",
   },
 };
