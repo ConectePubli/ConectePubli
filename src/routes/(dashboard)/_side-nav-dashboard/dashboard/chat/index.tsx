@@ -16,6 +16,7 @@ import { Loader2, Undo2, X } from "lucide-react";
 import pb from "@/lib/pb";
 import { useMessageStore } from "@/store/useMessageStore";
 import { linkify } from "@/utils/linkify";
+import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/chat/"
@@ -221,7 +222,7 @@ function ChatPage() {
         scrollToBottom();
       } catch (error) {
         console.error("Erro ao enviar mensagem:", error);
-        alert("Falha ao enviar a mensagem. Por favor, tente novamente.");
+        alert(t("Falha ao enviar a mensagem. Por favor, tente novamente."));
       } finally {
         setSendingMessage(false);
       }
@@ -297,9 +298,9 @@ function ChatPage() {
               onClick={handleBack}
             >
               <Undo2 className="h-6 w-6" />
-              Voltar
+              {t("Voltar")}
             </Button>
-            <h1 className="text-xl font-bold mb-4">Conversas</h1>
+            <h1 className="text-xl font-bold mb-4">{t("Conversas")}</h1>
             <div className="flex-1 overflow-y-auto space-y-4">
               {loadingChats ? (
                 <div className="flex justify-center items-center h-full">
@@ -319,7 +320,7 @@ function ChatPage() {
                           minute: "2-digit",
                         }
                       )
-                    : "Sem mensagens";
+                    : t("Sem mensagens");
 
                   return (
                     <div
@@ -473,7 +474,7 @@ function ChatPage() {
                 {/* Input de Mensagem */}
                 <footer className="border-t p-4 flex items-center gap-2">
                   <Input
-                    placeholder="Digite uma mensagem..."
+                    placeholder={t("Digite uma mensagem...")}
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     className="flex-1"
@@ -488,7 +489,7 @@ function ChatPage() {
                     {sendingMessage ? (
                       <Loader2 className="animate-spin h-5 w-5" />
                     ) : (
-                      "Enviar"
+                      t("Enviar")
                     )}
                   </Button>
                 </footer>
@@ -496,7 +497,7 @@ function ChatPage() {
             </>
           ) : (
             <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500">Selecione uma conversa</p>
+              <p className="text-gray-500">{t("Selecione uma conversa")}</p>
             </div>
           )}
         </main>
@@ -505,12 +506,9 @@ function ChatPage() {
       {/* Parágrafo Informativo Centralizado na Parte Inferior */}
       <div className="flex flex-col w-[65%]  items-center pt-4">
         <p className="text-center text-gray-500 text-[12px] font-semibold">
-          A fim de garantir a segurança e transparência na nossa plataforma,
-          lembramos a todos os usuários que todo o contato e comunicação entre
-          marcas e influencers deve ser realizado exclusivamente através do
-          nosso chat interno. Qualquer tentativa de comunicação fora do chat
-          poderá resultar no banimento permanente da plataforma. Agradecemos a
-          compreensão e colaboração de todos!
+          {t(
+            "A fim de garantir a segurança e transparência na nossa plataforma, lembramos a todos os usuários que todo o contato e comunicação entre marcas e influencers deve ser realizado exclusivamente através do nosso chat interno. Qualquer tentativa de comunicação fora do chat poderá resultar no banimento permanente da plataforma. Agradecemos a compreensão e colaboração de todos!"
+          )}
         </p>
         <div className="gap-5 flex">
           <Button
@@ -524,7 +522,7 @@ function ChatPage() {
             }
             variant={"link"}
           >
-            Termos de Uso
+            {t("Termos de Uso")}
           </Button>
           <Button
             className="mt-4"
@@ -537,7 +535,7 @@ function ChatPage() {
             }
             variant={"link"}
           >
-            Política de Privacidade
+            {t("Política de Privacidade")}
           </Button>
         </div>
       </div>

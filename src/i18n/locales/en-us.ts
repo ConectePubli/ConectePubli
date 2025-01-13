@@ -1205,5 +1205,16 @@ export default {
       "Shared on the brand's social networks with paid traffic",
     "Quais locais será veiculado? Por quanto tempo?":
       "Which locations will it be broadcast? For how long?",
+    "Falha ao enviar a mensagem. Por favor, tente novamente.":
+      "Failed to send the message. Please try again.",
+    Conversas: "Chats",
+    "Sem mensagens": "No messages",
+    "Digite uma mensagem...": "Type a message...",
+    Enviar: "Send",
+    "Selecione uma conversa": "Select a conversation",
+    "A fim de garantir a segurança e transparência na nossa plataforma, lembramos a todos os usuários que todo o contato e comunicação entre marcas e influencers deve ser realizado exclusivamente através do nosso chat interno. Qualquer tentativa de comunicação fora do chat poderá resultar no banimento permanente da plataforma. Agradecemos a compreensão e colaboração de todos!":
+      "In order to ensure security and transparency on our platform, we remind all users that all contact and communication between brands and influencers must be done exclusively through our internal chat. Any attempt to communicate outside the chat may result in permanent banning from the platform. We appreciate everyone's understanding and collaboration!",
+    "Termos de Uso": "Terms of Use",
+    "Política de Privacidade": "Privacy Policy",
   },
 };
