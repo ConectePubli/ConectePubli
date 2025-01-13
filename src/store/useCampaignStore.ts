@@ -223,8 +223,6 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
             sort: "created",
           });
 
-        console.log("Spotlights ativos:", activeSpotlights);
-
         // 3.2 Map para saber qual campanha está em destaque
         const spotlightMap: Record<string, { created: string }> = {};
         activeSpotlights.forEach((spotlight) => {

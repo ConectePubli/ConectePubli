@@ -88,7 +88,7 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
           {/* Campaign Goal Filter */}
           {showCampaignGoal && (
             <div className="w-full flex flex-col gap-2">
-              <label htmlFor="campaignGoal">{t("Objetivo")}</label>
+              <label htmlFor="campaignGoal">{t("Objetivo").toString()}</label>
               <select
                 id="campaignGoal"
                 value={campaignGoalFilter}
@@ -180,7 +180,7 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
               >
                 {Object.entries(NicheFilter).map(([key, value]) => (
                   <option key={key} value={key}>
-                    {t(value)}
+                    {t(value) || "Todos"}
                   </option>
                 ))}
               </select>

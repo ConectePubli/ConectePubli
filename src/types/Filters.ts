@@ -36,7 +36,7 @@ export const ChannelFilter = {
 export type ChannelFilterType = keyof typeof ChannelFilter;
 
 export const NicheFilter = {
-  "": "Todos",
+  "": "",
   wbjwvgn35jl2iu9: "Alimentação Saudável e Nutrição",
   a0ncq9dg4v7cmz9: "Arte e Cultura",
   lpm6yrf4urto14w: "Automóveis e Carros",
