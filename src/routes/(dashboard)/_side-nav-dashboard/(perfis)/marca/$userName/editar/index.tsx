@@ -1750,9 +1750,9 @@ const CoverImageSelector: React.FC<CoverImageSelectorProps> = ({
       <div className="mt-4 px-4">
         <h2 className="text-lg font-semibold">{t("Foto de fundo")}</h2>
         <p className="text-sm text-zinc-700 mt-1">
-          {
+          {t(
             "Escolha uma foto de fundo para o perfil. Tamanho recomendado: 1500 x 256 para garantir melhor qualidade. Tamanho máximo permitido: 5MB."
-          }
+          )}
         </p>
 
         <button
