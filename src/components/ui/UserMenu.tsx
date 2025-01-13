@@ -23,6 +23,7 @@ import pb from "@/lib/pb";
 import { LayoutDashboard } from "lucide-react";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 import { t } from "i18next";
+import I18n from "../i18n/i18n";
 
 export function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -92,6 +93,7 @@ export function UserMenu() {
             {t("Perfil")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
+
           <DropdownMenuItem
             onSelect={() => setOpen(true)}
             className="text-black cursor-pointer"
@@ -110,6 +112,10 @@ export function UserMenu() {
             </svg>
             {t("Sair")}
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <div className="flex justify-center mr-10">
+            <I18n />
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
 

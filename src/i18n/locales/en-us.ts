@@ -650,6 +650,7 @@ export default {
     "Culinária e Receitas": "Cooking and Recipes",
     "Decoração e Design de Interiores": "Decoration and Interior Design",
     "DIY e Faça Você Mesmo": "DIY and Crafts",
+    "Faça você mesmo (Artesanato)": "Do It Yourself (Crafts)",
     "Educação e Aprendizagem": "Education and Learning",
     "Empreendedorismo e Negócios": "Entrepreneurship and Business",
     "Esportes e Atletismo": "Sports and Athletics",
@@ -837,5 +838,348 @@ export default {
     "Status desconhecido": "Unknown status",
     "Você não salvou nenhuma campanha como rascunho ainda":
       "You haven't saved any campaigns as drafts yet",
+    "Erro ao criar a campanha. Tente novamente.":
+      "Error creating campaign. Try again.",
+    "Nome da campanha*": "Campaign name*",
+    "O nome é a primeira informação que os criadores de conteúdo visualizam.":
+      "The name is the first information that content creators see.",
+    "Nome da campanha": "Campaign name",
+    "URL do seu site ou perfil no Instagram*":
+      "URL of your website or Instagram profile*",
+    "Insira o Instagram ou site para que os candidatos possam conhecer a sua marca.":
+      "Enter Instagram or website so candidates can get to know your brand.",
+    "Compartilhe a URL do seu site ou perfil do Instagram para que os criadores conheçam mais sobre você":
+      "Share the URL of your website or Instagram profile so creators can learn more about you",
+    "Insira a URL": "Enter the URL",
+    "Formato da campanha*": "Campaign format*",
+    " O criador de conteúdo te fornece o vídeo ou fotos para que você poste nas suas redes sociais, depoimentos em site e/ou rode anúncios de tráfego pago.":
+      " The content creator provides you with the video or photos for you to post on your social networks, testimonials on the website and/or run paid traffic ads.",
+    " O criador de conteúdo posta o vídeo ou fotos nas redes sociais dele em collab com a marca.":
+      " The content creator posts the video or photos on their social networks in collab with the brand.",
+    "UGC (Creators): O criador de conteúdo fornece o vídeo para você postar nas suas redes sociais ou usar em anúncios.":
+      "UGC (Creators): The content creator provides the video for you to post on your social networks or use in ads.",
+    "IGC (Nano, Micro e Macro influenciadores): O criador de conteúdo posta o vídeo diretamente nas redes sociais dele, promovendo a marca para os seguidores de forma autêntica e engajada.":
+      "IGC (Nano, Micro and Macro influencers): The content creator posts the video directly on their social networks, promoting the brand to followers in an authentic and engaging way.",
+    "UGC + IGC: O criador de conteúdo fornece o vídeo para sua marca usar em campanhas publicitárias e também publica o conteúdo em suas próprias redes sociais, amplificando a visibilidade e alcance da campanha.":
+      "UGC + IGC: The content creator provides the video for your brand to use in advertising campaigns and also publishes the content on their own social networks, amplifying the visibility and reach of the campaign.",
+    "Foto de capa*": "Cover photo*",
+    "Carregue ou arraste e solte": "Upload or drag and drop",
+    "Tamanho recomendado: 1200x628px para garantir melhor qualidade.":
+      "Recommended size: 1200x628px for better quality.",
+    "Canais de divulgação": "Disclosure channels",
+    "Selecione as redes sociais em que o conteúdo será vinculado.":
+      "Select the social networks where the content will be linked.",
+    "Selecione os canais de divulgação que o influencer poste obrigatoriamente (somente para IGC)":
+      "Select the disclosure channels that the influencer must post (only for IGC)",
+    "Briefing da Campanha (Forneça detalhes essenciais que o Creator deve saber)*":
+      "Campaign Briefing (Provide essential details that the Creator should know)*",
+    "Forneça detalhes essenciais que o Creator deve saber, incluindo o objetivo e escopo da campanha, as mensagens principais que precisam ser abordadas, o tom e linguagem desejados, e diretrizes visuais como identidade visual e elementos gráficos.":
+      "Provide essential details that the Creator should know, including the campaign's objective and scope, the main messages that need to be addressed, the desired tone and language, and visual guidelines such as visual identity and graphic elements.",
+    "Descreva o propósito da campanha, público-alvo, mensagens principais, tom de voz e as diretrizes visuais.":
+      "Describe the purpose of the campaign, target audience, main messages, tone of voice, and visual guidelines.",
+    "Inclua informações essenciais sobre o objetivo, mensagens principais, tom, linguagem e diretrizes visuais":
+      "Include essential information about the objective, main messages, tone, language, and visual guidelines",
+    "Entregáveis Obrigatórios (Especifique a quantidade e o tipo de conteúdos que o Creator deve produzir)*":
+      "Mandatory Deliverables (Specify the quantity and type of content the Creator must produce)*",
+    "Especifique a quantidade e o tipo de conteúdos que o Creator deve produzir. Inclua Reels, Stories, Posts no feed, vídeos ou fotos entregues via WeTransfer ou Google Drive, detalhando a quantidade e duração para uso em tráfego orgânico e pago. Adicione outros formatos necessários, se houver.":
+      "Specify the quantity and type of content the Creator must produce. Include Reels, Stories, Feed Posts, videos or photos delivered via WeTransfer or Google Drive, detailing the quantity and duration for use in organic and paid traffic. Add other necessary formats, if any.",
+    "Informe o tipo de conteúdo necessário (Reels, Stories, Posts), a quantidade e a duração aproximada de cada um.":
+      "Inform the type of content required (Reels, Stories, Posts), the quantity and the approximate duration of each.",
+    "(Escopo) - Especifique os tipos de conteúdo, quantidades e duração (ex.: 1 Reels de 30s, 3 Stories)":
+      "(Scope) - Specify the types of content, quantities and duration (e.g. 1 Reels of 30s, 3 Stories)",
+    "Envio de Produtos ou Serviços (Detalhe o processo de envio)*":
+      "Product or Service Shipping (Detail the shipping process)*",
+    "Detalhe o processo de envio, incluindo a descrição dos produtos ou serviços envolvidos e os prazos previstos para envio e recebimento.":
+      "Detail the shipping process, including the description of the products or services involved and the expected deadlines for shipping and receipt.",
+    "Informe quais produtos ou serviços serão fornecidos, com detalhes de envio e prazos.":
+      "Inform which products or services will be provided, with shipping details and deadlines.",
+    "Ações Esperadas do Creator (Do's)*":
+      "Expected Actions from the Creator (Do's)*",
+    "Liste as ações e comportamentos que o Creator deve adotar durante a execução da campanha.":
+      "List the actions and behaviors that the Creator must adopt during the campaign execution.",
+    "Descreva comportamentos e práticas desejadas pelo Creator.":
+      "Describe desired behaviors and practices by the Creator.",
+    "Ações a Serem Evitadas (Don'ts)*": "Actions to Be Avoided (Don'ts)*",
+    "Especifique ações e comportamentos que o Creator deve evitar para atender às expectativas da marca.":
+      "Specify actions and behaviors that the Creator must avoid to meet the brand's expectations.",
+    "Detalhe comportamentos indesejados ou proibidos.":
+      "Detail unwanted or prohibited behaviors.",
+    "Exemplo: Evitar linguagem ofensiva, não divulgar informações confidenciais, não promover marcas concorrentes":
+      "Example: Avoid offensive language, do not disclose confidential information, do not promote competing brands",
+    "Informações Adicionais*": "Additional Information*",
+    "Inclua informações relevantes, como prazos de entrega dos conteúdos, exigências de exclusividade durante a campanha, e quaisquer restrições ou orientações específicas.":
+      "Include relevant information, such as content delivery deadlines, exclusivity requirements during the campaign, and any specific restrictions or guidelines.",
+    "Inclua qualquer outra informação que possa ajudar os criadores a entender melhor a campanha.":
+      "Include any other information that may help creators better understand the campaign.",
+    "Exemplo: Diretrizes específicas, referências, detalhes adicionais":
+      "Example: Specific guidelines, references, additional details",
+    "Observações: Todos os campos acima são obrigatórios para garantir que o Creator tenha uma compreensão completa das expectativas da marca. Certifique-se de fornecer informações claras e detalhadas em cada campo para evitar ambiguidades.":
+      "Notes: All fields above are mandatory to ensure that the Creator has a complete understanding of the brand's expectations. Be sure to provide clear and detailed information in each field to avoid ambiguities.",
+    "Sugestão de roteiro (opcional)": "Script suggestion (optional)",
+    "Este campo é reservado para marcas que desejam sugerir um roteiro para o influencer. Caso prefira dar liberdade criativa ao influencer, deixe este campo em branco.":
+      "This field is reserved for brands that wish to suggest a script to the influencer. If you prefer to give creative freedom to the influencer, leave this field blank.",
+    "Utilize este campo para oferecer um guia criativo ao influencer. Caso prefira dar liberdade total, deixe em branco.":
+      "Use this field to offer a creative guide to the influencer. If you prefer to give total freedom, leave it blank.",
+    "Exemplo: Sugestão de uma sequência de ideias, tópicos ou cenas a serem exploradas no vídeo.":
+      "Example: Suggestion of a sequence of ideas, topics or scenes to be explored in the video.",
+    "Segmentação do Público e Especificações":
+      "Audience Segmentation and Specifications",
+    "Nicho (opcional)": "Niche (optional)",
+    "Escolha quais nichos de criadores de conteúdo fazem mais sentido para essa campanha.":
+      "Choose which content creator niches make the most sense for this campaign.",
+    "Todas os nichos foram selecionados": "All niches were selected",
+    Outros: "Others",
+    "Selecionar nichos": "Select niches",
+    "nicho(s) selecionado(s)": "niche(s) selected",
+    "Idade (opcional)": "Age (optional)",
+    "Qual a idade mínima e máxima que os candidatos devem ter.":
+      "What is the minimum and maximum age that candidates must have.",
+    Mínimo: "Minimum",
+    Máximo: "Maximum",
+    Desmarcar: "Uncheck",
+    "Gênero (opcional)": "Gender (optional)",
+    "Selecione o gênero que melhor representa o público-alvo da sua campanha.":
+      "Select the gender that best represents the target audience of your campaign.",
+    "Selecionar gênero": "Select gender",
+    "Não-Binário": "Non-binary",
+    "Gênero dos creators.": "Creators gender.",
+    "Mínimo de Seguidores (opcional)": "Minimum Followers (optional)",
+    "Defina o número mínimo de seguidores em todas as redes sociais que os influencers devem ter para participar da campanha.":
+      "Set the minimum number of followers on all social networks that influencers must have to participate in the campaign.",
+    "Selecionar mínimo de seguidores": "Select minimum followers",
+    "Localidade (opcional)": "Location (optional)",
+    "Defina de quais estados você gostaria de receber candidatos.":
+      "Define which states you would like to receive candidates from.",
+    "Insira o estado, cidade e bairro que o creator deve se candidatar":
+      "Enter the state, city and neighborhood that the creator must apply",
+    "Duração do vídeo (opcional)": "Video duration (optional)",
+    "Informe qual o tempo mínimo que o vídeo deve durar.":
+      "Inform the minimum time the video should last.",
+    "Duração do vídeo": "Video duration",
+    "Pretende utilizar o material para tráfego pago (anúncios)?*":
+      "Do you intend to use the material for paid traffic (ads)?*",
+    Não: "No",
+    Sim: "Yes",
+    "Tráfego pago: Anúncios na Meta Ads, Tiktok Ads, Google ou Ecommerce. Tráfego orgânico: Veicular os conteúdos em qualquer rede social de sua escolha.":
+      "Paid traffic: Ads on Meta Ads, Tiktok Ads, Google or Ecommerce. Organic traffic: Display the content on any social network of your choice.",
+    "Quais locais será veiculado? Por quantos tempo?*":
+      "Which locations will it be broadcast? For how long?*",
+    "Formato do áudio (opcional)": "Audio format (optional)",
+    Música: "Music",
+    Narração: "Narration",
+    "Como você gostaria? Escolha se o vídeo deve ser criado com uma música de fundo ou se é necessário que o criador de conteúdo narre o vídeo.":
+      "How would you like it? Choose whether the video should be created with background music or if it is necessary for the content creator to narrate the video.",
+    "Período da Campanha e Orçamento": "Campaign Period and Budget",
+    "Data de Início*": "Start Date*",
+    "Informe a data em que você deseja que a campanha seja iniciada.":
+      "Enter the date you want the campaign to start.",
+    "Fim da Campanha*": "End Date*",
+    "Informe a data em que você deseja que a campanha seja encerrada.":
+      "Enter the date you want the campaign to end.",
+    "Período da campanha: O prazo máximo estabelecido para que o Creator entregue todo o escopo obrigatório da campanha.":
+      "Campaign period: The maximum deadline established for the Creator to deliver the entire mandatory scope of the campaign.",
+    "Valor por criador*": "Value per creator*",
+    "Informe o valor que cada criador de conteúdo receberá pela realização das atividades previstas na campanha. O valor mínimo por criador é de R$ 50,00. (Lembre-se de colocar um valor de acordo com os entregáveis que a marca está pedindo).":
+      "Enter the amount that each content creator will receive for performing the activities provided for in the campaign. The minimum amount per creator is R$ 50.00. (Remember to put an amount according to the deliverables that the brand is asking for).",
+    "Insira o valor que cada criador de conteúdo receberá pela realização das atividades previstas na campanha, independente do número de entregas ou portagens. Valor mínimo: R$50,00 por criador. Esse valor representa o total que cada criador receberá ao concluir sua participação completa na campanha":
+      "Enter the amount that each content creator will receive for performing the activities provided for in the campaign, regardless of the number of deliveries or tolls. Minimum value: R$50.00 per creator. This value represents the total that each creator will receive upon completing their full participation in the campaign",
+    "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor final será calculado com base na multiplicação do valor definido por creator, informado no campo acima, pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: O pagamento deve ser feito até a data inicial da campanha, caso contrário, será bloqueada e caso algum influenciador não cumpra os requisitos ou ocorra um problema comprovado, você poderá receber 100% do reembolso correspondente ao valor pago por esse influenciador.":
+      "The campaign payment must be made only after the brand selects and approves all creators it wishes to include in the campaign. The final amount will be calculated based on the multiplication of the value defined per creator, informed in the field above, by the number of approved creators. After payment confirmation, the campaign will start as per the approved planning. Note: Payment must be made by the initial campaign date, otherwise it will be blocked and if any influencer does not meet the requirements or a proven problem occurs, you may receive 100% of the refund corresponding to the amount paid by that influencer.",
+    "Informações do Responsável pela Campanha":
+      "Information of the Campaign Manager",
+    "Essas informações serão apenas para controle interno da equipe da ConectePubli.":
+      "This information will be for internal control only by the ConectePubli team.",
+    "Nome*": "Name*",
+    "E-mail*": "Email*",
+    "Telefone*": "Phone*",
+    "Descreva os itens enviados e o prazo para entrega":
+      "Describe the items sent and the delivery time",
+    "Escolha se o vídeo deve ser criado com uma música de fundo ou se o é necessário que o criador de conteúdo narre o vídeo.":
+      "Choose whether the video should be created with background music or if it is necessary for the content creator to narrate the video.",
+    "Nome do responsável": "Name of the responsible",
+    "E-mail do responsável": "Email of the responsible",
+    "Telefone do responsável": "Phone of the responsible",
+    "CPF do responsável": "CPF of the responsible",
+    "Estado, cidade, bairro": "State, city, neighborhood",
+    "Campanha do(a) {{brand}}": "Campaign of {{brand}}",
+    "Sua Marca": "Your Brand",
+    "Erro ao salvar campanha: ": "Error saving campaign: ",
+    "Erro ao salvar o rascunho. Tente novamente.":
+      "Error saving the draft. Try again.",
+    "Rascunho salvo com sucesso!": "Draft saved successfully!",
+    "Você tem dados não salvos, deseja realmente sair?":
+      "You have unsaved data, do you really want to leave?",
+    "Sair da tela de criação de campanha sem salvar os dados pode fazer você perder todo o progresso feito até agora.":
+      "Leaving the campaign creation screen without saving the data can make you lose all the progress made so far.",
+    "Para garantir que suas informações estejam seguras e você não precise começar do zero, clique em 'Salvar como Rascunho' antes de sair. Assim, você pode continuar de onde parou, sem preocupações! 🚀":
+      "To ensure that your information is safe and you don't have to start from scratch, click 'Save as Draft' before leaving. This way, you can continue from where you left off, no worries! 🚀",
+    "Voltar a Campanha": "Back to Campaign",
+    " Salvar como rascunho": " Save as draft",
+    "Atualizar Campanha": "Update Campaign",
+    "Criar campanha": "Create campaign",
+    "Comprar Destaque": "Buy Highlight",
+    "Quer deixar sua campanha em destaque na plataforma e receber mais candidatos? Destaque sua campanha.":
+      "Do you want to highlight your campaign on the platform and receive more candidates? Highlight your campaign.",
+    "Sem Destaque": "No Highlight",
+    "Sua campanha não receberá destaque.":
+      "Your campaign will not be highlighted.",
+    "Destaque da assinatura": "Subscription highlight",
+    "Sua campanha receberá um destaque de 5 dias.":
+      "Your campaign will receive a 5-day highlight.",
+    "Sua campanha ficará no topo por {{days}} dias.":
+      "Your campaign will stay at the top for {{days}} days.",
+    "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor final será calculado com base na multiplicação do valor definido por creator pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: Caso algum influenciador não cumpra os requisitos ou ocorra um problema comprovado, você poderá solicitar o reembolso de 100% do valor pago referente àquele influenciador. O valor do destaque, no entanto, não é reembolsável, pois corresponde ao serviço já prestado.":
+      "The campaign payment must only be made after the brand selects and approves all the creators it wants to include in the campaign. The final amount will be calculated based on the multiplication of the amount set per creator by the number of approved creators. After payment confirmation, the campaign will be initiated according to the approved plan. Note: If any influencer fails to meet the requirements or a verified issue occurs, you can request a 100% refund of the amount paid for that influencer. However, the highlight fee is non-refundable as it corresponds to a service already provided.",
+    "Informações Básicas da Campanha": "Basic Campaign Information",
+    "Campanha atualizada com sucesso!": "Campaign updated successfully!",
+    "O valor mínimo por criador é R$50,00.":
+      "The minimum amount per creator is R$50.00.",
+    "Ex: 3 meses, 4 meses": "E.g. 3 months, 4 months",
+    "Exemplo: Publicar conteúdos semanais, interagir com os seguidores, compartilhar insights sobre a campanha, colocar CTA, marcar o @ da marca nas redes sociais, usar hashtags específicos.":
+      "Example: Publish weekly content, interact with followers, share insights about the campaign, place CTA, tag the brand's @ on social networks, use specific hashtags.",
+    Homem: "Man",
+    Mulher: "Woman",
+    "Não-binário": "Non-binary",
+    "Erro ao carregar as informações do Creator":
+      "Error loading Creator information",
+    "Esta página ou não existe ou foi removida, tente novamente!":
+      "This page either does not exist or has been removed, try again!",
+    "Creator/Influencer": "Creator/Influencer",
+    Avaliações: {
+      one: "({{count}} Review)",
+      other: "({{count}} Reviews)",
+    },
+    "Ver Reviews do Usuário": "View User Reviews",
+    "Acessar mídia kit": "Access media kit",
+    "Editar Perfil": "Edit Profile",
+    Biografia: "Biography",
+    "Idioma:": "Idiom:",
+    "Idade:": "Age:",
+    "Este usuário ainda não adicionou uma biografia.":
+      "This user has not added a biography yet.",
+    "Este usuário ainda não adicionou nenhum trabalho ao portfólio.":
+      "This user has not added any work to the portfolio yet.",
+    "Falha ao carregar os nichos. Tente novamente mais tarde.":
+      "Failed to load niches. Try again later.",
+    "Nenhuma alteração detectada para salvar.": "No changes detected to save.",
+    "Dados pessoais salvos com sucesso!": "Personal data saved successfully!",
+    "O tamanho da capa excede o limite permitido. Por favor, tente novamente com um arquivo menor.":
+      "The cover size exceeds the allowed limit. Please try again with a smaller file.",
+    "O tamanho da imagem de perfil excede o limite permitido. Por favor, tente novamente com um arquivo menor.":
+      "The profile image size exceeds the allowed limit. Please try again with a smaller file.",
+    "Erro ao salvar dados pessoais. Tente novamente.":
+      "Error saving personal data. Try again.",
+    "O username deve ser único e não pode conter espaços ou caracteres especiais. Use apenas letras, números e underscore.":
+      "The username must be unique and cannot contain spaces or special characters. Use only letters, numbers, and underscore.",
+    "Por favor, insira um e-mail válido.": "Please enter a valid email.",
+    "Por favor, corrija os erros antes de salvar.":
+      "Please correct the errors before saving.",
+    "Dados 'Sobre você' salvos com sucesso!":
+      "Data 'About you' saved successfully!",
+    "Erro ao salvar dados da seção 'Sobre você'. Tente novamente.":
+      "Error saving data from the 'About you' section. Try again.",
+    "Endereço salvo com sucesso!": "Address saved successfully!",
+    "Erro ao salvar dados da seção 'Endereço'. Tente novamente.":
+      "Error saving data from the 'Address' section. Try again.",
+    "Por favor, preencha pelo menos uma rede social.":
+      "Please fill in at least one social network.",
+    "Redes sociais salvas com sucesso!": "Social networks saved successfully!",
+    "Erro ao salvar dados da seção 'Redes sociais'. Tente novamente.":
+      "Error saving data from the 'Social networks' section. Try again.",
+    "Dados do usuário não estão disponíveis.": "User data is not available.",
+    "Conta bancária salva com sucesso!": "Bank account saved successfully!",
+    "Erro ao salvar dados da seção 'Conta bancária'. Tente novamente.":
+      "Error saving data from the 'Bank account' section. Try again.",
+    Voltar: "Back",
+    "Preencha os dados do perfil para criar sua primeira campanha":
+      "Fill in the profile data to create your first campaign",
+    "Preencher Perfil": "Fill Profile",
+    "Carregar uma nova imagem de perfil": "Upload a new profile image",
+    "Sobre nós": "About us",
+    "Escreva uma breve descrição sobre a empresa.":
+      "Write a brief description about the company.",
+    "Nome da Empresa": "Company Name",
+    "Nome da empresa": "Company name",
+    "Registro da Empresa (CNPJ ou CPF)": "Company Registration (CNPJ or CPF)",
+    "Insira o CNPJ ou o endereço fiscal no exterior":
+      "Enter the CNPJ or foreign fiscal address",
+    "Email da empresa": "Company email",
+    "Whatsapp/Telefone": "Whatsapp/Phone",
+    Website: "Website",
+    "Insira a URL do website da empresa": "Enter the company's website URL",
+    "Digite o CEP": "Enter the ZIP Code",
+    "Logradouro (Rua, Avenida, Alameda, etc.)":
+      "Street (Street, Avenue, Boulevard, etc.)",
+    "Digite o nome da rua": "Enter the street name",
+    "Digite o número da residência": "Enter the residence number",
+    "Digite o complemento (opcional)": "Enter the complement (optional)",
+    "Digite o nome do bairro": "Enter the neighborhood name",
+    "Digite o nome da cidade": "Enter the city name",
+    "Preencha pelo menos uma rede social. Embora todas sejam opcionais, é necessário que pelo menos um campo esteja preenchido.":
+      "Fill in at least one social network. Although all are optional, at least one field must be filled in.",
+    "https://instagram.com/usuario": "https://instagram.com/username",
+    "https://youtube.com/c/usuario": "https://youtube.com/c/username",
+    "https://linkedin.com/in/usuario": "https://linkedin.com/in/username",
+    "https://yourclub.io/usuario": "https://yourclub.io/username",
+    "https://kwai.com/@usuario": "https://kwai.com/@username",
+    "https://tiktok.com/@usuario": "https://tiktok.com/@username",
+    "https://facebook.com/usuario": "https://facebook.com/username",
+    "https://twitter.com/usuario": "https://twitter.com/username",
+    "https://twitch.tv/usuario": "https://twitch.tv/username",
+    "https://pinterest.com/usuario": "https://pinterest.com/username",
+    "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça sua chave Pix. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada à sua chave Pix.":
+      "To facilitate the refund process, if the campaign expires with vacancies unfilled or you decide to stop the campaign, provide your Pix key. If necessary, you will receive the refund of the corresponding amount directly into the account associated with your Pix key.",
+    "Escolha uma foto de fundo": "Choose a background photo",
+    "Escolha uma foto de fundo para o perfil. Tamanho recomendado: 1500 x 256 para garantir melhor qualidade. Tamanho máximo permitido: 5MB.":
+      "Choose a background photo for the profile. Recommended size: 1500 x 256 for better quality. Maximum allowed size: 5MB.",
+    "Carregar Imagem": "Upload Image",
+    "Perfil não encontrado": "Profile not found",
+    "Ver Reviews da Marca": "View Brand Reviews",
+    "Ocorreu um erro ao carregar essa página. Não se preocupe, estamos trabalhando para resolvê-lo!":
+      "An error occurred while loading this page. Don't worry, we're working to resolve it!",
+    "Campanha não encontrada": "Campaign not found",
+    "Ocorreu um erro ao verificar sua avaliação da plataforma.":
+      "An error occurred while checking your platform rating.",
+    "Não foi possível iniciar o chat": "Could not start the chat",
+    "Não foi possível atualizar o status": "Could not update status",
+    Importante: "Important",
+    "Antes de prosseguir com o pagamento, aguarde os creators se candidatarem à sua campanha. Assim que os candidatos estiverem disponíveis, você poderá selecioná-los e finalizar o pagamento com o valor correto.":
+      "Before proceeding with the payment, wait for the creators to apply to your campaign. Once the candidates are available, you can select them and finalize the payment with the correct amount.",
+    "Sua campanha já está na vitrine, agora é só esperar os creators certos se inscreverem!":
+      "Your campaign is already in the showcase, now just wait for the right creators to sign up!",
+    "Visualize todos os inscritos dessa campanha.":
+      "View all subscribers for this campaign.",
+    "Esta campanha terminou, então você pode apenas visualizá-la!":
+      "This campaign has ended, so you can only view it!",
+    "Visualizar Campanha": "View Campaign",
+    "Valor a pagar: ": "Amount to pay: ",
+    "Você possui até o dia ": "You have until the day ",
+    "para realizar o pagamento e não ter a campanha bloqueada":
+      "to make the payment and not have the campaign blocked",
+    "Campanha paga": "Campaign paid",
+    "Pesquisar pelo nome do influencer": "Search by influencer name",
+    Pendente: "Pending",
+    "Em Progresso": "In Progress",
+    Concluído: "Completed",
+    Esgotado: "Sold out",
+    Selecionado: "Selected",
+    Selecionados: "Selected",
+    Inscrito: "Subscribed",
+    "Campanha bloqueada por falta de pagamento.":
+      "Campaign blocked due to lack of payment.",
+    "Entrar em contato": "Contact",
+    "Você só poderá editar esta campanha enquanto não tiverem inscritos":
+      "You can only edit this campaign while there are no subscribers",
+    "Editar Campanha": "Edit Campaign",
+    "Nenhum resultado para os filtros aplicados.":
+      "No results for the applied filters.",
+    "Limpar Filtros": "Clear Filters",
+    "Sem texto de proposta": "No proposal text",
+    "Ver mais": "See more",
+    "Enviar Mensagem": "Send Message",
+    Visualizar: "View",
+    "Escolher para a Campanha": "Choose for the Campaign",
+    "Contatar Suporte": "Contact Support",
+    "Trabalho concluído": "Work completed",
   },
 };

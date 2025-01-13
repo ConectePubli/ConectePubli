@@ -27,6 +27,7 @@ import { RecordModel } from "pocketbase";
 import { Rating as StarRating } from "react-simple-star-rating";
 import Spinner from "@/components/ui/Spinner";
 import TopCreatorBadge from "@/components/ui/top-creator-badge";
+import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/"
@@ -66,11 +67,11 @@ function InfluencerProfilePage() {
   const returnGender = (gender: string) => {
     switch (gender) {
       case "male":
-        return "Homem";
+        return t("Homem");
       case "female":
-        return "Mulher";
+        return t("Mulher");
       case "non-binary":
-        return "Não-binário";
+        return t("Não-binário");
     }
   };
 
@@ -215,7 +216,7 @@ function InfluencerProfilePage() {
     return (
       <div className="flex justify-center items-center h-screen">
         <p className="text-center">
-          Erro ao carregar as informações do Influencer
+          {t("Erro ao carregar as informações do Creator")}
         </p>
       </div>
     );
@@ -225,7 +226,7 @@ function InfluencerProfilePage() {
     return (
       <div className="flex justify-center items-center h-screen">
         <p className="text-center">
-          Esta página ou não existe ou foi removida, tente novamente!
+          {t("Esta página ou não existe ou foi removida, tente novamente!")}
         </p>
       </div>
     );
@@ -269,7 +270,7 @@ function InfluencerProfilePage() {
                 alt="creator icon"
                 className="w-3 h-3 mr-2"
               />{" "}
-              Creator/Influencer
+              {t("Creator/Influencer")}
             </p>
             <h1 className="text-xl font-bold flex flex-col sm:flex-row sm:items-center">
               <span className="break-words break-all">
@@ -323,7 +324,7 @@ function InfluencerProfilePage() {
 
           <div className="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1">
             <span className="text-black/75 text-sm ml-0 sm:ml-3">
-              ({totalReviews} Avaliaç{totalReviews !== 1 ? "ões" : "ão"})
+              {t("Avaliações", { count: totalReviews })}
             </span>
 
             <div className="flex items-center mt-2 sm:mt-0">
@@ -332,7 +333,7 @@ function InfluencerProfilePage() {
                 className="ml-2 sm:ml-3 text-[#10438F] hover:underline font-bold"
                 onClick={() => setIsRatingModalOpen(true)}
               >
-                Ver Reviews do Usuário
+                {t("Ver Reviews do Usuário")}
               </button>
             </div>
           </div>
@@ -375,7 +376,7 @@ function InfluencerProfilePage() {
                 rel="noopener noreferrer"
               >
                 <button className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition">
-                  Acessar mídia kit
+                  {t("Acessar mídia kit")}
                 </button>
               </a>
             )}
@@ -394,7 +395,7 @@ function InfluencerProfilePage() {
                   className="w-4 h-4 text-white fill-current"
                   style={{ filter: "brightness(0) invert(1)" }}
                 />
-                Editar Perfil
+                {t("Editar Perfil")}
               </button>
             </div>
           )}
@@ -404,7 +405,7 @@ function InfluencerProfilePage() {
       <hr className="border my-4" />
 
       <div className="px-2 sm-medium:px-4">
-        <h3 className="text-lg font-semibold mb-2">Biografia</h3>
+        <h3 className="text-lg font-semibold mb-2">{t("Biografia")}</h3>
 
         <div className="flex items-center gap-4 flex-wrap mb-1">
           {/* COUNTRY AND STATE */}
@@ -420,7 +421,7 @@ function InfluencerProfilePage() {
           {influencer.languages && influencer.languages.length > 0 && (
             <p className="text-sm text-gray-600 font-medium flex items-center">
               <Globe className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
-              Idioma: {influencer.languages.join(", ")}
+             {t("Idioma:")} {influencer.languages.join(", ")}
             </p>
           )}
 
@@ -428,7 +429,7 @@ function InfluencerProfilePage() {
           {influencer.birth_date && (
             <p className="text-sm text-gray-600 font-medium flex items-center">
               <Hourglass className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
-              Idade: {calculateAge(influencer.birth_date)}
+              {t("Idade:")} {calculateAge(influencer.birth_date)}
             </p>
           )}
 
@@ -448,7 +449,7 @@ function InfluencerProfilePage() {
           </p>
         ) : (
           <p className="text-gray-500">
-            Este usuário ainda não adicionou uma biografia.
+            {t("Este usuário ainda não adicionou uma biografia.")}
           </p>
         )}
 
@@ -471,7 +472,7 @@ function InfluencerProfilePage() {
       <hr className="border my-4" />
 
       <div className="px-2 sm-medium:px-4">
-        <h4 className="text-lg font-semibold mb-2">Portfólio</h4>
+        <h4 className="text-lg font-semibold mb-2">{t("Portfólio")}</h4>
         {/* PORTFOLIO MEDIA */}
         {influencer.previous_work_imgs &&
         influencer.previous_work_imgs.length > 0 ? (
@@ -521,7 +522,7 @@ function InfluencerProfilePage() {
           </div>
         ) : (
           <p className="text-gray-500">
-            Este usuário ainda não adicionou nenhum trabalho ao portfólio.
+            {t("Este usuário ainda não adicionou nenhum trabalho ao portfólio.")}
           </p>
         )}
       </div>

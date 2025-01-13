@@ -35,6 +35,7 @@ import FloatingHelpButton from "./FloatingHelpButton";
 import { ArrowLeft, File, Save } from "lucide-react";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import CampaignSpotlight from "./CampaignSpotlight";
+import { useTranslation } from "react-i18next";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -106,6 +107,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   initialCampaignData,
   campaignIdDraft,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const originalNavigate = navigate;
 
@@ -487,13 +489,13 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           ),
     onSuccess: async (createdCampaign: Campaign) => {
       if (isEditMode) {
-        toast.success("Campanha atualizada com sucesso!");
+        toast.success(t("Campanha atualizada com sucesso!"));
         navigate({
           to: "/dashboard/campanhas/$campaignId/aprovar",
           params: { campaignId },
         });
       } else {
-        toast.success("Campanha criada com sucesso!");
+        toast.success(t("Campanha criada com sucesso!"));
 
         setIsDirty(false);
 
@@ -510,7 +512,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     },
     onError: (e) => {
       console.log(e);
-      toast.error("Erro ao criar a campanha. Tente novamente.");
+      toast.error(t("Erro ao criar a campanha. Tente novamente."));
     },
   });
 
@@ -519,7 +521,9 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       const campaignName =
         campaignData.basicInfo.campaignName.trim() !== ""
           ? campaignData.basicInfo.campaignName
-          : `Campanha do(a) ${brandInfo?.name || "Sua Marca"}`;
+          : t("Campanha do(a) {{brand}}", {
+              brand: brandInfo?.name || t("Sua Marca"),
+            });
 
       const creatorFee = campaignBudget.creatorFee
         ? campaignBudget.creatorFee
@@ -573,13 +577,13 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       }
     },
     onSuccess: () => {
-      toast.success("Rascunho salvo com sucesso!");
+      toast.success(t("Rascunho salvo com sucesso!"));
 
       navigate({ to: "/dashboard" });
     },
     onError: (error) => {
       console.error("Erro ao salvar o rascunho:", error);
-      toast.error("Erro ao salvar o rascunho. Tente novamente.");
+      toast.error(t("Erro ao salvar o rascunho. Tente novamente."));
     },
   });
 
@@ -673,7 +677,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           campaign: record as Campaign,
         });
       } catch (e) {
-        toast.error("Erro ao salvar campanha: " + e);
+        toast.error(t("Erro ao salvar campanha: ") + e);
       }
     } else {
       handleSubmit(
@@ -694,17 +698,17 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
               <div className="bg-white p-6 rounded-md w-full max-w-xl mx-4">
                 <h2 className="text-lg font-semibold">
-                  Você tem dados não salvos, deseja realmente sair?
+                  {t("Você tem dados não salvos, deseja realmente sair?")}
                 </h2>
                 <p className="mt-4 text-sm text-gray-900">
-                  Sair da tela de criação de campanha sem salvar os dados pode
-                  fazer você perder todo o progresso feito até agora.
+                  {t(
+                    "Sair da tela de criação de campanha sem salvar os dados pode fazer você perder todo o progresso feito até agora."
+                  )}
                 </p>
                 <p className="mt-2 text-sm text-gray-900">
-                  Para garantir que suas informações estejam seguras e você não
-                  precise começar do zero, clique em "Salvar como Rascunho"
-                  antes de sair. Assim, você pode continuar de onde parou, sem
-                  preocupações! 🚀
+                  {t(
+                    "Para garantir que suas informações estejam seguras e você não precise começar do zero, clique em 'Salvar como Rascunho' antes de sair. Assim, você pode continuar de onde parou, sem preocupações! 🚀"
+                  )}
                 </p>
                 <div className="mt-6 flex justify-between items-center">
                   <button
@@ -712,7 +716,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                     className="text-sm text-gray-800 flex items-center space-x-1"
                   >
                     <ArrowLeft className="" />
-                    <span>Voltar a Campanha</span>
+                    <span>{t("Voltar a Campanha")}</span>
                   </button>
 
                   <div className="flex space-x-4">
@@ -729,7 +733,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                       }}
                       className="px-4 py-2 bg-red-500 text-white rounded text-sm"
                     >
-                      Sair
+                      {t("Sair")}
                     </button>
                     <Button
                       variant={"blue"}
@@ -739,8 +743,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                       className="px-4 py-2 text-white rounded text-sm"
                     >
                       {saveDraftMutation.isPending
-                        ? "Salvando..."
-                        : "Salvar como Rascunho"}
+                        ? t("Salvando...")
+                        : t("Salvar como Rascunho")}
                     </Button>
                   </div>
                 </div>
@@ -757,10 +761,11 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                 }}
               >
                 {saveDraftMutation.isPending ? (
-                  "Salvando..."
+                  t("Salvando...")
                 ) : (
                   <>
-                    <Save className="w-4 h-4 mr-2" /> Salvar como rascunho
+                    <Save className="w-4 h-4 mr-2" />
+                    {t(" Salvar como rascunho")}
                   </>
                 )}
               </Button>
@@ -820,10 +825,10 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
               disabled={mutate.isPending || loadingCreate}
             >
               {mutate.isPending || loadingCreate
-                ? "Carregando..."
+                ? t("Carregando...")
                 : isEditMode
-                  ? "Atualizar Campanha"
-                  : "Criar campanha"}
+                  ? t("Atualizar Campanha")
+                  : t("Criar campanha")}
             </Button>
           </div>
 
@@ -862,6 +867,7 @@ function BasicInfoSection({
   isEditMode,
   isDraft,
 }: BasicInfoSectionProps) {
+  const { t } = useTranslation();
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   // Estados para tooltips
@@ -1034,18 +1040,19 @@ function BasicInfoSection({
   return (
     <div className="w-full">
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
-        Informações Básicas da Campanha
+        {t("Informações Básicas da Campanha")}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 px-5">
         <div>
           <div className="mb-8">
             <label className="block mb-1 text-gray-700 font-semibold">
-              Nome da campanha*
+              {t("Nome da campanha*")}
             </label>
             <p className="text-gray-500 text-sm mb-2">
-              O nome é a primeira informação que os criadores de conteúdo
-              visualizam.
+              {t(
+                "O nome é a primeira informação que os criadores de conteúdo visualizam."
+              )}
             </p>
             <input
               type="text"
@@ -1053,13 +1060,13 @@ function BasicInfoSection({
               value={data.campaignName}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Nome da campanha"
+              placeholder={t("Nome da campanha")}
             />
           </div>
 
           <div className="mb-8">
             <label className="block mb-1 text-gray-700 font-semibold flex items-center ">
-              URL do seu site ou perfil no Instagram*
+              {t("URL do seu site ou perfil no Instagram*")}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -1082,16 +1089,18 @@ function BasicInfoSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      Insira o Instagram ou site para que os candidatos possam
-                      conhecer a sua marca.
+                      {t(
+                        "Insira o Instagram ou site para que os candidatos possam conhecer a sua marca."
+                      )}
                     </p>
                   </div>
                 )}
               </div>
             </label>
             <p className="text-gray-500 text-sm mb-2">
-              Compartilhe a URL do seu site ou perfil do Instagram para que os
-              criadores conheçam mais sobre você
+              {t(
+                "Compartilhe a URL do seu site ou perfil do Instagram para que os criadores conheçam mais sobre você"
+              )}{" "}
             </p>
             <input
               type="url"
@@ -1099,13 +1108,13 @@ function BasicInfoSection({
               value={data.productUrl || ""}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Insira a URL"
+              placeholder={t("Insira a URL")}
             />
           </div>
 
           <div>
             <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-              Formato da campanha*{" "}
+              {t("Formato da campanha*")}{" "}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -1128,13 +1137,16 @@ function BasicInfoSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      <strong>UGC:</strong> O criador de conteúdo te fornece o
-                      vídeo ou fotos para que você poste nas suas redes sociais,
-                      depoimentos em site e/ou rode anúncios de tráfego pago.
+                      <strong>UGC:</strong>
+                      {t(
+                        " O criador de conteúdo te fornece o vídeo ou fotos para que você poste nas suas redes sociais, depoimentos em site e/ou rode anúncios de tráfego pago."
+                      )}
                     </p>
                     <p className="text-gray-700 mt-2 font-normal">
-                      <strong>IGC:</strong> O criador de conteúdo posta o vídeo
-                      ou fotos nas redes sociais dele em collab com a marca.
+                      <strong>IGC:</strong>
+                      {t(
+                        " O criador de conteúdo posta o vídeo ou fotos nas redes sociais dele em collab com a marca."
+                      )}
                     </p>
                   </div>
                 )}
@@ -1158,17 +1170,23 @@ function BasicInfoSection({
             </div>
             <p className="text-gray-500 text-sm mt-2">
               {data.format === "UGC"
-                ? "UGC (Creators): O criador de conteúdo fornece o vídeo para você postar nas suas redes sociais ou usar em anúncios."
+                ? t(
+                    "UGC (Creators): O criador de conteúdo fornece o vídeo para você postar nas suas redes sociais ou usar em anúncios."
+                  )
                 : data.format === "IGC"
-                  ? "IGC (Nano, Micro e Macro influenciadores): O criador de conteúdo posta o vídeo diretamente nas redes sociais dele, promovendo a marca para os seguidores de forma autêntica e engajada."
-                  : "UGC + IGC: O criador de conteúdo fornece o vídeo para sua marca usar em campanhas publicitárias e também publica o conteúdo em suas próprias redes sociais, amplificando a visibilidade e alcance da campanha."}
+                  ? t(
+                      "IGC (Nano, Micro e Macro influenciadores): O criador de conteúdo posta o vídeo diretamente nas redes sociais dele, promovendo a marca para os seguidores de forma autêntica e engajada."
+                    )
+                  : t(
+                      "UGC + IGC: O criador de conteúdo fornece o vídeo para sua marca usar em campanhas publicitárias e também publica o conteúdo em suas próprias redes sociais, amplificando a visibilidade e alcance da campanha."
+                    )}
             </p>
           </div>
         </div>
 
         <div className="col-span-1">
           <label className="block mb-2 text-gray-700 font-semibold">
-            Foto de capa*
+            {t("Foto de capa*")}
           </label>
           <div
             className="flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md h-[200px] cursor-pointer overflow-hidden"
@@ -1184,7 +1202,9 @@ function BasicInfoSection({
               accept="image/*"
             />
             {!imagePreviewUrl ? (
-              <p className="text-blue-500">Carregue ou arraste e solte</p>
+              <p className="text-blue-500">
+                {t("Carregue ou arraste e solte")}
+              </p>
             ) : (
               <img
                 src={imagePreviewUrl}
@@ -1194,14 +1214,16 @@ function BasicInfoSection({
             )}
           </div>
           <p className="text-gray-500 mt-2 text-sm">
-            Tamanho recomendado: 1200x628px para garantir melhor qualidade.
+            {t(
+              "Tamanho recomendado: 1200x628px para garantir melhor qualidade."
+            )}
           </p>
         </div>
 
         <div className="col-span-1 md:col-span-2">
           <div className="col-span-2">
             <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-              Canais de divulgação
+              {t("Canais de divulgação")}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -1224,8 +1246,9 @@ function BasicInfoSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      Selecione as redes sociais em que o conteúdo será
-                      vinculado.
+                      {t(
+                        "Selecione as redes sociais em que o conteúdo será vinculado."
+                      )}
                     </p>
                   </div>
                 )}
@@ -1233,8 +1256,9 @@ function BasicInfoSection({
             </label>
 
             <p className="text-gray-500 text-sm mb-2">
-              Selecione os canais de divulgação que o influencer poste
-              obrigatoriamente (somente para IGC)
+              {t(
+                "Selecione os canais de divulgação que o influencer poste obrigatoriamente (somente para IGC)"
+              )}
             </p>
 
             <div className="flex flex-wrap gap-4 mt-2">
@@ -1266,8 +1290,9 @@ function BasicInfoSection({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="col-span-1">
               <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-                Briefing da Campanha (Forneça detalhes essenciais que o Creator
-                deve saber)*
+                {t(
+                  "Briefing da Campanha (Forneça detalhes essenciais que o Creator deve saber)*"
+                )}
                 <div className="relative inline-block">
                   <Question
                     size={18}
@@ -1290,33 +1315,35 @@ function BasicInfoSection({
                       }}
                     >
                       <p className="text-gray-700 font-normal">
-                        Forneça detalhes essenciais que o Creator deve saber,
-                        incluindo o objetivo e escopo da campanha, as mensagens
-                        principais que precisam ser abordadas, o tom e linguagem
-                        desejados, e diretrizes visuais como identidade visual e
-                        elementos gráficos.
+                        {t(
+                          "Forneça detalhes essenciais que o Creator deve saber, incluindo o objetivo e escopo da campanha, as mensagens principais que precisam ser abordadas, o tom e linguagem desejados, e diretrizes visuais como identidade visual e elementos gráficos."
+                        )}{" "}
                       </p>
                     </div>
                   )}
                 </div>
               </label>
               <p className="text-gray-500 text-sm mb-2">
-                Descreva o propósito da campanha, público-alvo, mensagens
-                principais, tom de voz e as diretrizes visuais.
+                {t(
+                  "Descreva o propósito da campanha, público-alvo, mensagens principais, tom de voz e as diretrizes visuais."
+                )}
               </p>
               <textarea
                 name="briefing"
                 value={data.briefing || ""}
                 onChange={handleInputChange}
                 className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Inclua informações essenciais sobre o objetivo, mensagens principais, tom, linguagem e diretrizes visuais"
+                placeholder={t(
+                  "Inclua informações essenciais sobre o objetivo, mensagens principais, tom, linguagem e diretrizes visuais"
+                )}
               />
             </div>
 
             <div className="col-span-1">
               <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-                Entregáveis Obrigatórios (Especifique a quantidade e o tipo de
-                conteúdos que o Creator deve produzir)*
+                {t(
+                  "Entregáveis Obrigatórios (Especifique a quantidade e o tipo de conteúdos que o Creator deve produzir)*"
+                )}
                 <div className="relative inline-block">
                   <Question
                     size={18}
@@ -1339,34 +1366,36 @@ function BasicInfoSection({
                       }}
                     >
                       <p className="text-gray-700 font-normal">
-                        Especifique a quantidade e o tipo de conteúdos que o
-                        Creator deve produzir. Inclua Reels, Stories, Posts no
-                        feed, vídeos ou fotos entregues via WeTransfer ou Google
-                        Drive, detalhando a quantidade e duração para uso em
-                        tráfego orgânico e pago. Adicione outros formatos
-                        necessários, se houver.
+                        {
+                          "Especifique a quantidade e o tipo de conteúdos que o Creator deve produzir. Inclua Reels, Stories, Posts no feed, vídeos ou fotos entregues via WeTransfer ou Google Drive, detalhando a quantidade e duração para uso em tráfego orgânico e pago. Adicione outros formatos necessários, se houver."
+                        }
                       </p>
                     </div>
                   )}
                 </div>
               </label>
               <p className="text-gray-500 text-sm mb-2">
-                Informe o tipo de conteúdo necessário (Reels, Stories, Posts), a
-                quantidade e a duração aproximada de cada um.
+                {t(
+                  "Informe o tipo de conteúdo necessário (Reels, Stories, Posts), a quantidade e a duração aproximada de cada um."
+                )}
               </p>
               <textarea
                 name="mandatory_deliverables"
                 value={data.mandatory_deliverables || ""}
                 onChange={handleInputChange}
                 className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="(Escopo) - Especifique os tipos de conteúdo, quantidades e duração (ex.: 1 Reels de 30s, 3 Stories)"
+                placeholder={t(
+                  "(Escopo) - Especifique os tipos de conteúdo, quantidades e duração (ex.: 1 Reels de 30s, 3 Stories)"
+                )}
               />
             </div>
           </div>
 
           <div className="col-span-1 mt-6">
             <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-              Envio de Produtos ou Serviços (Detalhe o processo de envio)*
+              {t(
+                "Envio de Produtos ou Serviços (Detalhe o processo de envio)*"
+              )}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -1389,31 +1418,34 @@ function BasicInfoSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      Detalhe o processo de envio, incluindo a descrição dos
-                      produtos ou serviços envolvidos e os prazos previstos para
-                      envio e recebimento.
+                      {t(
+                        "Detalhe o processo de envio, incluindo a descrição dos produtos ou serviços envolvidos e os prazos previstos para envio e recebimento."
+                      )}
                     </p>
                   </div>
                 )}
               </div>
             </label>
             <p className="text-gray-500 text-sm mb-2">
-              Informe quais produtos ou serviços serão fornecidos, com detalhes
-              de envio e prazos.
+              {t(
+                "Informe quais produtos ou serviços serão fornecidos, com detalhes de envio e prazos."
+              )}
             </p>
             <textarea
               name="sending_products_or_services"
               value={data.sending_products_or_services || ""}
               onChange={handleInputChange}
               className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Descreva os itens enviados e o prazo para entrega"
+              placeholder={t(
+                "Descreva os itens enviados e o prazo para entrega"
+              )}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="col-span-1">
               <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-                Ações Esperadas do Creator (Do's)*
+                {t("Ações Esperadas do Creator (Do's)*")}
                 <div className="relative inline-block">
                   <Question
                     size={18}
@@ -1438,28 +1470,33 @@ function BasicInfoSection({
                       }}
                     >
                       <p className="text-gray-700 font-normal">
-                        Liste as ações e comportamentos que o Creator deve
-                        adotar durante a execução da campanha.
+                        {t(
+                          "Liste as ações e comportamentos que o Creator deve adotar durante a execução da campanha."
+                        )}
                       </p>
                     </div>
                   )}
                 </div>
               </label>
               <p className="text-gray-500 text-sm mb-2">
-                Descreva comportamentos e práticas desejadas pelo Creator.
+                {t(
+                  "Descreva comportamentos e práticas desejadas pelo Creator."
+                )}
               </p>
               <textarea
                 name="expected_actions"
                 value={data.expected_actions || ""}
                 onChange={handleInputChange}
                 className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Exemplo: Publicar conteúdos semanais, interagir com os seguidores, compartilhar insights sobre a campanha, colocar CTA, marcar o @ da marca nas redes sociais, usar hashtags específicos."
+                placeholder={t(
+                  "Exemplo: Publicar conteúdos semanais, interagir com os seguidores, compartilhar insights sobre a campanha, colocar CTA, marcar o @ da marca nas redes sociais, usar hashtags específicos."
+                )}
               />
             </div>
 
             <div className="col-span-1">
               <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-                Ações a Serem Evitadas (Don'ts)*
+                {t("Ações a Serem Evitadas (Don'ts)*")}
                 <div className="relative inline-block">
                   <Question
                     size={18}
@@ -1482,29 +1519,32 @@ function BasicInfoSection({
                       }}
                     >
                       <p className="text-gray-700 font-normal">
-                        Especifique ações e comportamentos que o Creator deve
-                        evitar para atender às expectativas da marca.
+                        {t(
+                          "Especifique ações e comportamentos que o Creator deve evitar para atender às expectativas da marca."
+                        )}
                       </p>
                     </div>
                   )}
                 </div>
               </label>
               <p className="text-gray-500 text-sm mb-2">
-                Detalhe comportamentos indesejados ou proibidos.
+                {t("Detalhe comportamentos indesejados ou proibidos.")}
               </p>
               <textarea
                 name="avoid_actions"
                 value={data.avoid_actions || ""}
                 onChange={handleInputChange}
                 className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Exemplo: Evitar linguagem ofensiva, não divulgar informações confidenciais, não promover marcas concorrentes"
+                placeholder={t(
+                  "Exemplo: Evitar linguagem ofensiva, não divulgar informações confidenciais, não promover marcas concorrentes"
+                )}
               />
             </div>
           </div>
 
           <div className="col-span-1 mt-6">
             <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-              Informações Adicionais*
+              {t("Informações Adicionais*")}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -1527,39 +1567,41 @@ function BasicInfoSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      Inclua informações relevantes, como prazos de entrega dos
-                      conteúdos, exigências de exclusividade durante a campanha,
-                      e quaisquer restrições ou orientações específicas.
+                      {t(
+                        "Inclua informações relevantes, como prazos de entrega dos conteúdos, exigências de exclusividade durante a campanha, e quaisquer restrições ou orientações específicas."
+                      )}
                     </p>
                   </div>
                 )}
               </div>
             </label>
             <p className="text-gray-500 text-sm mb-2">
-              Inclua qualquer outra informação que possa ajudar os criadores a
-              entender melhor a campanha.
+              {t(
+                "Inclua qualquer outra informação que possa ajudar os criadores a entender melhor a campanha."
+              )}
             </p>
             <textarea
               name="additional_information"
               value={data.additional_information || ""}
               onChange={handleInputChange}
               className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Exemplo: Diretrizes específicas, referências, detalhes adicionais"
+              placeholder={t(
+                "Exemplo: Diretrizes específicas, referências, detalhes adicionais"
+              )}
             />
           </div>
 
           <div className="mt-4">
             <p className="text-gray-700 font-semibold italic">
-              Observações: Todos os campos acima são obrigatórios para garantir
-              que o Creator tenha uma compreensão completa das expectativas da
-              marca. Certifique-se de fornecer informações claras e detalhadas
-              em cada campo para evitar ambiguidades.
+              {t(
+                "Observações: Todos os campos acima são obrigatórios para garantir que o Creator tenha uma compreensão completa das expectativas da marca. Certifique-se de fornecer informações claras e detalhadas em cada campo para evitar ambiguidades."
+              )}
             </p>
           </div>
 
           <div className="col-span-1 mt-6">
             <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-              Sugestão de roteiro (opcional)
+              {t("Sugestão de roteiro (opcional)")}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -1582,24 +1624,27 @@ function BasicInfoSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      Este campo é reservado para marcas que desejam sugerir um
-                      roteiro para o influencer. Caso prefira dar liberdade
-                      criativa ao influencer, deixe este campo em branco.
+                      {t(
+                        "Este campo é reservado para marcas que desejam sugerir um roteiro para o influencer. Caso prefira dar liberdade criativa ao influencer, deixe este campo em branco."
+                      )}
                     </p>
                   </div>
                 )}
               </div>
             </label>
             <p className="text-gray-500 text-sm mb-2">
-              Utilize este campo para oferecer um guia criativo ao influencer.
-              Caso prefira dar liberdade total, deixe em branco.
+              {t(
+                "Utilize este campo para oferecer um guia criativo ao influencer. Caso prefira dar liberdade total, deixe em branco."
+              )}
             </p>
             <textarea
               name="itinerary_suggestion"
               value={data.itinerary_suggestion || ""}
               onChange={handleInputChange}
               className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Exemplo: Sugestão de uma sequência de ideias, tópicos ou cenas a serem exploradas no vídeo."
+              placeholder={t(
+                "Exemplo: Sugestão de uma sequência de ideias, tópicos ou cenas a serem exploradas no vídeo."
+              )}
             />
           </div>
         </div>
@@ -1621,6 +1666,7 @@ function AudienceSegmentationSection({
   niches,
   nichesLoading,
 }: AudienceSegmentationSectionProps) {
+  const { t } = useTranslation();
   const [nicheOptions, setNicheOptions] = useState<Niche[]>([]);
   const [selectedNiches, setSelectedNiches] = useState<Niche[]>([]);
 
@@ -1841,14 +1887,14 @@ function AudienceSegmentationSection({
   return (
     <div className="w-full mt-8">
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
-        Segmentação do Público e Especificações
+        {t("Segmentação do Público e Especificações")}
       </h2>
 
       {/* Updated grid classes for responsiveness */}
       <div className="grid grid-cols-1 gap-6 px-5 mb-6">
         <div className="mb-4 relative">
           <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-            Nicho (opcional)
+            {t("Nicho (opcional)")}
             <div className="relative inline-block">
               <Question
                 size={18}
@@ -1872,8 +1918,9 @@ function AudienceSegmentationSection({
                   }}
                 >
                   <p className="text-gray-700 font-normal">
-                    Escolha quais nichos de criadores de conteúdo fazem mais
-                    sentido para essa campanha.
+                    {t(
+                      "Escolha quais nichos de criadores de conteúdo fazem mais sentido para essa campanha."
+                    )}
                   </p>
                 </div>
               )}
@@ -1886,13 +1933,13 @@ function AudienceSegmentationSection({
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-left"
             >
               {selectedNiches.length > 0
-                ? `${selectedNiches.length} nicho(s) selecionado(s)`
-                : "Selecionar nichos"}
+                ? `${selectedNiches.length} ${t("nicho(s) selecionado(s)")}`
+                : t("Selecionar nichos")}
             </button>
             {nicheDropdownOpen && (
               <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-auto">
                 {nichesLoading ? (
-                  <div className="px-4 py-2">Carregando...</div>
+                  <div className="px-4 py-2">{t("Carregando...")}</div>
                 ) : nicheOptions.length > 0 ? (
                   nicheOptions.map((niche) => (
                     <div
@@ -1900,12 +1947,12 @@ function AudienceSegmentationSection({
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => handleNicheSelect(niche)}
                     >
-                      {niche.niche}
+                      {t(niche.niche)}
                     </div>
                   ))
                 ) : (
                   <div className="px-4 py-2 text-gray-500">
-                    Todas os nichos foram selecionados
+                    {t("Todas os nichos foram selecionados")}
                   </div>
                 )}
               </div>
@@ -1917,7 +1964,7 @@ function AudienceSegmentationSection({
                 key={niche.id}
                 className="flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full"
               >
-                {niche.niche}
+                {t(niche.niche)}
                 <button
                   type="button"
                   className="ml-2 text-blue-500"
@@ -1929,8 +1976,9 @@ function AudienceSegmentationSection({
             ))}
           </div>
           <p className="text-gray-500 mt-2">
-            Escolha quais nichos de criadores de conteúdo fazem mais sentido
-            para essa campanha.
+            {t(
+              "Escolha quais nichos de criadores de conteúdo fazem mais sentido para essa campanha."
+            )}
           </p>
         </div>
 
@@ -1938,7 +1986,7 @@ function AudienceSegmentationSection({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="col-span-1 md:col-span-2">
             <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-              Idade (opcional)
+              {t("Idade (opcional)")}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -1962,7 +2010,9 @@ function AudienceSegmentationSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      Qual a idade mínima e máxima que os candidatos devem ter.
+                      {t(
+                        "Qual a idade mínima e máxima que os candidatos devem ter."
+                      )}
                     </p>
                   </div>
                 )}
@@ -1976,10 +2026,10 @@ function AudienceSegmentationSection({
                 className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="" hidden>
-                  Mínimo
+                  {t("Mínimo")}
                 </option>
 
-                {data.minAge && <option value="">Desmarcar</option>}
+                {data.minAge && <option value="">{t("Desmarcar")}</option>}
 
                 {minAgeOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -1995,7 +2045,7 @@ function AudienceSegmentationSection({
                 disabled={!data.minAge}
               >
                 <option value="" hidden>
-                  Máximo
+                  {t("Máximo")}
                 </option>
                 {maxAgeOptions.map((option) => {
                   if (
@@ -2012,13 +2062,13 @@ function AudienceSegmentationSection({
               </select>
             </div>
             <p className="text-gray-500 mt-2">
-              Qual a idade mínima e máxima que os candidatos devem ter.
+              {t("Qual a idade mínima e máxima que os candidatos devem ter.")}
             </p>
           </div>
 
           <div className="col-span-1">
             <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-              Gênero (opcional)
+              {t("Gênero (opcional)")}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -2042,8 +2092,9 @@ function AudienceSegmentationSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      Selecione o gênero que melhor representa o público-alvo da
-                      sua campanha.
+                      {t(
+                        "Selecione o gênero que melhor representa o público-alvo da sua campanha."
+                      )}
                     </p>
                   </div>
                 )}
@@ -2056,18 +2107,18 @@ function AudienceSegmentationSection({
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="" hidden>
-                Selecionar gênero
+                {t("Selecionar gênero")}
               </option>
 
-              {data.gender && <option value="">Desmarcar</option>}
+              {data.gender && <option value="">{t("Desmarcar")}</option>}
 
               {genderOptions.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(option.label)}
                 </option>
               ))}
             </select>
-            <p className="text-gray-500 mt-2">Gênero dos creators.</p>
+            <p className="text-gray-500 mt-2">{t("Gênero dos creators.")}</p>
           </div>
         </div>
       </div>
@@ -2075,7 +2126,7 @@ function AudienceSegmentationSection({
       <div className="px-5 mb-6 grid gap-6 md:grid-cols-2">
         <div>
           <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-            Mínimo de Seguidores (opcional)
+            {t("Mínimo de Seguidores (opcional)")}
             <div className="relative inline-block">
               <Question
                 size={18}
@@ -2099,9 +2150,9 @@ function AudienceSegmentationSection({
                   }}
                 >
                   <p className="text-gray-700 font-normal">
-                    Defina o número mínimo de seguidores em todas as redes
-                    sociais que os influencers devem ter para participar da
-                    campanha.
+                    {t(
+                      "Defina o número mínimo de seguidores em todas as redes sociais que os influencers devem ter para participar da campanha."
+                    )}
                   </p>
                 </div>
               )}
@@ -2114,7 +2165,7 @@ function AudienceSegmentationSection({
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="" hidden>
-              Selecionar mínimo de seguidores
+              {t("Selecionar mínimo de seguidores")}
             </option>
 
             {data.minFollowers && <option value="">Desmarcar</option>}
@@ -2129,7 +2180,7 @@ function AudienceSegmentationSection({
 
         <div className="mb-4 relative">
           <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-            Localidade (opcional)
+            {t("Localidade (opcional)")}
             <div className="relative inline-block">
               <Question
                 size={18}
@@ -2153,7 +2204,9 @@ function AudienceSegmentationSection({
                   }}
                 >
                   <p className="text-gray-700 font-normal">
-                    Defina de quais estados você gostaria de receber candidatos.
+                    {t(
+                      "Defina de quais estados você gostaria de receber candidatos."
+                    )}
                   </p>
                 </div>
               )}
@@ -2166,18 +2219,20 @@ function AudienceSegmentationSection({
             value={data.address}
             onChange={handleInputChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Estado, cidade, bairro"
+            placeholder={t("Estado, cidade, bairro")}
           />
 
           <p className="text-gray-500 text-sm mt-2">
-            Insira o estado, cidade e bairro que o creator deve se candidatar
+            {t(
+              "Insira o estado, cidade e bairro que o creator deve se candidatar"
+            )}
           </p>
         </div>
 
         <div className="col-span-1 md:col-span-2 gap-0 grid grid-cols-1 md:grid-cols-2 md:gap-4">
           <div>
             <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-              Duração do vídeo (opcional)
+              {t("Duração do vídeo (opcional)")}
               <div className="relative inline-block">
                 <Question
                   size={18}
@@ -2201,7 +2256,7 @@ function AudienceSegmentationSection({
                     }}
                   >
                     <p className="text-gray-700 font-normal">
-                      Informe qual o tempo mínimo que o vídeo deve durar.
+                      {t("Informe qual o tempo mínimo que o vídeo deve durar.")}
                     </p>
                   </div>
                 )}
@@ -2214,7 +2269,7 @@ function AudienceSegmentationSection({
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="" hidden>
-                Mínimo
+                {t("Mínimo")}
               </option>
 
               {data.videoMinDuration && <option value="">Desmarcar</option>}
@@ -2229,7 +2284,7 @@ function AudienceSegmentationSection({
 
           <div>
             <label className="block mb-2 text-gray-700 font-semibold invisible">
-              Duração do vídeo
+              {t("Duração do vídeo")}
             </label>
             <select
               name="videoMaxDuration"
@@ -2239,7 +2294,7 @@ function AudienceSegmentationSection({
               disabled={!data.videoMinDuration}
             >
               <option value="" hidden>
-                Máximo
+                {t("Máximo")}
               </option>
               {maxVideoDurationOptionsFiltered.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -2253,7 +2308,7 @@ function AudienceSegmentationSection({
         <div>
           <div>
             <label className="block mb-2 text-gray-700 font-semibold">
-              Pretende utilizar o material para tráfego pago (anúncios)?*
+              {t("Pretende utilizar o material para tráfego pago (anúncios)?*")}
             </label>
             <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
               <button
@@ -2265,7 +2320,7 @@ function AudienceSegmentationSection({
                     : "border-gray-300 text-gray-700"
                 }`}
               >
-                Não
+                {t("Não")}
               </button>
               <button
                 type="button"
@@ -2276,20 +2331,20 @@ function AudienceSegmentationSection({
                     : "border-gray-300 text-gray-700"
                 }`}
               >
-                Sim
+                {t("Sim")}
               </button>
             </div>
             <p className="text-gray-500 mt-2">
-              Tráfego pago: Anúncios na Meta Ads, Tiktok Ads, Google ou
-              Ecommerce. Tráfego orgânico: Veicular os conteúdos em qualquer
-              rede social de sua escolha.
+              {t(
+                "Tráfego pago: Anúncios na Meta Ads, Tiktok Ads, Google ou Ecommerce. Tráfego orgânico: Veicular os conteúdos em qualquer rede social de sua escolha."
+              )}
             </p>
           </div>
 
           {data.paidTraffic && (
             <div>
               <label className="block mb-2 text-gray-700 font-semibold mt-4">
-                Quais locais será veiculado? Por quantos tempo?*
+                {t("Quais locais será veiculado? Por quantos tempo?*")}
               </label>
 
               <textarea
@@ -2297,7 +2352,7 @@ function AudienceSegmentationSection({
                 value={data.paidTrafficInfo || ""}
                 onChange={handleInputChange}
                 className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ex: 3 meses, 4 meses"
+                placeholder={t("Ex: 3 meses, 4 meses")}
               />
             </div>
           )}
@@ -2305,7 +2360,7 @@ function AudienceSegmentationSection({
 
         <div>
           <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-            Formato do áudio (opcional)
+            {t("Formato do áudio (opcional)")}
             <div className="relative inline-block">
               <Question
                 size={18}
@@ -2329,9 +2384,9 @@ function AudienceSegmentationSection({
                   }}
                 >
                   <p className="text-gray-700 font-normal">
-                    Escolha se o vídeo deve ser criado com uma música de fundo
-                    ou se o é necessário que o criador de conteúdo narre o
-                    vídeo.
+                    {t(
+                      "Escolha se o vídeo deve ser criado com uma música de fundo ou se o é necessário que o criador de conteúdo narre o vídeo."
+                    )}
                   </p>
                 </div>
               )}
@@ -2347,7 +2402,7 @@ function AudienceSegmentationSection({
                   : "border-gray-300 text-gray-700"
               }`}
             >
-              Música
+              {t("Música")}
             </button>
             <button
               type="button"
@@ -2358,13 +2413,13 @@ function AudienceSegmentationSection({
                   : "border-gray-300 text-gray-700"
               }`}
             >
-              Narração
+              {t("Narração")}
             </button>
           </div>
           <p className="text-gray-500 mt-2">
-            Como você gostaria? Escolha se o vídeo deve ser criado com uma
-            música de fundo ou se é necessário que o criador de conteúdo narre o
-            vídeo.
+            {t(
+              "Como você gostaria? Escolha se o vídeo deve ser criado com uma música de fundo ou se é necessário que o criador de conteúdo narre o vídeo."
+            )}
           </p>
         </div>
       </div>
@@ -2387,6 +2442,7 @@ function CampaignBudgetSection({
   onChange,
   isEditMode,
 }: CampaignBudgetSectionProps) {
+  const { t } = useTranslation();
   const [today, setToday] = useState("");
   const [creatorFeeError, setCreatorFeeError] = useState("");
 
@@ -2459,7 +2515,7 @@ function CampaignBudgetSection({
       const numberValue = parseFloat(digits);
 
       if (numberValue / 100 < 50) {
-        setCreatorFeeError("O valor mínimo por criador é R$50,00.");
+        setCreatorFeeError(t("O valor mínimo por criador é R$50,00."));
       } else {
         setCreatorFeeError("");
       }
@@ -2494,13 +2550,13 @@ function CampaignBudgetSection({
   return (
     <div className="w-full mt-8">
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
-        Período da Campanha e Orçamento
+        {t("Período da Campanha e Orçamento")}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-2">
         <div>
           <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-            Data de Início*
+            {t("Data de Início*")}
             <div className="relative inline-block">
               <Question
                 size={18}
@@ -2524,8 +2580,9 @@ function CampaignBudgetSection({
                   }}
                 >
                   <p className="text-gray-700 font-normal">
-                    Informe a data em que você deseja que a campanha seja
-                    iniciada.
+                    {t(
+                      "Informe a data em que você deseja que a campanha seja iniciada."
+                    )}
                   </p>
                 </div>
               )}
@@ -2543,7 +2600,7 @@ function CampaignBudgetSection({
 
         <div>
           <label className="block mb-2 text-gray-700 font-semibold flex items-center">
-            Fim da Campanha*
+            {t("Fim da Campanha*")}
             <div className="relative inline-block">
               <Question
                 size={18}
@@ -2567,8 +2624,9 @@ function CampaignBudgetSection({
                   }}
                 >
                   <p className="text-gray-700 font-normal">
-                    Informe a data em que você deseja que a campanha seja
-                    encerrada.
+                    {t(
+                      "Informe a data em que você deseja que a campanha seja encerrada."
+                    )}
                   </p>
                 </div>
               )}
@@ -2588,14 +2646,15 @@ function CampaignBudgetSection({
 
       <div className="px-5 mb-5">
         <p className="text-gray-700 font-normal italic">
-          Período da campanha: O prazo máximo estabelecido para que o Creator
-          entregue todo o escopo obrigatório da campanha.
+          {t(
+            "Período da campanha: O prazo máximo estabelecido para que o Creator entregue todo o escopo obrigatório da campanha."
+          )}
         </p>
       </div>
 
       <div className="px-5 mb-3">
         <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-          Valor por criador*
+          {t("Valor por criador*")}
           <div className="relative inline-block">
             <Question
               size={18}
@@ -2619,21 +2678,18 @@ function CampaignBudgetSection({
                 }}
               >
                 <p className="text-gray-700 font-normal">
-                  Informe o valor que cada criador de conteúdo receberá pela
-                  realização das atividades previstas na campanha. O valor
-                  mínimo por criador é de R$ 50,00. (Lembre-se de colocar um
-                  valor de acordo com os entregáveis que a marca está pedindo).
+                  {t(
+                    "Informe o valor que cada criador de conteúdo receberá pela realização das atividades previstas na campanha. O valor mínimo por criador é de R$ 50,00. (Lembre-se de colocar um valor de acordo com os entregáveis que a marca está pedindo)."
+                  )}
                 </p>
               </div>
             )}
           </div>
         </label>
         <p className="text-gray-500 text-sm mb-2">
-          Insira o valor que cada criador de conteúdo receberá pela realização
-          das atividades previstas na campanha, independente do número de
-          entregas ou portagens. Valor mínimo: R$50,00 por criador. Esse valor
-          representa o total que cada criador receberá ao concluir sua
-          participação completa na campanha
+          {t(
+            "Insira o valor que cada criador de conteúdo receberá pela realização das atividades previstas na campanha, independente do número de entregas ou portagens. Valor mínimo: R$50,00 por criador. Esse valor representa o total que cada criador receberá ao concluir sua participação completa na campanha"
+          )}
         </p>
         <input
           type="text"
@@ -2650,16 +2706,9 @@ function CampaignBudgetSection({
 
       {!isEditMode && (
         <p className="px-5 mt-2 text-gray-700 italic">
-          O pagamento da campanha deverá ser realizado somente após a marca
-          selecionar e aprovar todos os creators que deseja incluir na campanha.
-          O valor final será calculado com base na multiplicação do valor
-          definido por creator, informado no campo acima, pelo número de
-          creators aprovados. Após a confirmação do pagamento, a campanha será
-          iniciada conforme o planejamento aprovado. Nota: O pagamento deve ser
-          feito até a data inicial da campanha, caso contrário, será bloqueada e
-          caso algum influenciador não cumpra os requisitos ou ocorra um
-          problema comprovado, você poderá receber 100% do reembolso
-          correspondente ao valor pago por esse influenciador.
+          {t(
+            "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor final será calculado com base na multiplicação do valor definido por creator, informado no campo acima, pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: O pagamento deve ser feito até a data inicial da campanha, caso contrário, será bloqueada e caso algum influenciador não cumpra os requisitos ou ocorra um problema comprovado, você poderá receber 100% do reembolso correspondente ao valor pago por esse influenciador."
+          )}
         </p>
       )}
     </div>
@@ -2670,6 +2719,7 @@ const ResponsibleInfoSection: React.FC<{
   data: ResponsibleInfo;
   onChange: (data: ResponsibleInfo) => void;
 }> = ({ data, onChange }) => {
+  const { t } = useTranslation();
   const formatCPF = (value: string) => {
     return value
       .replace(/\D/g, "")
@@ -2715,17 +2765,18 @@ const ResponsibleInfoSection: React.FC<{
   return (
     <div className="w-full mt-8">
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
-        Informações do Responsável pela Campanha
+        {t("Informações do Responsável pela Campanha")}
       </h2>
       <div className="px-5 mb-6">
         <p className="text-gray-700 mb-4">
-          Essas informações serão apenas para controle interno da equipe da
-          ConectePubli.
+          {t(
+            "Essas informações serão apenas para controle interno da equipe da ConectePubli."
+          )}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
           <div>
             <label className="block mb-2 text-gray-700 font-semibold">
-              Nome*
+              {t("Nome*")}
             </label>
             <input
               type="text"
@@ -2733,12 +2784,12 @@ const ResponsibleInfoSection: React.FC<{
               value={data.name}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Nome do responsável"
+              placeholder={t("Nome do responsável")}
             />
           </div>
           <div>
             <label className="block mb-2 text-gray-700 font-semibold">
-              E-mail*
+              {t("E-mail*")}
             </label>
             <input
               type="email"
@@ -2746,12 +2797,12 @@ const ResponsibleInfoSection: React.FC<{
               value={data.email}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Email do responsável"
+              placeholder={t("E-mail do responsável")}
             />
           </div>
           <div>
             <label className="block mb-2 text-gray-700 font-semibold">
-              Telefone*
+              {t("Telefone*")}
             </label>
             <input
               type="tel"
@@ -2759,12 +2810,12 @@ const ResponsibleInfoSection: React.FC<{
               value={data.phone}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Telefone do responsável"
+              placeholder={t("Telefone do responsável")}
             />
           </div>
           <div>
             <label className="block mb-2 text-gray-700 font-semibold">
-              CPF*
+              {t("CPF*")}
             </label>
             <input
               type="text"
@@ -2772,7 +2823,7 @@ const ResponsibleInfoSection: React.FC<{
               value={data.cpf}
               onChange={handleInputChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="CPF do responsável"
+              placeholder={t("CPF do responsável")}
               maxLength={14}
             />
           </div>
