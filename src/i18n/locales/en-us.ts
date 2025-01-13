@@ -1216,5 +1216,13 @@ export default {
       "In order to ensure security and transparency on our platform, we remind all users that all contact and communication between brands and influencers must be done exclusively through our internal chat. Any attempt to communicate outside the chat may result in permanent banning from the platform. We appreciate everyone's understanding and collaboration!",
     "Termos de Uso": "Terms of Use",
     "Política de Privacidade": "Privacy Policy",
+    "A campanha não está marcada como rascunho.":
+      "The campaign is not marked as a draft.",
+    "A campanha está marcada como rascunho.":
+      "The campaign is marked as a draft.",
+    "Erro ao buscar a campanha.": "Error fetching campaign.",
+    "Carregando dados da campanha...": "Loading campaign data...",
+        
+
   },
 };
