@@ -1181,5 +1181,6 @@ export default {
     "Escolher para a Campanha": "Choose for the Campaign",
     "Contatar Suporte": "Contact Support",
     "Trabalho concluído": "Work completed",
+    
   },
 };

@@ -9,6 +9,7 @@ import {
 import { CampaignForm } from "@/components/ui/CampaignForm";
 import pb from "@/lib/pb";
 import { ClientResponseError } from "pocketbase";
+import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar"
@@ -54,18 +55,17 @@ export const Route = createFileRoute(
   component: Page,
   errorComponent: () => (
     <div>
-      Ocorreu um erro ao carregar essa página. Não se preocupe, estamos
-      trabalhando para resolvê-lo!
+      {t("Ocorreu um erro ao carregar essa página. Não se preocupe, estamos trabalhando para resolvê-lo!")}
     </div>
   ),
-  notFoundComponent: () => <div>Campanha não encontrada</div>,
+  notFoundComponent: () => <div>{t("Campanha não encontrada")}</div>,
 });
 
 function Page() {
   const { campaignData, error } = useLoaderData({ from: Route.id });
 
   if (error === "not_found") {
-    return <div>Campanha não encontrada</div>;
+    return <div>{t("Campanha não encontrada")}</div>;
   }
 
   return (
