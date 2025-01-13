@@ -1133,5 +1133,7 @@ export default {
     "Escolha uma foto de fundo para o perfil. Tamanho recomendado: 1500 x 256 para garantir melhor qualidade. Tamanho máximo permitido: 5MB.":
       "Choose a background photo for the profile. Recommended size: 1500 x 256 for better quality. Maximum allowed size: 5MB.",
     "Carregar Imagem": "Upload Image",
+    "Perfil não encontrado": "Profile not found",
+    "Ver Reviews da Marca": "View Brand Reviews",
   },
 };

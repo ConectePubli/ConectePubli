@@ -26,6 +26,7 @@ import { useState } from "react";
 import { Rating as StarRating } from "react-simple-star-rating";
 import AllRatingsModal from "@/components/ui/AllRatingsModal";
 import Spinner from "@/components/ui/Spinner";
+import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"
@@ -99,11 +100,12 @@ export const Route = createFileRoute(
   component: Page,
   errorComponent: () => (
     <div>
-      Aconteceu um erro ao carregar essa página, não se preocupe o erro é do
-      nosso lado e vamos trabalhar para resolve-lo!
+      {t(
+        "Aconteceu um erro ao carregar essa página, não se preocupe o erro é do nosso lado e vamos trabalhar para resolve-lo!"
+      )}
     </div>
   ),
-  notFoundComponent: () => <div>Perfil não encontrado</div>,
+  notFoundComponent: () => <div>{t("Perfil não encontrado")}</div>,
 });
 
 function Page() {
@@ -216,7 +218,7 @@ function Page() {
                 alt="company icon"
                 className="w-3 h-3 mr-1"
               />
-              Marca
+              {t("Marca")}
             </p>
             <h1 className="text-xl font-bold break-words break-all">
               {brand?.name || "..."}
@@ -246,7 +248,7 @@ function Page() {
 
           <div className="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1">
             <span className="text-black/75 text-sm ml-0 sm:ml-3">
-              ({totalReviews} Avaliaç{totalReviews !== 1 ? "ões" : "ão"})
+              {t("Avaliações", { count: totalReviews })}
             </span>
 
             <div className="flex items-center mt-2 sm:mt-0">
@@ -255,7 +257,7 @@ function Page() {
                 className="ml-2 sm:ml-3 text-[#10438F] hover:underline font-bold"
                 onClick={() => setIsRatingModalOpen(true)}
               >
-                Ver Reviews da Marca
+                {t("Ver Reviews da Marca")}
               </button>
             </div>
           </div>
@@ -312,7 +314,7 @@ function Page() {
                 className="w-4 h-4 text-white fill-current"
                 style={{ filter: "brightness(0) invert(1)" }}
               />
-              Editar Perfil
+              {t("Editar Perfil")}
             </button>
           </div>
         )}
@@ -330,7 +332,7 @@ function Page() {
 
         {/* BIOGRAFIA*/}
         <div className="mt-4 px-4">
-          <h2 className="text-lg font-bold">Sobre nós</h2>
+          <h2 className="text-lg font-bold">{t("Sobre nós")}</h2>
           <p className="text-black text-md mt-2 break-all">
             {brand?.bio || "Biografia não informada."}
           </p>
