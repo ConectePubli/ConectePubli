@@ -1,6 +1,7 @@
 export default {
   translations: {
     "Aprovado Por:": "Approved By:",
+    "Marcas Conectadas": "Connected Brands",
     "Conexão digital direta entre marcas e creators":
       "Direct digital connection between brands and creators",
     "Somos uma plataforma inovadora que conecta diretamente marcas e criadores de conteúdo digital. Com alta tecnologia, simplificamos todo o processo para ambos os lados, proporcionando parcerias mais eficientes e resultados reais. Somos a revolução no marketing de influência e conteúdo!":
@@ -1222,7 +1223,11 @@ export default {
       "The campaign is marked as a draft.",
     "Erro ao buscar a campanha.": "Error fetching campaign.",
     "Carregando dados da campanha...": "Loading campaign data...",
-        
-
+    "Conexão digital direta entre": "Direct digital connection between",
+    e: "and",
+    Marcas: "Brands",
+    Creators: "Creators",
+    "Sou Marca": "I'm a Brand",
+    "Sou Creator": "I'm a Creator",
   },
 };

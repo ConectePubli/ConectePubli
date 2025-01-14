@@ -5,10 +5,26 @@ import { Button } from "@/components/ui/button";
 
 import logo from "@/assets/logo.svg";
 import { t } from "i18next";
-import I18n from "../i18n/i18n";
+import { useTranslation } from "react-i18next";
+import Flag from "../i18n/Flag";
+import BrasilFlag from "@/assets/icons/br-flag.png";
+import EuaFlag from "@/assets/icons/us-flag.png";
 
 export const PublicHeader = () => {
   const navigate = useNavigate();
+
+  //Configurações de idioma
+  const { i18n } = useTranslation();
+  const selectedLanguage = i18n.language;
+
+  interface HandleChangeLanguage {
+    (language: string): void;
+  }
+
+  const handleChangeLanguage: HandleChangeLanguage = (language) => {
+    i18n.changeLanguage(language);
+    window.location.reload();
+  };
 
   return (
     <header className="sticky top-0 bg-white border-b-[1px] z-50">
@@ -17,7 +33,6 @@ export const PublicHeader = () => {
           <Link to="/">
             <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
           </Link>
-          <I18n header={true} />
         </div>
         <div className="gap-2 flex">
           <Button
@@ -34,6 +49,28 @@ export const PublicHeader = () => {
             onClick={() => navigate({ to: "/cadastro" })}
           >
             {t("Cadastrar")}
+          </Button>
+          <Button variant="ghost">
+            <div className={`flex w-7 h-7 items-center`}>
+              <div
+                className={`${selectedLanguage === "pt-BR" ? "hidden" : ""}`}
+              >
+                <Flag
+                  image={BrasilFlag}
+                  isSelected={selectedLanguage === "en-US"}
+                  onClick={() => handleChangeLanguage("pt-BR")}
+                />
+              </div>
+              <div
+                className={`${selectedLanguage === "en-US" ? "hidden" : ""}`}
+              >
+                <Flag
+                  image={EuaFlag}
+                  isSelected={selectedLanguage === "pt-BR"}
+                  onClick={() => handleChangeLanguage("en-US")}
+                />
+              </div>
+            </div>
           </Button>
         </div>
       </div>
