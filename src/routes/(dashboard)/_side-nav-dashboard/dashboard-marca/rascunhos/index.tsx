@@ -9,6 +9,7 @@ import { formatDateUTC } from "@/utils/formatDateUTC";
 import { useEffect, useState } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/rascunhos/"
@@ -29,8 +30,7 @@ export const Route = createFileRoute(
   },
   errorComponent: () => (
     <div>
-      Ocorreu um erro ao carregar essa página. Não se preocupe, estamos
-      trabalhando para resolvê-lo!
+      {t("Ocorreu um erro ao carregar essa página. Não se preocupe, estamos trabalhando para resolvê-lo!")}
     </div>
   ),
 });

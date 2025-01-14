@@ -25,6 +25,7 @@ import { Brand } from "@/types/Brand";
 import FormattedText from "@/utils/FormattedText";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
 import Spinner from "@/components/ui/Spinner";
+import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
@@ -32,15 +33,17 @@ export const Route = createFileRoute(
   component: CampaignPage,
   errorComponent: () => (
     <div className="px-4 py-4 h-full min-w-100 flex items-center justify-center text-center">
-      Ocorreu um erro ao carregar a página. Por favor, tente novamente mais
-      tarde.
+      {t(
+        "Ocorreu um erro ao carregar a página. Por favor, tente novamente mais tarde."
+      )}
     </div>
   ),
   notFoundComponent: () => (
     <div className="px-4 py-4 h-full min-w-100 flex items-center justify-center text-center">
       <p>
-        A campanha que você estava procurando ainda não iniciou, foi encerrada
-        ou removida.
+        {t(
+          "A campanha que você estava procurando ainda não iniciou, foi encerrada ou removida."
+        )}
       </p>
     </div>
   ),
@@ -152,7 +155,9 @@ function CampaignPage() {
           setHasRatedBrand(false);
         } else {
           console.error("Erro ao verificar avaliação da marca:", error);
-          toast.error("Ocorreu um erro ao verificar sua avaliação da marca.");
+          toast.error(
+            t("Ocorreu um erro ao verificar sua avaliação da marca.")
+          );
         }
       }
     };
@@ -200,7 +205,7 @@ function CampaignPage() {
         } else {
           console.error("Erro ao verificar avaliação da plataforma:", error);
           toast.error(
-            "Ocorreu um erro ao verificar sua avaliação da plataforma."
+            t("Ocorreu um erro ao verificar sua avaliação da plataforma.")
           );
         }
       }
@@ -232,7 +237,7 @@ function CampaignPage() {
         <button className="bg-white p-2 rounded-full">
           <img src={GoBack} alt="Go Back" className="w-5 h-5" />
         </button>
-        <button className="text-black/75 font-semibold">Voltar</button>
+        <button className="text-black/75 font-semibold">{t("Voltar")}</button>
       </div>
       <div className="text-center xl:text-left">
         <h1 className="text-lg xl:text-2xl font-bold">{campaign?.name}</h1>
@@ -251,31 +256,31 @@ function CampaignPage() {
         {/* Coluna direita - Detalhes, Requisitos e Características */}
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-lg shadow-lg border max-xl:mt-4">
-            <h2 className="font-bold mt-4">Briefing da Campanha</h2>
+            <h2 className="font-bold mt-4">{t("Briefing da Campanha")}</h2>
             <FormattedText text={campaign?.briefing || ""} />
 
-            <h2 className="font-bold mt-4">Entregavéis obrigatórios</h2>
+            <h2 className="font-bold mt-4">{t("Entregavéis obrigatórios")}</h2>
             <FormattedText text={campaign?.mandatory_deliverables || ""} />
 
-            <h2 className="font-bold mt-4">Envio de Produtos ou Serviços</h2>
+            <h2 className="font-bold mt-4">{t("Envio de Produtos ou Serviços")}</h2>
             <FormattedText
               text={campaign?.sending_products_or_services || ""}
             />
 
             <h2 className="font-bold mt-4">
-              Ações Esperadas do Creator (Do's)
+              {t("Ações Esperadas do Creator (Do's)")}
             </h2>
             <FormattedText text={campaign?.expected_actions || ""} />
 
-            <h2 className="font-bold mt-4">Ações a Serem Evitadas (Don'ts)</h2>
+            <h2 className="font-bold mt-4">{t("Ações a Serem Evitadas (Don'ts)")}</h2>
             <FormattedText text={campaign?.avoid_actions || ""} />
 
-            <h2 className="font-bold mt-4">Informações adicionais</h2>
+            <h2 className="font-bold mt-4">{t("Informações adicionais")}</h2>
             <FormattedText text={campaign?.additional_information || ""} />
 
             {campaign?.itinerary_suggestion && (
               <>
-                <h2 className="font-bold mt-4">Sugestão de roteiro</h2>
+                <h2 className="font-bold mt-4">{t("Sugestão de roteiro")}</h2>
                 <FormattedText text={campaign?.itinerary_suggestion || ""} />
               </>
             )}
@@ -283,7 +288,7 @@ function CampaignPage() {
             {/* External Link */}
             {campaign?.product_url && (
               <p className="mt-4 flex flex-wrap gap-2 font-medium break-words">
-                Link Relevante da Campanha:
+                {t("Link Relevante da Campanha:")}
                 <a
                   href={campaign?.product_url}
                   target="_blank"
@@ -297,9 +302,7 @@ function CampaignPage() {
 
             {/* Warning Message */}
             <p className="text-yellow-600 font-semibold mt-4">
-              Atenção: Todas as interações e pagamentos desta campanha estão
-              protegidos pelo nosso sistema de garantia. Evite contato fora da
-              plataforma para garantir sua segurança e o pagamento integral.
+              {t("Atenção: Todas as interações e pagamentos desta campanha estão protegidos pelo nosso sistema de garantia. Evite contato fora da plataforma para garantir sua segurança e o pagamento integral.")}
             </p>
           </div>
 
@@ -309,24 +312,24 @@ function CampaignPage() {
 
           <div className="bg-white p-4 rounded-lg shadow-lg border max-xl:mt-4">
             {/* Compartilhamento nas redes sociais */}
-            <h2 className="font-bold mb-2">Trafego da Campanha</h2>
+            <h2 className="font-bold mb-2">{t("Trafego da Campanha")}</h2>
 
             {!campaign?.paid_traffic && (
               <p className="text-black">
-                Compartilhado nas redes sociais da marca de forma orgânica
+                {t("Compartilhado nas redes sociais da marca de forma orgânica")}
               </p>
             )}
 
             {campaign?.paid_traffic && (
               <p className="text-black">
-                Compartilhado nas redes sociais da marca com tráfego pago
+                {t("Compartilhado nas redes sociais da marca com tráfego pago")}
               </p>
             )}
 
             {campaign?.paid_traffic && campaign.paid_traffic_info && (
               <>
                 <h2 className="font-bold mt-4 mb-2">
-                  Quais locais será veiculado? Por quanto tempo?
+                  {t("Quais locais será veiculado? Por quanto tempo?")}
                 </h2>
 
                 <FormattedText text={campaignData.paid_traffic_info || ""} />
