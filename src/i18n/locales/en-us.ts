@@ -1,6 +1,7 @@
 export default {
   translations: {
     "Aprovado Por:": "Approved By:",
+    "Marcas Conectadas": "Connected Brands",
     "Conexão digital direta entre marcas e creators":
       "Direct digital connection between brands and creators",
     "Somos uma plataforma inovadora que conecta diretamente marcas e criadores de conteúdo digital. Com alta tecnologia, simplificamos todo o processo para ambos os lados, proporcionando parcerias mais eficientes e resultados reais. Somos a revolução no marketing de influência e conteúdo!":
@@ -1213,11 +1214,60 @@ export default {
     "Creator foi removido": "Creator has been removed",
     "Creator foi selecionado": "Creator has been selected",
     "Creators Selecionados": "Selected Creators",
-    "Informações do Creator": 'Creator Information',
+    "Informações do Creator": "Creator Information",
     "Cidade não definida": "City not defined",
     "Estado não definido": "State not defined",
     "País não definido": "Country not defined",
     "Ver Menos": "See less",
-    "O creator não forneceu uma descrição detalhada.": "The creator did not provide a detailed description.",
+    "O creator não forneceu uma descrição detalhada.":
+      "The creator did not provide a detailed description.",
+    "Ocorreu um erro ao carregar a página. Por favor, tente novamente mais tarde.":
+      "An error occurred while loading the page. Please try again later.",
+    "A campanha que você estava procurando ainda não iniciou, foi encerrada ou removida.":
+      "The campaign you were looking for has not started yet, has ended or has been removed.",
+    "Ocorreu um erro ao verificar sua avaliação da marca.":
+      "An error occurred while checking your brand rating.",
+    "Briefing da Campanha": "Campaign Briefing",
+    "Entregavéis obrigatórios": "Mandatory Deliverables",
+    "Envio de Produtos ou Serviços": "Product or Service Shipping",
+    "Ações Esperadas do Creator (Do's)":
+      "Expected Actions from the Creator (Do's)",
+    "Ações a Serem Evitadas (Don'ts)": "Actions to Be Avoided (Don'ts)",
+    "Informações adicionais": "Additional Information",
+    "Sugestão de roteiro": "Script suggestion",
+    "Link Relevante da Campanha:": "Relevant Campaign Link:",
+    "Atenção: Todas as interações e pagamentos desta campanha estão protegidos pelo nosso sistema de garantia. Evite contato fora da plataforma para garantir sua segurança e o pagamento integral.":
+      "Attention: All interactions and payments of this campaign are protected by our guarantee system. Avoid contact outside the platform to ensure your safety and full payment.",
+    "Trafego da Campanha": "Campaign Traffic",
+    "Compartilhado nas redes sociais da marca de forma orgânica":
+      "Shared on the brand's social networks organically",
+    "Compartilhado nas redes sociais da marca com tráfego pago":
+      "Shared on the brand's social networks with paid traffic",
+    "Quais locais será veiculado? Por quanto tempo?":
+      "Which locations will it be broadcast? For how long?",
+    "Falha ao enviar a mensagem. Por favor, tente novamente.":
+      "Failed to send the message. Please try again.",
+    Conversas: "Chats",
+    "Sem mensagens": "No messages",
+    "Digite uma mensagem...": "Type a message...",
+    Enviar: "Send",
+    "Selecione uma conversa": "Select a conversation",
+    "A fim de garantir a segurança e transparência na nossa plataforma, lembramos a todos os usuários que todo o contato e comunicação entre marcas e influencers deve ser realizado exclusivamente através do nosso chat interno. Qualquer tentativa de comunicação fora do chat poderá resultar no banimento permanente da plataforma. Agradecemos a compreensão e colaboração de todos!":
+      "In order to ensure security and transparency on our platform, we remind all users that all contact and communication between brands and influencers must be done exclusively through our internal chat. Any attempt to communicate outside the chat may result in permanent banning from the platform. We appreciate everyone's understanding and collaboration!",
+    "Termos de Uso": "Terms of Use",
+    "Política de Privacidade": "Privacy Policy",
+    "A campanha não está marcada como rascunho.":
+      "The campaign is not marked as a draft.",
+    "A campanha está marcada como rascunho.":
+      "The campaign is marked as a draft.",
+    "Erro ao buscar a campanha.": "Error fetching campaign.",
+    "Carregando dados da campanha...": "Loading campaign data...",
+    "Conexão digital direta entre": "Direct digital connection between",
+    e: "and",
+    Marcas: "Brands",
+    Creators: "Creators",
+    "Sou Marca": "I'm a Brand",
+    "Sou Creator": "I'm a Creator",
+    Avaliar: "Rate",
   },
 };

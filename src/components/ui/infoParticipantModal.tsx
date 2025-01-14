@@ -205,7 +205,7 @@ const InfoParticipantModal: React.FC<Props> = ({
                 }}
               >
                 <Flag size={18} className="mr-1" />
-                Trabalho concluído
+                {t("Trabalho concluído")}
               </button>
             </>
           )}
@@ -213,32 +213,33 @@ const InfoParticipantModal: React.FC<Props> = ({
         {selectedParticipation.status !== "waiting" && (
           <div>
             <h3 className="font-semibold text-lg flex items-center">
-              Endereço{" "}
+              {t("Endereço")}{" "}
               <CaretDown className="ml-1 translate-y-0.5" weight="bold" />
             </h3>
             <p className="text-gray-700">
-              CEP: {participant?.cep || "Não informado"}
+              {t("CEP")}: {participant?.cep || t("Não informado")}
             </p>
             <p className="text-gray-700">
-              Rua: {participant?.street || "Não informado"}
+              {t("Rua")}: {participant?.street || t("Não informado")}
             </p>
             <p className="text-gray-700">
-              Complemento: {participant?.complement || "Não informado"}
+              {t("Complemento")}:{" "}
+              {participant?.complement || t("Não informado")}
             </p>
             <p className="text-gray-700">
-              Número: {participant?.address_num || "Não informado"}
+              {t("Número")}: {participant?.address_num || t("Não informado")}
             </p>
             <p className="text-gray-700">
-              Bairro: {participant?.neighborhood || "Não informado"}
+              {t("Bairro")}: {participant?.neighborhood || t("Não informado")}
             </p>
             <p className="text-gray-700">
-              Cidade: {participant?.city || "Não informado"}
+              {t("Cidade")}: {participant?.city || t("Não informado")}
             </p>
             <p className="text-gray-700">
-              Estado: {participant?.state || "Não informado"}
+              {t("Estado")}: {participant?.state || t("Não informado")}
             </p>
             <p className="text-gray-700">
-              País: {participant?.country || "Não informado"}
+              {t("País")}: {participant?.country || t("Não informado")}
             </p>
           </div>
         )}

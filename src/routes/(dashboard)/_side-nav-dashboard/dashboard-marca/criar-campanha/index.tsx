@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import pb from "@/lib/pb";
 import { Campaign } from "@/types/Campaign";
 import Spinner from "@/components/ui/Spinner";
+import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/criar-campanha/"
@@ -36,11 +37,11 @@ export const Route = createFileRoute(
             .getOne(campaignIdFromURL as string);
 
           if (isDraftFromURL && record.status !== "draft") {
-            throw new Error("A campanha não está marcada como rascunho.");
+            throw new Error(t("A campanha não está marcada como rascunho."));
           }
 
           if (!isDraftFromURL && record.status === "draft") {
-            throw new Error("A campanha está marcada como rascunho.");
+            throw new Error(t("A campanha está marcada como rascunho."));
           }
 
           setCampaignData(record as unknown as Campaign);
@@ -59,7 +60,7 @@ export const Route = createFileRoute(
           setError(null);
         } catch (err: any) {
           console.error(err);
-          setError(err.message || "Erro ao buscar a campanha.");
+          setError(err.message || t("Erro ao buscar a campanha."));
           setCampaignData(null);
         } finally {
           setIsLoading(false);
@@ -73,7 +74,7 @@ export const Route = createFileRoute(
       return (
         <div className="p-10 flex flex-col items-center justify-center w-full">
           <Spinner />
-          <p className="text-center mt-2">Carregando dados da campanha...</p>
+          <p className="text-center mt-2">{t("Carregando dados da campanha...")}</p>
         </div>
       );
     }
