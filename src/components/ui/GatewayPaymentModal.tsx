@@ -17,7 +17,11 @@ import {
   campaignPaymentByPagSeguro,
   campaignPaymentByStripe,
 } from "@/services/pagseguro";
-
+import { CampaignParticipation } from "@/types/Campaign_Participations";
+import {
+  paymentCreatorsByPagseguro,
+  paymentCreatorsByStripe,
+} from "@/services/approveCreators";
 interface Props {
   plans?: SpotlightCampaignPlan[];
   selectedOption?: string;
@@ -26,7 +30,9 @@ interface Props {
   approvedParticipationsCount?: number;
   toast?: any;
   setLoadingPayment?: React.ComponentState;
-  type: "create_campaign" | "buy_spotlight";
+  type: "create_campaign" | "buy_spotlight" | "buy_creators";
+  participations?: CampaignParticipation[];
+  unit_amount?: number;
 }
 
 const GatewayPaymentModal: React.FC<Props> = ({
@@ -38,6 +44,8 @@ const GatewayPaymentModal: React.FC<Props> = ({
   approvedParticipationsCount,
   toast,
   setLoadingPayment,
+  participations,
+  unit_amount,
 }) => {
   const [language, setLanguage] = useState<"pt" | "en">("pt");
 
@@ -97,6 +105,34 @@ const GatewayPaymentModal: React.FC<Props> = ({
     },
   });
 
+  const pagSeguroMutateApproveCreators = useMutation({
+    mutationFn: async () => {
+      if (participations && participations.length >= 1) {
+        await paymentCreatorsByPagseguro(
+          campaign?.id || "",
+          campaign?.name || "",
+          unit_amount || 0,
+          participations as [],
+          toast
+        );
+      }
+    },
+  });
+
+  const stripeMutateApproveCreators = useMutation({
+    mutationFn: async () => {
+      if (participations && participations.length >= 1) {
+        await paymentCreatorsByStripe(
+          campaign?.id || "",
+          campaign?.name || "",
+          unit_amount || 0,
+          participations as [],
+          toast
+        );
+      }
+    },
+  });
+
   return (
     <div>
       <div className="flex justify-between items-center border-b pb-4 pt-2">
@@ -145,21 +181,26 @@ const GatewayPaymentModal: React.FC<Props> = ({
                 pagSeguroMutateSpotlight.mutate();
               } else if (type === "create_campaign") {
                 pagSeguroMutateCampaign.mutate();
+              } else if (type === "buy_creators") {
+                pagSeguroMutateApproveCreators.mutate();
               }
             }}
             disabled={
               pagSeguroMutateSpotlight.isPending ||
-              pagSeguroMutateCampaign.isPending
+              pagSeguroMutateCampaign.isPending ||
+              pagSeguroMutateApproveCreators.isPending
             }
             className={`px-4 py-2 rounded-lg text-white ${
               pagSeguroMutateSpotlight.isPending ||
-              pagSeguroMutateCampaign.isPending
+              pagSeguroMutateCampaign.isPending ||
+              pagSeguroMutateApproveCreators.isPending
                 ? "bg-green-300 cursor-not-allowed"
                 : "bg-green-500 hover:bg-green-600"
             }`}
           >
             {pagSeguroMutateSpotlight.isPending ||
-            pagSeguroMutateCampaign.isPending
+            pagSeguroMutateCampaign.isPending ||
+            pagSeguroMutateApproveCreators.isPending
               ? `${language === "pt" ? "Processando..." : "Processing..."}`
               : "PagSeguro"}
           </button>
@@ -184,18 +225,26 @@ const GatewayPaymentModal: React.FC<Props> = ({
                 stripeMutateSpotlight.mutate();
               } else if (type === "create_campaign") {
                 stripeMutateCampaign.mutate();
+              } else if (type === "buy_creators") {
+                stripeMutateApproveCreators.mutate();
               }
             }}
             disabled={
-              stripeMutateSpotlight.isPending || stripeMutateCampaign.isPending
+              stripeMutateSpotlight.isPending ||
+              stripeMutateCampaign.isPending ||
+              stripeMutateApproveCreators.isPending
             }
             className={`px-4 py-2 rounded-lg text-white ${
-              stripeMutateSpotlight.isPending || stripeMutateCampaign.isPending
+              stripeMutateSpotlight.isPending ||
+              stripeMutateCampaign.isPending ||
+              stripeMutateApproveCreators.isPending
                 ? "bg-blue-300 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
-            {stripeMutateSpotlight.isPending || stripeMutateCampaign.isPending
+            {stripeMutateSpotlight.isPending ||
+            stripeMutateCampaign.isPending ||
+            stripeMutateApproveCreators.isPending
               ? `${language === "pt" ? "Processando..." : "Processing..."}`
               : "Stripe"}
           </button>

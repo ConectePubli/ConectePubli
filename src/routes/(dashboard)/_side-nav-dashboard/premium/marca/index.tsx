@@ -159,8 +159,8 @@ function Page() {
       {currentPlan && currentPlan.cancel_at && (
         <div className="max-w-4xl mx-auto text-left mt-4 bg-red-200 py-2 px-4 rounded-md">
           <p className="flex items-center">
-            <Info className="w-4 h-4 min-w-[1rem] mr-2" /> Sua assinatura foi
-            cancelada, ela continuará ativa até o dia{" "}
+            <Info className="w-4 h-4 min-w-[1rem] mr-2" />{" "}
+            {t("Sua assinatura foi cancelada, ela continuará ativa até o dia")}{" "}
             {formatDateUTC(currentPlan.cancel_at)}
           </p>
         </div>

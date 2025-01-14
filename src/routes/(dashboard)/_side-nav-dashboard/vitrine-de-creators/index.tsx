@@ -15,6 +15,7 @@ import LocationPin from "@/assets/icons/location-pin.svg";
 import Tag from "@/assets/icons/tag.svg";
 import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { getSocialLink } from "@/utils/getSocialLink";
 
 const searchSchema = z.object({
   page: z.number().optional(),
@@ -351,17 +352,29 @@ function Page() {
                     socialLinks.map((link) => {
                       const Icon =
                         channelIcons[link.name as keyof typeof channelIcons];
-                      return (
-                        <a
-                          key={link.name}
-                          href={link.url!}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          <img src={Icon} className="w-5 h-5" alt={link.name} />
-                        </a>
-                      );
+                      const processedLink = getSocialLink(link.name, link.url);
+
+                      // Se o link processado for válido, renderize o link
+                      if (processedLink) {
+                        return (
+                          <a
+                            key={link.name}
+                            href={processedLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-500 hover:text-gray-700"
+                          >
+                            <img
+                              src={Icon}
+                              className="w-5 h-5"
+                              alt={link.name}
+                            />
+                          </a>
+                        );
+                      }
+
+                      // Se o link não for válido, não renderize nada
+                      return null;
                     })
                   ) : (
                     <p className="text-gray-600 min-h-[20px]"></p>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "./Modal";
 import { Flag, MapPin, MessageCircle, Stars, User } from "lucide-react";
 import { CaretDown, MagnifyingGlassPlus } from "phosphor-react";
+import { t } from "i18next";
 
 import { Influencer } from "@/types/Influencer";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
@@ -73,7 +74,7 @@ const InfoParticipantModal: React.FC<Props> = ({
   return (
     <Modal onClose={() => setModalType(null)}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Informações do Creator</h2>
+        <h2 className="text-xl font-semibold">{t("Informações do Creator")}</h2>
 
         <div className="flex flex-wrap items-center gap-4">
           {participant?.profile_img ? (
@@ -90,12 +91,14 @@ const InfoParticipantModal: React.FC<Props> = ({
 
           <div className="flex-1">
             <p className="font-semibold text-lg">{participant?.name}</p>
-            <p className="text-sm text-red-600 flex items-center gap-1">
-              <MapPin size={16} />
-              {`${participant?.city || "Cidade não definida"}, ${
-                participant?.state || "Estado não definido"
-              }, ${participant?.country || "País não definido"}`}
-            </p>
+            {selectedParticipation.status !== "waiting" && (
+              <p className="text-sm text-red-600 flex items-center gap-1">
+                <MapPin size={16} />
+                {`${participant?.city || t("Cidade não definida")}, ${
+                  participant?.state || t("Estado não definido")
+                }, ${participant?.country || t("País não definido")}`}
+              </p>
+            )}
           </div>
         </div>
 
@@ -108,11 +111,11 @@ const InfoParticipantModal: React.FC<Props> = ({
           >
             Status:{" "}
             {selectedParticipation.status === "waiting"
-              ? "Proposta Pendente"
+              ? t("Proposta Pendente")
               : selectedParticipation.status === "approved"
-                ? "Trabalho em Progresso"
+                ? t("Trabalho em Progresso")
                 : selectedParticipation.status === "completed"
-                  ? "Trabalho Concluído"
+                  ? t("Trabalho Concluído")
                   : ""}
           </p>
         </div>
@@ -131,12 +134,12 @@ const InfoParticipantModal: React.FC<Props> = ({
                   className="text-blue-600 text-sm hover:underline"
                   onClick={toggleDescription}
                 >
-                  {showFullDescription ? "Ver Menos" : "Ver Mais"}
+                  {showFullDescription ? t("Ver Menos") : t("Ver Mais")}
                 </button>
               )}
             </>
           ) : (
-            "O creator não forneceu uma descrição detalhada."
+            t("O creator não forneceu uma descrição detalhada.")
           )}
         </div>
 
@@ -168,11 +171,11 @@ const InfoParticipantModal: React.FC<Props> = ({
                 }}
               >
                 {loadingChat ? (
-                  "Aguarde..."
+                  t("Aguarde...")
                 ) : (
                   <>
                     <MessageCircle size={18} className="mr-1" />
-                    Enviar Mensagem
+                    {t("Enviar Mensagem")}
                   </>
                 )}
               </button>
@@ -186,56 +189,59 @@ const InfoParticipantModal: React.FC<Props> = ({
               }}
             >
               <Stars size={17} />
-              Avaliar
+              {t("Avaliar")}
             </button>
           )}
         </div>
 
-        {selectedParticipation.status === "approved" && campaignData.paid === true && (
-          <>
-            <button
-              className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center w-[215px]"
-              onClick={() => {
-                setSelectedParticipation(selectedParticipation);
-                setModalType("conclude");
-              }}
-            >
-              <Flag size={18} className="mr-1" />
-              Trabalho concluído
-            </button>
-          </>
-        )}
+        {selectedParticipation.status === "approved" &&
+          campaignData.paid === true && (
+            <>
+              <button
+                className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center w-[215px]"
+                onClick={() => {
+                  setSelectedParticipation(selectedParticipation);
+                  setModalType("conclude");
+                }}
+              >
+                <Flag size={18} className="mr-1" />
+                Trabalho concluído
+              </button>
+            </>
+          )}
 
-        <div>
-          <h3 className="font-semibold text-lg flex items-center">
-            Endereço{" "}
-            <CaretDown className="ml-1 translate-y-0.5" weight="bold" />
-          </h3>
-          <p className="text-gray-700">
-            CEP: {participant?.cep || "Não informado"}
-          </p>
-          <p className="text-gray-700">
-            Rua: {participant?.street || "Não informado"}
-          </p>
-          <p className="text-gray-700">
-            Complemento: {participant?.complement || "Não informado"}
-          </p>
-          <p className="text-gray-700">
-            Número: {participant?.address_num || "Não informado"}
-          </p>
-          <p className="text-gray-700">
-            Bairro: {participant?.neighborhood || "Não informado"}
-          </p>
-          <p className="text-gray-700">
-            Cidade: {participant?.city || "Não informado"}
-          </p>
-          <p className="text-gray-700">
-            Estado: {participant?.state || "Não informado"}
-          </p>
-          <p className="text-gray-700">
-            País: {participant?.country || "Não informado"}
-          </p>
-        </div>
+        {selectedParticipation.status !== "waiting" && (
+          <div>
+            <h3 className="font-semibold text-lg flex items-center">
+              Endereço{" "}
+              <CaretDown className="ml-1 translate-y-0.5" weight="bold" />
+            </h3>
+            <p className="text-gray-700">
+              CEP: {participant?.cep || "Não informado"}
+            </p>
+            <p className="text-gray-700">
+              Rua: {participant?.street || "Não informado"}
+            </p>
+            <p className="text-gray-700">
+              Complemento: {participant?.complement || "Não informado"}
+            </p>
+            <p className="text-gray-700">
+              Número: {participant?.address_num || "Não informado"}
+            </p>
+            <p className="text-gray-700">
+              Bairro: {participant?.neighborhood || "Não informado"}
+            </p>
+            <p className="text-gray-700">
+              Cidade: {participant?.city || "Não informado"}
+            </p>
+            <p className="text-gray-700">
+              Estado: {participant?.state || "Não informado"}
+            </p>
+            <p className="text-gray-700">
+              País: {participant?.country || "Não informado"}
+            </p>
+          </div>
+        )}
       </div>
 
       <ToastContainer />

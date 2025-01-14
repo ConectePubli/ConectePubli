@@ -1,10 +1,21 @@
 import { CampaignParticipation } from "@/types/Campaign_Participations";
+import { Button } from "./button";
+import { Trash, User, X, XCircle } from "lucide-react";
+import { Influencer } from "@/types/Influencer";
+import pb from "@/lib/pb";
+import { getStatusColor } from "@/utils/getColorStatusInfluencer";
+import { useState } from "react";
+import GatewayPaymentModal from "./GatewayPaymentModal";
+import Modal from "./Modal";
+import { Campaign } from "@/types/Campaign";
+import { toast } from "react-toastify";
+
+import { t } from "i18next";
 
 interface CartSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  campaignId: string;
-  campaignName: string;
+  campaign: Campaign;
   unitAmount: number;
   token: string;
   participations: CampaignParticipation[];
@@ -15,119 +26,174 @@ interface CartSidebarProps {
 export default function CartSidebar({
   isOpen,
   onClose,
-  campaignId,
-  campaignName,
+  campaign,
   unitAmount,
-  token,
   participations,
   onRemoveFromCart,
   onClearCart,
 }: CartSidebarProps) {
   const totalValue = (unitAmount / 100) * participations.length;
 
-  async function handleCheckout() {
-    try {
-      const body = {
-        campaign_id: campaignId,
-        campaign_name: `${campaignName}`,
-        unit_amount: unitAmount * participations.length,
-        campaign_participations: participations.map((p) => p.id),
-      };
-      const response = await fetch(
-        "https://conecte-publi.pockethost.io/api/checkout_campaign",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(body),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao criar checkout");
-      }
-      const data = await response.json();
-      if (data.link) {
-        window.location.href = data.link;
-      } else {
-        throw new Error("Link de pagamento não encontrado");
-      }
-    } catch (error) {
-      alert("Falha ao finalizar pagamento.");
-      console.error(error);
-    }
+  const [paymentModal, setPaymentModal] = useState(false);
+  const [setLoadingPayment] = useState<boolean>(false);
+
+  function getInfluencerData(item: CampaignParticipation): Influencer | null {
+    const influencer = item.expand?.influencer ?? null;
+    return influencer as Influencer;
   }
 
   return (
     <>
+      {paymentModal && (
+        <Modal onClose={() => setPaymentModal(false)}>
+          <GatewayPaymentModal
+            type="buy_creators"
+            participations={participations}
+            unit_amount={unitAmount * participations.length}
+            toast={toast}
+            campaign={campaign}
+            setLoadingPayment={setLoadingPayment}
+          />
+        </Modal>
+      )}
+
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-40 z-40"
           onClick={onClose}
         />
       )}
+
       <div
-        className={`fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-lg transform transition-transform ${
+        className={`fixed top-0 right-0 h-full w-full max-w-lg bg-white shadow-lg transform transition-transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        } flex flex-col`}
         style={{ zIndex: 9999 }}
       >
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-xl font-semibold">Creators selecionados</h2>
+        <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+          <h2 className="text-xl font-semibold">
+            {t("Creators Selecionados")}
+          </h2>
           <button
-            className="text-red-500"
-            onClick={() => {
-              onClearCart();
+            className="flex items-center p-2 rounded-md gap-2 text-red-500 hover:text-red-600"
+            onClick={(e) => {
+              e.stopPropagation();
               onClose();
             }}
           >
-            Limpar Tudo
+            <X size={24} color="#777" />
           </button>
         </div>
 
-        <div className="p-4 flex-1 overflow-auto">
+        <div className="p-4 flex-1 overflow-y-auto space-y-4">
+          <div className="flex justify-end">
+            <button
+              className="flex items-center bg-red-100 p-2 rounded-md gap-2 text-red-500 hover:text-red-600 hover:bg-red-200"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClearCart();
+                onClose();
+              }}
+            >
+              <Trash size={15} />
+              <span className="text-sm">{t("Limpar Tudo")}</span>
+            </button>
+          </div>
+
           {participations.map((item) => {
-            const influencerName = item.expand?.influencer?.name ?? "Sem nome";
+            const influencer = getInfluencerData(item);
+            const influencerName = influencer?.name || t("Sem nome");
+            const influencerProfileImg = influencer?.profile_img || "";
+            const valorPorCreator = unitAmount / 100;
+
             return (
               <div
                 key={item.id}
-                className="flex justify-between items-center mb-4"
+                className="border rounded-md p-4 flex items-center justify-between shadow-sm"
               >
-                <div>
-                  <p className="font-semibold">{influencerName}</p>
+                <div className="flex items-center">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+                    {influencerProfileImg ? (
+                      <img
+                        src={pb.files.getUrl(
+                          influencer || {},
+                          influencerProfileImg
+                        )}
+                        alt={influencerName}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-gray-300 flex items-center justify-center">
+                        <User size={24} color="#fff" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="ml-3">
+                    <p className="text-base font-semibold">{influencerName}</p>
+                    <p
+                      className="text-sm"
+                      style={{
+                        color: getStatusColor(item.status),
+                      }}
+                    >
+                      {t("Pagamento Pendente")}
+                    </p>
+                    <p className="text-sm text-gray-700 mt-1">
+                      {t("Valor por creator")}:{" "}
+                      <span className="font-semibold">
+                        R$
+                        {valorPorCreator.toLocaleString("pt-BR", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </span>
+                    </p>
+                  </div>
                 </div>
+
                 <button
-                  className="px-2 py-1 bg-red-500 text-white rounded"
-                  onClick={() => onRemoveFromCart(item.id!)}
+                  className="text-gray-500 hover:text-red-500 transition"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Evita fechar o carrinho ao clicar no botão
+                    onRemoveFromCart(item.id!);
+                  }}
                 >
-                  Remover
+                  <XCircle size={20} />
                 </button>
               </div>
             );
           })}
+
           {participations.length === 0 && (
             <p className="text-center text-gray-500 mt-6">
-              Nenhum creator selecionado
+              {t("Nenhum creator selecionado")}
             </p>
           )}
         </div>
 
-        <div className="p-4 border-t">
-          <p className="mb-2">
-            Total:{" "}
-            <strong>
-              R${" "}
-              {totalValue.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-            </strong>
-          </p>
-          <button
-            className="w-full py-2 bg-blue-600 text-white rounded disabled:opacity-60"
-            onClick={handleCheckout}
+        <div className="p-4 border-t flex-shrink-0">
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-gray-700">
+              Total:{" "}
+              <strong className="font-semibold">
+                R${" "}
+                {totalValue.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                })}
+              </strong>
+            </p>
+          </div>
+          <Button
+            variant={"blue"}
+            className="w-full py-2 text-white rounded disabled:opacity-60"
+            onClick={() => {
+              onClose();
+              setPaymentModal(true);
+            }}
             disabled={participations.length === 0}
           >
-            Finalizar Pagamento
-          </button>
+            {t("Finalizar Pagamento")}
+          </Button>
         </div>
       </div>
     </>

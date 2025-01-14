@@ -421,7 +421,7 @@ function InfluencerProfilePage() {
           {influencer.languages && influencer.languages.length > 0 && (
             <p className="text-sm text-gray-600 font-medium flex items-center">
               <Globe className="inline-block w-4 h-4 text-gray-500 mr-1" />{" "}
-             {t("Idioma:")} {influencer.languages.join(", ")}
+              {t("Idioma:")} {influencer.languages.join(", ")}
             </p>
           )}
 
@@ -522,7 +522,9 @@ function InfluencerProfilePage() {
           </div>
         ) : (
           <p className="text-gray-500">
-            {t("Este usuário ainda não adicionou nenhum trabalho ao portfólio.")}
+            {t(
+              "Este usuário ainda não adicionou nenhum trabalho ao portfólio."
+            )}
           </p>
         )}
       </div>

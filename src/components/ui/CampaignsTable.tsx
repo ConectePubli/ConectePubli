@@ -28,7 +28,10 @@ const CampaignsTable: React.FC = () => {
               {t("Aprovados")}
             </th>
             <th className="py-3 px-4 text-left whitespace-nowrap">
-              {t("Início/Fim")}
+              {t("Início/Fim Inscrições")}
+            </th>
+            <th className="py-3 px-4 text-left whitespace-nowrap">
+              {t("Início/Fim Campanha")}
             </th>
             <th className="py-3 px-4 text-left whitespace-nowrap rounded-tr-lg">
               {t("Status")}
@@ -88,6 +91,17 @@ const CampaignsTable: React.FC = () => {
                   <td className="py-2 px-4 font-semibold">{inscritos}</td>
 
                   <td className="py-2 px-4 font-semibold">{aprovados}</td>
+
+                  <td className="py-2 px-4 font-semibold">
+                    {campaign.subscription_start_date
+                      ? formatDateUTC(campaign.subscription_start_date)
+                      : "N/A"}{" "}
+                    <span className="hidden lg:inline"> - </span>
+                    <br />{" "}
+                    {campaign.subscription_end_date
+                      ? formatDateUTC(campaign.subscription_end_date)
+                      : "N/A"}
+                  </td>
 
                   <td className="py-2 px-4 font-semibold">
                     {campaign.beginning

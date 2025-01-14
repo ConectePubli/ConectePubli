@@ -20,6 +20,8 @@ const CampaignDetails: React.FC = () => {
     Boolean(campaign.created) ||
     Boolean(campaign.objective) ||
     (campaign.channels && campaign.channels.length > 0) ||
+    Boolean(campaign.subscription_start_date) ||
+    Boolean(campaign.subscription_end_date) ||
     Boolean(campaign.beginning) ||
     Boolean(campaign.end) ||
     Boolean(campaign.price) ||
@@ -75,10 +77,18 @@ const CampaignDetails: React.FC = () => {
           </div>
         )}
 
+        {campaign.subscription_start_date && campaign.subscription_end_date && (
+          <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
+            <img src={Calendar} alt="Início" className="w-4 h-4" /> Período de
+            inscrições: {formatDateUTC(campaign.subscription_start_date)} -{" "}
+            {formatDateUTC(campaign.subscription_end_date)}
+          </p>
+        )}
+
         {/* Data de Início */}
         {campaign.beginning && (
           <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
-            <img src={Calendar} alt="Início" className="w-4 h-4" /> Início:{" "}
+            <img src={Calendar} alt="Início" className="w-4 h-4" /> Início da campanha:{" "}
             {formatDateUTC(campaign.beginning)}
           </p>
         )}
@@ -87,7 +97,7 @@ const CampaignDetails: React.FC = () => {
         {campaign.end && (
           <p className="text-black/75 text-sm font-bold flex flex-row items-center gap-2">
             <img src={Calendar} alt="Encerramento" className="w-4 h-4" />
-            Encerramento: {formatDateUTC(campaign.end)}
+            Fim da campanha: {formatDateUTC(campaign.end)}
           </p>
         )}
 

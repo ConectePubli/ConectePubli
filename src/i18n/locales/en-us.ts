@@ -640,6 +640,10 @@ export default {
     "Trabalho Concluido": "Work Completed",
     "Trabalho em Progresso": "Work in Progress",
     "Proposta Pendente": "Pending Proposal",
+    "Status: Pagamento pendente": "Status: Payment Pending",
+    "Pagamento Pendente": "Payment Pending",
+    "Nenhum creator selecionado": "No creators selected",
+    "Finalizar Pagamento": "Pay",
     "Vagas Esgotadas": "Vacancies Filled",
     Participação: "Participation",
     "Alimentação Saudável e Nutrição": "Healthy Eating and Nutrition",
@@ -786,6 +790,8 @@ export default {
     "Desbloqueie o poder total da Conecte Publi com a Assinatura Premium para Marcas. Tenha acesso a ferramentas avançadas e maior visibilidade para suas campanhas, insights estratégicos e muito mais.":
       "Unlock the full power of Conecte Publi with the Premium Subscription for Brands. Get access to advanced tools and greater visibility for your campaigns, strategic insights, and much more.",
     "Acessar e-books": "Access e-books",
+    "Sua assinatura foi cancelada, ela continuará ativa até o dia":
+      "Your subscription has been canceled; it will remain active until",
     "Plano Mensal": "Monthly Plan",
     "/mês": "/month",
     "Destaque de campanha 5 dias por campanha":
@@ -822,7 +828,15 @@ export default {
     Nome: "Name",
     Inscritos: "Subscribers",
     Aprovados: "Approved",
-    "Início/Fim": "Start/End",
+    "Prazo das inscrições": "Deadline for submissions",
+    "Este é o prazo para os Creators se candidatarem à campanha. Após a data final, as inscrições serão automaticamente encerradas":
+      "This is the deadline for Creators to apply for the campaign. After the final date, submissions will automatically close.",
+    "Fim das Inscrições": "End of Submissions",
+    "Prazo da campanha": "Campaign Deadline",
+    "Este é o período que o creator tem para produzir e entregar o material para a Marca. A data final é o prazo limite de entrega":
+      "This is the time frame the Creator has to produce and deliver the content to the Brand. The final date is the submission deadline.",
+    "Início/Fim Inscrições": "Start/End Subscriptions",
+    "Início/Fim Campanha": "Start/End Campaign",
     "Carregando campanhas...": "Loading campaigns...",
     "Nenhuma campanha disponível.": "No campaigns available.",
     "Pronto para iniciar": "Ready to start",
@@ -983,7 +997,7 @@ export default {
       "Enter the amount that each content creator will receive for performing the activities provided for in the campaign. The minimum amount per creator is R$ 50.00. (Remember to put an amount according to the deliverables that the brand is asking for).",
     "Insira o valor que cada criador de conteúdo receberá pela realização das atividades previstas na campanha, independente do número de entregas ou portagens. Valor mínimo: R$50,00 por criador. Esse valor representa o total que cada criador receberá ao concluir sua participação completa na campanha":
       "Enter the amount that each content creator will receive for performing the activities provided for in the campaign, regardless of the number of deliveries or tolls. Minimum value: R$50.00 per creator. This value represents the total that each creator will receive upon completing their full participation in the campaign",
-    "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor final será calculado com base na multiplicação do valor definido por creator, informado no campo acima, pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: O pagamento deve ser feito até a data inicial da campanha, caso contrário, será bloqueada e caso algum influenciador não cumpra os requisitos ou ocorra um problema comprovado, você poderá receber 100% do reembolso correspondente ao valor pago por esse influenciador.":
+    "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor será calculado com base na multiplicação do valor definido por creator, informado no campo acima, pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: Caso algum influenciador não cumpra os requisitos ou ocorra algum problema comprovado, você poderá receber 100% do reembolso correspondente ao valor pago por esse influenciador.":
       "The campaign payment must be made only after the brand selects and approves all creators it wishes to include in the campaign. The final amount will be calculated based on the multiplication of the value defined per creator, informed in the field above, by the number of approved creators. After payment confirmation, the campaign will start as per the approved planning. Note: Payment must be made by the initial campaign date, otherwise it will be blocked and if any influencer does not meet the requirements or a proven problem occurs, you may receive 100% of the refund corresponding to the amount paid by that influencer.",
     "Informações do Responsável pela Campanha":
       "Information of the Campaign Manager",
@@ -1140,8 +1154,17 @@ export default {
     "Campanha não encontrada": "Campaign not found",
     "Ocorreu um erro ao verificar sua avaliação da plataforma.":
       "An error occurred while checking your platform rating.",
+    "Todos os creators foram removidos": "All creators have been removed",
     "Não foi possível iniciar o chat": "Could not start the chat",
     "Não foi possível atualizar o status": "Could not update status",
+    "Escolher Creator": "Select Creator",
+    "Você está prestes a aprovar este Creator para sua campanha.":
+      "You are about to approve this Creator for your campaign.",
+    "Para garantir que o trabalho possa começar, é necessário realizar o pagamento antes de concluir a aprovação.":
+      "To ensure the work can commence, payment must be completed before finalizing the approval.",
+    "Realize o pagamento referente a este Creator, clicando no botão “Creators selecionados”.": `Make the payment for this Creator by clicking the "Selected Creators" button.`,
+    "Após a confirmação do pagamento, o Creator será notificado e poderá iniciar a produção.":
+      "Once the payment is confirmed, the Creator will be notified and can begin production.",
     Importante: "Important",
     "Antes de prosseguir com o pagamento, aguarde os creators se candidatarem à sua campanha. Assim que os candidatos estiverem disponíveis, você poderá selecioná-los e finalizar o pagamento com o valor correto.":
       "Before proceeding with the payment, wait for the creators to apply to your campaign. Once the candidates are available, you can select them and finalize the payment with the correct amount.",
@@ -1158,6 +1181,7 @@ export default {
       "to make the payment and not have the campaign blocked",
     "Campanha paga": "Campaign paid",
     "Pesquisar pelo nome do influencer": "Search by influencer name",
+    Fechar: "Close",
     Pendente: "Pending",
     "Em Progresso": "In Progress",
     Concluído: "Completed",
@@ -1165,6 +1189,9 @@ export default {
     Selecionado: "Selected",
     Selecionados: "Selected",
     Inscrito: "Subscribed",
+    "Creators selecionados": "Selected Creators",
+    "Limpar Tudo": "Clear all",
+    "Sem nome": "Unknown",
     "Campanha bloqueada por falta de pagamento.":
       "Campaign blocked due to lack of payment.",
     "Entrar em contato": "Contact",
@@ -1181,5 +1208,16 @@ export default {
     "Escolher para a Campanha": "Choose for the Campaign",
     "Contatar Suporte": "Contact Support",
     "Trabalho concluído": "Work completed",
+    Total: "Total",
+    "Valor por creator": "Value per creator",
+    "Creator foi removido": "Creator has been removed",
+    "Creator foi selecionado": "Creator has been selected",
+    "Creators Selecionados": "Selected Creators",
+    "Informações do Creator": 'Creator Information',
+    "Cidade não definida": "City not defined",
+    "Estado não definido": "State not defined",
+    "País não definido": "Country not defined",
+    "Ver Menos": "See less",
+    "O creator não forneceu uma descrição detalhada.": "The creator did not provide a detailed description.",
   },
 };

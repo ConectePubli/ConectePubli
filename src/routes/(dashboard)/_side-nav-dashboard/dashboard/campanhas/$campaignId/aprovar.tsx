@@ -9,6 +9,7 @@ import {
   useSearch,
 } from "@tanstack/react-router";
 import pb from "@/lib/pb";
+import { t } from "i18next";
 import { ClientResponseError } from "pocketbase";
 import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
@@ -156,6 +157,33 @@ function Page() {
     CampaignParticipation[]
   >([]);
 
+  // Controla se o modal "Escolher Influencer" deve aparecer só na primeira vez
+  const [hasShownChooseModal, setHasShownChooseModal] = useState(() => {
+    return localStorage.getItem("showedChooseInfluencerModal") === "true";
+  });
+
+  // Controla se o modal "Escolher Influencer" está aberto ou não
+  const [isFirstChooseModalOpen, setIsFirstChooseModalOpen] = useState(false);
+
+  // Crie duas instâncias de Date com base nas datas vindas da campaignData
+  const today = new Date();
+  const subscriptionStart = new Date(
+    campaignData?.subscription_start_date ?? ""
+  );
+  const subscriptionEnd = new Date(campaignData?.subscription_end_date ?? "");
+  subscriptionEnd.setDate(subscriptionEnd.getDate() + 2);
+  subscriptionEnd.setHours(0, 0, 0, 0);
+
+  let subscriptionStatusFeedback = "";
+
+  if (subscriptionStart > today) {
+    subscriptionStatusFeedback =
+      "O período de inscrição para essa campanha ainda não iniciou.";
+  } else if (subscriptionEnd < today) {
+    subscriptionStatusFeedback =
+      "O período de inscrições para essa campanha foi encerrado.";
+  }
+
   useEffect(() => {
     (async () => {
       try {
@@ -176,6 +204,18 @@ function Page() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isCartOpen]);
+
   function handleAddToCart(participationId: string) {
     if (!campaignData) return;
     addToCart(campaignData.id, participationId);
@@ -184,7 +224,23 @@ function Page() {
       newIds.includes(p.id!)
     );
     setCartParticipations(updatedParticipations);
-    toast.success("Creator adicionado ao carrinho");
+
+    toast.success(t("Creator foi selecionado"));
+
+    if (!hasShownChooseModal) {
+      // Marca que já exibimos
+      setHasShownChooseModal(true);
+      localStorage.setItem("showedChooseInfluencerModal", "true");
+
+      // Abre o modal de primeira escolha
+      setIsFirstChooseModalOpen(true);
+
+      // Se quiser mostrar info do influencer escolhido no modal
+      const chosen = campaignParticipations.find(
+        (p) => p.id === participationId
+      );
+      setSelectedParticipation(chosen || null);
+    }
   }
 
   function handleRemoveFromCart(participationId: string) {
@@ -195,12 +251,14 @@ function Page() {
       localIds.includes(p.id!)
     );
     setCartParticipations(filtered);
+    toast.info(t("Creator foi removido"));
   }
 
   function handleClearCart() {
     if (!campaignData) return;
     clearCart(campaignData.id);
     setCartParticipations([]);
+    toast.info(t("Todos os creators foram removidos"));
   }
 
   useEffect(() => {
@@ -225,7 +283,7 @@ function Page() {
         } else {
           console.error("Erro ao verificar avaliação da plataforma:", error);
           toast.error(
-            "Ocorreu um erro ao verificar sua avaliação da plataforma."
+            t("Ocorreu um erro ao verificar sua avaliação da plataforma.")
           );
         }
       }
@@ -274,7 +332,7 @@ function Page() {
       });
     } catch (error) {
       console.error("Erro ao iniciar o chat:", error);
-      toast("Não foi possível iniciar o chat", {
+      toast(t("Não foi possível iniciar o chat"), {
         type: "error",
       });
     } finally {
@@ -304,7 +362,7 @@ function Page() {
       );
     } catch (error) {
       console.error("Erro ao atualizar o status:", error);
-      toast("Não foi possível atualizar o status", {
+      toast(t("Não foi possível atualizar o status"), {
         type: "error",
       });
     }
@@ -382,7 +440,7 @@ function Page() {
   ).length;
 
   if (error === "not_found" || !campaignData) {
-    return <div>Campanha não encontrada</div>;
+    return <div>{t("Campanha não encontrada")}</div>;
   }
 
   return (
@@ -390,15 +448,14 @@ function Page() {
       <CartSidebar
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        campaignId={campaignData?.id || ""}
-        campaignName={campaignData?.name || ""}
+        campaign={campaignData}
         unitAmount={campaignData?.price}
         token={pb.authStore.token}
         participations={cartParticipations}
         onRemoveFromCart={handleRemoveFromCart}
         onClearCart={handleClearCart}
       />
-      ;
+
       {paymentModal && (
         <Modal onClose={() => setPaymentModal(false)}>
           <GatewayPaymentModal
@@ -414,19 +471,20 @@ function Page() {
         <Modal onClose={() => setShowModalMinParticipant(false)}>
           <div className="flex flex-col gap-4">
             <h2 className="text-xl font-semibold flex items-center">
-              <Warning className="w-5 h-5 mr-1" weight="bold" /> Importante
+              <Warning className="w-5 h-5 mr-1" weight="bold" />{" "}
+              {t("Importante")}
             </h2>
 
-            <p className="text-gray-700">
-              Antes de prosseguir com o pagamento, aguarde os creators se
-              candidatarem à sua campanha. Assim que os candidatos estiverem
-              disponíveis, você poderá selecioná-los e finalizar o pagamento com
-              o valor correto.
+            <p className="text-gray-900">
+              {t(
+                "Antes de prosseguir com o pagamento, aguarde os creators se candidatarem à sua campanha. Assim que os candidatos estiverem disponíveis, você poderá selecioná-los e finalizar o pagamento com o valor correto."
+              )}
             </p>
 
-            <p className="text-gray-700">
-              Sua campanha já está na vitrine, agora é só esperar os creators
-              certos se inscreverem!
+            <p className="text-gray-900">
+              {t(
+                "Sua campanha já está na vitrine, agora é só esperar os creators certos se inscreverem!"
+              )}
             </p>
           </div>
         </Modal>
@@ -461,27 +519,24 @@ function Page() {
 
         <h1 className="text-2xl font-bold">{campaignData.name}</h1>
         <p className="text-gray-600">
-          Visualize todos os inscritos dessa campanha.
+          {t("Visualize todos os inscritos dessa campanha.")}
         </p>
+
+        {subscriptionStatusFeedback && (
+          <div className="mt-4 bg-red-200 py-2 px-4 rounded-md w-fit flex items-center">
+            <Info className="w-4 h-4 min-w-[1rem] mr-2" />
+            <span>{subscriptionStatusFeedback}</span>
+          </div>
+        )}
 
         {campaignData.status === "ended" && (
           <p className="flex items-center text-red-500 mt-3">
-            <Info size={18} color="#e61919" className="mr-1" /> Esta campanha
-            terminou, então você pode apenas visualizá-la!
+            <Info size={18} color="#e61919" className="mr-1" />{" "}
+            {t("Esta campanha terminou, então você pode apenas visualizá-la!")}
           </p>
         )}
 
         <div className="flex flex-col sm:flex-row items-start justify-between mt-4 max-sm:space-y-2">
-          {/* {campaignData.status !== "ended" && (
-              <Button
-                variant="brown"
-                className="bg-transparent text-[#942A2A] border-2 border-[#942A2A] hover:text-white"
-                onClick={() => setModalType("cancelCampaign")}
-              >
-                Cancelar Campanha
-              </Button>
-            )} */}
-
           <Button
             variant={"blue"}
             onClick={() =>
@@ -490,7 +545,7 @@ function Page() {
               })
             }
           >
-            Visualizar Campanha
+            {t("Visualizar Campanha")}
           </Button>
 
           <div className="flex flex-col space-y-2 justify-end items-end max-sm:justify-start max-sm:items-start">
@@ -502,23 +557,28 @@ function Page() {
                 setIsCartOpen(true);
               }}
             >
-              {loadingPayment ? "Aguarde..." : <>Creators selecionados</>}
+              {loadingPayment ? (
+                t("Aguarde...")
+              ) : (
+                <>{t("Creators selecionados")}</>
+              )}
             </Button>
 
             {approvedParticipationsCount >= 1 && (
               <p className="text-sm text-gray-700 max-w-[400px]">
-                Você possui até o dia{" "}
+                {t("Você possui até o dia ")}{" "}
                 <span className="text-black">
                   {formatDateUTC(campaignData.beginning)}
                 </span>{" "}
-                para realizar o pagamento e não ter a campanha bloqueada
+                {t("para realizar o pagamento e não ter a campanha bloqueada")}
               </p>
             )}
           </div>
 
           {campaignData.paid === true && (
             <Button className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#338B13] hover:text-white transition flex items-center">
-              <Confetti weight="bold" className="w-5 h-5 mr-1" /> Campanha paga
+              <Confetti weight="bold" className="w-5 h-5 mr-1" />{" "}
+              {t("Campanha paga")}
             </Button>
           )}
         </div>
@@ -526,7 +586,7 @@ function Page() {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-4">
           <input
             type="text"
-            placeholder="Pesquisar pelo nome do influencer"
+            placeholder={t("Pesquisar pelo nome do influencer")}
             className="w-full border border-gray-300 rounded p-2 md:col-span-4"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
@@ -537,11 +597,11 @@ function Page() {
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
-            <option value="">Status</option>
-            <option value="waiting">Pendente</option>
-            <option value="approved">Em Progresso</option>
-            <option value="completed">Concluído</option>
-            <option value="sold_out">Esgotado</option>
+            <option value="">{t("Status")}</option>
+            <option value="waiting">{t("Pendente")}</option>
+            <option value="approved">{t("Em Progresso")}</option>
+            <option value="completed">{t("Concluído")}</option>
+            <option value="sold_out">{t("Esgotado")}</option>
           </select>
 
           <select
@@ -549,7 +609,7 @@ function Page() {
             value={filterNiche}
             onChange={(e) => setFilterNiche(e.target.value)}
           >
-            <option value="">Nicho</option>
+            <option value="">{t("Nicho")}</option>
             {niches.map((niche) => (
               <option key={niche.id} value={niche.id}>
                 {niche.niche}
@@ -562,7 +622,7 @@ function Page() {
             value={filterState}
             onChange={(e) => setFilterState(e.target.value)}
           >
-            <option value="">Estado</option>
+            <option value="">{t("Estado")}</option>
             {states.map((state) => (
               <option key={state} value={state}>
                 {state}
@@ -575,13 +635,9 @@ function Page() {
           <h3 className="font-semibold text-lg">
             {campaignParticipations.length}{" "}
             <span className="text-base text-gray-700">
-              {campaignParticipations.length === 1 ? "Inscrito" : "Inscritos"}
-            </span>{" "}
-            / {approvedParticipationsCount}{" "}
-            <span className="text-base text-gray-700">
-              {approvedParticipationsCount === 1
-                ? "Selecionado"
-                : "Selecionados"}
+              {campaignParticipations.length === 1
+                ? t("Inscrito")
+                : t("Inscritos")}
             </span>
           </h3>
         </div>
@@ -589,7 +645,9 @@ function Page() {
         {campaignParticipations.length === 0 ? (
           <div className="mt-10 w-full flex flex-col items-center justify-center">
             <p className="mb-4 text-center">
-              Você só poderá editar esta campanha enquanto não tiverem inscritos
+              {t(
+                "Você só poderá editar esta campanha enquanto não tiverem inscritos"
+              )}
             </p>
             <Button
               variant={"blue"}
@@ -599,12 +657,14 @@ function Page() {
                 })
               }
             >
-              Editar Campanha
+              {t("Editar Campanha")}
             </Button>
           </div>
         ) : filteredParticipations.length === 0 ? (
           <div className="mt-10 w-full flex flex-col items-center justify-center">
-            <p className="mb-4">Nenhum resultado para os filtros aplicados.</p>
+            <p className="mb-4">
+              {t("Nenhum resultado para os filtros aplicados.")}
+            </p>
             <Button
               onClick={() => {
                 setSearchName("");
@@ -667,21 +727,36 @@ function Page() {
                         <h3 className="font-semibold text-lg text-gray-900">
                           {influencer.name}
                         </h3>
-                        <p
-                          className="text-sm mt-1 font-semibold"
-                          style={{
-                            color: getStatusColor(status),
-                          }}
-                        >
-                          Status:{" "}
-                          {status === "waiting"
-                            ? "Proposta Pendente"
-                            : status === "approved"
-                              ? "Trabalho em Progresso"
-                              : status === "completed"
-                                ? "Trabalho Concluído"
-                                : ""}
-                        </p>
+                        {cartParticipations.some(
+                          (cartItem) => cartItem.id === participation.id
+                        ) ? (
+                          <>
+                            <p
+                              className="text-sm mt-1 font-semibold"
+                              style={{
+                                color: getStatusColor(status),
+                              }}
+                            >
+                              {t("Status: Pagamento pendente")}
+                            </p>
+                          </>
+                        ) : (
+                          <p
+                            className="text-sm mt-1 font-semibold"
+                            style={{
+                              color: getStatusColor(status),
+                            }}
+                          >
+                            Status:{" "}
+                            {status === "waiting"
+                              ? t("Proposta Pendente")
+                              : status === "approved"
+                                ? t("Trabalho em Progresso")
+                                : status === "completed"
+                                  ? t("Trabalho Concluído")
+                                  : ""}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -690,7 +765,7 @@ function Page() {
                         className="text-base"
                         style={!displayedText ? { color: "#777" } : {}}
                       >
-                        {displayedText || "Sem texto de proposta"}
+                        {displayedText || t("Sem texto de proposta")}
                       </p>
                       {isTextLong && (
                         <button
@@ -700,7 +775,7 @@ function Page() {
                             setModalType("viewProposal");
                           }}
                         >
-                          Ver mais
+                          {t("Ver mais")}
                         </button>
                       )}
                     </div>
@@ -721,7 +796,7 @@ function Page() {
                             }}
                           >
                             {loadingChat ? (
-                              "Aguarde..."
+                              t("Aguarde...")
                             ) : (
                               <>
                                 <MessageCircle size={18} className="mr-1" />
@@ -742,7 +817,7 @@ function Page() {
                         }}
                       >
                         <MagnifyingGlassPlus size={19} className="mr-1" />{" "}
-                        Visualizar
+                        {t("Visualizar")}
                       </Button>
 
                       {status === "waiting" &&
@@ -755,7 +830,7 @@ function Page() {
                             className="cursor-not-allowed px-4 py-2 text-base flex items-center"
                           >
                             <ThumbsUp size={19} className="mr-1" />
-                            Selecionado
+                            {t("Selecionado")}
                           </Button>
                         ) : (
                           <Button
@@ -766,7 +841,7 @@ function Page() {
                             }}
                           >
                             <ThumbsUp size={19} className="mr-1" />
-                            Escolher para a Campanha
+                            {t("Escolher para a Campanha")}
                           </Button>
                         ))}
 
@@ -781,7 +856,7 @@ function Page() {
                             }}
                           >
                             <Headset size={18} className="mr-1" />
-                            Contatar Suporte
+                            {t("Contatar Suporte")}
                           </Button>
 
                           {campaignData.status !== "ended" &&
@@ -794,7 +869,7 @@ function Page() {
                                 }}
                               >
                                 <Flag size={18} className="mr-1" />
-                                Trabalho concluído
+                                {t("Trabalho concluído")}
                               </button>
                             )}
                         </>
@@ -858,6 +933,66 @@ function Page() {
           setModalType={setModalType}
           campaign={campaignData}
         />
+      )}
+      {isFirstChooseModalOpen && (
+        <Modal onClose={() => setIsFirstChooseModalOpen(false)}>
+          <div className="flex flex-col p-2 w-full">
+            <h2 className="text-xl font-semibold mb-4">
+              {t("Escolher Creator")}
+            </h2>
+            {selectedParticipation?.expand?.influencer && (
+              <div className="flex items-center gap-3 mt-1">
+                {selectedParticipation.expand.influencer.profile_img ? (
+                  <img
+                    src={pb.files.getUrl(
+                      selectedParticipation.expand.influencer,
+                      selectedParticipation.expand.influencer.profile_img
+                    )}
+                    alt={selectedParticipation.expand.influencer.name}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
+                    <User size={20} color="#fff" />
+                  </div>
+                )}
+                <p className="font-medium text-base">
+                  {selectedParticipation.expand.influencer.name}
+                </p>
+              </div>
+            )}
+
+            <p className="text-gray-700 leading-relaxed mt-2">
+              {t("Você está prestes a aprovar este Creator para sua campanha.")}
+              <br />
+              {t(
+                "Para garantir que o trabalho possa começar, é necessário realizar o pagamento antes de concluir a aprovação."
+              )}
+            </p>
+
+            <ol className="list-decimal list-inside text-gray-900 mt-2 space-y-1">
+              <li>
+                {t(
+                  `Realize o pagamento referente a este Creator, clicando no botão “Creators selecionados”.`
+                )}
+              </li>
+              <li>
+                {t(
+                  "Após a confirmação do pagamento, o Creator será notificado e poderá iniciar a produção."
+                )}
+              </li>
+            </ol>
+
+            <div className="mt-4 flex justify-end">
+              <Button
+                variant="blue"
+                onClick={() => setIsFirstChooseModalOpen(false)}
+              >
+                {t("Fechar")}
+              </Button>
+            </div>
+          </div>
+        </Modal>
       )}
       <ToastContainer />
     </div>

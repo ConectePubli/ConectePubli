@@ -40,6 +40,8 @@ interface CampaignData {
 }
 
 interface CampaignBudget {
+  startSuscriptionDate: Date | string;
+  endSubscriptionDate: Date | string;
   startDate: Date | string;
   endDate: Date | string;
   creatorFee: number;
@@ -151,6 +153,14 @@ export const populateCampaignFormData = (
   console.log("price");
   console.log(campaignBudget.creatorFee.toString());
   // Campaign budget
+  formData.append(
+    "subscription_start_date",
+    campaignBudget.startSuscriptionDate as string
+  );
+  formData.append(
+    "subscription_end_date",
+    campaignBudget.endSubscriptionDate as string
+  );
   formData.append("beginning", campaignBudget.startDate as string);
   formData.append("end", campaignBudget.endDate as string);
   formData.append("price", campaignBudget.creatorFee.toString());
@@ -192,6 +202,12 @@ export const validateFields = (
     missingFields.push("Informações adicionais da campanha");
 
   // Campaign Budget Section Required Fields
+  if (!campaignBudget.startSuscriptionDate) {
+    missingFields.push("Data de Inicio das inscrições");
+  }
+  if (!campaignBudget.endSubscriptionDate) {
+    missingFields.push("Data de Fim das inscrições");
+  }
   if (!campaignBudget.startDate)
     missingFields.push("Data de Início da Campanha");
   if (!campaignBudget.endDate) missingFields.push("Data de Fim da Campanha");

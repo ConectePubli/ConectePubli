@@ -50,6 +50,8 @@ export interface Campaign {
   address: string;
   spotlightActive: boolean;
   spotlightPurchasedAt: Date;
+  subscription_start_date: Date;
+  subscription_end_date: Date;
   expand?: {
     Campaigns_Participations_via_campaign?: CampaignParticipation[];
     niche?: Niche[];

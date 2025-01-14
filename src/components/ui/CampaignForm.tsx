@@ -79,6 +79,8 @@ interface CampaignData {
 }
 
 interface CampaignBudget {
+  startSuscriptionDate: Date | string;
+  endSubscriptionDate: Date | string;
   startDate: Date | string;
   endDate: Date | string;
   creatorFee: number;
@@ -155,6 +157,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   });
 
   const [campaignBudget, setCampaignBudget] = useState<CampaignBudget>({
+    startSuscriptionDate: "",
+    endSubscriptionDate: "",
     startDate: "",
     endDate: "",
     creatorFee: 0,
@@ -224,6 +228,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       });
 
       setCampaignBudget({
+        startSuscriptionDate: initialCampaignData.subscription_start_date || "",
+        endSubscriptionDate: initialCampaignData.subscription_end_date || "",
         startDate: initialCampaignData.beginning || "",
         endDate: initialCampaignData.end || "",
         creatorFee: initialCampaignData.price || 0,
@@ -241,6 +247,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         initialCampaignData as unknown as CampaignData
       );
       setInitialCampaignBudgetState({
+        startSuscriptionDate: initialCampaignData.subscription_start_date || "",
+        endSubscriptionDate: initialCampaignData.subscription_end_date || "",
         startDate: initialCampaignData.beginning || "",
         endDate: initialCampaignData.end || "",
         creatorFee: initialCampaignData.price || 0,
@@ -387,6 +395,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       });
 
       setCampaignBudget({
+        startSuscriptionDate: initialCampaignData.subscription_start_date || "",
+        endSubscriptionDate: initialCampaignData.subscription_end_date || "",
         startDate: initialCampaignData.beginning || "",
         endDate: initialCampaignData.end || "",
         creatorFee: initialCampaignData.price || 0,
@@ -797,6 +807,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           />
 
           <CampaignBudgetSection
+            startSuscriptionDate={campaignBudget.startSuscriptionDate}
+            endSubscriptionDate={campaignBudget.endSubscriptionDate}
             startDate={campaignBudget.startDate}
             endDate={campaignBudget.endDate}
             creatorFee={campaignBudget.creatorFee}
@@ -2428,6 +2440,8 @@ function AudienceSegmentationSection({
 }
 
 type CampaignBudgetSectionProps = {
+  startSuscriptionDate: Date | string;
+  endSubscriptionDate: Date | string;
   startDate: Date | string;
   endDate: Date | string;
   creatorFee: number;
@@ -2436,6 +2450,8 @@ type CampaignBudgetSectionProps = {
 };
 
 function CampaignBudgetSection({
+  startSuscriptionDate,
+  endSubscriptionDate,
   startDate,
   endDate,
   creatorFee,
@@ -2521,12 +2537,44 @@ function CampaignBudgetSection({
       }
 
       onChange({
-        ...{ startDate, endDate, creatorFee },
+        ...{
+          startSuscriptionDate,
+          endSubscriptionDate,
+          startDate,
+          endDate,
+          creatorFee,
+        },
         creatorFee: isNaN(numberValue) ? 0 : numberValue,
       });
     } else if (name === "influencersCount") {
       onChange({
-        ...{ startDate, endDate, creatorFee },
+        ...{
+          startSuscriptionDate,
+          endSubscriptionDate,
+          startDate,
+          endDate,
+          creatorFee,
+        },
+      });
+    } else if (name === "startSuscriptionDate") {
+      const newStartDate = value;
+      const newEndDate =
+        endDate && endDate < newStartDate ? newStartDate : endDate;
+
+      onChange({
+        startSuscriptionDate: newStartDate,
+        endSubscriptionDate: newEndDate,
+        startDate: startDate,
+        endDate: endDate,
+        creatorFee,
+      });
+    } else if (name === "endSubscriptionDate") {
+      onChange({
+        startSuscriptionDate,
+        endSubscriptionDate: value,
+        startDate: startDate,
+        endDate: endDate,
+        creatorFee,
       });
     } else if (name === "startDate") {
       const newStartDate = value;
@@ -2534,12 +2582,16 @@ function CampaignBudgetSection({
         endDate && endDate < newStartDate ? newStartDate : endDate;
 
       onChange({
+        startSuscriptionDate: startSuscriptionDate,
+        endSubscriptionDate: endSubscriptionDate,
         startDate: newStartDate,
         endDate: newEndDate,
         creatorFee,
       });
     } else if (name === "endDate") {
       onChange({
+        startSuscriptionDate: startSuscriptionDate,
+        endSubscriptionDate: endSubscriptionDate,
         startDate,
         endDate: value,
         creatorFee,
@@ -2553,7 +2605,68 @@ function CampaignBudgetSection({
         {t("Período da Campanha e Orçamento")}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-2">
+      <div className="flex flex-col px-5">
+        <p className="font-semibold text-gray-700 mb-1">
+          {t("Prazo das inscrições")}*
+        </p>
+        <p className="text-gray-500 text-sm mb-3">
+          {t(
+            "Este é o prazo para os Creators se candidatarem à campanha. Após a data final, as inscrições serão automaticamente encerradas"
+          )}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-6">
+        <div>
+          <label className="block mb-2 text-gray-700 font-semibold flex items-center">
+            {t("Data de Início*")}
+          </label>
+          <input
+            type="date"
+            name="startSuscriptionDate"
+            value={
+              startSuscriptionDate
+                ? formatDate(startSuscriptionDate as string)
+                : ""
+            }
+            onChange={handleInputChange}
+            min={today}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-gray-700 font-semibold flex items-center">
+            {t("Fim das Inscrições")}*
+          </label>
+          <input
+            type="date"
+            name="endSubscriptionDate"
+            value={
+              endSubscriptionDate
+                ? formatDate(endSubscriptionDate as string)
+                : ""
+            }
+            onChange={handleInputChange}
+            min={(startSuscriptionDate as string) || today}
+            disabled={!startSuscriptionDate}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col px-5">
+        <p className="font-semibold text-gray-700 mb-1">
+          {t("Prazo da campanha")}*
+        </p>
+        <p className="text-gray-500 text-sm mb-3">
+          {t(
+            "Este é o período que o creator tem para produzir e entregar o material para a Marca. A data final é o prazo limite de entrega"
+          )}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-5 mb-6">
         <div>
           <label className="block mb-2 text-gray-700 font-semibold flex items-center">
             {t("Data de Início*")}
@@ -2644,14 +2757,6 @@ function CampaignBudgetSection({
         </div>
       </div>
 
-      <div className="px-5 mb-5">
-        <p className="text-gray-700 font-normal italic">
-          {t(
-            "Período da campanha: O prazo máximo estabelecido para que o Creator entregue todo o escopo obrigatório da campanha."
-          )}
-        </p>
-      </div>
-
       <div className="px-5 mb-3">
         <label className="block mb-1 text-gray-700 font-semibold flex items-center">
           {t("Valor por criador*")}
@@ -2707,7 +2812,7 @@ function CampaignBudgetSection({
       {!isEditMode && (
         <p className="px-5 mt-2 text-gray-700 italic">
           {t(
-            "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor final será calculado com base na multiplicação do valor definido por creator, informado no campo acima, pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: O pagamento deve ser feito até a data inicial da campanha, caso contrário, será bloqueada e caso algum influenciador não cumpra os requisitos ou ocorra um problema comprovado, você poderá receber 100% do reembolso correspondente ao valor pago por esse influenciador."
+            "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor será calculado com base na multiplicação do valor definido por creator, informado no campo acima, pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: Caso algum influenciador não cumpra os requisitos ou ocorra algum problema comprovado, você poderá receber 100% do reembolso correspondente ao valor pago por esse influenciador."
           )}
         </p>
       )}

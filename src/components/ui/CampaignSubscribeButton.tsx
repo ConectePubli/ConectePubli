@@ -155,6 +155,28 @@ const CampaignSubscribeButton: React.FC = () => {
   const isUserRegistered = Boolean(userParticipation);
   const participationStatus = userParticipation?.status;
 
+  // Verificação do período de inscrição
+  const now = new Date();
+  const subStart = campaign?.subscription_start_date
+    ? new Date(campaign.subscription_start_date)
+    : null;
+  const subEnd = campaign?.subscription_end_date
+    ? new Date(campaign.subscription_end_date)
+    : null;
+
+  const isBeforeSubscriptionStart = subStart ? now < subStart : false;
+
+  if (subEnd) {
+    // Adiciona 1 dia
+    subEnd.setDate(subEnd.getDate() + 2);
+    // Opcional: definir a hora no início do dia
+    subEnd.setHours(0, 0, 0, 0);
+  }
+  // Agora a comparação considera o fim do dia
+  const isAfterSubscriptionEnd = subEnd ? now > subEnd : false;
+  const isWithinSubscriptionPeriod =
+    subStart && subEnd ? now >= subStart && now <= subEnd : true;
+
   // Função para navegar até a edição do perfil
   const navigateToCompleteProfile = () => {
     if (user?.collectionName === "Influencers") {
@@ -266,6 +288,15 @@ const CampaignSubscribeButton: React.FC = () => {
   // Caso seja marca ou dono da campanha, não mostra nada
   if (isBrand || isOwner) {
     return null;
+  }
+
+  if (!isWithinSubscriptionPeriod) {
+    if (isBeforeSubscriptionStart) {
+      buttonText = "Inscrições não iniciadas";
+    } else if (isAfterSubscriptionEnd) {
+      buttonText = "Inscrições encerradas";
+    }
+    isDisabled = true;
   }
 
   // Caso usuário não tenha perfil completo

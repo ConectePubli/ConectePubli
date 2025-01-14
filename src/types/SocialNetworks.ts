@@ -9,65 +9,66 @@ import KwaiIcon from "@/assets/icons/brands/kwai.svg";
 import TwitchIcon from "@/assets/icons/brands/twitch.svg";
 import YourClubIcon from "@/assets/icons/brands/yourclub.svg";
 import { Brand } from "./Brand";
+import { getSocialLink } from "@/utils/getSocialLink";
 
 export interface SocialNetwork {
   name: string;
   icon: string;
-  url: (data: Brand) => string | undefined;
+  url: (data: Brand) => string | null;
 }
 
 export const SocialNetworks: SocialNetwork[] = [
   {
     name: "Twitch",
     icon: TwitchIcon,
-    url: (data: Brand) => data.twitch_url,
+    url: (data: Brand) => getSocialLink("Twitch", data.twitch_url),
   },
   {
     name: "X",
     icon: TwitterIcon,
-    url: (data: Brand) => data.twitter_url,
+    url: (data: Brand) => getSocialLink("Twitter", data.twitter_url),
   },
   {
     name: "Facebook",
     icon: FacebookIcon,
-    url: (data: Brand) => data.facebook_url,
+    url: (data: Brand) => getSocialLink("Facebook", data.facebook_url),
   },
   {
     name: "YourClub",
     icon: YourClubIcon,
-    url: (data: Brand) => data.yourclub_url,
+    url: (data: Brand) => getSocialLink("YourClub", data.yourclub_url),
   },
   {
     name: "Kwai",
     icon: KwaiIcon,
-    url: (data: Brand) => data.kwai_url,
+    url: (data: Brand) => getSocialLink("Kwai", data.kwai_url),
   },
   {
     name: "Tiktok",
     icon: TiktokIcon,
-    url: (data: Brand) => data.tiktok_url,
+    url: (data: Brand) => getSocialLink("Tiktok", data.tiktok_url),
   },
   {
     name: "Pinterest",
     icon: PinterestIcon,
-    url: (data: Brand) => data.pinterest_url,
+    url: (data: Brand) => getSocialLink("Pinterest", data.pinterest_url),
   },
   {
     name: "LinkedIn",
     icon: LinkedinIcon,
-    url: (data: Brand) => data.linkedin_url,
+    url: (data: Brand) => getSocialLink("LinkedIn", data.linkedin_url),
   },
   {
     name: "YouTube",
     icon: YoutubeIcon,
-    url: (data: Brand) => data.youtube_url,
+    url: (data: Brand) => getSocialLink("YouTube", data.youtube_url),
   },
   {
     name: "Instagram",
     icon: InstagramIcon,
-    url: (data: Brand) => data.instagram_url,
+    url: (data: Brand) => getSocialLink("Instagram", data.instagram_url),
   },
-  // Additional networks can be added here
+  // Adicione outras redes sociais conforme necessário
 ];
 
 export default SocialNetworks;
