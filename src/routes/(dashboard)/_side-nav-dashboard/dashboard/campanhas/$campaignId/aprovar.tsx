@@ -16,7 +16,6 @@ import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { Info, MessageCircle, ThumbsUp, User } from "lucide-react";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import {
-  Confetti,
   Flag,
   Headset,
   MagnifyingGlassPlus,
@@ -42,7 +41,6 @@ import { toast, ToastContainer } from "react-toastify";
 import { createOrGetChat } from "@/services/chatService";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
 import Spinner from "@/components/ui/Spinner";
-import { formatDateUTC } from "@/utils/formatDateUTC";
 import Modal from "@/components/ui/Modal";
 import GatewayPaymentModal from "@/components/ui/GatewayPaymentModal";
 import {
@@ -563,24 +561,7 @@ function Page() {
                 <>{t("Creators selecionados")}</>
               )}
             </Button>
-
-            {approvedParticipationsCount >= 1 && (
-              <p className="text-sm text-gray-700 max-w-[400px]">
-                {t("Você possui até o dia ")}{" "}
-                <span className="text-black">
-                  {formatDateUTC(campaignData.beginning)}
-                </span>{" "}
-                {t("para realizar o pagamento e não ter a campanha bloqueada")}
-              </p>
-            )}
           </div>
-
-          {campaignData.paid === true && (
-            <Button className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#338B13] hover:text-white transition flex items-center">
-              <Confetti weight="bold" className="w-5 h-5 mr-1" />{" "}
-              {t("Campanha paga")}
-            </Button>
-          )}
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-4">

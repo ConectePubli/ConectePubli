@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import pb from "@/lib/pb";
 import { toast, ToastOptions } from "react-toastify";
+import { CampaignParticipation } from "@/types/Campaign_Participations";
 
 interface PaymentResponsePagseguro {
   link?: string;
@@ -23,17 +24,20 @@ export const paymentCreatorsByPagseguro = async (
   campaignId: string,
   campaignName: string,
   unit_amount: number,
-  campaign_participations: string[],
+  campaign_participations: CampaignParticipation[],
   toastOptions?: ToastOptions
 ): Promise<void> => {
   try {
+    const ids = campaign_participations.map(
+      (participation) => participation.id
+    );
+
     const body: PaymentBody = {
       campaign_id: campaignId,
       campaign_name: campaignName,
       unit_amount: unit_amount,
-      campaign_participations: campaign_participations,
+      campaign_participations: ids as string[],
     };
-    console.log(body);
 
     const response: AxiosResponse<PaymentResponsePagseguro> = await axios.post(
       "https://conecte-publi.pockethost.io/api/checkout_campaign",
@@ -68,15 +72,19 @@ export const paymentCreatorsByStripe = async (
   campaignId: string,
   campaignName: string,
   unit_amount: number,
-  campaign_participations: string[],
+  campaign_participations: CampaignParticipation[],
   toastOptions?: ToastOptions
 ): Promise<void> => {
   try {
+    const ids = campaign_participations.map(
+      (participation) => participation.id
+    );
+
     const body: PaymentBody = {
       campaign_id: campaignId,
       campaign_name: campaignName,
       unit_amount: unit_amount,
-      campaign_participations: campaign_participations,
+      campaign_participations: ids as string[],
     };
 
     const response: AxiosResponse<PaymentResponseStripe> = await axios.post(

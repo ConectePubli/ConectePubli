@@ -1269,5 +1269,7 @@ export default {
     "Sou Marca": "I'm a Brand",
     "Sou Creator": "I'm a Creator",
     Avaliar: "Rate",
+    "Finalizar campanha": "Finish campaign",
+    "Publicar campanha": "Publish campaign",
   },
 };
