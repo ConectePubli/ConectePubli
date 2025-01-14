@@ -3,10 +3,11 @@
 import React from "react";
 import Testimonial from "@/components/LandingPage/Testimonial/Testimonial";
 
-import mundo_marketing from "@/assets/influencers.jpeg";
+import mundo_marketing from "@/assets/mundomarketing.png";
 import valor_business from "@/assets/valor-business.jpg";
-import forbes_vip from "@/assets/forbes_vip.jpg";
+import forbes_vip from "@/assets/forbesvip.png";
 import { t } from "i18next";
+import Slider from "react-slick";
 
 interface Testimonial {
   quote: string;
@@ -37,18 +38,54 @@ const testimonials: Testimonial[] = [
     imageSrc: forbes_vip,
   },
 ];
-
+const settings = {
+  dots: true,
+  infinite: true,
+  speed: 800,
+  autoplay: true,
+  autoplaySpeed: 6000,
+  slidesToShow: 2,
+  slidesToScroll: 2,
+  responsive: [
+    {
+      // até ~1480px
+      breakpoint: 1480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      // até ~1024px
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      // até ~440px (mobile)
+      breakpoint: 540,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      },
+    },
+  ],
+};
 const TestimonialSection: React.FC = () => {
   return (
     <div className="w-full px-5 md:px-0">
-      {testimonials.map((testimonial, index) => (
-        <Testimonial
-          key={index}
-          imageSrc={testimonial.imageSrc}
-          quote={testimonial.quote}
-          citedBy={testimonial.citedBy}
-        />
-      ))}
+      <Slider {...settings}>
+        {testimonials.map((testimonial, index) => (
+          <Testimonial
+            key={index}
+            quote={testimonial.quote}
+            citedBy={testimonial.citedBy}
+            imageSrc={testimonial.imageSrc}
+          />
+        ))}
+      </Slider>
     </div>
   );
 };

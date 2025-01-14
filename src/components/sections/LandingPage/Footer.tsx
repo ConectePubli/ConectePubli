@@ -1,6 +1,6 @@
 import React from "react";
 import logo from "@/assets/logo.svg";
-import Translator from "@/components/i18n/Translator";
+import { t } from "i18next";
 
 export const Footer: React.FC = () => {
   return (
@@ -17,9 +17,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="mt-4 md:mt-0 text-center md:text-right text-gray-600">
-          <p>
-            <Translator path="Copyright © ConectePubli | Todos direitos reservados." />{" "}
-          </p>
+          <p>{t("Copyright © ConectePubli | Todos direitos reservados.")} </p>
         </div>
       </div>
     </footer>

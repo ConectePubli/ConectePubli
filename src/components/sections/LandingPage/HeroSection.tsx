@@ -44,22 +44,17 @@ export const HeroSection: React.FC = () => {
       </div>
 
       {/* Vídeo */}
-      <div className="flex justify-center items-center flex-1">
-        <MuxPlayer
-          streamType="on-demand"
-          playbackId={"601k1sRDgYoKjH9DiQSEghCFmnDggI6iymfZuKSSkUp8"}
-          metadataVideoTitle="Introdução"
-          autoPlay={true}
-          muted={true}
-          style={{
-            maxHeight: "500px",
-            borderRadius: "10px",
-            aspectRatio: "9 / 16",
-            width: "auto",
-            maxWidth: "100%",
-          }}
-          loop={true}
-        />
+      <div className="flex justify-center items-center flex-1 ">
+        <div className="overflow-hidden rounded-xl max-h-[550px] w-auto aspect-[9/16] max-w-full">
+          <MuxPlayer
+            streamType="on-demand"
+            playbackId={"601k1sRDgYoKjH9DiQSEghCFmnDggI6iymfZuKSSkUp8"}
+            metadataVideoTitle="Introdução"
+            autoPlay={true}
+            muted={true}
+            loop={true}
+          />
+        </div>
       </div>
     </section>
   );

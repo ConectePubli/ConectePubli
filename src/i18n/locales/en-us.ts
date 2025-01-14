@@ -51,8 +51,7 @@ export default {
     "Forbes VIP": "Forbes VIP",
     "Copyright © ConectePubli | Todos direitos reservados.":
       "Copyright © ConectePubli | All rights reserved.",
-    "Confira Alguns dos Nossos Top Creators:":
-      "Check Out Some of Our Top Creators:",
+    "Confira Nossos Top Creators": "Check Out Our Top Creators:",
     "Acesso a criadores qualificados": "Access to qualified creators",
     " - Encontre os criadores certos para suas campanhas, independentemente do porte ou nicho. Selecione por filtros detalhados e conecte-se diretamente.":
       " - Find the right creators for your campaigns, regardless of size or niche. Select by detailed filters and connect directly.",
@@ -1271,5 +1270,44 @@ export default {
     Avaliar: "Rate",
     "Finalizar campanha": "Finish campaign",
     "Publicar campanha": "Publish campaign",
+    "Cadastro Marcas e Agências": "Brands and Agencies Registration",
+    "Criadores Qualificados:": "Qualified Creators:",
+    "Custo-Benefício:": "Cost-Benefit:",
+    "Resultados Reais:": "Real Results:",
+    "Pagamentos Seguros:": "Secure Payments:",
+    "Segurança Jurídica:": "Legal Security:",
+    "Encontre criadores ideais para qualquer nicho e campanha com filtros detalhados.":
+      "Find ideal creators for any niche and campaign with detailed filters.",
+    "Sem taxas ocultas, campanhas acessíveis para todos os orçamentos.":
+      "No hidden fees, campaigns affordable for all budgets.",
+    "Conteúdos criativos que geram engajamento, confiança e retorno.":
+      "Creative content that generates engagement, trust and return.",
+    "Com o Conecte Pay, só pague após aprovar o conteúdo.":
+      "With Conecte Pay, only pay after approving the content.",
+    "Contratos integrados garantem transparência e zero burocracia.":
+      "Integrated contracts ensure transparency and zero bureaucracy.",
+    "Para Marcas e Agências": "For Brands and Agencies",
+    "Para Creators": "For Creators",
+    "Cadastro Marcas ou Agências": "Brands or Agencies Registration",
+    "Oportunidades para Todos:": "Opportunities for Everyone:",
+    "De UGC Creators a influenciadores, encontre campanhas ideais para você.":
+      "From UGC Creators to influencers, find ideal campaigns for you.",
+    "Processo Simples:": "Simple Process:",
+    "Candidate-se, entregue e acompanhe tudo em um só lugar.":
+      "Apply, deliver and track everything in one place.",
+    "Cresça na Creator Economy:": "Grow in the Creator Economy:",
+    "Construa portfólio, receba avaliações e fortaleça sua reputação.":
+      "Build portfolio, receive reviews and strengthen your reputation.",
+    "Pagamentos Garantidos:": "Guaranteed Payments:",
+    "Com Conecte Pay, o valor é reservado antes do início e liberado na conclusão do trabalho.":
+      "With Conecte Pay, the amount is reserved before the start and released upon completion of the work.",
+    "Contratos Protegidos:": "Protected Contracts:",
+    "Termos claros e contratos integrados protegem seu trabalho e garantem segurança profissional.":
+      "Clear terms and integrated contracts protect your work and ensure professional security.",
+    "Confira Nossos Top Creators:": "Check Out Our Top Creators:",
+    "Nossa plataforma está oficialmente disponível para você ampliar seu alcance e maximizar seu impacto digital. Cadastre-se agora e aproveite todos os benefícios que oferecemos, incluindo ferramentas avançadas de análise e suporte dedicado, tudo isso sem taxa de adesão!":
+      "Our platform is officially available for you to expand your reach and maximize your digital impact. Sign up now and enjoy all the benefits we offer, including advanced analysis tools and dedicated support, all without a membership fee!",
+    "O que estão falando sobre a Conecte Publi":
+      "What they're saying about Conecte Publi",
   },
 };
