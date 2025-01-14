@@ -6,7 +6,7 @@ interface SectionInfoProps {
   title: string;
   description: React.ReactNode;
   buttonLabel: string;
-  buttonVariant: "orange" | "blue";
+  buttonVariant: "orange" | "blue" | "purple";
   buttonOnClick: () => void;
   reverse?: boolean;
 }
@@ -21,13 +21,13 @@ export const SectionInfo: React.FC<SectionInfoProps> = ({
   reverse = false,
 }) => {
   return (
-    <section className="py-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl px-4">
+    <section className="py-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-xl px-4">
       <div
         className={`flex flex-col ${
           reverse ? "lg:flex-row-reverse" : "lg:flex-row"
         } gap-6`}
       >
-        <div className="w-full md:w-[50%] lg:w-[40%]">
+        <div className="w-full md:w-[50%] lg:w-[60%]">
           <img
             src={imageSrc}
             alt={title}
@@ -36,7 +36,7 @@ export const SectionInfo: React.FC<SectionInfoProps> = ({
         </div>
 
         <div className={`w-full lg:w-[60%]`}>
-          <h2 className="text-2xl font-bold mb-4">{title}</h2>
+          <h2 className="text-3xl font-bold mb-4">{title}</h2>
           <div className="text-gray-700 mb-8 space-y-4">
             <div className="flex flex-col space-y-2">
               {React.Children.map(description, (child, index) => (
@@ -49,6 +49,7 @@ export const SectionInfo: React.FC<SectionInfoProps> = ({
             variant={buttonVariant}
             size="default"
             onClick={buttonOnClick}
+            className="font-bold px-4 text-lg"
           >
             {buttonLabel}
           </Button>

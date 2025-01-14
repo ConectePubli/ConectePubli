@@ -37,107 +37,105 @@ function Index() {
         <Translator path="Marcas Conectadas" />
         <LogosCarousel />
       </p>
+      <HowItWorksSection />
 
-      <div
-        className="text-left text-xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm
-                  md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl"
-      >
-        <h2 className="mb-4">{t("Confira Alguns dos Nossos Top Creators:")}</h2>
+      <div className="py-12">
+        <SectionInfo
+          imageSrc={brand}
+          title={t("Para Marcas e Agências")}
+          description={
+            <div className="space-y-4">
+              <p>
+                <strong>{t("Criadores Qualificados:")}</strong>{" "}
+                {t(
+                  "Encontre criadores ideais para qualquer nicho e campanha com filtros detalhados."
+                )}
+              </p>
+              <p>
+                <strong>{t("Custo-Benefício:")}</strong>{" "}
+                {t(
+                  "Sem taxas ocultas, campanhas acessíveis para todos os orçamentos."
+                )}
+              </p>
+              <p>
+                <strong>{t("Resultados Reais:")}</strong>{" "}
+                {t(
+                  "Conteúdos criativos que geram engajamento, confiança e retorno."
+                )}
+              </p>
+              <p>
+                <strong>{t("Pagamentos Seguros:")}</strong>{" "}
+                {t("Com o Conecte Pay, só pague após aprovar o conteúdo.")}
+              </p>
+
+              <p>
+                <strong>{t("Segurança Jurídica:")}</strong>{" "}
+                {t(
+                  "Contratos integrados garantem transparência e zero burocracia."
+                )}
+              </p>
+            </div>
+          }
+          buttonLabel={t("Cadastro Marcas ou Agências")}
+          buttonVariant="purple"
+          buttonOnClick={() => navigate({ to: "/cadastro/marca" })}
+        />
+
+        <SectionInfo
+          imageSrc={influencers}
+          title={t("Para creators")}
+          description={
+            <div className="space-y-4">
+              <p>
+                <strong>{t("Oportunidades para Todos:")}</strong>{" "}
+                {t(
+                  "De UGC Creators a influenciadores, encontre campanhas ideais para você."
+                )}
+              </p>
+              <p>
+                <strong>{t("Processo Simples:")}</strong>{" "}
+                {t("Candidate-se, entregue e acompanhe tudo em um só lugar.")}
+              </p>
+              <p>
+                <strong>{t("Cresça na Creator Economy:")}</strong>{" "}
+                {t(
+                  "Construa portfólio, receba avaliações e fortaleça sua reputação."
+                )}
+              </p>
+              <p>
+                <strong>{t("Pagamentos Garantidos:")}</strong>{" "}
+                {t(
+                  "Com Conecte Pay, o valor é reservado antes do início e liberado na conclusão do trabalho."
+                )}
+              </p>
+              <p>
+                <strong>{t("Contratos Protegidos:")}</strong>{" "}
+                {t(
+                  "Termos claros e contratos integrados protegem seu trabalho e garantem segurança profissional."
+                )}
+              </p>
+            </div>
+          }
+          buttonLabel={t("Cadastro Creators")}
+          buttonVariant="orange"
+          buttonOnClick={() => navigate({ to: "/cadastro/creator" })}
+          reverse
+        />
+      </div>
+
+      <div className="text-left text-3xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-xl">
+        <h2 className="mb-4">{t("Confira Nossos Top Creators")}</h2>
         <TopCreatorsCarousel />
       </div>
 
-      <HowItWorksSection />
-
-      <SectionInfo
-        imageSrc={brand}
-        title={t("Para marcas")}
-        description={
-          <div className="space-y-1">
-            <p>
-              <strong>{t("Acesso a criadores qualificados")}</strong>
-              {t(
-                " - Encontre os criadores certos para suas campanhas, independentemente do porte ou nicho. Selecione por filtros detalhados e conecte-se diretamente."
-              )}
-            </p>
-            <p>
-              <strong>{t("Custo-Benefício Real")}</strong>
-              {t(
-                " - Sem taxas ocultas. Campanhas acessíveis para qualquer orçamento, desde pequenas ações locais até grandes campanhas de impacto"
-              )}
-            </p>
-            <p>
-              <strong>{t("Resultados autênticos e eficientes")}</strong>
-              {t(
-                " - Receba conteúdos criativos e alinhados ao seu público, gerando mais engajamento, confiança e retorno para sua marca."
-              )}
-            </p>
-            <p>
-              <strong>{t("Pagamentos protegidos com Conecte Pay")}</strong>
-              {t(
-                " - Seu investimento fica seguro: o pagamento só é liberado após aprovação do conteúdo entregue. Sem riscos."
-              )}
-            </p>
-
-            <p>
-              <strong>{t("Segurança Jurídica integrada")}</strong>
-              {t(
-                " - Contratos e termos padronizados já estão integrados na plataforma, garantindo segurança e transparência em todos os acordos. Zero burocracia."
-              )}
-            </p>
-          </div>
-        }
-        buttonLabel="Cadastro Marcas"
-        buttonVariant="blue"
-        buttonOnClick={() => navigate({ to: "/cadastro/marca" })}
-      />
-
-      <SectionInfo
-        imageSrc={influencers}
-        title={t("Para creators")}
-        description={
-          <div className="space-y-2">
-            <p>
-              <strong>{t("Oportunidades para todos os perfis")}</strong>
-              {t(
-                " - Seja UGC Creator ou influenciador de qualquer porte, encontre campanhas que combinam com você e monetize sua criatividade."
-              )}
-            </p>
-            <p>
-              <strong>{t("Processo simples e transparente")}</strong>
-              {t(
-                " - Candidate-se ás campanhas que fazem sentido para você, entregue com confiança e acompanhe tudo em um só lugar."
-              )}
-            </p>
-            <p>
-              <strong>{t("Construa seu portfólio e cresça")}</strong>
-              {t(
-                " - Trabalhe com marcas, receba avaliações positivas e fortaleça sua reputação na Creator Economy."
-              )}
-            </p>
-            <p>
-              <strong>{t("Pagamentos Garantidos e sem complicação")}</strong>
-              {t(
-                " - O Conecte Pay assegura que o pagamento esteja reservado antes de você começar a produzir. Receba de forma rápida e segura."
-              )}
-            </p>
-            <p>
-              <strong>{t("Segurança jurídica em todas as entregas")}</strong>
-              {t(
-                " - A plataforma inclui contratos e termos claros para proteger seu trabalho e garantir relações profissionais com as marcas"
-              )}
-            </p>
-          </div>
-        }
-        buttonLabel={t("Cadastro Creators")}
-        buttonVariant="orange"
-        buttonOnClick={() => navigate({ to: "/cadastro/creator" })}
-        reverse
-      />
+      <div className="text-left text-3xl mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-xl">
+        <h2 className="mb-4 font-bold">
+          {t("O que estão falando sobre a Conecte Publi")}
+        </h2>
+        <TestimonialSection />
+      </div>
 
       <ConnectSection />
-
-      <TestimonialSection />
-
       <Footer />
 
       <a

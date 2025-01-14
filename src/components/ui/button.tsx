@@ -20,6 +20,7 @@ const buttonVariants = cva(
         orange: "bg-[#FF672F] text-white hover:bg-[#E34105]",
         blue: "bg-[#10438F] text-white hover:bg-[#093474]",
         brown: "bg-[#942A2A] text-white hover:bg-[#7d2323]",
+        purple: "bg-[#354280] text-white hover:bg-[#354280]",
       },
       size: {
         default: "h-10 px-4 py-2",

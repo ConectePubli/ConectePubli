@@ -12,17 +12,19 @@ const Testimonial: React.FC<TestimonialProps> = ({
   citedBy,
 }) => {
   return (
-    <div className="w-full md:w-3/5 mx-auto my-8 flex flex-col md:flex-row items-center bg-[#10438F] overflow-hidden rounded-md">
-      <div className="w-full md:w-3/5">
-        <img
-          src={imageSrc}
-          alt={`Citação de ${citedBy}`}
-          className="w-full h-auto rounded-md object-cover"
-        />
-      </div>
-      <div className="w-full px-5 md:w-2/5 mt-4 md:mt-0 text-left flex flex-col justify-center flex-1 max-sm:pb-5">
-        <blockquote className="italic text-lg text-white">"{quote}"</blockquote>
-        <cite className="mt-2 block text-base text-white">- {citedBy}</cite>
+    <div className="bg-[#354280] rounded-lg h-[210px] flex flex-col justify-between mx-4">
+      <div className="p-8 flex flex-col justify-between h-full">
+        <div className="flex justify-between items-center">
+          <p className="text-white text-lg font-semibold">- {citedBy}</p>
+          <img
+            src={imageSrc}
+            alt={citedBy}
+            className="min-w-12 h-14 rounded-md max-w-30"
+          />
+        </div>
+        <p className="text-white italic mt-4 text-base flex-grow flex items-center max-w-[80%]">
+          "{quote}"
+        </p>
       </div>
     </div>
   );
