@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import {
   createFileRoute,
@@ -11,14 +12,7 @@ import pb from "@/lib/pb";
 import { ClientResponseError } from "pocketbase";
 import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
-import {
-  Info,
-  LockIcon,
-  MessageCircle,
-  ShoppingBagIcon,
-  ThumbsUp,
-  User,
-} from "lucide-react";
+import { Info, MessageCircle, ThumbsUp, User } from "lucide-react";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import {
   Confetti,
@@ -26,7 +20,6 @@ import {
   Headset,
   MagnifyingGlassPlus,
   Warning,
-  WhatsappLogo,
 } from "phosphor-react";
 import "react-toastify/ReactToastify.css";
 
@@ -49,10 +42,15 @@ import { createOrGetChat } from "@/services/chatService";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
 import Spinner from "@/components/ui/Spinner";
 import { formatDateUTC } from "@/utils/formatDateUTC";
-import { parseBrazilianDate } from "@/utils/parseBrDate";
-import { isDateAfter } from "@/utils/dateUtils";
 import Modal from "@/components/ui/Modal";
 import GatewayPaymentModal from "@/components/ui/GatewayPaymentModal";
+import {
+  addToCart,
+  clearCart,
+  getCartItems,
+  removeFromCart,
+} from "@/services/carCreators";
+import CartSidebar from "@/components/ui/cartSidebar";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -152,6 +150,59 @@ function Page() {
   >(null);
   const [hasRatedPlatform, setHasRatedPlatform] = useState(true);
 
+  // shop cart
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [cartParticipations, setCartParticipations] = useState<
+    CampaignParticipation[]
+  >([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const participations = await pb
+          .collection("Campaigns_Participations")
+          .getFullList<CampaignParticipation>({
+            filter: `campaign="${campaignData?.id || ""}"`,
+            expand: "campaign,influencer",
+          });
+        setCampaignParticipations(participations);
+
+        const localIds = getCartItems(campaignData?.id || "");
+        const filtered = participations.filter((p) => localIds.includes(p.id!));
+        setCartParticipations(filtered);
+      } catch (error) {
+        console.error(error);
+      }
+    })();
+  }, []);
+
+  function handleAddToCart(participationId: string) {
+    if (!campaignData) return;
+    addToCart(campaignData.id, participationId);
+    const newIds = getCartItems(campaignData.id);
+    const updatedParticipations = campaignParticipations.filter((p) =>
+      newIds.includes(p.id!)
+    );
+    setCartParticipations(updatedParticipations);
+    toast.success("Creator adicionado ao carrinho");
+  }
+
+  function handleRemoveFromCart(participationId: string) {
+    if (!campaignData) return;
+    removeFromCart(campaignData.id, participationId);
+    const localIds = getCartItems(campaignData.id);
+    const filtered = campaignParticipations.filter((p) =>
+      localIds.includes(p.id!)
+    );
+    setCartParticipations(filtered);
+  }
+
+  function handleClearCart() {
+    if (!campaignData) return;
+    clearCart(campaignData.id);
+    setCartParticipations([]);
+  }
+
   useEffect(() => {
     const checkRating = async () => {
       const userId = pb.authStore.model?.id;
@@ -183,7 +234,6 @@ function Page() {
     if (hasRateParam) {
       checkRating();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasRateParam]);
 
   useEffect(() => {
@@ -331,29 +381,24 @@ function Page() {
     (participation) => participation.status === "approved"
   ).length;
 
-  const totalPrice =
-    (Number(campaignData?.price) / 100) * approvedParticipationsCount;
-
-  const formattedPrice = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(totalPrice);
-
   if (error === "not_found" || !campaignData) {
     return <div>Campanha não encontrada</div>;
   }
 
-  const campaignStartDateString = formatDateUTC(campaignData.beginning);
-  const campaignStartDate = parseBrazilianDate(campaignStartDateString);
-  const currentDate = new Date();
-
-  const isBlocked =
-    !campaignData.paid &&
-    isDateAfter(currentDate, campaignStartDate) &&
-    approvedParticipationsCount >= 1;
-
   return (
     <div className="flex flex-col gap-4 p-4 max-sm:p-0">
+      <CartSidebar
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        campaignId={campaignData?.id || ""}
+        campaignName={campaignData?.name || ""}
+        unitAmount={campaignData?.price}
+        token={pb.authStore.token}
+        participations={cartParticipations}
+        onRemoveFromCart={handleRemoveFromCart}
+        onClearCart={handleClearCart}
+      />
+      ;
       {paymentModal && (
         <Modal onClose={() => setPaymentModal(false)}>
           <GatewayPaymentModal
@@ -365,7 +410,6 @@ function Page() {
           />
         </Modal>
       )}
-
       {showModalMinParticipant && (
         <Modal onClose={() => setShowModalMinParticipant(false)}>
           <div className="flex flex-col gap-4">
@@ -387,7 +431,6 @@ function Page() {
           </div>
         </Modal>
       )}
-
       <div className="p-4">
         <div className="flex items-center gap-1 mb-2">
           <button
@@ -450,41 +493,28 @@ function Page() {
             Visualizar Campanha
           </Button>
 
-          {!isBlocked && campaignData.paid === false && (
-            <div className="flex flex-col space-y-2 justify-end items-end max-sm:justify-start max-sm:items-start">
-              <Button
-                variant={"orange"}
-                className="font-semibold text-white sm:mt-0 sm:ml-4"
-                disabled={loadingPayment}
-                onClick={() => {
-                  if (approvedParticipationsCount === 0) {
-                    setShowModalMinParticipant(true);
-                  } else {
-                    setPaymentModal(true);
-                  }
-                }}
-              >
-                {loadingPayment ? (
-                  "Aguarde..."
-                ) : (
-                  <>
-                    <ShoppingBagIcon className="w-5 h-5 mr-2" /> Valor a pagar:{" "}
-                    {formattedPrice}
-                  </>
-                )}
-              </Button>
+          <div className="flex flex-col space-y-2 justify-end items-end max-sm:justify-start max-sm:items-start">
+            <Button
+              variant={"orange"}
+              className="font-semibold text-white sm:mt-0 sm:ml-4"
+              disabled={loadingPayment}
+              onClick={() => {
+                setIsCartOpen(true);
+              }}
+            >
+              {loadingPayment ? "Aguarde..." : <>Creators selecionados</>}
+            </Button>
 
-              {approvedParticipationsCount >= 1 && (
-                <p className="text-sm text-gray-700 max-w-[400px]">
-                  Você possui até o dia{" "}
-                  <span className="text-black">
-                    {formatDateUTC(campaignData.beginning)}
-                  </span>{" "}
-                  para realizar o pagamento e não ter a campanha bloqueada
-                </p>
-              )}
-            </div>
-          )}
+            {approvedParticipationsCount >= 1 && (
+              <p className="text-sm text-gray-700 max-w-[400px]">
+                Você possui até o dia{" "}
+                <span className="text-black">
+                  {formatDateUTC(campaignData.beginning)}
+                </span>{" "}
+                para realizar o pagamento e não ter a campanha bloqueada
+              </p>
+            )}
+          </div>
 
           {campaignData.paid === true && (
             <Button className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#338B13] hover:text-white transition flex items-center">
@@ -556,265 +586,227 @@ function Page() {
           </h3>
         </div>
 
-        {/* CAMPANHA BLOQUEADA POR FALTA DE PAGAMENTO */}
-        {isBlocked && (
-          <div className="mt-10 p-6 bg-red-100 border border-red-400 text-red-700 rounded-lg flex flex-col items-center">
-            <LockIcon className="w-7 h-7 mb-2" />
-
-            <p className="text-lg mb-4">
-              Campanha bloqueada por falta de pagamento.
+        {campaignParticipations.length === 0 ? (
+          <div className="mt-10 w-full flex flex-col items-center justify-center">
+            <p className="mb-4 text-center">
+              Você só poderá editar esta campanha enquanto não tiverem inscritos
             </p>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                variant={"orange"}
-                className="font-semibold text-white sm:mt-0 sm:ml-4"
-                disabled={loadingPayment}
-                onClick={() => {
-                  setPaymentModal(true);
-                }}
-              >
-                {loadingPayment ? (
-                  "Aguarde..."
-                ) : (
-                  <>
-                    <ShoppingBagIcon className="w-5 h-5 mr-2" /> Valor a pagar:{" "}
-                    {formattedPrice}
-                  </>
-                )}
-              </Button>
-
-              <a
-                href="https://api.whatsapp.com/send?phone=5511913185849"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#008000] text-white rounded-lg flex items-center justify-center px-4 hover:bg-[#026902]"
-              >
-                <WhatsappLogo className="w-5 h-5 mr-1" /> Entrar em contato
-              </a>
-            </div>
+            <Button
+              variant={"blue"}
+              onClick={() =>
+                navigate({
+                  to: `/dashboard/campanhas/${campaignData.id}/editar`,
+                })
+              }
+            >
+              Editar Campanha
+            </Button>
           </div>
-        )}
+        ) : filteredParticipations.length === 0 ? (
+          <div className="mt-10 w-full flex flex-col items-center justify-center">
+            <p className="mb-4">Nenhum resultado para os filtros aplicados.</p>
+            <Button
+              onClick={() => {
+                setSearchName("");
+                setFilterStatus("");
+                setFilterNiche("");
+                setFilterState("");
+              }}
+            >
+              Limpar Filtros
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-6 flex flex-col gap-4">
+            {filteredParticipations.map((participation) => {
+              const influencer = participation.expand?.influencer;
+              if (!influencer) return null;
 
-        {!isBlocked && (
-          <>
-            {campaignParticipations.length === 0 ? (
-              <div className="mt-10 w-full flex flex-col items-center justify-center">
-                <p className="mb-4 text-center">
-                  Você só poderá editar esta campanha enquanto não tiverem
-                  inscritos
-                </p>
-                <Button
-                  variant={"blue"}
-                  onClick={() =>
-                    navigate({
-                      to: `/dashboard/campanhas/${campaignData.id}/editar`,
-                    })
-                  }
+              const createdAt = new Date(participation.created as Date);
+              createdAt.setHours(createdAt.getHours() - 3);
+
+              const dateString = createdAt.toLocaleDateString();
+              const timeString = createdAt.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              });
+
+              const status = participation.status;
+              const proposalText = participation.description || "";
+              const isTextLong = proposalText.length > 100;
+              const displayedText = isTextLong
+                ? proposalText.slice(0, 100) + "..."
+                : proposalText;
+
+              return (
+                <div
+                  key={participation.id}
+                  className="border border-gray-300 rounded-lg p-4 shadow-sm flex flex-col gap-4"
                 >
-                  Editar Campanha
-                </Button>
-              </div>
-            ) : filteredParticipations.length === 0 ? (
-              <div className="mt-10 w-full flex flex-col items-center justify-center">
-                <p className="mb-4">
-                  Nenhum resultado para os filtros aplicados.
-                </p>
-                <Button
-                  onClick={() => {
-                    setSearchName("");
-                    setFilterStatus("");
-                    setFilterNiche("");
-                    setFilterState("");
-                  }}
-                >
-                  Limpar Filtros
-                </Button>
-              </div>
-            ) : (
-              <div className="mt-6 flex flex-col gap-4">
-                {filteredParticipations.map((participation) => {
-                  const influencer = participation.expand?.influencer;
-                  if (!influencer) return null;
-
-                  const createdAt = new Date(participation.created as Date);
-                  createdAt.setHours(createdAt.getHours() - 3);
-
-                  const dateString = createdAt.toLocaleDateString();
-                  const timeString = createdAt.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  });
-
-                  const status = participation.status;
-                  const proposalText = participation.description || "";
-                  const isTextLong = proposalText.length > 100;
-                  const displayedText = isTextLong
-                    ? proposalText.slice(0, 100) + "..."
-                    : proposalText;
-
-                  return (
-                    <div
-                      key={participation.id}
-                      className="border border-gray-300 rounded-lg p-4 shadow-sm flex flex-col gap-4"
-                    >
-                      <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex md:border-r border-gray-300 md:pr-2">
-                          {influencer.profile_img ? (
-                            <img
-                              src={pb.files.getUrl(
-                                influencer,
-                                influencer.profile_img
-                              )}
-                              alt="Foto do Creator"
-                              className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2"
-                            />
-                          ) : (
-                            <div className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
-                              <User size={20} color="#fff" />
-                            </div>
+                  <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex md:border-r border-gray-300 md:pr-2">
+                      {influencer.profile_img ? (
+                        <img
+                          src={pb.files.getUrl(
+                            influencer,
+                            influencer.profile_img
                           )}
-                          <div>
-                            <p className="text-sm">
-                              {dateString} {timeString} / {influencer.state}
-                            </p>
-                            <h3 className="font-semibold text-lg text-gray-900">
-                              {influencer.name}
-                            </h3>
-                            <p
-                              className="text-sm mt-1 font-semibold"
-                              style={{
-                                color: getStatusColor(status),
-                              }}
-                            >
-                              Status:{" "}
-                              {status === "waiting"
-                                ? "Proposta Pendente"
-                                : status === "approved"
-                                  ? "Trabalho em Progresso"
-                                  : status === "completed"
-                                    ? "Trabalho Concluído"
-                                    : ""}
-                            </p>
-                          </div>
+                          alt="Foto do Creator"
+                          className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
+                          <User size={20} color="#fff" />
                         </div>
-
-                        <div>
-                          <p
-                            className="text-base"
-                            style={!displayedText ? { color: "#777" } : {}}
-                          >
-                            {displayedText || "Sem texto de proposta"}
-                          </p>
-                          {isTextLong && (
-                            <button
-                              className="text-blue-500"
-                              onClick={() => {
-                                setSelectedParticipation(participation);
-                                setModalType("viewProposal");
-                              }}
-                            >
-                              Ver mais
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col md:flex-row items-center md:justify-between border-t-2 pt-5 gap-2">
-                        <div>
-                          {(status === "approved" || status === "completed") &&
-                            campaignData.status !== "ended" &&
-                            campaignData.paid === true && (
-                              <button
-                                className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
-                                onClick={() => {
-                                  handleStartChat(
-                                    participation.expand?.influencer?.id || "",
-                                    participation.expand?.campaign?.brand || ""
-                                  );
-                                }}
-                              >
-                                {loadingChat ? (
-                                  "Aguarde..."
-                                ) : (
-                                  <>
-                                    <MessageCircle size={18} className="mr-1" />
-                                    Enviar Mensagem
-                                  </>
-                                )}
-                              </button>
-                            )}
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          <Button
-                            variant={"blue"}
-                            className="text-base"
-                            onClick={() => {
-                              setSelectedParticipation(participation);
-                              setModalType("viewProposal");
-                            }}
-                          >
-                            <MagnifyingGlassPlus size={19} className="mr-1" />{" "}
-                            Visualizar
-                          </Button>
-
-                          {status === "waiting" &&
-                            campaignData.status !== "ended" && (
-                              <Button
-                                variant={"blue"}
-                                className="px-4 py-2 text-base flex items-center"
-                                onClick={() => {
-                                  setSelectedParticipation(participation);
-                                  setModalType("choose");
-                                }}
-                              >
-                                <ThumbsUp size={19} className="mr-1" />
-                                Escolher para a Campanha
-                              </Button>
-                            )}
-
-                          {status === "approved" && (
-                            <>
-                              <Button
-                                variant={"brown"}
-                                className="px-4 py-2 rounded flex items-center text-base"
-                                onClick={() => {
-                                  setSelectedParticipation(participation);
-                                  setModalType("contactSupport");
-                                }}
-                              >
-                                <Headset size={18} className="mr-1" />
-                                Contatar Suporte
-                              </Button>
-
-                              {campaignData.status !== "ended" &&
-                                campaignData.paid === true && (
-                                  <button
-                                    className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
-                                    onClick={() => {
-                                      setSelectedParticipation(participation);
-                                      setModalType("conclude");
-                                    }}
-                                  >
-                                    <Flag size={18} className="mr-1" />
-                                    Trabalho concluído
-                                  </button>
-                                )}
-                            </>
-                          )}
-                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm">
+                          {dateString} {timeString} / {influencer.state}
+                        </p>
+                        <h3 className="font-semibold text-lg text-gray-900">
+                          {influencer.name}
+                        </h3>
+                        <p
+                          className="text-sm mt-1 font-semibold"
+                          style={{
+                            color: getStatusColor(status),
+                          }}
+                        >
+                          Status:{" "}
+                          {status === "waiting"
+                            ? "Proposta Pendente"
+                            : status === "approved"
+                              ? "Trabalho em Progresso"
+                              : status === "completed"
+                                ? "Trabalho Concluído"
+                                : ""}
+                        </p>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </>
+
+                    <div>
+                      <p
+                        className="text-base"
+                        style={!displayedText ? { color: "#777" } : {}}
+                      >
+                        {displayedText || "Sem texto de proposta"}
+                      </p>
+                      {isTextLong && (
+                        <button
+                          className="text-blue-500"
+                          onClick={() => {
+                            setSelectedParticipation(participation);
+                            setModalType("viewProposal");
+                          }}
+                        >
+                          Ver mais
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row items-center md:justify-between border-t-2 pt-5 gap-2">
+                    <div>
+                      {(status === "approved" || status === "completed") &&
+                        campaignData.status !== "ended" &&
+                        campaignData.paid === true && (
+                          <button
+                            className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
+                            onClick={() => {
+                              handleStartChat(
+                                participation.expand?.influencer?.id || "",
+                                participation.expand?.campaign?.brand || ""
+                              );
+                            }}
+                          >
+                            {loadingChat ? (
+                              "Aguarde..."
+                            ) : (
+                              <>
+                                <MessageCircle size={18} className="mr-1" />
+                                Enviar Mensagem
+                              </>
+                            )}
+                          </button>
+                        )}
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant={"blue"}
+                        className="text-base"
+                        onClick={() => {
+                          setSelectedParticipation(participation);
+                          setModalType("viewProposal");
+                        }}
+                      >
+                        <MagnifyingGlassPlus size={19} className="mr-1" />{" "}
+                        Visualizar
+                      </Button>
+
+                      {status === "waiting" &&
+                        campaignData.status !== "ended" &&
+                        (cartParticipations.some(
+                          (cartItem) => cartItem.id === participation.id
+                        ) ? (
+                          <Button
+                            disabled
+                            className="cursor-not-allowed px-4 py-2 text-base flex items-center"
+                          >
+                            <ThumbsUp size={19} className="mr-1" />
+                            Selecionado
+                          </Button>
+                        ) : (
+                          <Button
+                            variant={"blue"}
+                            className="px-4 py-2 text-base flex items-center"
+                            onClick={() => {
+                              handleAddToCart(participation.id!);
+                            }}
+                          >
+                            <ThumbsUp size={19} className="mr-1" />
+                            Escolher para a Campanha
+                          </Button>
+                        ))}
+                        
+                      {status === "approved" && (
+                        <>
+                          <Button
+                            variant={"brown"}
+                            className="px-4 py-2 rounded flex items-center text-base"
+                            onClick={() => {
+                              setSelectedParticipation(participation);
+                              setModalType("contactSupport");
+                            }}
+                          >
+                            <Headset size={18} className="mr-1" />
+                            Contatar Suporte
+                          </Button>
+
+                          {campaignData.status !== "ended" &&
+                            campaignData.paid === true && (
+                              <button
+                                className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
+                                onClick={() => {
+                                  setSelectedParticipation(participation);
+                                  setModalType("conclude");
+                                }}
+                              >
+                                <Flag size={18} className="mr-1" />
+                                Trabalho concluído
+                              </button>
+                            )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
-
       {/* Modals */}
       {modalType === "choose" && selectedParticipation && (
         <ChooseParticipantModal
@@ -824,7 +816,6 @@ function Page() {
           updateParticipationStatus={updateParticipationStatus}
         />
       )}
-
       {modalType === "conclude" && selectedParticipation && (
         <ConcludeModalParticipant
           participant={selectedParticipation.expand?.influencer as Influencer}
@@ -833,7 +824,6 @@ function Page() {
           updateParticipationStatus={updateParticipationStatus}
         />
       )}
-
       {modalType === "contactSupport" && selectedParticipation && (
         <SupportModal
           campaignData={campaignData}
@@ -841,7 +831,6 @@ function Page() {
           setModalType={setModalType}
         />
       )}
-
       {modalType === "viewProposal" && selectedParticipation && (
         <InfoParticipantModal
           campaignData={campaignData}
@@ -851,14 +840,12 @@ function Page() {
           setModalType={setModalType}
         />
       )}
-
       {modalType === "cancelCampaign" && (
         <ModalCancelCampaign
           setModalType={setModalType}
           campaignData={campaignData}
         />
       )}
-
       {modalType === "rateParticipant" && selectedParticipation && (
         <RateParticipantModal
           selectedParticipation={selectedParticipation}
@@ -866,14 +853,12 @@ function Page() {
           setModalType={setModalType}
         />
       )}
-
       {modalType === "ratePlatform" && (
         <RatePlatformModal
           setModalType={setModalType}
           campaign={campaignData}
         />
       )}
-
       <ToastContainer />
     </div>
   );
