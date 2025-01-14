@@ -15,6 +15,7 @@ import { getPlans } from "@/services/spotightCampaign";
 
 import GatewayPaymentModal from "./GatewayPaymentModal";
 import Modal from "./Modal";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   campaign: Campaign;
@@ -22,6 +23,7 @@ interface Props {
 
 const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [selectedOption, setSelectedOption] = useState<string>("0");
   const [plans, setPlans] = useState<SpotlightCampaignPlan[]>([]);
@@ -54,10 +56,11 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
         </Modal>
       )}
 
-      <h1 className="text-xl font-bold mb-4">Comprar Destaque</h1>
+      <h1 className="text-xl font-bold mb-4">{t("Comprar Destaque")}</h1>
       <p className="mb-4 text-gray-600">
-        Quer deixar sua campanha em destaque na plataforma e receber mais
-        candidatos? Destaque sua campanha.
+        {t(
+          "Quer deixar sua campanha em destaque na plataforma e receber mais candidatos? Destaque sua campanha."
+        )}
       </p>
 
       {getPlansMutate.isPending ? (
@@ -75,10 +78,12 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
             onClick={() => setSelectedOption("0")}
           >
             <div className="flex justify-between items-center">
-              <span className="text-lg font-medium">Sem Destaque</span>
+              <span className="text-lg font-medium">{t("Sem Destaque")}</span>
               <span className="text-lg font-medium">R$ 0,00</span>
             </div>
-            <p className="text-gray-500">Sua campanha não receberá destaque.</p>
+            <p className="text-gray-500">
+              {t("Sua campanha não receberá destaque.")}
+            </p>
           </div>
 
           {isPremium && (
@@ -92,13 +97,13 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
             >
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium">
-                  Destaque da assinatura{" "}
+                  {t("Destaque da assinatura")}{" "}
                   <span className="text-[#FF672F]">Premium</span>
                 </span>
                 <span className="text-lg font-medium">R$ 0,00</span>
               </div>
               <p className="text-gray-500">
-                Sua campanha receberá um destaque de 5 dias.
+                {t("Sua campanha receberá um destaque de 5 dias.")}
               </p>
             </div>
           )}
@@ -128,9 +133,9 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
                   </span>
                 </div>
                 <p className="text-gray-500">
-                  {`Sua campanha ficará no topo por ${
-                    plan.stripe_product_name.match(/\d+/)?.[0]
-                  } dias.`}
+                  {t("Sua campanha ficará no topo por {{days}} dias.", {
+                    days: plan.stripe_product_name.match(/\d+/)?.[0] || 0,
+                  })}
                 </p>
               </div>
             );
@@ -190,16 +195,9 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
           </Button>
 
           <p className="mt-4 text-sm text-gray-500">
-            O pagamento da campanha deverá ser realizado somente após a marca
-            selecionar e aprovar todos os creators que deseja incluir na
-            campanha. O valor final será calculado com base na multiplicação do
-            valor definido por creator pelo número de creators aprovados. Após a
-            confirmação do pagamento, a campanha será iniciada conforme o
-            planejamento aprovado. Nota: Caso algum influenciador não cumpra os
-            requisitos ou ocorra um problema comprovado, você poderá solicitar o
-            reembolso de 100% do valor pago referente àquele influenciador. O
-            valor do destaque, no entanto, não é reembolsável, pois corresponde
-            ao serviço já prestado.
+            {t(
+              "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor final será calculado com base na multiplicação do valor definido por creator pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: Caso algum influenciador não cumpra os requisitos ou ocorra um problema comprovado, você poderá solicitar o reembolso de 100% do valor pago referente àquele influenciador. O valor do destaque, no entanto, não é reembolsável, pois corresponde ao serviço já prestado."
+            )}
           </p>
         </div>
       )}

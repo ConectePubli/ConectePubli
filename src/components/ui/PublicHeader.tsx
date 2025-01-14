@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import logo from "@/assets/logo.svg";
 import { t } from "i18next";
+import I18n from "../i18n/i18n";
 
 export const PublicHeader = () => {
   const navigate = useNavigate();
@@ -12,9 +13,12 @@ export const PublicHeader = () => {
   return (
     <header className="sticky top-0 bg-white border-b-[1px] z-50">
       <div className="h-[66px] flex justify-between items-center mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl px-4">
-        <Link to="/">
-          <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link to="/">
+            <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
+          </Link>
+          <I18n header={true} />
+        </div>
         <div className="gap-2 flex">
           <Button
             variant="ghost"

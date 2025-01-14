@@ -769,7 +769,7 @@ function Page() {
                             Escolher para a Campanha
                           </Button>
                         ))}
-                        
+
                       {status === "approved" && (
                         <>
                           <Button
