@@ -155,7 +155,7 @@ const InfoParticipantModal: React.FC<Props> = ({
             }}
           >
             <MagnifyingGlassPlus size={17} weight="bold" />
-            Ver Perfil
+            {t("Ver Perfil")}
           </button>
 
           {campaignData.status !== "ended" &&
@@ -198,13 +198,13 @@ const InfoParticipantModal: React.FC<Props> = ({
           campaignData.paid === true && (
             <>
               <button
-                className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center w-[215px]"
+                className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center justify-center w-[215px]"
                 onClick={() => {
                   setSelectedParticipation(selectedParticipation);
                   setModalType("conclude");
                 }}
               >
-                <Flag size={18} className="mr-1" />
+                <Flag size={18} className="mr-2" />
                 {t("Trabalho concluído")}
               </button>
             </>

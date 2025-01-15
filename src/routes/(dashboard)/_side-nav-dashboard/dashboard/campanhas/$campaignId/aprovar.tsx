@@ -15,12 +15,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { Info, MessageCircle, ThumbsUp, User } from "lucide-react";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
-import {
-  Flag,
-  Headset,
-  MagnifyingGlassPlus,
-  Warning,
-} from "phosphor-react";
+import { Flag, Headset, MagnifyingGlassPlus, Warning } from "phosphor-react";
 import "react-toastify/ReactToastify.css";
 
 import GoBack from "@/assets/icons/go-back.svg";
@@ -201,6 +196,30 @@ function Page() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!campaignData) return;
+
+    const localIds = getCartItems(campaignData.id || "");
+    if (!localIds.length) return;
+
+    let removido = false;
+
+    campaignParticipations.forEach((p) => {
+      if (p.status === "approved" && localIds.includes(p.id!)) {
+        removeFromCart(campaignData.id, p.id!);
+        removido = true;
+      }
+    });
+
+    if (removido) {
+      const novosIds = getCartItems(campaignData.id || "");
+      const filtrados = campaignParticipations.filter((p) =>
+        novosIds.includes(p.id!)
+      );
+      setCartParticipations(filtrados);
+    }
+  }, [campaignParticipations]);
 
   useEffect(() => {
     if (isCartOpen) {
@@ -654,7 +673,7 @@ function Page() {
                 setFilterState("");
               }}
             >
-              Limpar Filtros
+              {t("Limpar Filtros")}
             </Button>
           </div>
         ) : (
@@ -781,7 +800,7 @@ function Page() {
                             ) : (
                               <>
                                 <MessageCircle size={18} className="mr-1" />
-                                Enviar Mensagem
+                                {t("Enviar Mensagem")}
                               </>
                             )}
                           </button>
