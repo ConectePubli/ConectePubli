@@ -75,7 +75,7 @@ const settings = {
 };
 const TestimonialSection: React.FC = () => {
   return (
-    <div className="w-full px-5 md:px-0">
+    <div className="w-ful md:px-0">
       <Slider {...settings}>
         {testimonials.map((testimonial, index) => (
           <Testimonial
