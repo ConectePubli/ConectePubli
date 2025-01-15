@@ -90,7 +90,7 @@ export default {
     "Cadastro Creators": "Creators Registration",
     "Receba de forma rápida, simples e protegida com o Conecte Pay.":
       "Receive quickly, simply, and securely with Conecte Pay.",
-    "Como funciona": "How it works",
+    "Como Funciona?": "How It Works?",
     Notificações: "Notifications",
     "Você tem {{count}} notificações não lidas":
       "You have {{count}} unread notifications",
@@ -1262,11 +1262,12 @@ export default {
       "The campaign is marked as a draft.",
     "Erro ao buscar a campanha.": "Error fetching campaign.",
     "Carregando dados da campanha...": "Loading campaign data...",
-    "Conexão digital direta entre": "Direct digital connection between",
+    "Conexão Digital Direta Entre": "Direct Digital Connection Between",
     e: "and",
     Marcas: "Brands",
     Creators: "Creators",
     "Sou Marca": "I'm a Brand",
+    "Sou Marca ou Agência": "I'm a Brand or Agency",
     "Sou Creator": "I'm a Creator",
     Avaliar: "Rate",
     "Editar rascunho": "Edit draft",
@@ -1290,6 +1291,8 @@ export default {
     "Para Marcas e Agências": "For Brands and Agencies",
     "Para Creators": "For Creators",
     "Cadastro Marcas ou Agências": "Brands or Agencies Registration",
+    "Somos uma plataforma inovadora que conecta diretamente campanhas publicitárias de marcas ou agências com criadores de conteúdo digital. Utilizando alta tecnologia, simplificamos processos, otimizamos parcerias e entregamos resultados reais. Somos a revolução no marketing de influência e conteúdo!":
+      "We are an innovative platform that directly connects advertising campaigns from brands or agencies with digital content creators. Using high technology, we simplify processes, optimize partnerships and deliver real results. We are the revolution in influencer and content marketing!",
     "Oportunidades para Todos:": "Opportunities for Everyone:",
     "De UGC Creators a influenciadores, encontre campanhas ideais para você.":
       "From UGC Creators to influencers, find ideal campaigns for you.",
@@ -1308,14 +1311,17 @@ export default {
     "Confira Nossos Top Creators:": "Check Out Our Top Creators:",
     "Nossa plataforma está oficialmente disponível para você ampliar seu alcance e maximizar seu impacto digital. Cadastre-se agora e aproveite todos os benefícios que oferecemos, incluindo ferramentas avançadas de análise e suporte dedicado, tudo isso sem taxa de adesão!":
       "Our platform is officially available for you to expand your reach and maximize your digital impact. Sign up now and enjoy all the benefits we offer, including advanced analysis tools and dedicated support, all without a membership fee!",
-    "O que estão falando sobre a Conecte Publi":
-      "What they're saying about Conecte Publi",
+    "O Que Estão Falando Sobre a Conecte Publi":
+      "What They're Saying About Conecte Publi",
+    "Somos o ecossistema completo que amplifica a presença das marcas no universo digital, transformando campanhas publicitárias em experiências desejadas pelo público. Unimos a nova era da humanização das marcas ao poder dos creators, aumentando todos os tipos de conversões e gerando transformações exponenciais.":
+      "We are the complete ecosystem that amplifies brands' presence in the digital universe, transforming advertising campaigns into experiences desired by the public. We unite the new era of brand humanization with the power of creators, increasing all types of conversions and generating exponential transformations.",
     "Solicitar Mediação para o Trabalho do Creator":
       "Request Mediation for Creator Work",
     "Se houver divergências no trabalho deste creator, nossa equipe de suporte pode ajudar a mediar o caso. No entanto, caso ambas as partes cheguem a um acordo por conta própria, vocês podem resolver a situação diretamente.":
       "If there are discrepancies in this creator's work, our support team can help mediate the case. However, if both parties reach an agreement on their own, you can resolve the situation directly.",
     "Passo a passo para resolver a situação":
       "Step by step to resolve the situation",
+    "Conexões Estratégicas": "Strategic Connections",
     "Tente resolver diretamente": "Try solving directly",
     "Recomendamos dialogar com o creator e oferecer feedback antes de contatar o suporte. Exemplos:":
       "We recommend talking to the creator and offering feedback before contacting support. Examples:",
@@ -1363,5 +1369,6 @@ export default {
     "Ocorreu um erro ao enviar sua solicitação. Tente novamente.":
       "An error occurred while submitting your request. Please try again.",
     "Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: `Creators Selecionados`": `Finalize the selection and pay the creator at the top of this page, by clicking on the button: "Selected Creators"`,
+    Agências: "Agencies",
   },
 };

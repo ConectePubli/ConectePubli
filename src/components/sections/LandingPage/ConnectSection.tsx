@@ -31,7 +31,7 @@ export const ConnectSection: React.FC = () => {
               onClick={() => navigate({ to: "/cadastro/marca" })}
               className="font-bold w-fit"
             >
-              <Translator path="Sou Marca" />
+              <Translator path="Sou Marca ou Agência" />
             </Button>
             <Button
               variant="orange"

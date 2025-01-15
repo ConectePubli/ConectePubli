@@ -69,7 +69,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
   }, [currentIndex, carousel]);
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-[#FCFCFC] rounded-lg shadow-md overflow-hidden">
       <img src={imageSrc} alt={title} className="w-full h-80 object-cover" />
       <div className="px-3 py-3">
         <h3 className="text-xl font-semibold">{title}</h3>

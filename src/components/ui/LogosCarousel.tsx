@@ -24,13 +24,13 @@ const LogosCarousel = () => {
   const allLogos = [...logos, ...logos, ...logos, ...logos];
 
   return (
-    <div className="relative overflow-hidden py-8 px-4 sm:py-[30px] whitespace-nowrap select-none mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
+    <div className="relative overflow-hidden py-8 mt-4 px-4 sm:py-[30px] whitespace-nowrap select-none mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
       {/* Left Overlay */}
       <div
         className="absolute top-0 left-0 h-full z-10 pointer-events-none"
         style={{
           width: "50px",
-          background: "linear-gradient(to left, rgba(255,255,255,0), #ffffff)",
+          background: "linear-gradient(to left, rgba(255,255,255,0), #FCFCFC)",
         }}
       ></div>
 
@@ -39,7 +39,7 @@ const LogosCarousel = () => {
         className="absolute top-0 right-0 h-full z-10 pointer-events-none"
         style={{
           width: "50px",
-          background: "linear-gradient(to right, rgba(255,255,255,0), #ffffff)",
+          background: "linear-gradient(to right, rgba(255,255,255,0), #FCFCFC)",
         }}
       ></div>
 
