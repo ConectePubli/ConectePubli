@@ -539,8 +539,28 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         ? campaignBudget.creatorFee
         : 0;
 
-      console.log("novo campo");
-      console.log(campaignData.audienceSegmentation.paidTrafficInfo);
+      let uniqueName = campaignData.basicInfo.campaignName;
+
+      const existingUniqueNames: string[] = await pb
+        .collection("Campaigns")
+        .getFullList<Campaign>({ fields: "unique_name" })
+        .then((campaigns: any) =>
+          campaigns.map((c: { unique_name: any }) => c.unique_name)
+        );
+
+      const sanitizedName = campaignData.basicInfo.campaignName
+        .replace(/[^\p{L}\p{N}\s]/gu, "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .split(/\s+/);
+
+      const limitedWords = sanitizedName.slice(0, 5);
+
+      const baseName = limitedWords.join("_");
+
+      uniqueName = generateUniqueName(baseName, existingUniqueNames);
 
       const draftData = {
         name: campaignName,
@@ -576,6 +596,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         responsible_phone: responsibleInfo.phone.replace(/\D/g, ""),
         responsible_cpf: responsibleInfo.cpf,
         status: "draft",
+        unique_name: uniqueName,
       };
 
       if (isDraft && campaignIdDraftState) {
