@@ -1269,7 +1269,7 @@ export default {
     "Sou Marca": "I'm a Brand",
     "Sou Creator": "I'm a Creator",
     Avaliar: "Rate",
-    "Finalizar campanha": "Finish campaign",
+    "Editar rascunho": "Edit draft",
     "Publicar campanha": "Publish campaign",
     "Cadastro Marcas e Agências": "Brands and Agencies Registration",
     "Criadores Qualificados:": "Qualified Creators:",
