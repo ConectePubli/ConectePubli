@@ -126,7 +126,7 @@ function Page() {
                           }}
                         >
                           {campaign.status === "draft"
-                            ? t("Finalizar campanha")
+                            ? t("Editar rascunho")
                             : t("Status desconhecido")}
                         </Button>
                       </td>
@@ -174,7 +174,7 @@ function Page() {
                           }}
                         >
                           {campaign.status === "draft"
-                            ? t("Finalizar campanha")
+                            ? t("Editar rascunho")
                             : t("Status desconhecido")}
                         </Button>
                       </td>

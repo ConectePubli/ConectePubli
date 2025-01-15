@@ -15,13 +15,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { Info, MessageCircle, ThumbsUp, User } from "lucide-react";
 import { getStatusColor } from "@/utils/getColorStatusInfluencer";
-import {
-  Confetti,
-  Flag,
-  Headset,
-  MagnifyingGlassPlus,
-  Warning,
-} from "phosphor-react";
+import { Flag, Headset, MagnifyingGlassPlus, Warning } from "phosphor-react";
 import "react-toastify/ReactToastify.css";
 
 import GoBack from "@/assets/icons/go-back.svg";
@@ -42,7 +36,6 @@ import { toast, ToastContainer } from "react-toastify";
 import { createOrGetChat } from "@/services/chatService";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
 import Spinner from "@/components/ui/Spinner";
-import { formatDateUTC } from "@/utils/formatDateUTC";
 import Modal from "@/components/ui/Modal";
 import GatewayPaymentModal from "@/components/ui/GatewayPaymentModal";
 import {
@@ -109,8 +102,9 @@ export const Route = createFileRoute(
   component: Page,
   errorComponent: () => (
     <div className="px-4 py-4 h-full min-w-100 flex items-center justify-center text-center">
-      Ocorreu um erro ao carregar essa página. Não se preocupe, estamos
-      trabalhando para resolvê-lo!
+      {t(
+        "Ocorreu um erro ao carregar essa página. Não se preocupe, estamos trabalhando para resolvê-lo!"
+      )}
     </div>
   ),
   notFoundComponent: () => <div className="p-10">Campanha não encontrada</div>,
@@ -157,13 +151,8 @@ function Page() {
     CampaignParticipation[]
   >([]);
 
-  // Controla se o modal "Escolher Influencer" deve aparecer só na primeira vez
-  const [hasShownChooseModal, setHasShownChooseModal] = useState(() => {
-    return localStorage.getItem("showedChooseInfluencerModal") === "true";
-  });
-
   // Controla se o modal "Escolher Influencer" está aberto ou não
-  const [isFirstChooseModalOpen, setIsFirstChooseModalOpen] = useState(false);
+  const [chooseModalOpen, setChooseModalOpen] = useState(false);
 
   // Crie duas instâncias de Date com base nas datas vindas da campaignData
   const today = new Date();
@@ -205,6 +194,30 @@ function Page() {
   }, []);
 
   useEffect(() => {
+    if (!campaignData) return;
+
+    const localIds = getCartItems(campaignData.id || "");
+    if (!localIds.length) return;
+
+    let removido = false;
+
+    campaignParticipations.forEach((p) => {
+      if (p.status === "approved" && localIds.includes(p.id!)) {
+        removeFromCart(campaignData.id, p.id!);
+        removido = true;
+      }
+    });
+
+    if (removido) {
+      const novosIds = getCartItems(campaignData.id || "");
+      const filtrados = campaignParticipations.filter((p) =>
+        novosIds.includes(p.id!)
+      );
+      setCartParticipations(filtrados);
+    }
+  }, [campaignParticipations]);
+
+  useEffect(() => {
     if (isCartOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -227,20 +240,7 @@ function Page() {
 
     toast.success(t("Creator foi selecionado"));
 
-    if (!hasShownChooseModal) {
-      // Marca que já exibimos
-      setHasShownChooseModal(true);
-      localStorage.setItem("showedChooseInfluencerModal", "true");
-
-      // Abre o modal de primeira escolha
-      setIsFirstChooseModalOpen(true);
-
-      // Se quiser mostrar info do influencer escolhido no modal
-      const chosen = campaignParticipations.find(
-        (p) => p.id === participationId
-      );
-      setSelectedParticipation(chosen || null);
-    }
+    setChooseModalOpen(true);
   }
 
   function handleRemoveFromCart(participationId: string) {
@@ -563,24 +563,7 @@ function Page() {
                 <>{t("Creators selecionados")}</>
               )}
             </Button>
-
-            {approvedParticipationsCount >= 1 && (
-              <p className="text-sm text-gray-700 max-w-[400px]">
-                {t("Você possui até o dia ")}{" "}
-                <span className="text-black">
-                  {formatDateUTC(campaignData.beginning)}
-                </span>{" "}
-                {t("para realizar o pagamento e não ter a campanha bloqueada")}
-              </p>
-            )}
           </div>
-
-          {campaignData.paid === true && (
-            <Button className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#338B13] hover:text-white transition flex items-center">
-              <Confetti weight="bold" className="w-5 h-5 mr-1" />{" "}
-              {t("Campanha paga")}
-            </Button>
-          )}
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-4">
@@ -673,7 +656,7 @@ function Page() {
                 setFilterState("");
               }}
             >
-              Limpar Filtros
+              {t("Limpar Filtros")}
             </Button>
           </div>
         ) : (
@@ -800,7 +783,7 @@ function Page() {
                             ) : (
                               <>
                                 <MessageCircle size={18} className="mr-1" />
-                                Enviar Mensagem
+                                {t("Enviar Mensagem")}
                               </>
                             )}
                           </button>
@@ -913,6 +896,7 @@ function Page() {
           setSelectedParticipation={setSelectedParticipation}
           participant={selectedParticipation.expand?.influencer as Influencer}
           setModalType={setModalType}
+          cartParticipations={cartParticipations}
         />
       )}
       {modalType === "cancelCampaign" && (
@@ -934,61 +918,18 @@ function Page() {
           campaign={campaignData}
         />
       )}
-      {isFirstChooseModalOpen && (
-        <Modal onClose={() => setIsFirstChooseModalOpen(false)}>
+      {chooseModalOpen && (
+        <Modal onClose={() => {}} hideX={true}>
           <div className="flex flex-col p-2 w-full">
-            <h2 className="text-xl font-semibold mb-4">
-              {t("Escolher Creator")}
-            </h2>
-            {selectedParticipation?.expand?.influencer && (
-              <div className="flex items-center gap-3 mt-1">
-                {selectedParticipation.expand.influencer.profile_img ? (
-                  <img
-                    src={pb.files.getUrl(
-                      selectedParticipation.expand.influencer,
-                      selectedParticipation.expand.influencer.profile_img
-                    )}
-                    alt={selectedParticipation.expand.influencer.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-                    <User size={20} color="#fff" />
-                  </div>
-                )}
-                <p className="font-medium text-base">
-                  {selectedParticipation.expand.influencer.name}
-                </p>
-              </div>
-            )}
-
-            <p className="text-gray-700 leading-relaxed mt-2">
-              {t("Você está prestes a aprovar este Creator para sua campanha.")}
-              <br />
+            <p>
               {t(
-                "Para garantir que o trabalho possa começar, é necessário realizar o pagamento antes de concluir a aprovação."
+                `Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: "Creators Selecionados"`
               )}
             </p>
 
-            <ol className="list-decimal list-inside text-gray-900 mt-2 space-y-1">
-              <li>
-                {t(
-                  `Realize o pagamento referente a este Creator, clicando no botão “Creators selecionados”.`
-                )}
-              </li>
-              <li>
-                {t(
-                  "Após a confirmação do pagamento, o Creator será notificado e poderá iniciar a produção."
-                )}
-              </li>
-            </ol>
-
             <div className="mt-4 flex justify-end">
-              <Button
-                variant="blue"
-                onClick={() => setIsFirstChooseModalOpen(false)}
-              >
-                {t("Fechar")}
+              <Button variant="blue" onClick={() => setChooseModalOpen(false)}>
+                {t("OK")}
               </Button>
             </div>
           </div>

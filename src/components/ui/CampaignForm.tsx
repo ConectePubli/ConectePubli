@@ -840,7 +840,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
                 ? t("Carregando...")
                 : isEditMode
                   ? t("Atualizar Campanha")
-                  : t("Criar campanha")}
+                  : t("Publicar campanha")}
             </Button>
           </div>
 

@@ -1189,6 +1189,7 @@ export default {
     Selecionado: "Selected",
     Selecionados: "Selected",
     Inscrito: "Subscribed",
+    "Ver Perfil": "See profile",
     "Creators selecionados": "Selected Creators",
     "Limpar Tudo": "Clear all",
     "Sem nome": "Unknown",
@@ -1268,6 +1269,8 @@ export default {
     "Sou Marca": "I'm a Brand",
     "Sou Creator": "I'm a Creator",
     Avaliar: "Rate",
+    "Editar rascunho": "Edit draft",
+    "Publicar campanha": "Publish campaign",
     "Cadastro Marcas e Agências": "Brands and Agencies Registration",
     "Criadores Qualificados:": "Qualified Creators:",
     "Custo-Benefício:": "Cost-Benefit:",
@@ -1307,5 +1310,58 @@ export default {
       "Our platform is officially available for you to expand your reach and maximize your digital impact. Sign up now and enjoy all the benefits we offer, including advanced analysis tools and dedicated support, all without a membership fee!",
     "O que estão falando sobre a Conecte Publi":
       "What they're saying about Conecte Publi",
+    "Solicitar Mediação para o Trabalho do Creator":
+      "Request Mediation for Creator Work",
+    "Se houver divergências no trabalho deste creator, nossa equipe de suporte pode ajudar a mediar o caso. No entanto, caso ambas as partes cheguem a um acordo por conta própria, vocês podem resolver a situação diretamente.":
+      "If there are discrepancies in this creator's work, our support team can help mediate the case. However, if both parties reach an agreement on their own, you can resolve the situation directly.",
+    "Passo a passo para resolver a situação":
+      "Step by step to resolve the situation",
+    "Tente resolver diretamente": "Try solving directly",
+    "Recomendamos dialogar com o creator e oferecer feedback antes de contatar o suporte. Exemplos:":
+      "We recommend talking to the creator and offering feedback before contacting support. Examples:",
+    "Descumprimento parcial": "Partial non-compliance",
+    "Caso haja pequenas falhas, como hashtags faltando, solicite que o creator ajuste o conteúdo.":
+      "If there are small errors, such as missing hashtags, ask the creator to adjust the content.",
+    "Prazos não cumpridos": "Missed deadlines",
+    "Lembre o creator da importância do prazo e veja se é possível uma reprogramação.":
+      "Remind the creator of the importance of the deadline and see if rescheduling is possible.",
+    "Inconsistência na mensagem": "Inconsistency in the message",
+    "Se o conteúdo não  segue as diretrizes, explique o que deve ser corrigido antes de optar pelo suporte.":
+      "If the content doesn't follow the guidelines, explain what needs to be fixed before opting for support.",
+    "Em casos simples (como desistência do creator), peça para ele(a) clicar em “Desinscrever-se da Campanha” para uma saída rápida e amigável.":
+      "In simple cases (such as creator withdrawal), ask him/her to click “Unsubscribe from Campaign” for a quick and friendly exit.",
+    "Processo de mediação e custos": "Mediation process and costs",
+    "Caso seja necessário": "If necessary",
+    "Se o creator cumpriu os requisitos da campanha":
+      "If the creator met the campaign requirements",
+    "Caso a marca deseje desqualificar o creator que realizou o trabalho conforme as especificações da campanha, poderá ser necessário pagar 20% do valor acordado para esse creator.":
+      "If the brand wishes to disqualify the creator who carried out the work according to the campaign specifications, it may be necessary to pay 20% of the agreed amount for that creator.",
+    "Se o Creator Não Realizou o Trabalho": "If the Creator Didn't Do the Work",
+    "Caso o creator não tenha colaborado ou não tenha entregue nenhum conteúdo relevante para a campanha, a marca terá direito ao reembolso integral para essa posição específica na campanha depois de uma avaliação da equipe da ConectePubli.":
+      "If the creator has not collaborated or delivered any relevant content to the campaign, the brand will be entitled to a full refund for that specific position in the campaign after an evaluation by the ConectePubli team.",
+    "Coleta de evidências para mediação": "Evidence collection for mediation",
+    "Caso o suporte seja acionado, ambas as partes deverão fornecer evidências (comunicações, entregas e outras documentações relevantes) para embasar a decisão.":
+      "If support is activated, both parties must provide evidence (communications, deliveries and other relevant documentation) to support the decision.",
+    "Contato e acompanhamento": "Contact and follow-up",
+    "Se não houver acordo direto, nossa equipe de suporte entrará em contato com ambas as partes para entender melhor a situação e ajudar a encontrar uma solução justa.":
+      "If there is no direct agreement, our support team will contact both parties to better understand the situation and help find a fair solution.",
+    "Explique a situação": "Explain the situation",
+    "Descreva brevemente o problema que está ocorrendo...":
+      "Briefly describe the problem you are experiencing...",
+    "Pedido Enviado": "Order Sent",
+    "Seu pedido foi enviado com sucesso. Nossa equipe de suporte entrará em contato em breve.":
+      "Your message has been sent successfully. Our support team will contact you shortly.",
+    "Concluir Colaboração": "Complete Collaboration",
+    "Ao Concluir Colaboração, você está confirmando que o creator completou todas as atividades conforme o combinado, e que a campanha foi concluída com sucesso pela parte desse creator. Essa ação indica que o trabalho atendeu às expectativas da marca e não poderá ser desfeita.":
+      "By Completing Collaboration, you are confirming that the creator completed all activities as agreed, and that the campaign was successfully completed by that creator. This action indicates that the work met the brand's expectations and cannot be undone.",
+    "Deseja realmente concluir": "Do you really want to finish",
+    "Sim, Concluir": "Yes, Finish",
+    "Ocorreu um erro ao atualizar o status do candidato":
+      "An error occurred while updating the candidate's status",
+    "Status do candidato atualizado com sucesso":
+      "Candidate status updated successfully",
+    "Ocorreu um erro ao enviar sua solicitação. Tente novamente.":
+      "An error occurred while submitting your request. Please try again.",
+    "Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: `Creators Selecionados`": `Finalize the selection and pay the creator at the top of this page, by clicking on the button: "Selected Creators"`,
   },
 };

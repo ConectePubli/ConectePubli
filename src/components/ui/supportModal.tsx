@@ -10,6 +10,7 @@ import pb from "@/lib/pb";
 import { toast } from "react-toastify";
 import { Campaign } from "@/types/Campaign";
 import { Brand } from "@/types/Brand";
+import { t } from "i18next";
 
 interface Props {
   campaignData: Campaign;
@@ -82,7 +83,7 @@ const SupportModal: React.FC<Props> = ({
     } catch (error) {
       console.error("Erro ao enviar pedido de suporte:", error);
       toast.error(
-        "Ocorreu um erro ao enviar sua solicitação. Tente novamente."
+        t("Ocorreu um erro ao enviar sua solicitação. Tente novamente.")
       );
     } finally {
       setIsSubmitting(false);
@@ -99,7 +100,7 @@ const SupportModal: React.FC<Props> = ({
       {!isSubmitted ? (
         <>
           <h2 className="text-xl font-semibold mb-4">
-            Solicitar Mediação para o Trabalho do Creator
+            {t("Solicitar Mediação para o Trabalho do Creator")}
           </h2>
 
           <div className="flex flex-wrap items-center gap-4 mb-4">
@@ -124,77 +125,83 @@ const SupportModal: React.FC<Props> = ({
           </div>
 
           <p className="text-sm text-gray-600 mb-4">
-            Se houver divergências no trabalho deste creator, nossa equipe de
-            suporte pode ajudar a mediar o caso. No entanto, caso ambas as
-            partes cheguem a um acordo por conta própria, vocês podem resolver a
-            situação diretamente.
+            {t(
+              "Se houver divergências no trabalho deste creator, nossa equipe de suporte pode ajudar a mediar o caso. No entanto, caso ambas as partes cheguem a um acordo por conta própria, vocês podem resolver a situação diretamente."
+            )}
           </p>
 
           <h3 className="text-base font-semibold mb-2">
-            Passo a passo para resolver a situação:
+            {t("Passo a passo para resolver a situação")}:
           </h3>
           <ol className="list-decimal list-inside mb-4 text-sm text-gray-700">
             <li>
-              <strong>Tente resolver diretamente:</strong> Recomendamos dialogar
-              com o creator e oferecer feedback antes de contatar o suporte.
-              Exemplos:
+              <strong>{t("Tente resolver diretamente")}:</strong>{" "}
+              {t(
+                "Recomendamos dialogar com o creator e oferecer feedback antes de contatar o suporte. Exemplos:"
+              )}
               <ul className="list-disc ml-6 mt-1">
                 <li>
-                  <em>Descumprimento parcial:</em> Caso haja pequenas falhas,
-                  como hashtags faltando, solicite que o creator ajuste o
-                  conteúdo.
+                  <em>{t("Descumprimento parcial")}:</em>{" "}
+                  {t(
+                    "Caso haja pequenas falhas, como hashtags faltando, solicite que o creator ajuste o conteúdo."
+                  )}
                 </li>
                 <li>
-                  <em>Prazos não cumpridos:</em> Lembre o creator da importância
-                  do prazo e veja se é possível uma reprogramação.
+                  <em>{t("Prazos não cumpridos")}:</em>{" "}
+                  {t(
+                    "Lembre o creator da importância do prazo e veja se é possível uma reprogramação."
+                  )}
                 </li>
                 <li>
-                  <em>Inconsistência na mensagem:</em> Se o conteúdo não segue
-                  as diretrizes, explique o que deve ser corrigido antes de
-                  optar pelo suporte.
+                  <em>{t("Inconsistência na mensagem")}:</em>{" "}
+                  {t(
+                    "Se o conteúdo não  segue as diretrizes, explique o que deve ser corrigido antes de optar pelo suporte."
+                  )}
                 </li>
               </ul>
             </li>
           </ol>
 
           <h3 className="text-sm font-semibold mb-3">
-            Em casos simples (como desistência do creator), peça para ele(a)
-            clicar em “Desinscrever-se da Campanha” para uma saída rápida e
-            amigável.
+            {t(
+              "Em casos simples (como desistência do creator), peça para ele(a) clicar em “Desinscrever-se da Campanha” para uma saída rápida e amigável."
+            )}
           </h3>
 
           <ol className="list-none list-decimal list-inside mb-4 text-sm text-gray-700">
             <li className="mb-3">
               <strong>
-                2. Processo de mediação e custos (Caso seja necessário):
+                2. {t("Processo de mediação e custos")} (
+                {t("Caso seja necessário")}):
               </strong>{" "}
               <ul className="list-disc ml-6 mt-1">
                 <li>
-                  <em>Se o creator cumpriu os requisitos da campanha:</em> Caso
-                  a marca deseje desqualificar o creator que realizou o trabalho
-                  conforme as especificações da campanha, poderá ser necessário
-                  pagar 20% do valor acordado para esse creator.
+                  <em>
+                    {t("Se o creator cumpriu os requisitos da campanha")}:
+                  </em>{" "}
+                  {t(
+                    "Caso a marca deseje desqualificar o creator que realizou o trabalho conforme as especificações da campanha, poderá ser necessário pagar 20% do valor acordado para esse creator."
+                  )}
                 </li>
                 <li>
-                  <em>Se o Creator Não Realizou o Trabalho:</em> Caso o creator
-                  não tenha colaborado ou não tenha entregue nenhum conteúdo
-                  relevante para a campanha, a marca terá direito ao reembolso
-                  integral para essa posição específica na campanha depois de
-                  uma avaliação da equipe da ConectePubli.
+                  <em>{t("Se o Creator Não Realizou o Trabalho")}:</em>{" "}
+                  {t(
+                    "Caso o creator não tenha colaborado ou não tenha entregue nenhum conteúdo relevante para a campanha, a marca terá direito ao reembolso integral para essa posição específica na campanha depois de uma avaliação da equipe da ConectePubli."
+                  )}
                 </li>
               </ul>
             </li>
             <li className="mb-3">
-              <strong>3. Coleta de evidências para mediação:</strong> Caso o
-              suporte seja acionado, ambas as partes deverão fornecer evidências
-              (comunicações, entregas e outras documentações relevantes) para
-              embasar a decisão.
+              <strong>3. {t("Coleta de evidências para mediação")}:</strong>{" "}
+              {t(
+                "Caso o suporte seja acionado, ambas as partes deverão fornecer evidências (comunicações, entregas e outras documentações relevantes) para embasar a decisão."
+              )}
             </li>
             <li className="mb-3">
-              <strong>4. Contato e acompanhamento:</strong> Se não houver acordo
-              direto, nossa equipe de suporte entrará em contato com ambas as
-              partes para entender melhor a situação e ajudar a encontrar uma
-              solução justa.
+              <strong>4. {t("Contato e acompanhamento")}:</strong>{" "}
+              {t(
+                "Se não houver acordo direto, nossa equipe de suporte entrará em contato com ambas as partes para entender melhor a situação e ajudar a encontrar uma solução justa."
+              )}
             </li>
           </ol>
 
@@ -202,12 +209,14 @@ const SupportModal: React.FC<Props> = ({
             className="block mb-2 text-sm font-medium text-gray-900"
             htmlFor="supportMessage"
           >
-            Explique a situação
+            {t("Explique a situação")}
           </label>
           <textarea
             id="supportMessage"
             className="w-full h-32 border border-gray-300 rounded-lg p-2 mb-4 text-sm"
-            placeholder="Descreva brevemente o problema que está ocorrendo..."
+            placeholder={t(
+              "Descreva brevemente o problema que está ocorrendo..."
+            )}
             value={supportMessage}
             onChange={(e) => setSupportMessage(e.target.value)}
             disabled={isSubmitting}
@@ -219,7 +228,7 @@ const SupportModal: React.FC<Props> = ({
               className="text-gray-600 hover:text-gray-900"
               disabled={isSubmitting}
             >
-              Cancelar
+              {t("Cancelar")}
             </button>
 
             <Button
@@ -227,16 +236,17 @@ const SupportModal: React.FC<Props> = ({
               onClick={handleSendSupportMessage}
               disabled={isSubmitting || !supportMessage.trim()}
             >
-              {isSubmitting ? "Enviando..." : "Enviar"}
+              {isSubmitting ? t("Enviando...") : t("Enviar")}
             </Button>
           </div>
         </>
       ) : (
         <>
-          <h2 className="text-xl font-bold mb-4">Pedido Enviado</h2>
+          <h2 className="text-xl font-bold mb-4">{t("Pedido Enviado")}</h2>
           <p className="text-gray-700 mb-4">
-            Seu pedido foi enviado com sucesso. Nossa equipe de suporte entrará
-            em contato em breve.
+            {t(
+              "Seu pedido foi enviado com sucesso. Nossa equipe de suporte entrará em contato em breve."
+            )}
           </p>
           <div className="flex justify-end">
             <Button
@@ -246,7 +256,7 @@ const SupportModal: React.FC<Props> = ({
                 setModalType(null);
               }}
             >
-              Fechar
+              {t("Fechar")}
             </Button>
           </div>
         </>

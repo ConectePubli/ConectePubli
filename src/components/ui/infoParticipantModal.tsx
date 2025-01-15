@@ -21,6 +21,7 @@ interface Props {
   setSelectedParticipation: React.ComponentState;
   participant: Influencer;
   setModalType: React.ComponentState;
+  cartParticipations: CampaignParticipation[];
 }
 
 const InfoParticipantModal: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const InfoParticipantModal: React.FC<Props> = ({
   setSelectedParticipation,
   participant,
   setModalType,
+  cartParticipations,
 }) => {
   const router = useRouter();
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -103,21 +105,38 @@ const InfoParticipantModal: React.FC<Props> = ({
         </div>
 
         <div>
-          <p
-            className="text-sm mt-1 font-semibold"
-            style={{
-              color: getStatusColor(selectedParticipation.status),
-            }}
-          >
-            Status:{" "}
-            {selectedParticipation.status === "waiting"
-              ? t("Proposta Pendente")
-              : selectedParticipation.status === "approved"
-                ? t("Trabalho em Progresso")
-                : selectedParticipation.status === "completed"
-                  ? t("Trabalho Concluído")
-                  : ""}
-          </p>
+          {cartParticipations.some(
+            (cartItem) => cartItem.id === selectedParticipation.id
+          ) ? (
+            <>
+              <p
+                className="text-sm mt-1 font-semibold"
+                style={{
+                  color: "#FFC107",
+                }}
+              >
+                {t("Status: Pagamento pendente")}
+              </p>
+            </>
+          ) : (
+            <>
+              <p
+                className="text-sm mt-1 font-semibold"
+                style={{
+                  color: getStatusColor(selectedParticipation.status),
+                }}
+              >
+                Status:{" "}
+                {selectedParticipation.status === "waiting"
+                  ? t("Proposta Pendente")
+                  : selectedParticipation.status === "approved"
+                    ? t("Trabalho em Progresso")
+                    : selectedParticipation.status === "completed"
+                      ? t("Trabalho Concluído")
+                      : ""}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Bio */}
@@ -155,7 +174,7 @@ const InfoParticipantModal: React.FC<Props> = ({
             }}
           >
             <MagnifyingGlassPlus size={17} weight="bold" />
-            Ver Perfil
+            {t("Ver Perfil")}
           </button>
 
           {campaignData.status !== "ended" &&
@@ -198,13 +217,13 @@ const InfoParticipantModal: React.FC<Props> = ({
           campaignData.paid === true && (
             <>
               <button
-                className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center w-[215px]"
+                className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center justify-center w-[215px]"
                 onClick={() => {
                   setSelectedParticipation(selectedParticipation);
                   setModalType("conclude");
                 }}
               >
-                <Flag size={18} className="mr-1" />
+                <Flag size={18} className="mr-2" />
                 {t("Trabalho concluído")}
               </button>
             </>
