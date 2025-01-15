@@ -102,8 +102,9 @@ export const Route = createFileRoute(
   component: Page,
   errorComponent: () => (
     <div className="px-4 py-4 h-full min-w-100 flex items-center justify-center text-center">
-      Ocorreu um erro ao carregar essa página. Não se preocupe, estamos
-      trabalhando para resolvê-lo!
+      {t(
+        "Ocorreu um erro ao carregar essa página. Não se preocupe, estamos trabalhando para resolvê-lo!"
+      )}
     </div>
   ),
   notFoundComponent: () => <div className="p-10">Campanha não encontrada</div>,
@@ -150,13 +151,8 @@ function Page() {
     CampaignParticipation[]
   >([]);
 
-  // Controla se o modal "Escolher Influencer" deve aparecer só na primeira vez
-  const [hasShownChooseModal, setHasShownChooseModal] = useState(() => {
-    return localStorage.getItem("showedChooseInfluencerModal") === "true";
-  });
-
   // Controla se o modal "Escolher Influencer" está aberto ou não
-  const [isFirstChooseModalOpen, setIsFirstChooseModalOpen] = useState(false);
+  const [chooseModalOpen, setChooseModalOpen] = useState(false);
 
   // Crie duas instâncias de Date com base nas datas vindas da campaignData
   const today = new Date();
@@ -244,20 +240,7 @@ function Page() {
 
     toast.success(t("Creator foi selecionado"));
 
-    if (!hasShownChooseModal) {
-      // Marca que já exibimos
-      setHasShownChooseModal(true);
-      localStorage.setItem("showedChooseInfluencerModal", "true");
-
-      // Abre o modal de primeira escolha
-      setIsFirstChooseModalOpen(true);
-
-      // Se quiser mostrar info do influencer escolhido no modal
-      const chosen = campaignParticipations.find(
-        (p) => p.id === participationId
-      );
-      setSelectedParticipation(chosen || null);
-    }
+    setChooseModalOpen(true);
   }
 
   function handleRemoveFromCart(participationId: string) {
@@ -913,6 +896,7 @@ function Page() {
           setSelectedParticipation={setSelectedParticipation}
           participant={selectedParticipation.expand?.influencer as Influencer}
           setModalType={setModalType}
+          cartParticipations={cartParticipations}
         />
       )}
       {modalType === "cancelCampaign" && (
@@ -934,61 +918,18 @@ function Page() {
           campaign={campaignData}
         />
       )}
-      {isFirstChooseModalOpen && (
-        <Modal onClose={() => setIsFirstChooseModalOpen(false)}>
+      {chooseModalOpen && (
+        <Modal onClose={() => {}} hideX={true}>
           <div className="flex flex-col p-2 w-full">
-            <h2 className="text-xl font-semibold mb-4">
-              {t("Escolher Creator")}
-            </h2>
-            {selectedParticipation?.expand?.influencer && (
-              <div className="flex items-center gap-3 mt-1">
-                {selectedParticipation.expand.influencer.profile_img ? (
-                  <img
-                    src={pb.files.getUrl(
-                      selectedParticipation.expand.influencer,
-                      selectedParticipation.expand.influencer.profile_img
-                    )}
-                    alt={selectedParticipation.expand.influencer.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-                    <User size={20} color="#fff" />
-                  </div>
-                )}
-                <p className="font-medium text-base">
-                  {selectedParticipation.expand.influencer.name}
-                </p>
-              </div>
-            )}
-
-            <p className="text-gray-700 leading-relaxed mt-2">
-              {t("Você está prestes a aprovar este Creator para sua campanha.")}
-              <br />
+            <p>
               {t(
-                "Para garantir que o trabalho possa começar, é necessário realizar o pagamento antes de concluir a aprovação."
+                `Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: "Creators Selecionados"`
               )}
             </p>
 
-            <ol className="list-decimal list-inside text-gray-900 mt-2 space-y-1">
-              <li>
-                {t(
-                  `Realize o pagamento referente a este Creator, clicando no botão “Creators selecionados”.`
-                )}
-              </li>
-              <li>
-                {t(
-                  "Após a confirmação do pagamento, o Creator será notificado e poderá iniciar a produção."
-                )}
-              </li>
-            </ol>
-
             <div className="mt-4 flex justify-end">
-              <Button
-                variant="blue"
-                onClick={() => setIsFirstChooseModalOpen(false)}
-              >
-                {t("Fechar")}
+              <Button variant="blue" onClick={() => setChooseModalOpen(false)}>
+                {t("OK")}
               </Button>
             </div>
           </div>

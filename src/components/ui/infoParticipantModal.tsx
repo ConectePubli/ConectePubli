@@ -21,6 +21,7 @@ interface Props {
   setSelectedParticipation: React.ComponentState;
   participant: Influencer;
   setModalType: React.ComponentState;
+  cartParticipations: CampaignParticipation[];
 }
 
 const InfoParticipantModal: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const InfoParticipantModal: React.FC<Props> = ({
   setSelectedParticipation,
   participant,
   setModalType,
+  cartParticipations,
 }) => {
   const router = useRouter();
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -103,21 +105,38 @@ const InfoParticipantModal: React.FC<Props> = ({
         </div>
 
         <div>
-          <p
-            className="text-sm mt-1 font-semibold"
-            style={{
-              color: getStatusColor(selectedParticipation.status),
-            }}
-          >
-            Status:{" "}
-            {selectedParticipation.status === "waiting"
-              ? t("Proposta Pendente")
-              : selectedParticipation.status === "approved"
-                ? t("Trabalho em Progresso")
-                : selectedParticipation.status === "completed"
-                  ? t("Trabalho Concluído")
-                  : ""}
-          </p>
+          {cartParticipations.some(
+            (cartItem) => cartItem.id === selectedParticipation.id
+          ) ? (
+            <>
+              <p
+                className="text-sm mt-1 font-semibold"
+                style={{
+                  color: "#FFC107",
+                }}
+              >
+                {t("Status: Pagamento pendente")}
+              </p>
+            </>
+          ) : (
+            <>
+              <p
+                className="text-sm mt-1 font-semibold"
+                style={{
+                  color: getStatusColor(selectedParticipation.status),
+                }}
+              >
+                Status:{" "}
+                {selectedParticipation.status === "waiting"
+                  ? t("Proposta Pendente")
+                  : selectedParticipation.status === "approved"
+                    ? t("Trabalho em Progresso")
+                    : selectedParticipation.status === "completed"
+                      ? t("Trabalho Concluído")
+                      : ""}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Bio */}

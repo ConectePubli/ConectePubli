@@ -1362,5 +1362,6 @@ export default {
       "Candidate status updated successfully",
     "Ocorreu um erro ao enviar sua solicitação. Tente novamente.":
       "An error occurred while submitting your request. Please try again.",
+    "Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: `Creators Selecionados`": `Finalize the selection and pay the creator at the top of this page, by clicking on the button: "Selected Creators"`,
   },
 };
