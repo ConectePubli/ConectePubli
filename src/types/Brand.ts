@@ -38,7 +38,9 @@ export interface Brand {
   web_site?: string;
   yourclub_url?: string;
   youtube_url?: string;
-
+  account_number?: string;
+  agency?: string;
+  bank?: string;
   expand?: {
     niche?: Niche[];
   };

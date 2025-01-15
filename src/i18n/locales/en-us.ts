@@ -1370,5 +1370,10 @@ export default {
       "An error occurred while submitting your request. Please try again.",
     "Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: `Creators Selecionados`": `Finalize the selection and pay the creator at the top of this page, by clicking on the button: "Selected Creators"`,
     Agências: "Agencies",
+    "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça sua chave Pix ou dados bancários. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada.": `To facilitate the refund process, if the campaign expires with vacancies unfilled or you decide to stop the campaign, provide your Pix key or bank details. If necessary, you will receive the refund of the corresponding amount directly into the associated account.`,
+    "Número da Conta": "Account Number",
+    Agência: "Agency",
+    Banco: "Bank",
+    "Caso prefira, você pode fornecer os dados bancários para transferência.": `If you prefer, you can provide bank details for transfer.`,
   },
 };

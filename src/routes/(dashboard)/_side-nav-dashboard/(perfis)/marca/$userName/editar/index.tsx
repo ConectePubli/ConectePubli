@@ -145,7 +145,14 @@ function Page() {
   }, [userData]);
 
   const isSocialMediaComplete = isAtLeastOneFilled || false;
-  const isBankAccountComplete = userData?.pix_key ? true : false;
+  const isBankAccountComplete = useMemo(() => {
+    const hasPix = userData?.pix_key && userData.pix_key.trim() !== "";
+    const hasBankData =
+      userData?.account_number?.trim() &&
+      userData?.agency?.trim() &&
+      userData?.bank?.trim();
+    return hasPix || hasBankData;
+  }, [userData]);
 
   // show info to user fill necessary fields intented to create campaign
   const [showNotice, setShowNotice] = useState(false);
@@ -555,41 +562,52 @@ function Page() {
   };
 
   const saveBankAccount = async () => {
-    if (!userData || !originalData) {
-      alert(t("Dados do usuário não estão disponíveis."));
+    if (!userData || !originalData) return;
+
+    const hasPix = userData.pix_key?.trim();
+    const hasBankData =
+      userData.account_number?.trim() &&
+      userData.agency?.trim() &&
+      userData.bank?.trim();
+
+    if (!hasPix && !hasBankData) {
+      toast.error("Forneça a chave Pix ou todos os dados bancários.");
       return;
     }
 
     try {
       toggleSaving("bankInfo", true);
-      const modifiedFields = getModifiedFields<Brand>(originalData, userData, [
-        "pix_key",
-      ]);
+      const modifiedFields: Partial<Brand> = {};
+
+      if (userData.pix_key !== originalData.pix_key) {
+        modifiedFields.pix_key = userData.pix_key;
+      }
+      if (userData.account_number !== originalData.account_number) {
+        modifiedFields.account_number = userData.account_number || "";
+      }
+      if (userData.agency !== originalData.agency) {
+        modifiedFields.agency = userData.agency || "";
+      }
+      if (userData.bank !== originalData.bank) {
+        modifiedFields.bank = userData.bank || "";
+      }
 
       if (Object.keys(modifiedFields).length === 0) {
+        toast.info("Nenhuma alteração detectada para salvar.");
         return;
       }
 
       const formData = new FormData();
-
-      Object.entries(modifiedFields).forEach(([key, value]) => {
-        if (value !== undefined && key !== "id") {
-          formData.append(key, value?.toString() || "");
-        }
-      });
+      for (const key in modifiedFields) {
+        formData.append(key, modifiedFields[key as keyof Brand] as string);
+      }
 
       await pb.collection("brands").update(pb.authStore.model?.id, formData);
-
-      const updatedUserData = { ...originalData, ...modifiedFields };
-      setUserData(updatedUserData);
-      setOriginalData(updatedUserData);
-
-      toast.success(t("Conta bancária salva com sucesso!"));
-    } catch (error) {
-      console.error("Erro ao salvar dados da seção 'Conta bancária':", error);
-      toast.error(
-        t("Erro ao salvar dados da seção 'Conta bancária'. Tente novamente.")
-      );
+      setOriginalData({ ...originalData, ...modifiedFields });
+      toast.success("Dados bancários salvos com sucesso!");
+    } catch (err) {
+      console.log("Erro ao salvar dados bancários:", err);
+      toast.error("Erro ao salvar dados bancários. Tente novamente.");
     } finally {
       toggleSaving("bankInfo", false);
     }
@@ -1486,11 +1504,11 @@ function Page() {
       {/* Conta bancária */}
       <ProfileEditDropdown
         sectionName={t("Conta bancária")}
-        isComplete={isBankAccountComplete}
+        isComplete={!!isBankAccountComplete}
       >
         <p className="text-sm mt-3 font-semibold text-zinc-700">
           {t(
-            "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça sua chave Pix. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada à sua chave Pix."
+            "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça sua chave Pix ou dados bancários. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada."
           )}
         </p>
 
@@ -1506,6 +1524,58 @@ function Page() {
             value={userData?.pix_key || ""}
             onChange={(event) =>
               setUserData({ ...userData, pix_key: event.target.value })
+            }
+          />
+        </div>
+
+        <p className="text-sm mt-3 font-semibold text-zinc-700">
+          {t(
+            "Caso prefira, você pode fornecer os dados bancários para transferência."
+          )}
+        </p>
+
+        <div className="mt-4">
+          <label className="text-sm font-semibold">
+            {t("Número da Conta")}
+          </label>
+          <input
+            type="text"
+            className="w-full p-3 border rounded-md mt-1"
+            placeholder={t("Insira o número da conta")}
+            value={userData?.account_number || ""}
+            onChange={(e) =>
+              setUserData((prev) => ({
+                ...prev,
+                account_number: e.target.value,
+              }))
+            }
+          />
+        </div>
+
+        {/* Agência */}
+        <div className="mt-4">
+          <label className="text-sm font-semibold">{t("Agência")}</label>
+          <input
+            type="text"
+            className="w-full p-3 border rounded-md mt-1"
+            placeholder={t("Insira a agência")}
+            value={userData?.agency || ""}
+            onChange={(e) =>
+              setUserData((prev) => ({ ...prev, agency: e.target.value }))
+            }
+          />
+        </div>
+
+        {/* Banco */}
+        <div className="mt-4">
+          <label className="text-sm font-semibold">{t("Banco")}</label>
+          <input
+            type="text"
+            className="w-full p-3 border rounded-md mt-1"
+            placeholder={t("Insira o nome ou código do banco")}
+            value={userData?.bank || ""}
+            onChange={(e) =>
+              setUserData((prev) => ({ ...prev, bank: e.target.value }))
             }
           />
         </div>
