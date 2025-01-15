@@ -34,6 +34,25 @@ export const PublicHeader = () => {
             <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
           </Link>
         </div>
+
+        <div className="items-center gap-4 hidden lg:flex">
+          <a
+            href="#how-it-works"
+            className="text-sm font-semibold hover:underline"
+          >
+            {t("Como Funciona")}
+          </a>
+          <a
+            href="#top-creators"
+            className="text-sm font-semibold hover:underline"
+          >
+            {t("Top Creators")}
+          </a>
+          <a href="#benefits" className="text-sm font-semibold hover:underline">
+            {t("Benefícios")}
+          </a>
+        </div>
+
         <div className="gap-2 flex">
           <Button
             variant="ghost"

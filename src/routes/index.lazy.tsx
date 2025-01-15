@@ -25,7 +25,7 @@ function Index() {
   const navigate = useNavigate();
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden bg-[#FCFCFC]">
       <SponsorBanner />
 
       <HeroSection />
@@ -33,13 +33,16 @@ function Index() {
       {/* <BrandsSection /> */}
 
       <ConnectBrandsSection />
-      <p className="text-left text-3xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
+      <p className="text-left text-3xl font-bold mt-12 mb-6 px-4 py-10 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
         <Translator path="Marcas Conectadas" />
         <LogosCarousel />
       </p>
-      <HowItWorksSection />
 
-      <div className="py-12">
+      <div id="how-it-works">
+        <HowItWorksSection />
+      </div>
+
+      <div className="py-12" id="benefits">
         <SectionInfo
           imageSrc={brand}
           title={t("Para Marcas e Agências")}
@@ -83,7 +86,7 @@ function Index() {
 
         <SectionInfo
           imageSrc={influencers}
-          title={t("Para creators")}
+          title={t("Para Creators")}
           description={
             <div className="space-y-4">
               <p>
@@ -123,14 +126,17 @@ function Index() {
         />
       </div>
 
-      <div className="text-left text-3xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-xl">
+      <div
+        id="top-creators"
+        className="text-left scroll-mt-20 text-3xl font-bold mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-xl"
+      >
         <h2 className="mb-4">{t("Confira Nossos Top Creators")}</h2>
         <TopCreatorsCarousel />
       </div>
 
       <div className="text-left text-3xl mt-12 mb-6 px-4 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-xl">
         <h2 className="mb-4 font-bold">
-          {t("O que estão falando sobre a Conecte Publi")}
+          {t("O Que Estão Falando Sobre a Conecte Publi")}
         </h2>
         <TestimonialSection />
       </div>

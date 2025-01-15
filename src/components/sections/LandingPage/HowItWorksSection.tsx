@@ -15,7 +15,7 @@ export const HowItWorksSection: React.FC = () => {
     <section className="py-20 px-4 bg-[#354280] relative">
       <div className="container mx-auto text-left max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-2xl px-4">
         <h2 className="text-3xl font-bold text-left text-white mb-8">
-          <Translator path="Como funciona" />
+          <Translator path="Como Funciona?" />
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <FeatureCard
