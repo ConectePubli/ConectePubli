@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { WhatsappLogo } from "phosphor-react";
 import { useEffect, useState } from "react";
 
@@ -23,7 +24,7 @@ function FloatingHelpButton() {
     >
       {showHelpText && (
         <div className="text-[#fff] py-2 px-2 rounded-l-md rounded-tr-md shadow-md mr-1 text-base whitespace-nowrap">
-          Precisa de ajuda?
+          {t("Precisa de ajuda?")}
         </div>
       )}
 

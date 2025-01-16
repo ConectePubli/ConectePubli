@@ -9,6 +9,7 @@ import { Influencer } from "@/types/Influencer";
 import pb from "@/lib/pb";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   setModalType: React.ComponentState;
@@ -26,12 +27,13 @@ const ChooseParticipantModal: React.FC<Props> = ({
   selectedParticipantion,
   updateParticipationStatus,
 }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <Modal onClose={() => setModalType(null)}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Escolher Influencer</h2>
+        <h2 className="text-xl font-semibold">{t("Escolher Influencer")}</h2>
 
         <div className="flex flex-wrap items-center gap-2">
           {participant?.profile_img ? (
@@ -55,21 +57,19 @@ const ChooseParticipantModal: React.FC<Props> = ({
         </div>
 
         <p className="text-gray-700">
-          Ao escolher este(a) creator, você está confirmando a participação
-          dele(a) na campanha e autorizando o início das atividades conforme os
-          termos acordados. O(a) creator será responsável por executar as
-          tarefas conforme o briefing da campanha e entregar os conteúdos no
-          prazo estabelecido.
+          {t(
+            "Ao escolher este(a) creator, você está confirmando a participação dele(a) na campanha e autorizando o início das atividades conforme os termos acordados. O(a) creator será responsável por executar as tarefas conforme o briefing da campanha e entregar os conteúdos no prazo estabelecido."
+          )}
         </p>
 
-        <p className="font-medium">Deseja confirmar a aprovação?</p>
+        <p className="font-medium">{t("Deseja confirmar a aprovação?")}</p>
 
         <div className="flex justify-end gap-4">
           <button
             onClick={() => setModalType(null)}
             className="text-gray-600 hover:text-gray-900"
           >
-            Cancelar
+            {t("Cancelar")}
           </button>
 
           <Button
@@ -85,7 +85,7 @@ const ChooseParticipantModal: React.FC<Props> = ({
                     status: "approved",
                   });
 
-                toast("Status do candidato atualizado com sucesso");
+                toast(t("Status do candidato atualizado com sucesso"));
 
                 updateParticipationStatus(
                   selectedParticipantion?.id as string,
@@ -95,14 +95,14 @@ const ChooseParticipantModal: React.FC<Props> = ({
                 setModalType(null);
               } catch (e) {
                 console.log(`Erro ao atualizar status: ${e}`);
-                toast("Ocorreu um erro ao atualizar o status do candidato");
+                toast(t("Ocorreu um erro ao atualizar o status do candidato"));
               } finally {
                 setLoading(false);
               }
             }}
             disabled={loading}
           >
-            {loading ? "Aguarde..." : "Escolher para Campanha"}
+            {loading ? t("Aguarde...") : t("Escolher para Campanha")}
           </Button>
         </div>
       </div>

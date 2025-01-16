@@ -4,6 +4,7 @@ import logo from "@/assets/logo.svg";
 import { Rating as StarRating } from "react-simple-star-rating";
 import { Rating } from "@/types/Rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   ratings: Rating[];
@@ -18,7 +19,7 @@ const AllRatingsModal: React.FC<Props> = ({
   userType,
   onClose,
 }) => {
-  // Cálculo da média geral
+  const { t } = useTranslation(); // Cálculo da média geral
   const overallAverage = useMemo(() => {
     if (ratings.length === 0) return 0;
 
@@ -123,7 +124,7 @@ const AllRatingsModal: React.FC<Props> = ({
           </div>
           <p className="text-sm text-black font-bold ml-1">
             ({totalReviews} {totalReviews === 1 ? "review" : "reviews"}{" "}
-            {userType === "brand" ? "da marca" : "do usuário"})
+            {userType === "brand" ? t("da marca") : t("do usuário")})
           </p>
         </div>
 
@@ -132,7 +133,7 @@ const AllRatingsModal: React.FC<Props> = ({
         {/* Lista de avaliações */}
         {ratings.length === 0 ? (
           <p className="text-center text-gray-500 mt-4">
-            Nenhuma avaliação recebida.
+            {t("Nenhuma avaliação recebida.")}
           </p>
         ) : (
           <div className="flex flex-col gap-4">

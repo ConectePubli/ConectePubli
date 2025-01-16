@@ -8,6 +8,7 @@ import CoverPlaceholder from "@/assets/background-placeholder.webp";
 import SocialNetworks from "@/types/SocialNetworks";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import { formatDateUTC } from "@/utils/formatDateUTC";
+import { t } from "i18next";
 interface CampaignSliderBannerProps {
   campaign: Campaign;
   isFirst: boolean;
@@ -87,7 +88,7 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             <p className="font-semibold flex flex-row items-center text-[#6F42C1]">
               <img src={CoinsIcon} alt="Coins" className="w-4 h-4 mr-2" />
               {formatCentsToCurrency(campaign.price)}
-              /pessoa
+              {t("/pessoa")}
             </p>
 
             {JSON.parse(
@@ -95,7 +96,8 @@ const CampaignSliderBanner: React.FC<CampaignSliderBannerProps> = ({
             ).model?.id?.includes(campaign.expand?.brand?.id) && (
               <p className="font-semibold flex flex-row items-center ">
                 <User className="mr-2" size={16} />
-                {campaign.vagasRestantes} vagas abertas
+                {campaign.vagasRestantes}
+                {t(" vagas abertas")}
               </p>
             )}
           </div>
