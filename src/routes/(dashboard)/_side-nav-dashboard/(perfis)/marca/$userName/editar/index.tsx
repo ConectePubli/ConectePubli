@@ -1508,14 +1508,13 @@ function Page() {
       >
         <p className="text-sm mt-3 font-semibold text-zinc-700">
           {t(
-            "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça sua chave Pix ou dados bancários. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada."
+            "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça obrigatoriamente sua chave Pix ou seus dados bancários. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada."
           )}
         </p>
 
         <div>
           <div className="flex flex-row items-center mt-4">
             <h2 className="text-sm font-semibold">{t("Chave Pix")}</h2>
-            <p className="text-[#10438F] text-lg">*</p>
           </div>
           <input
             type="text"

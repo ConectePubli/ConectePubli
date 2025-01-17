@@ -3,8 +3,8 @@
 import React from "react";
 import Testimonial from "@/components/LandingPage/Testimonial/Testimonial";
 
-import mundo_marketing from "@/assets/mundomarketing.png";
-import valor_business from "@/assets/valor-business.jpg";
+import mundo_marketing from "@/assets/mundomarketing.jpg";
+import valor_business from "@/assets/valor-business.png";
 import forbes_vip from "@/assets/forbesvip.png";
 import { t } from "i18next";
 import Slider from "react-slick";

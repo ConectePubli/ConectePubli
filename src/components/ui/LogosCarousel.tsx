@@ -7,6 +7,7 @@ import wyndham from "@/assets/sponsors/wyndham.png";
 import mariaMonteiro from "@/assets/sponsors/maria-monteiro.png";
 import phillipp from "@/assets/sponsors/phillipp.png";
 import nataliaBeauty from "@/assets/sponsors/natalia-beauty.png";
+import pantys from "@/assets/sponsors/pantys.png";
 
 const LogosCarousel = () => {
   const logos = [
@@ -15,6 +16,7 @@ const LogosCarousel = () => {
     onocaps,
     scientific,
     yourclub,
+    pantys,
     wyndham,
     mariaMonteiro,
     phillipp,

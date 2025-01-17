@@ -9,6 +9,13 @@ import { useTranslation } from "react-i18next";
 import Flag from "../i18n/Flag";
 import BrasilFlag from "@/assets/icons/br-flag.png";
 import EuaFlag from "@/assets/icons/us-flag.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
+import { AlignJustifyIcon } from "lucide-react";
 
 export const PublicHeader = () => {
   const navigate = useNavigate();
@@ -28,8 +35,35 @@ export const PublicHeader = () => {
 
   return (
     <header className="sticky top-0 bg-white border-b-[1px] z-50">
-      <div className="h-[66px] flex justify-between items-center mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl px-4">
+      <div
+        className="flex justify-between items-center mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl
++                  px-6 py-2"
+      >
         <div className="flex items-center gap-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <AlignJustifyIcon className="h-6 w-6 cursor-pointer" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="mr-8">
+              <DropdownMenuItem asChild>
+                <a href="#how-it-works" className="flex items-center w-full">
+                  {t("Como Funciona")}
+                </a>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <a href="#top-creators" className="flex items-center w-full">
+                  {t("Top Creators")}
+                </a>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <a href="#benefits" className="flex items-center w-full">
+                  {t("Benefícios")}
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Link to="/">
             <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
           </Link>
@@ -53,10 +87,10 @@ export const PublicHeader = () => {
           </a>
         </div>
 
-        <div className="gap-2 flex">
+        <div className="flex gap-1 sm:gap-2">
           <Button
             variant="ghost"
-            className="font-semibold"
+            className="font-semibold text-xs px-2 py-1 sm:text-sm sm:px-4 sm:py-2"
             size="default"
             onClick={() => navigate({ to: "/login" })}
           >
@@ -65,11 +99,15 @@ export const PublicHeader = () => {
           <Button
             variant="orange"
             size="default"
+            className="text-xs px-2 py-1 sm:text-sm sm:px-4 sm:py-2"
             onClick={() => navigate({ to: "/cadastro" })}
           >
             {t("Cadastrar")}
           </Button>
-          <Button variant="ghost">
+          <Button
+            variant="ghost"
+            className="text-xs px-2 py-1 sm:text-sm sm:px-4 sm:py-2"
+          >
             <div className={`flex w-7 h-7 items-center`}>
               <div
                 className={`${selectedLanguage === "pt-BR" ? "hidden" : ""}`}
