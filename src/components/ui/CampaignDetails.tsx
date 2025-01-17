@@ -50,9 +50,7 @@ const CampaignDetails: React.FC = () => {
         {/* Data de Postagem */}
         {campaign.created && (
           <p className="text-gray-500 font-bold text-sm">
-            {t("Postado há {time} atrás", {
-              time: timeAgo(new Date(campaign.created)),
-            })}
+            {`${t("Postado há")} ${timeAgo(new Date(campaign.created))} ${t("atrás")}`}
           </p>
         )}
 

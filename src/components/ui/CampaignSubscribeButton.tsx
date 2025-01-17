@@ -17,6 +17,8 @@ import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
 import ModalSendLinkCampaign from "./ModalSendLinkCampaign";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import { isEnableSubscription } from "@/utils/campaignSubscription";
+import { Campaign } from "@/types/Campaign";
 
 const Spinner: React.FC = () => (
   <svg
@@ -158,27 +160,8 @@ const CampaignSubscribeButton: React.FC = () => {
   const isUserRegistered = Boolean(userParticipation);
   const participationStatus = userParticipation?.status;
 
-  // Verificação do período de inscrição
-  const now = new Date();
-  const subStart = campaign?.subscription_start_date
-    ? new Date(campaign.subscription_start_date)
-    : null;
-  const subEnd = campaign?.subscription_end_date
-    ? new Date(campaign.subscription_end_date)
-    : null;
-
-  const isBeforeSubscriptionStart = subStart ? now < subStart : false;
-
-  if (subEnd) {
-    // Adiciona 1 dia
-    subEnd.setDate(subEnd.getDate() + 2);
-    // Opcional: definir a hora no início do dia
-    subEnd.setHours(0, 0, 0, 0);
-  }
-  // Agora a comparação considera o fim do dia
-  const isAfterSubscriptionEnd = subEnd ? now > subEnd : false;
-  const isWithinSubscriptionPeriod =
-    subStart && subEnd ? now >= subStart && now <= subEnd : true;
+  // verificar se o peridodo de inscrição é valido
+  const subscriptionDate = isEnableSubscription(campaign as Campaign);
 
   // Função para navegar até a edição do perfil
   const navigateToCompleteProfile = () => {
@@ -295,10 +278,10 @@ const CampaignSubscribeButton: React.FC = () => {
     return null;
   }
 
-  if (!isWithinSubscriptionPeriod) {
-    if (isBeforeSubscriptionStart) {
+  if (!subscriptionDate.status && !participationStatus) {
+    if (subscriptionDate.message === "not_started") {
       buttonText = "Inscrições não iniciadas";
-    } else if (isAfterSubscriptionEnd) {
+    } else if (subscriptionDate.message === "time_out") {
       buttonText = "Inscrições encerradas";
     }
     isDisabled = true;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Campaign } from "@/types/Campaign";
-import { Calendar, Tag, User } from "lucide-react";
+import { Calendar, InfoIcon, Tag, User } from "lucide-react";
 import { Coins, Image } from "phosphor-react";
 import pb from "@/lib/pb";
 import SocialNetworks from "@/types/SocialNetworks";
@@ -11,17 +11,20 @@ import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import { formatDateUTC } from "@/utils/formatDateUTC";
 import { Brand } from "@/types/Brand";
 import { t } from "i18next";
+import { isEnableSubscription } from "@/utils/campaignSubscription";
 
 interface CampaignCardProps {
   campaignData: Campaign;
   participationStatus: ParticipationStatusFilter;
   fromMyCampaigns: boolean;
+  hideStatusSubscription?: boolean;
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({
   campaignData,
   participationStatus,
   fromMyCampaigns,
+  hideStatusSubscription
 }) => {
   const beginningDate = formatDateUTC(campaignData.beginning);
   const endDate = formatDateUTC(campaignData.end);
@@ -108,6 +111,18 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 
           {/* Date */}
           <div className="flex justify-end items-center">
+            {campaignData.subscription_start_date &&
+              campaignData.subscription_end_date &&
+              !isEnableSubscription(campaignData).status && !hideStatusSubscription && (
+                <span className="mr-4 text-red-500 flex items-center">
+                  <InfoIcon className="min-w-[2rem] w-4 h-4" />
+                  {isEnableSubscription(campaignData).message ===
+                    "not_started" && "Inscrições ainda não iniciaram"}
+                  {isEnableSubscription(campaignData).message === "time_out" &&
+                    "A campanha encerrou as inscrições"}
+                </span>
+              )}
+
             <div className="flex items-center gap-2 text-gray-500">
               <Calendar className="w-4 h-4" />
               {`${beginningDate} - ${endDate}`}
