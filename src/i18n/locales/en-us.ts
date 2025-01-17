@@ -1372,6 +1372,7 @@ export default {
       "Creative content that generates engagement, trust and return.",
     "Com o Conecte Pay, só pague após aprovar o conteúdo.":
       "With Conecte Pay, only pay after approving the content.",
+    "Para Marcas e Agências:": "For Brands and Agencies:",
     "Contratos integrados garantem transparência e zero burocracia.":
       "Integrated contracts ensure transparency and zero bureaucracy.",
     "Para Marcas e Agências": "For Brands and Agencies",

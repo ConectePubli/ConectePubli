@@ -75,7 +75,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
         <h3 className="text-xl font-semibold">{title}</h3>
         <p className="text-gray-600 mt-2">
           <span className="font-semibold text-gray-700">
-            {t("Para Marcas:")}
+            {t("Para Marcas e Agências:")}
           </span>{" "}
           {descriptionBrand}
         </p>

@@ -7,7 +7,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="py-4 border-t bg-white">
       <div className="justify-center flex">
-        <div className="items-center gap-8 hidden lg:flex">
+        <div className="items-center gap-3 mb-2 flex flex-col lg:flex-row lg:gap-8">
           <a
             href="#how-it-works"
             className="text-sm font-semibold underline underline-offset-4 decoration-orange-600 decoration-2"
