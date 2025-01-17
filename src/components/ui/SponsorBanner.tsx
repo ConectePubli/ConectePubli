@@ -4,6 +4,8 @@ import bannerIAPOI from "@/assets/banners/BannerPatrocinadorIAPOI.jpg";
 import bannerYcSummit from "@/assets/banners/BannerYcSummitparaCP.png";
 import bannerLuciano from "@/assets/banners/BannerLuciano.jpeg";
 import bannerAnuncie from "@/assets/banners/BannerPatrocine.jpeg";
+import bannerTrianon from "@/assets/banners/BannerTrianon.jpg";
+
 import Translator from "../i18n/Translator";
 
 type Sponsor = {
@@ -43,6 +45,11 @@ const SponsorBanner = () => {
         id: "5",
         image: bannerAnuncie,
         url: "https://wa.me/5511913185849",
+      },
+      {
+        id: "6",
+        image: bannerTrianon,
+        url: "https://www.hoteltrianon.com.br",
       },
     ];
 
