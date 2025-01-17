@@ -368,27 +368,79 @@ export default {
     "Se você tiver alguma dúvida ou preocupação sobre esta Política de Privacidade ou sobre o uso de suas informações pessoais, entre em contato conosco através dos canais de suporte fornecidos na plataforma.":
       "If you have any questions or concerns about this Privacy Policy or the use of your personal information, please contact us through the support channels provided on the platform.",
 
-    "Termo de Aceite / Contrato para Participação em Campanha":
-      "Acceptance Term / Contract for Campaign Participation",
+    "Contrato de Campanha Conecte Publi": "Conecte Publi Campaign Agreement",
+    "Por meio deste documento, a Marca e o Creator, conectados pela plataforma Conecte Publi,estabelecem as condições para a realização do entregável solicitado, detalhadas nos termos abaixo":
+      "Through this document, the Brand and the Creator, connected by the Conecte Publi platform, establish the conditions for carrying out the requested deliverable, detailed in the terms below",
     "Ao aceitar participar de uma campanha organizada por uma marca cadastrada na plataforma ConectePubli (":
       "By agreeing to participate in a campaign organized by a brand registered on the ConectePubli platform (",
     "conectepubli.com.br": "conectepubli.com.br",
     "), como criador(a) de conteúdo, declaro para todos os fins de direito que, de livre vontade, li, reconheço e aceito os termos de aceite / contrato abaixo e concordo com os seguintes termos e condições:":
       "), as a content creator, I hereby declare for all legal purposes that, of my own free will, I have read, acknowledge, and accept the acceptance terms / contract below and agree to the following terms and conditions:",
 
+    "O valor acordado para o entregável será disponibilizado ao Creator somente após a entrega do conteúdo e validação final pela Marca.":
+      "The agreed value for the deliverable will be made available to the Creator only after delivery of the content and final validation by the Brand.",
+    "A ConectePubli reterá 20% como taxa de serviço, enquanto o Creator receberá 80% do valor total pago pela Marca":
+      "ConectePubli will retain 20% as a service fee, while the Creator will receive 80% of the total amount paid by the Brand",
+    "O valor volta para a marca caso vença a data final e o creator não entregue todos os entregáveis obrigatórios":
+      "The value returns to the brand if the final date passes and the creator does not deliver all the mandatory deliverables",
+
     // Section Headings
-    "1 - Relação Contratual": "1 - Contractual Relationship",
-    "2 - Termos da Campanha": "2 - Campaign Terms",
-    "3 - Remuneração e Pagamento": "3 - Compensation and Payment",
-    "4 - Responsabilidades e Conformidade":
-      "4 - Responsibilities and Compliance",
-    "5 - Relacionamento Independente": "5 - Independent Relationship",
-    "6 - Consentimento de Uso de Imagem": "6 - Consent to Use of Image",
-    "7 - Cancelamento e Rescisão": "7 - Cancellation and Termination",
-    "8 - Responsabilidade": "8 - Liability",
-    "9 - Uso de Conteúdo em Tráfego Pago": "9 - Use of Content in Paid Traffic",
+    "1. Relação Contratual": "1. Contractual Relationship",
+    "2. Obrigações da Marca": "2. Brand Obligations",
+    "3. Obrigações do Creator": "3. Creator Obligations",
+    "4. Aprovação e Início da Atividade": "4. Approval and Start of Activity",
+    "5. Remuneração e Pagamento": "5. Compensation and Payment",
+    "6. Consentimento de Uso de Conteúdo e Imagem":
+      "6. Consent to Use Content and Image",
+    "7. Responsabilidades e Conformidade": "7. Responsibilities and Compliance",
+    "8.  Resolução de Conflitos": "8. Conflict Resolution",
+
+    "Proposta de Entregável": "Deliverable Proposal",
+    "A Marca deve detalhar claramente os requisitos do entregável, incluindo formato, estilo, prazos e orientações específicas.":
+      "The Brand must clearly detail the deliverable requirements, including format, style, deadlines and specific guidelines.",
+    "Aprovação e Pagamento": "Approval and Payment",
+    "A Marca deve aprovar o Creator selecionado e efetuar o pagamento através da plataforma antes do início da produção.":
+      "The Brand must approve the selected Creator and carry out the payment through the platform before production begins.",
+    "Validação do Conteúdo": "Content Validation",
+    "A Marca é responsável por revisar e validar o conteúdo entregue, dentro do prazo acordado.":
+      "The Brand is responsible for reviewing and validating the content delivered, within the agreed deadline.",
+
+    "Cumprimento das Diretrizes": "Compliance with Guidelines",
+    "O Creator deve seguir todas as instruções e diretrizes fornecidas pela Marca para garantir que o entregável atenda às expectativas.":
+      "The Creator must follow all instructions and guidelines provided by the Brand to ensure that the deliverable meets expectations.",
+    Prazos: "Deadlines",
+    "O Creator se compromete a cumprir rigorosamente os prazos estabelecidos pela Marca.":
+      "The Creator undertakes to strictly comply with the deadlines established by the Brand.",
+
+    "Conformidade Legal": "Legal Compliance",
+    "O Creator é responsável por garantir que o conteúdo respeite todas as leis aplicáveis, incluindo direitos de propriedade intelectual e de terceiros.":
+      "Creator is responsible for ensuring that content complies with all applicable laws, including intellectual property and third party rights.",
+
+    "A produção do entregável só terá início após":
+      "Production of the deliverable will only begin after",
+    "1. Seleção dos creators inscritos na campanha. 2. Confirmação do pagamento pela Marca, realizada através da Conecte Publi.":
+      "1. Selection of creators registered in the campaign. 2. Confirmation of payment by the Brand, carried out through Conecte Publi.",
+    "Após esses passos, ambas as partes serão notificadas para iniciar o processo de entrega":
+      "After these steps, both parties will be notified to begin the delivery process",
+
+    "O Creator autoriza a Marca e a Conecte Publi a utilizarem o conteúdo entregue, bem como seu nome, imagem e voz, exclusivamente para fins promocionais relacionados ao entregável.":
+      "The Creator authorizes the Brand and Conecte Publi to use the delivered content, as well as its name, image and voice, exclusively for promotional purposes related to the deliverable.",
+    "A Marca compromete-se a usar o conteúdo apenas dentro das finalidades acordadas, evitando usos não autorizados.":
+      "The Brand undertakes to use the content only within the agreed purposes, avoiding unauthorized uses.",
+
+    "Ambas as partes comprometem-se a agir com transparência e boa-fé durante o cumprimento do contrato.":
+      "Both parties undertake to act with transparency and good faith during the fulfillment of the contract.",
+    "A Marca é responsável por fornecer informações claras e detalhadas para a execução do entregável.":
+      "The Brand is responsible for providing clear and detailed information for the execution of the deliverable.",
+    "O Creator compromete-se a realizar o entregável com qualidade, respeitando os termos acordados.":
+      "The Creator is committed to delivering the deliverable with quality, respecting the agreed terms.",
+
+    "Qualquer disputa decorrente deste contrato deverá ser resolvida diretamente entre Marca e Creator, sem responsabilidade da Conecte Publi em mediar ou intervir no conflito":
+      "Any dispute arising from this contract must be resolved directly between the Brand and Creator, without Conecte Publi's responsibility to mediate or intervene in the conflict.",
 
     // Paragraphs
+    "Este contrato formaliza a relação entre Marca e Creator para a realização do entregável solicitado. Ambas as partes reconhecem que a Conecte Publi atua exclusivamente como intermediária, facilitando a conexão, sem envolvimento direto ou responsabilidades legais sobre o conteúdo do contrato.":
+      "This contract formalizes the relationship between Brand and Creator to carry out the requested deliverable. Both parties recognize that Conecte Publi acts exclusively as an intermediary, facilitating the connection, without direct involvement or legal responsibilities regarding the content of the contract.",
     "Ao aceitar participar da campanha, firmo um contrato diretamente com a marca anunciante. Reconheço que a plataforma ConectePubli atua apenas como intermediária na conexão entre marcas e criadores, não sendo parte integrante deste contrato, não tendo responsabilidades a serem requeridas.":
       "By agreeing to participate in the campaign, I enter into a contract directly with the advertising brand. I acknowledge that the ConectePubli platform acts solely as an intermediary in connecting brands and creators, not being an integral part of this contract, and having no responsibilities to be claimed.",
     "Concordo em seguir os termos e condições específicos estabelecidos pela marca anunciante para a campanha, conforme informado pela plataforma. Isso inclui, mas não se limita a:":
@@ -482,6 +534,8 @@ export default {
     "Disposições Gerais": "General Provisions",
     "CLÁUSULA QUARTA - Uso de Conteúdo em Tráfego Pago":
       "FOURTH CLAUSE - Use of Content in Paid Traffic",
+    "CLÁUSULA QUINTA - Contratação Através da Vitrine de Creators":
+      "CLAUSE FIVE - Hiring Through the Creators Showcase",
 
     // Headings within Clauses
     "1.1": "1.1",
@@ -500,6 +554,27 @@ export default {
     "3. Remuneração e Direitos:": "3. Compensation and Rights:",
     "4. Direitos e Responsabilidades:": "4. Rights and Responsibilities:",
     "5. Penalidades:": "5. Penalties:",
+    "1. Envio de Proposta pela Marca": "1. Submission of Proposal by the Brand",
+    "2. Aceitação ou Recusa da Proposta pelo Creator":
+      "2. Acceptance or Refusal of the Proposal by the Creator",
+    "3. Notificação de Decisão": "3. Decision Notification",
+    "4. Início da Campanha": "4. Start of the Campaign",
+
+    "A Marca pode enviar propostas diretamente a Creators pela Vitrine de Creators, detalhando o escopo do entregável, prazos e remuneração.":
+      "The Brand can send proposals directly to Creators through the Creators Showcase, detailing the scope of deliverables, deadlines and remuneration.",
+    "O Creator deve acessar a plataforma para revisar a proposta enviada. Ele pode:":
+      "The Creator must access the platform to review the submitted proposal. He can:",
+    "Ambas as partes receberão notificações por e-mail detalhando a decisão do Creator sobre a proposta enviada.":
+      "Both parties will receive email notifications detailing the Creator's decision on the submitted proposal.",
+    "A produção dos entregáveis só poderá ser iniciada após a confirmação do pagamento pela Marca e o aceite formal do Creator.":
+      "The production of deliverables can only begin after confirmation of payment by the Brand and formal acceptance by the Creator.",
+
+    "Aceitar a Proposta": "Accept the Proposal",
+    "Recusar a Proposta": "Reject the Proposal",
+    "Ao aceitar, o Creator automaticamente concorda com os termos e condições da campanha detalhados na proposta e nos Termos de Uso.":
+      "By accepting, the Creator automatically agrees to the campaign terms and conditions detailed in the proposal and Terms of Use.",
+    "Caso não concorde com os termos, o Creator pode recusar a proposta e enviar uma justificativa à Marca.":
+      "If you do not agree with the terms, the Creator may reject the proposal and send a justification to the Brand.",
 
     // Paragraphs and List Items
     "A Marca compromete-se a zelar pelo engajamento com a plataforma.":
@@ -529,17 +604,28 @@ export default {
     "A Marca deve inserir todas as informações necessárias para a criação da campanha na plataforma Conecte Publi, incluindo o valor a ser investido. Sendo que 80% do valor total da campanha será utilizado para pagamentos aos Creators, e 20% destinado à Conecte Publi a título de taxa de serviço.":
       "The Brand must enter all necessary information for creating the campaign on the Conecte Publi platform, including the amount to be invested. 80% of the total campaign value will be used for payments to Creators, and 20% allocated to Conecte Publi as a service fee.",
 
+    Pagamento: "Payment",
+    "Seleção dos Creators e Aprovação": "Creator Selection and Approval",
+    "A Conecte Publi permite que a Marca selecione e aprove creators diretamente em cada campanha. Após a seleção, a Marca deve revisar e finalizar o pagamento.":
+      "Conecte Publi allows the Brand to select and approve creators directly in each campaign. After selection, the Brand must review and finalize payment.",
+    "Pagamento Antecipado e Automático": "Advance and Automatic Payment",
+    "O pagamento é processado automaticamente assim que a Marca clica em 'Fazer Pagamento' na tela do carrinho de compras com os creators aprovados. Esse processo garante que o valor seja alocado corretamente e a campanha liberada":
+      "Payment is automatically processed as soon as the Brand clicks on 'Make Payment' on the shopping cart screen with approved creators. This process ensures that the amount is allocated correctly and the campaign is released",
+    "Início Condicional da Campanha": "Conditional Start of the Campaign",
+    "O início da campanha só ocorre após a confirmação do pagamento de cada creator pela marca. Caso o pagamento do creator aprovado, não seja efetuado, o Creator não poderá iniciar o seu trabalho na campanha.":
+      "The campaign only begins after payment has been confirmed by each creator by the brand. If the approved creator's payment is not made, the Creator will not be able to start working on the campaign.",
+
     'O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O pagamento deverá ser feito diretamente na plataforma Conecte Publi através do sistema de pagamento PagBank. O pagamento deve ser realizado automaticamente e imediatamente após a Marca clicar em "valor a pagar", na tela de administração da campanha. O pagamento deve ser feito até a data inicial da campanha, caso contrário, será bloqueada.':
       'The campaign payment must be made only after the brand selects and approves all the creators it wishes to include in the campaign. The payment must be made directly on the Conecte Publi platform through the PagBank payment system. The payment must be made automatically and immediately after the Brand clicks on "amount to pay" on the campaign administration screen. The payment must be made by the campaign\'s start date, otherwise, it will be blocked.',
 
-    "Somente quando a campanha for finalizada é que o valor correspondente a 80% (oitenta por cento) do valor pago pela Marca será destinado ao Creator responsável pela execução das atividades, ficando retido 20% (vinte por cento) do valor pela Conecte Publi a título de taxa de serviço.":
-      "Only when the campaign is finalized will the amount corresponding to 80% (eighty percent) of the amount paid by the Brand be allocated to the Creator responsible for executing the activities, with 20% (twenty percent) of the amount retained by Conecte Publi as a service fee.",
+    "Após a conclusão da campanha e validação da entrega, 80% do valor pago será liberadopara o Creator responsável. A Conecte Publi reterá 20% como taxa de serviço.":
+      "After completion of the campaign and validation of delivery, 80% of the amount paid will be released to the responsible Creator. Conecte Publi will retain 20% as a service fee.",
 
-    "O pagamento ao Creator não será realizado imediatamente após a finalização de uma campanha. Valores devidos ao Creator serão transferidos pela Conecte Publi, através de transferência via PIX sempre no dia 15 (quinze) de cada mês, para a chave PIX informada pelo Creator, referente a todas as campanhas finalizadas por ele no mês anterior.":
-      "Payment to the Creator will not be made immediately after the completion of a campaign. Amounts owed to the Creator will be transferred by Conecte Publi, via PIX transfer always on the 15th of each month, to the PIX key provided by the Creator, referring to all campaigns completed by them in the previous month.",
+    "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês, referentes às campanhas finalizadas no mês anterior. O Creator deve garantir que a chave PIX cadastrada na plataforma esteja atualizada.":
+      "The amounts accumulated for the Creator will be transferred via PIX on the 15th (fifteenth) of each month, referring to campaigns completed in the previous month. The Creator must ensure that the PIX key registered on the platform is up to date.",
 
-    "Se o Creator não cumprir os requisitos estabelecidos e aceitos para a campanha, a Marca terá direito a requerer reembolso integral do valor investido, sem acréscimos, o que será devido somente após comprovado descumprimento dos requisitos não cumpridos, cabendo à Marca aguardar análise pela plataforma da comprovação apresentada. O reembolso devido à Marca será realizado em até 10 (dez) dias úteis após comprovado o descumprimento.":
-      "If the Creator does not fulfill the established and accepted requirements for the campaign, the Brand will have the right to request a full refund of the invested amount, without additions, which will be due only after proven non-fulfillment of the unmet requirements, with the Brand having to wait for the platform's analysis of the presented proof. The refund owed to the Brand will be made within 10 (ten) business days after the non-compliance is proven.",
+    "Se o Creator não cumprir os requisitos estabelecidos, a Marca poderá solicitar reembolso integral. O reembolso será efetuado em até 10 (dez) dias úteis após a análise e comprovação do descumprimento pela plataforma.":
+      "If the Creator does not meet the established requirements, the Brand may request a full refund. The refund will be made within 10 (ten) business days after analysis and proof of non-compliance by the platform.",
 
     "Violação de Termos de Serviço: Quando um usuário quebra regras estabelecidas, como publicações em desacordo com política e finalidade da plataforma, promoção de conteúdos por lei e pela plataforma proibidos e uso da plataforma para atividades não autorizadas previamente.":
       "Violation of Terms of Service: When a user breaks established rules, such as postings that are not in accordance with the platform's policy and purpose, promotion of content prohibited by law and the platform, and use of the platform for previously unauthorized activities.",
@@ -1375,5 +1461,108 @@ export default {
     Agência: "Agency",
     Banco: "Bank",
     "Caso prefira, você pode fornecer os dados bancários para transferência.": `If you prefer, you can provide bank details for transfer.`,
+    "Nenhuma avaliação recebida.": "No reviews received.",
+    "da marca": "from the brand",
+    "do usuário": "from the user",
+    "Postado há": "Posted",
+    atrás: "ago",
+    "Tipo:": "Type:",
+    "Período de inscrições:": "Registration period:",
+    "Início da campanha:": "Campaign start:",
+    Início: "Start",
+    "Fim da campanha:": "Campaign end:",
+    Encerramento: "End",
+    "Período de Campanha: O prazo máximo estabelecido para que o creator entregue todo o escopo obrigatório da campanha.":
+      "Campaign Period: The maximum time allowed for the creator to deliver the entire mandatory scope of the campaign.",
+    "Status:": "Status:",
+    "Inscrição realizada com sucesso!": "Registration successfully completed!",
+    "Você já está inscrito nesta campanha!":
+      "You are already registered for this campaign!",
+    "Ocorreu um erro ao tentar inscrever-se. Tente novamente.":
+      "An error occurred while trying to register. Try again.",
+    "Inscrição cancelada com sucesso!": "Registration successfully canceled!",
+    "Ocorreu um erro ao tentar cancelar a inscrição. Tente novamente.": `An error occurred while trying to cancel the registration. Try again.`,
+    "Aprovado pela marca": "Approved by the brand",
+    "Inscrições encerradas": "Registrations closed",
+    "Inscrever-se": "Sign up",
+    "Cancelando...": "Cancelling...",
+    "Cancelar Inscrição": "Cancel Registration",
+    "Inscrições não iniciadas": "Registrations not started",
+    "Para se inscrever, complete seu perfil preenchendo os seguintes campos:": `To sign up, complete your profile by filling in the following fields:`,
+    "Conclua sua Inscrição": "Complete your Registration",
+    "Escreva aqui sua ideia/roteiro de conteúdo para essa campanha e/ou porquê a marca deve te escolher":
+      "Write here your idea/content script for this campaign and/or why the brand should choose you",
+    "Li e concordo com o": "I have read and agree with the",
+    "Contrato da Campanha": "Campaign Contract",
+    "Concluir inscrição": "Complete registration",
+    "Pelo menos uma rede social": "At least one social network",
+    "Características do Vídeo": "Video Characteristics",
+    "Tipo de vídeo:": "Video type:",
+    "Duração mínima:": "Minimum duration:",
+    "Duração máxima:": "Maximum duration:",
+    "Esta empresa ainda não possui campanhas ativas.": `This company does not have active campaigns yet.`,
+    " vagas abertas": " open positions",
+    "Gênero: ": "Gender: ",
+    "Idade mínima: ": "Minimum age: ",
+    "Idade máxima: ": "Maximum age: ",
+    "Localidades permitidas:": "Allowed locations: ",
+    "Mínimo de seguidores:": "Minimum followers: ",
+    "Atuar em, no mínimo, um dos nichos:":
+      "Act in at least one of the niches: ",
+    Requisitos: "Requirements",
+    "Escolher Influencer": "Select Influencer",
+    "Ao escolher este(a) creator, você está confirmando a participação dele(a) na campanha e autorizando o início das atividades conforme os termos acordados. O(a) creator será responsável por executar as tarefas conforme o briefing da campanha e entregar os conteúdos no prazo estabelecido.": `By choosing this creator, you are confirming his/her participation in the campaign and authorizing the start of activities according to the agreed terms. The creator will be responsible for executing the tasks according to the campaign briefing and delivering the content within the established deadline.`,
+    "Deseja confirmar a aprovação?": "Do you want to confirm the approval?",
+    "Escolher para Campanha": "Choose for Campaign",
+    "Precisa de ajuda?": "Need help?",
+    "Caso deseje cancelar sua campanha, observe que nossa equipe de suporte avaliará a situação para garantir que todos os envolvidos sejam tratados de forma justa. Dependendo do progresso dos creators, a campanha poderá ter custos ou reembolsos parciais.":
+      "If you wish to cancel your campaign, note that our support team will assess the situation to ensure that everyone involved is treated fairly. Depending on the progress of the creators, the campaign may have partial costs or refunds.",
+    "Passo a Passo para o Cancelamento:": "Step by Step for Cancellation:",
+    "Entenda as Condições de Cancelamento":
+      "Understand the Cancellation Conditions",
+    "Nenhum Creator Selecionado:": "No Creator Selected:",
+    " Se você não selecionou nenhum creator para trabalhar na campanha, seu reembolso será de 80% após a verificação da equipe.": ` If you have not selected any creator to work on the campaign, your refund will be 80% after verification by the team.`,
+    "Creators com Status 'Trabalho em Progresso':": `Creators with 'Work in Progress' Status:`,
+    "Caso existam creators em 'Trabalho em Progresso', poderá haver custos proporcionais ao trabalho já realizado. Nossa equipe determinará um reembolso justo com base no nível de cumprimento dos requisitos.": `If there are creators in 'Work in Progress', there may be costs proportional to the work already done. Our team will determine a fair refund based on the level of compliance with the requirements.`,
+    "Creators com Status 'Trabalho Concluído':": `Creators with 'Work Completed' Status:`,
+    "Se algum creator foi marcado como 'Trabalho Concluído', o valor referente ao trabalho deste creator não será reembolsado, já que você como a marca aceitou e aprovou a entrega final.":
+      "If any creator has been marked as 'Work Completed', the amount for this creator's work will not be refunded, as you as the brand accepted and approved the final delivery.",
+    " Forneça um Motivo para o Cancelamento (Campo de Feedback)": ` Provide a Reason for Cancellation (Feedback Field)`,
+    "Para nos ajudar a entender e melhorar a experiência, descreva brevemente o motivo do cancelamento abaixo.":
+      "To help us understand and improve the experience, briefly describe the reason for the cancellation below.",
+    "Deseja realmente cancelar a campanha? Isso irá enviar um aviso para a nossa equipe avaliar a situação.":
+      "Do you really want to cancel the campaign? This will send a notice to our team to assess the situation.",
+    "Sim, Cancelar campanha": "Yes, Cancel campaign",
+    "Seu pedido de cancelamento foi enviado e será analisado pela nossa equipe.": `Your cancellation request has been sent and will be reviewed by our team.`,
+    "Ocorreu um erro ao enviar o link. Tente novamente.":
+      "An error occurred while sending the link. Try again.",
+    "Enviar link": "Send link",
+    "Importante lembrar que uma taxa de sucesso de 20% será aplicada": `It is important to remember that a success fee of 20% will be applied`,
+    "URL da Postagem": "Post URL",
+    "Avaliar Marca": "Rate Brand",
+    "Quão claro foi o briefing fornecido pela marca em relação aos objetivos, público-alvo e diretrizes da campanha?": `How clear was the briefing provided by the brand regarding the campaign's objectives, target audience and guidelines?`,
+    "(1 = Nada claro, 5 = Extremamente claro)": `(1 = Not clear at all, 5 = Extremely clear)`,
+    "Como você avalia a disponibilidade e a agilidade da marca em responder às dúvidas ou solicitações durante o projeto?": `How do you rate the availability and agility of the brand in responding to questions or requests during the project?`,
+    "(1 = Muito insatisfatória, 5 = Excelente)": `(1 = Very unsatisfactory, 5 = Excellent)`,
+    "A marca demonstrou expectativas realistas e lidou bem com ajustes necessários durante a campanha?": `Did the brand demonstrate realistic expectations and handle necessary adjustments well during the campaign?`,
+    "(1 = Muito abaixo do esperado, 5 = Muito acima do esperado)": `(1 = Much below expectations, 5 = Much above expectations)`,
+    "Deixe um comentário sobre esta marca*": `Leave a comment about this brand*`,
+    "Quão bem o conteúdo produzido atendeu às diretrizes?": `How well did the produced content meet the guidelines?`,
+    "Pontualidade e comunicação do influenciador?": `Punctuality and communication of the influencer?`,
+    "Como avalia o alcance e engajamento?": `How do you rate reach and engagement?`,
+    "Avaliar Influencer": "Rate Influencer",
+    "Quão bem o conteúdo produzido atendeu às diretrizes criativas e aos objetivos da campanha?": `How well did the produced content meet the creative guidelines and campaign objectives?`,
+    "(1 = Não atendeu de forma alguma, 5 = Atendeu perfeitamente)": `(1 = Did not meet at all, 5 = Met perfectly)`,
+    "Quão pontual e comprometido foi o influenciador em cumprir os prazos e manter uma comunicação clara durante o processo?": `How punctual and committed was the influencer in meeting deadlines and maintaining clear communication during the process?`,
+    "(1 = Extremamente insatisfatório, 5 = Extremamente satisfatório)": `(1 = Extremely unsatisfactory, 5 = Extremely satisfactory)`,
+    "Como você avalia o alcance e o engajamento do conteúdo produzido em termos de interações, cliques ou conversões?": `How do you rate the reach and engagement of the produced content in terms of interactions, clicks or conversions?`,
+    "(1 = Muito abaixo das expectativas, 5 = Muito acima das expectativas)": `(1 = Much below expectations, 5 = Much above expectations)`,
+    "Deixe um comentário sobre este creator*": `Leave a comment about this creator*`,
+    "Por favor, preencha todos os campos.": "Please fill in all fields.",
+    "Não foi possível identificar o tipo de usuário.": `Could not identify the user type.`,
+    "Avaliar Plataforma": "Rate Platform",
+    "Em uma escala de 1 a 5, como você avalia sua satisfação geral com a plataforma Conecte Publi, considerando navegação, funcionalidades e suporte?": `On a scale of 1 to 5, how do you rate your overall satisfaction with the Conecte Publi platform, considering navigation, features and support?`,
+    "(1 = Muito insatisfeito(a), 5 = Muito satisfeito)": `(1 = Very dissatisfied, 5 = Very satisfied)`,
+    "Sugestões, críticas ou comentários*": `Suggestions, criticisms or comments*`,
   },
 };

@@ -7,6 +7,7 @@ import { createOrGetChat, sendMessage } from "@/services/chatService";
 
 import Modal from "@/components/ui/Modal";
 import { UserAuth } from "@/types/UserAuth";
+import { t } from "i18next";
 
 interface Props {
   campaignId: string;
@@ -54,7 +55,7 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
       setIsEnviarLinkModalOpen(false);
     } catch (error) {
       console.error("Erro ao enviar o link:", error);
-      toast.error("Ocorreu um erro ao enviar o link. Tente novamente.");
+      toast.error(t("Ocorreu um erro ao enviar o link. Tente novamente."));
     } finally {
       setIsSubmitting(false);
     }
@@ -66,7 +67,7 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
         className="px-4 py-2 rounded-md mt-2 font-bold border bg-[#10438F] text-white hover:bg-[#10438F]/90 flex items-center"
         onClick={() => setIsEnviarLinkModalOpen(true)}
       >
-        <PaperPlaneTilt weight="bold" className="mr-2" /> Enviar link
+        <PaperPlaneTilt weight="bold" className="mr-2" /> {t("Enviar link")}
       </button>
 
       {isEnviarLinkModalOpen && (
@@ -74,7 +75,9 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
           <div className="space-y-4">
             <div className="bg-yellow-100 p-4 rounded-md text-yellow-800 text-sm font-semibold flex items-center gap-2 max-sm:gap-0 mt-2">
               <Warning size={18} className="w-4 h-4 max-sm:min-w-[2rem]" />{" "}
-              Importante lembrar que uma taxa de sucesso de 20% será aplicada
+              {t(
+                "Importante lembrar que uma taxa de sucesso de 20% será aplicada"
+              )}
             </div>
 
             <div>
@@ -82,7 +85,7 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
                 htmlFor="linkInput"
                 className="block font-bold text-gray-700 mb-2"
               >
-                URL da Postagem
+                {t("URL da Postagem")}
               </label>
               <textarea
                 id="linkInput"
@@ -101,7 +104,7 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
                 onClick={handleEnviarLink}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Enviando..." : "Enviar link"}
+                {isSubmitting ? t("Enviando...") : t("Enviar link")}
               </button>
             </div>
           </div>

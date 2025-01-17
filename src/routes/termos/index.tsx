@@ -1,5 +1,3 @@
-// src/pages/TermosDeUso.tsx
-
 import { createFileRoute } from "@tanstack/react-router";
 import { t } from "i18next";
 import { useEffect } from "react";
@@ -137,21 +135,40 @@ function TermosDeUso() {
         )}
       </p>
 
-      <h3 className="text-lg font-semibold mt-4 mb-2">
-        {t("2. Pagamento da campanha")}
-      </h3>
-      <p className="mb-4">
-        {t(
-          'O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O pagamento deverá ser feito diretamente na plataforma Conecte Publi através do sistema de pagamento PagBank. O pagamento deve ser realizado automaticamente e imediatamente após a Marca clicar em "valor a pagar", na tela de administração da campanha. O pagamento deve ser feito até a data inicial da campanha, caso contrário, será bloqueada.'
-        )}
-      </p>
+      <h3 className="text-lg font-semibold mt-4 mb-2">{t("2. Pagamento")}</h3>
+      <ul className="list-disc list-inside space-y-2">
+        <li>
+          <span className="font-semibold">
+            2.1 {t("Seleção dos Creators e Aprovação")} <br />
+          </span>{" "}
+          {t(
+            "A Conecte Publi permite que a Marca selecione e aprove creators diretamente em cada campanha. Após a seleção, a Marca deve revisar e finalizar o pagamento."
+          )}
+        </li>
+        <li>
+          <span className="font-semibold">
+            2.2 {t("Pagamento Antecipado e Automático")} <br />
+          </span>{" "}
+          {t(
+            `O pagamento é processado automaticamente assim que a Marca clica em 'Fazer Pagamento' na tela do carrinho de compras com os creators aprovados. Esse processo garante que o valor seja alocado corretamente e a campanha liberada`
+          )}
+        </li>
+        <li>
+          <span className="font-semibold">
+            2.3 {t(" Início Condicional da Campanha")}
+          </span>{" "}
+          {t(
+            "O início da campanha só ocorre após a confirmação do pagamento de cada creator pela marca. Caso o pagamento do creator aprovado, não seja efetuado, o Creator não poderá iniciar o seu trabalho na campanha."
+          )}
+        </li>
+      </ul>
 
       <h3 className="text-lg font-semibold mt-4 mb-2">
         {t("3. Distribuição de valores")}
       </h3>
       <p className="mb-4">
         {t(
-          "Somente quando a campanha for finalizada é que o valor correspondente a 80% (oitenta por cento) do valor pago pela Marca será destinado ao Creator responsável pela execução das atividades, ficando retido 20% (vinte por cento) do valor pela Conecte Publi a título de taxa de serviço."
+          "Após a conclusão da campanha e validação da entrega, 80% do valor pago será liberadopara o Creator responsável. A Conecte Publi reterá 20% como taxa de serviço."
         )}
       </p>
 
@@ -160,7 +177,7 @@ function TermosDeUso() {
       </h3>
       <p className="mb-4">
         {t(
-          "O pagamento ao Creator não será realizado imediatamente após a finalização de uma campanha. Valores devidos ao Creator serão transferidos pela Conecte Publi, através de transferência via PIX sempre no dia 15 (quinze) de cada mês, para a chave PIX informada pelo Creator, referente a todas as campanhas finalizadas por ele no mês anterior."
+          "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês, referentes às campanhas finalizadas no mês anterior. O Creator deve garantir que a chave PIX cadastrada na plataforma esteja atualizada."
         )}
       </p>
 
@@ -169,7 +186,7 @@ function TermosDeUso() {
       </h3>
       <p className="mb-4">
         {t(
-          "Se o Creator não cumprir os requisitos estabelecidos e aceitos para a campanha, a Marca terá direito a requerer reembolso integral do valor investido, sem acréscimos, o que será devido somente após comprovado descumprimento dos requisitos não cumpridos, cabendo à Marca aguardar análise pela plataforma da comprovação apresentada. O reembolso devido à Marca será realizado em até 10 (dez) dias úteis após comprovado o descumprimento."
+          "Se o Creator não cumprir os requisitos estabelecidos, a Marca poderá solicitar reembolso integral. O reembolso será efetuado em até 10 (dez) dias úteis após a análise e comprovação do descumprimento pela plataforma."
         )}
       </p>
 
@@ -233,6 +250,115 @@ function TermosDeUso() {
           )}
         </li>
       </ul>
+
+      <h2 className="text-lg font-semibold mt-6 mb-2">
+        {t("CLÁUSULA QUARTA - Uso de Conteúdo em Tráfego Pago")}
+      </h2>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        {t("1. Termos de Veiculação")}
+      </h3>
+      <p className="mb-4">
+        {t(
+          "Ao aceitar a presente campanha publicitária, o(a) Creator concorda que, no caso de tráfego pago, a utilização de seu conteúdo seguirá rigorosamente os locais de exibição e o período de veiculação estabelecidos na campanha no momento da candidatura e aceite."
+        )}
+      </p>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        {t("2. Alterações nas Condições")}
+      </h3>
+      <p className="mb-4">
+        {t(
+          "Quaisquer alterações nos locais de veiculação ou extensão do período previamente acordado deverão ser negociadas e formalizadas mediante nova autorização e compensação financeira adicional, conforme acordado entre as partes."
+        )}
+      </p>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        {t("3. Remuneração e Direitos")}
+      </h3>
+      <p className="mb-4">
+        {t(
+          "A remuneração definida nesta campanha cobre exclusivamente o uso do conteúdo para os fins e prazos especificados. Caso o conteúdo seja reutilizado ou redistribuído além desses parâmetros, a marca estará sujeita a pagamento adicional e à formalização de novo contrato."
+        )}
+      </p>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        {t("4. Direitos e Responsabilidades")}
+      </h3>
+      <ul className="list-disc list-inside mb-4">
+        <li>
+          {t(
+            "O(a) Creator garante o cumprimento dos termos aceitos, comprometendo-se com a entrega e qualidade do material conforme o escopo da campanha."
+          )}
+        </li>
+        <li>
+          {t(
+            "A marca se compromete a utilizar o conteúdo estritamente dentro das condições especificadas, respeitando os direitos autorais e de imagem do(a) Creator."
+          )}
+        </li>
+      </ul>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">{t("5. Penalidades")}</h3>
+      <p className="mb-4">
+        {t(
+          "O descumprimento de qualquer uma das condições estabelecidas nesta cláusula poderá acarretar sanções legais, incluindo indenização por uso indevido da imagem do(a) Creator."
+        )}
+      </p>
+
+      <h2 className="text-lg font-semibold mt-6 mb-2">
+        {t("CLÁUSULA QUINTA - Contratação Através da Vitrine de Creators")}
+      </h2>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        {t("1. Envio de Proposta pela Marca")}
+      </h3>
+      <p className="mb-4">
+        {t(
+          "A Marca pode enviar propostas diretamente a Creators pela Vitrine de Creators, detalhando o escopo do entregável, prazos e remuneração."
+        )}
+      </p>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        {t("2. Aceitação ou Recusa da Proposta pelo Creator")}
+      </h3>
+      <p className="mb-4">
+        {t(
+          "O Creator deve acessar a plataforma para revisar a proposta enviada. Ele pode:"
+        )}
+
+        <ul className="list-disc list-inside mb-4">
+          <li>
+            <strong>{t("Aceitar a Proposta")}:</strong>{" "}
+            {t(
+              "Ao aceitar, o Creator automaticamente concorda com os termos e condições da campanha detalhados na proposta e nos Termos de Uso."
+            )}
+          </li>
+          <li>
+            <strong>{t("Recusar a Proposta")}:</strong>{" "}
+            {t(
+              "Caso não concorde com os termos, o Creator pode recusar a proposta e enviar uma justificativa à Marca."
+            )}
+          </li>
+        </ul>
+      </p>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        {t("3. Notificação de Decisão")}
+      </h3>
+      <p className="mb-4">
+        {t(
+          "Ambas as partes receberão notificações por e-mail detalhando a decisão do Creator sobre a proposta enviada."
+        )}
+      </p>
+
+      <h3 className="text-lg font-semibold mt-4 mb-2">
+        {t("4. Início da Campanha")}
+      </h3>
+      <p className="mb-4">
+        {t(
+          "A produção dos entregáveis só poderá ser iniciada após a confirmação do pagamento pela Marca e o aceite formal do Creator."
+        )}
+      </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
         {t("Responsabilidades do Usuário")}
@@ -325,60 +451,6 @@ function TermosDeUso() {
       <p className="mt-4">
         {t(
           "Se você tiver alguma dúvida, entre em contato conosco através dos canais de suporte."
-        )}
-      </p>
-
-      <h2 className="text-lg font-semibold mt-6 mb-2">
-        {t("CLÁUSULA QUARTA - Uso de Conteúdo em Tráfego Pago")}
-      </h2>
-
-      <h3 className="text-lg font-semibold mt-4 mb-2">
-        {t("1. Termos de Veiculação")}
-      </h3>
-      <p className="mb-4">
-        {t(
-          "Ao aceitar a presente campanha publicitária, o(a) Creator concorda que, no caso de tráfego pago, a utilização de seu conteúdo seguirá rigorosamente os locais de exibição e o período de veiculação estabelecidos na campanha no momento da candidatura e aceite."
-        )}
-      </p>
-
-      <h3 className="text-lg font-semibold mt-4 mb-2">
-        {t("2. Alterações nas Condições")}
-      </h3>
-      <p className="mb-4">
-        {t(
-          "Quaisquer alterações nos locais de veiculação ou extensão do período previamente acordado deverão ser negociadas e formalizadas mediante nova autorização e compensação financeira adicional, conforme acordado entre as partes."
-        )}
-      </p>
-
-      <h3 className="text-lg font-semibold mt-4 mb-2">
-        {t("3. Remuneração e Direitos")}
-      </h3>
-      <p className="mb-4">
-        {t(
-          "A remuneração definida nesta campanha cobre exclusivamente o uso do conteúdo para os fins e prazos especificados. Caso o conteúdo seja reutilizado ou redistribuído além desses parâmetros, a marca estará sujeita a pagamento adicional e à formalização de novo contrato."
-        )}
-      </p>
-
-      <h3 className="text-lg font-semibold mt-4 mb-2">
-        {t("4. Direitos e Responsabilidades")}
-      </h3>
-      <ul className="list-disc list-inside mb-4">
-        <li>
-          {t(
-            "O(a) Creator garante o cumprimento dos termos aceitos, comprometendo-se com a entrega e qualidade do material conforme o escopo da campanha."
-          )}
-        </li>
-        <li>
-          {t(
-            "A marca se compromete a utilizar o conteúdo estritamente dentro das condições especificadas, respeitando os direitos autorais e de imagem do(a) Creator."
-          )}
-        </li>
-      </ul>
-
-      <h3 className="text-lg font-semibold mt-4 mb-2">{t("5. Penalidades")}</h3>
-      <p className="mb-4">
-        {t(
-          "O descumprimento de qualquer uma das condições estabelecidas nesta cláusula poderá acarretar sanções legais, incluindo indenização por uso indevido da imagem do(a) Creator."
         )}
       </p>
     </div>

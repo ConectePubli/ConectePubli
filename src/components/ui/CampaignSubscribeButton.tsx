@@ -15,6 +15,10 @@ import { toast } from "sonner";
 import { ParticipationStatusFilter } from "@/types/Filters";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
 import ModalSendLinkCampaign from "./ModalSendLinkCampaign";
+import { useTranslation } from "react-i18next";
+import { t } from "i18next";
+import { isEnableSubscription } from "@/utils/campaignSubscription";
+import { Campaign } from "@/types/Campaign";
 
 const Spinner: React.FC = () => (
   <svg
@@ -79,23 +83,23 @@ const isProfileComplete = (user: AuthModel): boolean => {
 const getIncompleteProfileFields = (user: Influencer): string[] => {
   const missingFields: string[] = [];
 
-  if (!user.name) missingFields.push("Nome");
-  if (!user.username) missingFields.push("Nome de usuário");
-  if (!user.email) missingFields.push("Email");
-  if (!user.bio) missingFields.push("Biografia");
-  if (!user.background_img) missingFields.push("Imagem de fundo");
-  if (!user.birth_date) missingFields.push("Data de nascimento");
-  if (!user.cell_phone) missingFields.push("Celular");
-  if (!user.account_type) missingFields.push("Tipo de conta");
-  if (!user.gender) missingFields.push("Gênero");
-  if (!user.country) missingFields.push("País");
-  if (!user.state) missingFields.push("Estado");
-  if (!user.city) missingFields.push("Cidade");
-  if (!user.neighborhood) missingFields.push("Bairro");
-  if (!user.street) missingFields.push("Rua");
-  if (!user.address_num) missingFields.push("Número");
-  if (!user.cep) missingFields.push("CEP");
-  if (!user.pix_key) missingFields.push("Chave PIX");
+  if (!user.name) missingFields.push(t("Nome"));
+  if (!user.username) missingFields.push(t("Nome de usuário"));
+  if (!user.email) missingFields.push(t("Email"));
+  if (!user.bio) missingFields.push(t("Biografia"));
+  if (!user.background_img) missingFields.push(t("Imagem de fundo"));
+  if (!user.birth_date) missingFields.push(t("Data de nascimento"));
+  if (!user.cell_phone) missingFields.push(t("Celular"));
+  if (!user.account_type) missingFields.push(t("Tipo de conta"));
+  if (!user.gender) missingFields.push(t("Gênero"));
+  if (!user.country) missingFields.push(t("País"));
+  if (!user.state) missingFields.push(t("Estado"));
+  if (!user.city) missingFields.push(t("Cidade"));
+  if (!user.neighborhood) missingFields.push(t("Bairro"));
+  if (!user.street) missingFields.push(t("Rua"));
+  if (!user.address_num) missingFields.push(t("Número"));
+  if (!user.cep) missingFields.push(t("CEP"));
+  if (!user.pix_key) missingFields.push(t("Chave PIX"));
 
   const socialFields = [
     "instagram_url",
@@ -114,13 +118,14 @@ const getIncompleteProfileFields = (user: Influencer): string[] => {
     Boolean(user[field as keyof Influencer])
   );
   if (!hasSocialFieldFilled) {
-    missingFields.push("Pelo menos uma rede social");
+    missingFields.push(t("Pelo menos uma rede social"));
   }
 
   return missingFields;
 };
 
 const CampaignSubscribeButton: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [user, setUser] = useState<Influencer | null>(
     pb.authStore.model as Influencer | null
@@ -155,27 +160,8 @@ const CampaignSubscribeButton: React.FC = () => {
   const isUserRegistered = Boolean(userParticipation);
   const participationStatus = userParticipation?.status;
 
-  // Verificação do período de inscrição
-  const now = new Date();
-  const subStart = campaign?.subscription_start_date
-    ? new Date(campaign.subscription_start_date)
-    : null;
-  const subEnd = campaign?.subscription_end_date
-    ? new Date(campaign.subscription_end_date)
-    : null;
-
-  const isBeforeSubscriptionStart = subStart ? now < subStart : false;
-
-  if (subEnd) {
-    // Adiciona 1 dia
-    subEnd.setDate(subEnd.getDate() + 2);
-    // Opcional: definir a hora no início do dia
-    subEnd.setHours(0, 0, 0, 0);
-  }
-  // Agora a comparação considera o fim do dia
-  const isAfterSubscriptionEnd = subEnd ? now > subEnd : false;
-  const isWithinSubscriptionPeriod =
-    subStart && subEnd ? now >= subStart && now <= subEnd : true;
+  // verificar se o peridodo de inscrição é valido
+  const subscriptionDate = isEnableSubscription(campaign as Campaign);
 
   // Função para navegar até a edição do perfil
   const navigateToCompleteProfile = () => {
@@ -198,17 +184,19 @@ const CampaignSubscribeButton: React.FC = () => {
         description: contentIdea,
       });
 
-      toast.success("Inscrição realizada com sucesso!");
+      toast.success(t("Inscrição realizada com sucesso!"));
       setIsModalOpen(false);
     } catch (error) {
       const err = error as ClientResponseError;
       if (err.data?.data?.influencer?.code === "validation_not_unique") {
-        toast.error("Você já está inscrito nesta campanha!");
+        toast.error(t("Você já está inscrito nesta campanha!"));
       } else {
         console.error(
           `Erro ao inscrever usuário: ${JSON.stringify(err.data, null, 2)}`
         );
-        toast.error("Ocorreu um erro ao tentar inscrever-se. Tente novamente.");
+        toast.error(
+          t("Ocorreu um erro ao tentar inscrever-se. Tente novamente.")
+        );
       }
     } finally {
       setIsLoadingSubmit(false);
@@ -221,11 +209,11 @@ const CampaignSubscribeButton: React.FC = () => {
     setIsLoadingCancel(true);
     try {
       await removeParticipation(userParticipation.id!);
-      toast.success("Inscrição cancelada com sucesso!");
+      toast.success(t("Inscrição cancelada com sucesso!"));
     } catch (error) {
       console.error("Erro ao cancelar inscrição:", error);
       toast.error(
-        "Ocorreu um erro ao tentar cancelar a inscrição. Tente novamente."
+        t("Ocorreu um erro ao tentar cancelar a inscrição. Tente novamente.")
       );
     } finally {
       setIsLoadingCancel(false);
@@ -290,10 +278,10 @@ const CampaignSubscribeButton: React.FC = () => {
     return null;
   }
 
-  if (!isWithinSubscriptionPeriod) {
-    if (isBeforeSubscriptionStart) {
+  if (!subscriptionDate.status && !participationStatus) {
+    if (subscriptionDate.message === "not_started") {
       buttonText = "Inscrições não iniciadas";
-    } else if (isAfterSubscriptionEnd) {
+    } else if (subscriptionDate.message === "time_out") {
       buttonText = "Inscrições encerradas";
     }
     isDisabled = true;
@@ -305,8 +293,9 @@ const CampaignSubscribeButton: React.FC = () => {
       <div>
         <div className="text-[#942A2A] font-semibold mt-2">
           <p>
-            Para se inscrever, complete seu perfil preenchendo os seguintes
-            campos:
+            {t(
+              "Para se inscrever, complete seu perfil preenchendo os seguintes campos:"
+            )}
           </p>
           <ul className="list-disc list-inside">
             {missingFields.map((field) => (
@@ -318,7 +307,7 @@ const CampaignSubscribeButton: React.FC = () => {
           className={`px-4 py-2 rounded-md mt-2 font-bold border bg-[#10438F] text-white hover:bg-[#10438F]/90`}
           onClick={onClickHandler}
         >
-          {buttonText}
+          {t(buttonText)}
         </button>
       </div>
     );
@@ -343,7 +332,7 @@ const CampaignSubscribeButton: React.FC = () => {
           onClick={onClickHandler}
         >
           {isLoadingCancel && <Spinner />}
-          {buttonText}
+          {t(buttonText)}
         </button>
 
         {participationStatus === "approved" && (
@@ -358,10 +347,11 @@ const CampaignSubscribeButton: React.FC = () => {
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogContent className="sm:max-w-lg">
             <DialogHeader>
-              <DialogTitle>Conclua sua Inscrição</DialogTitle>
+              <DialogTitle>{t("Conclua sua Inscrição")}</DialogTitle>
               <DialogDescription>
-                Escreva aqui sua ideia/roteiro de conteúdo para essa campanha
-                e/ou porquê a marca deve te escolher
+                {t(
+                  "Escreva aqui sua ideia/roteiro de conteúdo para essa campanha e/ou porquê a marca deve te escolher"
+                )}
               </DialogDescription>
             </DialogHeader>
             <form
@@ -393,14 +383,14 @@ const CampaignSubscribeButton: React.FC = () => {
                   required
                 />
                 <label htmlFor="acceptContract" className="ml-2 text-sm">
-                  Li e concordo com o{" "}
+                  {t("Li e concordo com o")}{" "}
                   <a
                     href={`${window.location.origin}/contrato-campanha`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline text-blue-600 font-semibold"
                   >
-                    Contrato da Campanha
+                    {t("Contrato da Campanha")}
                   </a>
                 </label>
               </div>
@@ -418,7 +408,7 @@ const CampaignSubscribeButton: React.FC = () => {
                     isLoadingSubmit
                   }
                 >
-                  {isLoadingSubmit ? "Enviando..." : "Concluir inscrição"}
+                  {isLoadingSubmit ? t("Enviando...") : t("Concluir inscrição")}
                 </button>
               </DialogFooter>
             </form>

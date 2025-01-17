@@ -4,6 +4,7 @@ import pb from "@/lib/pb";
 import { toast } from "react-toastify";
 import logo from "@/assets/logo.svg";
 import { Campaign } from "@/types/Campaign";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   setModalType: React.ComponentState;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
+  const { t } = useTranslation();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,7 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
     setLoading(true);
     try {
       if (!rating || !comment.trim()) {
-        toast.error("Por favor, preencha todos os campos.");
+        toast.error(t("Por favor, preencha todos os campos."));
         return;
       }
 
@@ -63,17 +65,17 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
       } else if (userType === "Influencers") {
         dataToCreate.from_influencer = pb.authStore.model?.id;
       } else {
-        toast.error("Não foi possível identificar o tipo de usuário.");
+        toast.error(t("Não foi possível identificar o tipo de usuário."));
         return;
       }
 
       await pb.collection("ratings").create(dataToCreate);
 
-      toast.success("Avaliação enviada com sucesso!");
+      toast.success(t("Avaliação enviada com sucesso!"));
       setModalType(null);
     } catch (error) {
       console.error("Erro ao enviar avaliação:", error);
-      toast.error("Ocorreu um erro ao enviar a avaliação.");
+      toast.error(t("Ocorreu um erro ao enviar a avaliação."));
     } finally {
       setLoading(false);
     }
@@ -82,7 +84,7 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
   return (
     <Modal onClose={() => setModalType(null)}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Avaliar Plataforma</h2>
+        <h2 className="text-xl font-semibold">{t("Avaliar Plataforma")}</h2>
         <div className="border-t border-gray-300" />
 
         {/* Logo da plataforma */}
@@ -99,9 +101,9 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
           {/* Rating */}
           <div>
             <p className="font-medium">
-              Em uma escala de 1 a 5, como você avalia sua satisfação geral com
-              a plataforma Conecte Publi, considerando navegação,
-              funcionalidades e suporte?
+              {t(
+                "Em uma escala de 1 a 5, como você avalia sua satisfação geral com a plataforma Conecte Publi, considerando navegação, funcionalidades e suporte?"
+              )}
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -119,14 +121,14 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
               ))}
             </div>
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Muito insatisfeito(a), 5 = Muito satisfeito)
+              {t("(1 = Muito insatisfeito(a), 5 = Muito satisfeito)")}
             </p>
           </div>
 
           <div className="h-[1px] bg-gray-300 items-center" />
           <div>
             <label className="block font-medium mb-2" htmlFor="comment">
-              Sugestões, críticas ou comentários*
+              {t("Sugestões, críticas ou comentários*")}
             </label>
             <textarea
               id="comment"
@@ -144,14 +146,14 @@ const RatePlatformModal: React.FC<Props> = ({ setModalType, campaign }) => {
             className="text-gray-600 hover:underline"
             disabled={loading}
           >
-            Cancelar
+            {t("Cancelar")}
           </button>
           <button
             onClick={handleSubmit}
             className="bg-[#10438F] text-white px-4 py-2 rounded hover:bg-[#10438F]/90 transition cursor-pointer"
             disabled={loading || userType === null}
           >
-            {loading ? "Enviando..." : "Avaliar"}
+            {loading ? t("Enviando...") : t("Avaliar")}
           </button>
         </div>
       </div>

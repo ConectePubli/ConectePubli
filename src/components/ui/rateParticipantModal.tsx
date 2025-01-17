@@ -7,6 +7,7 @@ import pb from "@/lib/pb";
 import { Influencer } from "@/types/Influencer";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   participant: Influencer;
@@ -19,6 +20,7 @@ const RateParticipantModal: React.FC<Props> = ({
   selectedParticipation,
   setModalType,
 }) => {
+  const { t } = useTranslation();
   const [ratings, setRatings] = useState({
     creativeContent: 0,
     punctuality: 0,
@@ -36,7 +38,7 @@ const RateParticipantModal: React.FC<Props> = ({
         !ratings.engagement ||
         !comment.trim()
       ) {
-        toast.error("Por favor, preencha todos os campos.");
+        toast.error(t("Por favor, preencha todos os campos."));
         return;
       }
 
@@ -66,7 +68,7 @@ const RateParticipantModal: React.FC<Props> = ({
         feedback: feedback,
       });
 
-      toast.success("Avaliação enviada com sucesso!");
+      toast.success(t("Avaliação enviada com sucesso!"));
       setModalType(null);
     } catch (error) {
       console.error("Erro ao enviar avaliação:", error);
@@ -79,7 +81,7 @@ const RateParticipantModal: React.FC<Props> = ({
   return (
     <Modal onClose={() => setModalType(null)}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Avaliar Influencer</h2>
+        <h2 className="text-xl font-semibold">{t("Avaliar Influencer")}</h2>
         <div className="border-t border-gray-300" />
         <div className="flex flex-wrap items-center gap-4">
           {participant.profile_img ? (
@@ -97,9 +99,9 @@ const RateParticipantModal: React.FC<Props> = ({
             <p className="font-semibold text-lg">{participant.name}</p>
             <p className="text-sm text-red-600 flex items-center gap-1">
               <MapPin size={16} />
-              {`${participant.city || "Cidade não definida"}, ${
-                participant.state || "Estado não definido"
-              }, ${participant.country || "País não definido"}`}
+              {`${participant.city || t("Cidade não definida")}, ${
+                participant.state || t("Estado não definido")
+              }, ${participant.country || t("País não definido")}`}
             </p>
           </div>
         </div>
@@ -108,8 +110,9 @@ const RateParticipantModal: React.FC<Props> = ({
           <div className="border-t border-gray-300" />
           <div>
             <p className="font-medium">
-              Quão bem o conteúdo produzido atendeu às diretrizes criativas e
-              aos objetivos da campanha?
+              {t(
+                "Quão bem o conteúdo produzido atendeu às diretrizes criativas e aos objetivos da campanha?"
+              )}
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -130,15 +133,18 @@ const RateParticipantModal: React.FC<Props> = ({
             </div>
 
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Não atendeu de forma alguma, 5 = Atendeu perfeitamente)
+              {t(
+                "(1 = Não atendeu de forma alguma, 5 = Atendeu perfeitamente)"
+              )}
             </p>
           </div>
 
           <div className="h-[1px] bg-gray-300 items-center" />
           <div>
             <p className="font-medium">
-              Quão pontual e comprometido foi o influenciador em cumprir os
-              prazos e manter uma comunicação clara durante o processo?
+              {t(
+                "Quão pontual e comprometido foi o influenciador em cumprir os prazos e manter uma comunicação clara durante o processo?"
+              )}
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -159,15 +165,18 @@ const RateParticipantModal: React.FC<Props> = ({
             </div>
 
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Extremamente insatisfatório, 5 = Extremamente satisfatório)
+              {t(
+                "(1 = Extremamente insatisfatório, 5 = Extremamente satisfatório)"
+              )}
             </p>
           </div>
 
           <div className="h-[1px] bg-gray-300 items-center" />
           <div>
             <p className="font-medium">
-              Como você avalia o alcance e o engajamento do conteúdo produzido
-              em termos de interações, cliques ou conversões?
+              {t(
+                "Como você avalia o alcance e o engajamento do conteúdo produzido em termos de interações, cliques ou conversões?"
+              )}
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -188,15 +197,16 @@ const RateParticipantModal: React.FC<Props> = ({
             </div>
 
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Muito abaixo das expectativas, 5 = Muito acima das
-              expectativas)
+              {t(
+                "(1 = Muito abaixo das expectativas, 5 = Muito acima das expectativas)"
+              )}
             </p>
           </div>
 
           <div className="h-[1px] bg-gray-300 items-center" />
           <div>
             <label className="block font-medium mb-2" htmlFor="comment">
-              Deixe um comentário sobre este creator*
+              {t("Deixe um comentário sobre este creator*")}
             </label>
             <textarea
               id="comment"
@@ -214,14 +224,14 @@ const RateParticipantModal: React.FC<Props> = ({
             className="text-gray-600 hover:underline"
             disabled={loading}
           >
-            Cancelar
+            {t("Cancelar")}
           </button>
           <button
             onClick={handleSubmit}
             className="bg-[#10438F] text-white px-4 py-2 rounded hover:bg-[#10438F]/90 transition cursor-pointer"
             disabled={loading}
           >
-            {loading ? "Enviando..." : "Avaliar"}
+            {loading ? t("Enviando...") : t("Avaliar")}
           </button>
         </div>
       </div>

@@ -4,12 +4,14 @@ import ArrowLeft from "@/assets/icons/arrow-left.svg";
 import ArrowRight from "@/assets/icons/arrow-right.svg";
 import { Campaign } from "@/types/Campaign";
 import CampaignSliderBanner from "@/components/ui/CampaignSliderBanner";
+import { useTranslation } from "react-i18next";
 
 interface CampaignSliderProps {
   campaigns: Campaign[];
 }
 
 const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
+  const { t } = useTranslation();
   const sliderRef = useRef<HTMLDivElement | null>(null);
 
   const isDragging = useRef(false);
@@ -143,7 +145,7 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2 max-w-[97vw]">
-        <p className="text-lg font-bold pl-4">Campanhas</p>
+        <p className="text-lg font-bold pl-4">{t("Campanhas")}</p>
         <div className="flex items-center gap-4 px-4 select-none">
           <button
             onClick={scrollLeftHandler}
@@ -164,7 +166,7 @@ const CampaignSlider: React.FC<CampaignSliderProps> = ({ campaigns }) => {
 
       {campaigns.length === 0 && (
         <p className="text-black px-4">
-          Esta empresa ainda não possui campanhas ativas.
+          {t("Esta empresa ainda não possui campanhas ativas.")}
         </p>
       )}
 

@@ -1,6 +1,7 @@
 import React from "react";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
 import { genderMap } from "@/utils/genderMap";
+import { t } from "i18next";
 
 interface Niche {
   id: string;
@@ -29,21 +30,36 @@ const CampaignRequirements: React.FC = () => {
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-lg border mt-4">
-      <h2 className="font-bold">Requisitos</h2>
+      <h2 className="font-bold">{t("Requisitos")}</h2>
       <div className="flex flex-col gap-2 mt-2">
         {/* Gênero */}
-        {gender && <p>Gênero: {genderMap[gender]}</p>}
+        {gender && (
+          <p>
+            {t("Gênero: ")}
+            {genderMap[gender]}
+          </p>
+        )}
 
         {/* Idade Mínima */}
-        {min_age && <p>Idade mínima: {min_age}</p>}
+        {min_age && (
+          <p>
+            {t("Idade mínima: ")}
+            {min_age}
+          </p>
+        )}
 
         {/* Idade Máxima */}
-        {max_age && <p>Idade máxima: {max_age}</p>}
+        {max_age && (
+          <p>
+            {t("Idade máxima: ")}
+            {max_age}
+          </p>
+        )}
 
         {/* Mínimo de Seguidores */}
         {min_followers && (
           <p>
-            Mínimo de seguidores:{" "}
+            {t("Mínimo de seguidores:")}{" "}
             {Number(min_followers).toLocaleString("pt-BR")}
           </p>
         )}
@@ -51,7 +67,7 @@ const CampaignRequirements: React.FC = () => {
         {/* Localidades */}
         {address && (
           <div className="flex flex-wrap gap-2">
-            <p>Localidades permitidas:</p>
+            <p>{t("Localidades permitidas:")}</p>
             <p>{address}</p>
           </div>
         )}
@@ -59,7 +75,7 @@ const CampaignRequirements: React.FC = () => {
         {/* Nichos */}
         {niches && niches?.length > 0 && (
           <>
-            <p>Atuar em, no mínimo, um dos nichos:</p>
+            <p>{t("Atuar em, no mínimo, um dos nichos:")}</p>
             <div className="flex flex-wrap gap-2 mt-2">
               {niches.map((niche) => (
                 <span
@@ -67,7 +83,7 @@ const CampaignRequirements: React.FC = () => {
                   className="bg-[#10438F] text-white px-3 py-2 text-md rounded-md flex items-center font-semibold cursor-default select-none"
                   title={niche.niche}
                 >
-                  #{niche.niche}
+                  #{t(niche.niche)}
                 </span>
               ))}
             </div>

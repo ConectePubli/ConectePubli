@@ -8,6 +8,7 @@ import { Influencer } from "@/types/Influencer";
 import { toast } from "react-toastify";
 import { Brand } from "@/types/Brand";
 import { Campaign } from "@/types/Campaign";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   participant: Influencer;
@@ -22,6 +23,7 @@ const RateBrandModal: React.FC<Props> = ({
   campaign,
   setModalType,
 }) => {
+  const { t } = useTranslation();
   const [ratings, setRatings] = useState({
     clarity: 0,
     availability: 0,
@@ -72,11 +74,11 @@ const RateBrandModal: React.FC<Props> = ({
         feedback: feedback,
       });
 
-      toast.success("Avaliação enviada com sucesso!");
+      toast.success(t("Avaliação enviada com sucesso!"));
       setModalType(null);
     } catch (error) {
       console.error("Erro ao enviar avaliação:", error);
-      toast.error("Ocorreu um erro ao enviar a avaliação.");
+      toast.error(t("Ocorreu um erro ao enviar a avaliação."));
     } finally {
       setLoading(false);
     }
@@ -85,7 +87,7 @@ const RateBrandModal: React.FC<Props> = ({
   return (
     <Modal onClose={() => setModalType(null)}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-semibold">Avaliar Marca</h2>
+        <h2 className="text-xl font-semibold">{t("Avaliar Marca")}</h2>
         <div className="border-t border-gray-300" />
         <div className="flex flex-wrap items-center gap-4">
           {participant.profile_img ? (
@@ -115,8 +117,9 @@ const RateBrandModal: React.FC<Props> = ({
           {/* Clarity */}
           <div>
             <p className="font-medium">
-              Quão claro foi o briefing fornecido pela marca em relação aos
-              objetivos, público-alvo e diretrizes da campanha?
+              {t(
+                "Quão claro foi o briefing fornecido pela marca em relação aos objetivos, público-alvo e diretrizes da campanha?"
+              )}
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -136,7 +139,7 @@ const RateBrandModal: React.FC<Props> = ({
               ))}
             </div>
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Nada claro, 5 = Extremamente claro)
+              {t("(1 = Nada claro, 5 = Extremamente claro)")}
             </p>
           </div>
 
@@ -144,8 +147,9 @@ const RateBrandModal: React.FC<Props> = ({
           {/* Availability */}
           <div>
             <p className="font-medium">
-              Como você avalia a disponibilidade e a agilidade da marca em
-              responder às dúvidas ou solicitações durante o projeto?
+              {t(
+                "Como você avalia a disponibilidade e a agilidade da marca em responder às dúvidas ou solicitações durante o projeto?"
+              )}
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -165,7 +169,7 @@ const RateBrandModal: React.FC<Props> = ({
               ))}
             </div>
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Muito insatisfatória, 5 = Excelente)
+              {t("(1 = Muito insatisfatória, 5 = Excelente)")}
             </p>
           </div>
 
@@ -173,8 +177,9 @@ const RateBrandModal: React.FC<Props> = ({
           {/* Realistic Expectations */}
           <div>
             <p className="font-medium">
-              A marca demonstrou expectativas realistas e lidou bem com ajustes
-              necessários durante a campanha?
+              {t(
+                "A marca demonstrou expectativas realistas e lidou bem com ajustes necessários durante a campanha?"
+              )}
             </p>
             <div className="flex gap-2 mt-2 w-full">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -197,14 +202,14 @@ const RateBrandModal: React.FC<Props> = ({
               ))}
             </div>
             <p className="text-sm text-gray-600 mt-2">
-              (1 = Muito abaixo do esperado, 5 = Muito acima do esperado)
+              {t("(1 = Muito abaixo do esperado, 5 = Muito acima do esperado)")}
             </p>
           </div>
 
           <div className="h-[1px] bg-gray-300 items-center" />
           <div>
             <label className="block font-medium mb-2" htmlFor="comment">
-              Deixe um comentário sobre esta marca*
+              {t("Deixe um comentário sobre esta marca*")}
             </label>
             <textarea
               id="comment"
@@ -222,14 +227,14 @@ const RateBrandModal: React.FC<Props> = ({
             className="text-gray-600 hover:underline"
             disabled={loading}
           >
-            Cancelar
+            {t("Cancelar")}
           </button>
           <button
             onClick={handleSubmit}
             className="bg-[#10438F] text-white px-4 py-2 rounded hover:bg-[#10438F]/90 transition cursor-pointer"
             disabled={loading}
           >
-            {loading ? "Enviando..." : "Avaliar"}
+            {loading ? t("Enviando...") : t("Avaliar")}
           </button>
         </div>
       </div>

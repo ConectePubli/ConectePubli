@@ -45,6 +45,7 @@ import {
   removeFromCart,
 } from "@/services/carCreators";
 import CartSidebar from "@/components/ui/cartSidebar";
+import { isEnableSubscription } from "@/utils/campaignSubscription";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -154,23 +155,18 @@ function Page() {
   // Controla se o modal "Escolher Influencer" está aberto ou não
   const [chooseModalOpen, setChooseModalOpen] = useState(false);
 
-  // Crie duas instâncias de Date com base nas datas vindas da campaignData
-  const today = new Date();
-  const subscriptionStart = new Date(
-    campaignData?.subscription_start_date ?? ""
-  );
-  const subscriptionEnd = new Date(campaignData?.subscription_end_date ?? "");
-  subscriptionEnd.setDate(subscriptionEnd.getDate() + 2);
-  subscriptionEnd.setHours(0, 0, 0, 0);
+  const subscriptionDate = isEnableSubscription(campaignData as Campaign);
 
   let subscriptionStatusFeedback = "";
 
-  if (subscriptionStart > today) {
-    subscriptionStatusFeedback =
-      "O período de inscrição para essa campanha ainda não iniciou.";
-  } else if (subscriptionEnd < today) {
-    subscriptionStatusFeedback =
-      "O período de inscrições para essa campanha foi encerrado.";
+  if (!subscriptionDate.status) {
+    if (subscriptionDate.message === "not_started") {
+      subscriptionStatusFeedback =
+        "O período de inscrição para essa campanha ainda não iniciou.";
+    } else if (subscriptionDate.message === "time_out") {
+      subscriptionStatusFeedback =
+        "O período de inscrições para essa campanha foi encerrado.";
+    }
   }
 
   useEffect(() => {

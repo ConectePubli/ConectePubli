@@ -118,6 +118,7 @@ function Page() {
                     campaign.participationStatus ??
                     ParticipationStatusFilter.All
                   }
+                  hideStatusSubscription={true}
                   fromMyCampaigns={true}
                 />
               ))}

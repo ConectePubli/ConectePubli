@@ -7,8 +7,10 @@ import { Link } from "lucide-react";
 import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
 import { formatLocation } from "@/utils/formatLocation";
 import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 const CampaignBrandProfile: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const brand = useIndividualCampaignStore(
@@ -85,7 +87,7 @@ const CampaignBrandProfile: React.FC = () => {
         )}
 
         {/* Bio da Empresa */}
-        <p className="text-black mt-3 font-bold">Sobre a empresa</p>
+        <p className="text-black mt-3 font-bold">{t("Sobre a empresa")}</p>
         <p className="text-black text-md mt-2 break-words line-clamp-6">
           {brand.bio || "Biografia não informada."}
         </p>
