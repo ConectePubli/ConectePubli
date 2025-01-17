@@ -1227,7 +1227,7 @@ export default {
     "https://twitter.com/usuario": "https://twitter.com/username",
     "https://twitch.tv/usuario": "https://twitch.tv/username",
     "https://pinterest.com/usuario": "https://pinterest.com/username",
-    "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça sua chave Pix. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada à sua chave Pix.":
+    "Para facilitar o processo de reembolso, caso a campanha expire com vagas não preenchidas ou você decida interromper a campanha, forneça obrigatoriamente sua chave Pix ou seus dados bancários. Se necessário, você receberá o reembolso do valor correspondente diretamente na conta associada.":
       "To facilitate the refund process, if the campaign expires with vacancies unfilled or you decide to stop the campaign, provide your Pix key. If necessary, you will receive the refund of the corresponding amount directly into the account associated with your Pix key.",
     "Escolha uma foto de fundo": "Choose a background photo",
     "Escolha uma foto de fundo para o perfil. Tamanho recomendado: 1500 x 256 para garantir melhor qualidade. Tamanho máximo permitido: 5MB.":
