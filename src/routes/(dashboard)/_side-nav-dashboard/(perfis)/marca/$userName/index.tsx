@@ -58,7 +58,7 @@ export const Route = createFileRoute(
         // conecteRatingsData, TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
       ] = await Promise.all([
         pb.collection<Campaign>("campaigns").getFullList({
-          filter: `brand="${brandData.id}" && paid=true`,
+          filter: `brand="${brandData.id}"`,
           expand: "niche, brand",
         }),
         pb
@@ -161,6 +161,7 @@ function Page() {
     campaigns,
     campaignParticipations
   );
+  console.log(campaigns);
 
   const navigate = useNavigate();
 
