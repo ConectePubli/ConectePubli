@@ -40,30 +40,32 @@ export const PublicHeader = () => {
 +                  px-6 py-2"
       >
         <div className="flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <AlignJustifyIcon className="h-6 w-6 cursor-pointer" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="mr-8">
-              <DropdownMenuItem asChild>
-                <a href="#how-it-works" className="flex items-center w-full">
-                  {t("Como Funciona")}
-                </a>
-              </DropdownMenuItem>
+          <div className="flex lg:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <AlignJustifyIcon className="h-6 w-6 cursor-pointer" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="mr-8">
+                <DropdownMenuItem asChild>
+                  <a href="#how-it-works" className="flex items-center w-full">
+                    {t("Como Funciona")}
+                  </a>
+                </DropdownMenuItem>
 
-              <DropdownMenuItem asChild>
-                <a href="#top-creators" className="flex items-center w-full">
-                  {t("Top Creators")}
-                </a>
-              </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="#top-creators" className="flex items-center w-full">
+                    {t("Top Creators")}
+                  </a>
+                </DropdownMenuItem>
 
-              <DropdownMenuItem asChild>
-                <a href="#benefits" className="flex items-center w-full">
-                  {t("Benefícios")}
-                </a>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem asChild>
+                  <a href="#benefits" className="flex items-center w-full">
+                    {t("Benefícios")}
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <Link to="/">
             <img src={logo} alt="ConectePubli" className="h-10 max-sm:h-8" />
           </Link>
