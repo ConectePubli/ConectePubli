@@ -5,28 +5,31 @@ import {
   useLoaderData,
   useNavigate,
 } from "@tanstack/react-router";
+import { Link } from "lucide-react";
+import { ClientResponseError } from "pocketbase";
+import { t } from "i18next";
+import { useState } from "react";
+import { Rating as StarRating } from "react-simple-star-rating";
 
 import CompanyIcon from "@/assets/icons/company.svg";
 import LocationPin from "@/assets/icons/location-pin.svg";
 import EditIcon from "@/assets/icons/edit.svg";
-import { Link } from "lucide-react";
-import CampaignSlider from "@/components/ui/CampaignSlider";
-import pb from "@/lib/pb";
-import { ClientResponseError } from "pocketbase";
+import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
+import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
+
 import SocialNetworks from "@/types/SocialNetworks";
 import { Brand } from "@/types/Brand";
 import { Campaign } from "@/types/Campaign";
-import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
-import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
-import { formatLocation } from "@/utils/formatLocation";
-import { getUserType } from "@/lib/auth";
 import { Rating } from "@/types/Rating";
-import { useState } from "react";
-import { Rating as StarRating } from "react-simple-star-rating";
+
+import { formatLocation } from "@/utils/formatLocation";
+import pb from "@/lib/pb";
+import { getUserType } from "@/lib/auth";
+
+import CampaignSlider from "@/components/ui/CampaignSlider";
 import AllRatingsModal from "@/components/ui/AllRatingsModal";
 import Spinner from "@/components/ui/Spinner";
-import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/"

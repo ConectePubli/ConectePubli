@@ -1,15 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { t } from "i18next";
+
+import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
+
+import { ParticipationStatusFilter } from "@/types/Filters";
+import { Deliverables } from "@/types/Deliverables";
+
 import CampaignCard from "@/components/ui/CampaignCard";
 import Spinner from "@/components/ui/Spinner";
 import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
-import { getUserType } from "@/lib/auth";
+import Modal from "@/components/ui/Modal";
 import Pagination from "@/components/ui/Pagination";
-import { useCampaignStore } from "@/store/useCampaignStore";
-import { ParticipationStatusFilter } from "@/types/Filters";
-import { t } from "i18next";
+import { Button } from "@/components/ui/button";
 
-// Route creation
+import { getUserType } from "@/lib/auth";
+import { getCreatorDeliverables, returnStatus } from "@/services/deliverables";
+import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import { useCampaignStore } from "@/store/useCampaignStore";
+
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-creator/"
 )({
@@ -64,14 +73,39 @@ function Page() {
     page,
   ]);
 
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [loadingDeliverables, setLoadingDeliverables] = useState(false);
+  const [deliverables, setDeliverables] = useState<Deliverables[]>([]);
+
+  const openDeliverableModal = async () => {
+    setModalOpen(true);
+
+    try {
+      const data = await getCreatorDeliverables(setLoadingDeliverables);
+      setDeliverables(data);
+    } catch (e) {
+      console.log(`error processing modal deliverable info: ${e}`);
+    }
+  };
+
   return (
     <div className="mx-auto py-6 px-4">
-      <h1 className="text-2xl font-bold mb-2">{t("Minhas Participações")}</h1>
-      <p className="text-gray-700 mb-6">
-        {t(
-          "Acompanhe todas as campanhas nas quais você se inscreveu e gerencie suas participações."
-        )}
-      </p>
+      <div className="flex items-center justify-between w-full">
+        <div>
+          <h1 className="text-2xl font-bold mb-2">
+            {t("Minhas Participações")}
+          </h1>
+          <p className="text-gray-700 mb-6">
+            {t(
+              "Acompanhe todas as campanhas nas quais você se inscreveu e gerencie suas participações."
+            )}
+          </p>
+        </div>
+
+        <Button variant={"blue"} onClick={openDeliverableModal}>
+          Ver meus Entregavéis
+        </Button>
+      </div>
 
       <BrandCampaignFilter
         showSearch={true}
@@ -129,6 +163,84 @@ function Page() {
 
       {/* Pagination */}
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+
+      {isModalOpen && (
+        <Modal onClose={() => setModalOpen(false)}>
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-2">Seus Entregáveis</h2>
+            <p className="text-gray-700 mb-6">
+              Aqui estão todos os entregáveis que foram enviados para você:
+            </p>
+
+            {loadingDeliverables && (
+              <div className="flex items-center justify-center mt-10 w-full">
+                <Spinner />
+              </div>
+            )}
+
+            {!loadingDeliverables && (
+              <>
+                {deliverables.length === 0 && (
+                  <div className="text-center text-gray-700">
+                    <p>Nenhuma proposta de entregavéis no momento</p>
+                  </div>
+                )}
+
+                {deliverables.length >= 1 &&
+                  deliverables.map((deliverable) => {
+                    return (
+                      <div className="border rounded-lg p-4 shadow-md">
+                        <div className="flex items-center mb-1">
+                          <img
+                            src={
+                              deliverable.expand.brand.profile_img
+                                ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${deliverable.expand.brand.collectionName}/${deliverable.expand.brand.id}/${deliverable.expand.brand.profile_img}`
+                                : ProfilePlaceholder
+                            }
+                            alt="avatar"
+                            draggable={false}
+                            className="w-10 h-10 mr-2 rounded-md object-cover"
+                          />
+
+                          <h3 className="font-semibold text-lg">
+                            {deliverable.expand.brand.name}
+                          </h3>
+                        </div>
+                        <p className="text-gray-700 mb-4">
+                          {deliverable.description}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-blue-500 font-semibold">
+                            {formatCentsToCurrency(deliverable.total_price)}
+                          </span>
+                          <span className="text-gray-500">
+                            Status:{" "}
+                            <span className="font-semibold">
+                              {returnStatus(
+                                deliverable.status,
+                                deliverable.paid
+                              )}
+                            </span>
+                          </span>
+                        </div>
+
+                        <Button
+                          variant="blue"
+                          className="mt-4"
+                          onClick={() => {
+                            navigate({ to: `/entregaveis/${deliverable.id}` });
+                          }}
+                        >
+                          Visualizar
+                        </Button>
+                      </div>
+                    );
+                  })}
+              </>
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

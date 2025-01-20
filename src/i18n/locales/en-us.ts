@@ -1565,5 +1565,18 @@ export default {
     "Em uma escala de 1 a 5, como você avalia sua satisfação geral com a plataforma Conecte Publi, considerando navegação, funcionalidades e suporte?": `On a scale of 1 to 5, how do you rate your overall satisfaction with the Conecte Publi platform, considering navigation, features and support?`,
     "(1 = Muito insatisfeito(a), 5 = Muito satisfeito)": `(1 = Very dissatisfied, 5 = Very satisfied)`,
     "Sugestões, críticas ou comentários*": `Suggestions, criticisms or comments*`,
+    "Entregável não encontrado": "Deliverable not found",
+    "Proposta de Entregável da Marca": "Brand Deliverable Proposal",
+    "Detalhes do Entregável": "Deliverable Details",
+    "Aceitar Proposta": "Accept Proposal",
+    "Recusar Proposta": "Refuse Proposal",
+    "Sobre a empresa": "About the company",
+    "Confirme sua participação": "Confirm your participation",
+    "Li e concordo com o ": "I have read and agree with the",
+    "Contrato da campanha": "Campaign contract",
+    "Confirmar participação": "Confirm participation",
+    "Por favor, informe o motivo da recusa abaixo.":
+      "Please provide the reason for refusal below.",
+    "Digite aqui o motivo da recusa...": "Enter the reason for refusal here...",
   },
 };
