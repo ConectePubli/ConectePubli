@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import { getUserData } from "@/utils/getUserData";
@@ -36,6 +36,7 @@ import { ArrowLeft, File, Save } from "lucide-react";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import CampaignSpotlight from "./CampaignSpotlight";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -357,6 +358,55 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
       };
     }
   }, [isDirty]);
+
+  const isFormReadyForAI = useMemo(() => {
+    const { basicInfo } = campaignData;
+    if (!basicInfo.campaignName) return false;
+    if (!basicInfo.expected_actions) return false;
+    if (!basicInfo.avoid_actions) return false;
+    if (!basicInfo.additional_information) return false;
+    return true;
+  }, [campaignData]);
+
+  const generateBriefingViaIA = async (): Promise<string> => {
+    function mapIdsToLabels(nicheIds: string[], allNiches?: Niche[]) {
+      if (!allNiches) return [];
+
+      return allNiches
+        .filter((n) => nicheIds.includes(n.id))
+        .map((n) => n.niche);
+    }
+
+    const nicheLabels = mapIdsToLabels(
+      campaignData.audienceSegmentation.niche,
+      niches
+    );
+
+    const flag = i18n.language;
+
+    const response = await fetch(
+      "https://v7consultpro.com/django/api/gerar-briefing",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome_campanha: campaignData.basicInfo.campaignName,
+          publico_alvo: nicheLabels,
+          formato_conteudo: campaignData.audienceSegmentation.audioFormat,
+          canal_divulgacao: campaignData.basicInfo.disseminationChannels,
+          acoes_esperadas: campaignData.basicInfo.expected_actions,
+          additionalInformation: campaignData.basicInfo.additional_information,
+          comportamentos_indesejados: campaignData.basicInfo.avoid_actions,
+          flag: flag,
+        }),
+      }
+    );
+
+    if (!response.ok) throw new Error("Erro ao gerar briefing");
+
+    const data = await response.json();
+    return data.briefing;
+  };
 
   useEffect(() => {
     if (isEditMode && initialCampaignData) {
@@ -844,6 +894,22 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
             isEditMode={isEditMode}
           />
 
+          <BriefingSection
+            briefing={campaignData.basicInfo.briefing}
+            onChange={(newVal) => {
+              setCampaignData((prev) => ({
+                ...prev,
+                basicInfo: {
+                  ...prev.basicInfo,
+                  briefing: newVal,
+                },
+              }));
+              setIsDirty(true);
+            }}
+            isFormReadyForAI={isFormReadyForAI}
+            generateBriefingViaIA={generateBriefingViaIA}
+          />
+
           <ResponsibleInfoSection
             data={responsibleInfo}
             onChange={(e) => {
@@ -911,7 +977,6 @@ function BasicInfoSection({
   const [tooltipOpenFormat, setTooltipOpenFormat] = useState(false);
   const [tooltipOpenURL, setTooltipOpenURL] = useState(false);
   const [tooltipOpenChannels, setTooltipOpenChannels] = useState(false);
-  const [tooltipOpenBriefing, setTooltipOpenBriefing] = useState(false);
   const [tooltipOpenDeliverables, setTooltipOpenDeliverables] = useState(false);
   const [tooltipOpenSending, setTooltipOpenSending] = useState(false);
   const [tooltipOpenExpectedActions, setTooltipOpenExpectedActions] =
@@ -925,7 +990,6 @@ function BasicInfoSection({
   const tooltipRefFormat = useRef<HTMLDivElement>(null);
   const tooltipRefURL = useRef<HTMLDivElement>(null);
   const tooltipRefChannels = useRef<HTMLDivElement>(null);
-  const tooltipRefBriefing = useRef<HTMLDivElement>(null);
   const tooltipRefDeliverables = useRef<HTMLDivElement>(null);
   const tooltipRefSending = useRef<HTMLDivElement>(null);
   const tooltipRefExpectedActions = useRef<HTMLDivElement>(null);
@@ -952,12 +1016,6 @@ function BasicInfoSection({
         !tooltipRefChannels.current.contains(event.target as Node)
       ) {
         setTooltipOpenChannels(false);
-      }
-      if (
-        tooltipRefBriefing.current &&
-        !tooltipRefBriefing.current.contains(event.target as Node)
-      ) {
-        setTooltipOpenBriefing(false);
       }
       if (
         tooltipRefDeliverables.current &&
@@ -1325,57 +1383,6 @@ function BasicInfoSection({
 
         <div className="col-span-1 md:col-span-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="col-span-1">
-              <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-                {t(
-                  "Briefing da Campanha (Forneça detalhes essenciais que o Creator deve saber)*"
-                )}
-                <div className="relative inline-block">
-                  <Question
-                    size={18}
-                    color="#00f"
-                    className="ml-2 min-w-[2rem] cursor-pointer"
-                    onClick={() => {
-                      setTooltipOpenBriefing(!tooltipOpenBriefing);
-                    }}
-                  />
-                  {tooltipOpenBriefing && (
-                    <div
-                      ref={tooltipRefBriefing}
-                      className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
-                      style={{
-                        top: "100%",
-                        left: "-100%",
-                        transform: "translateX(-80%)",
-                        width: "300px",
-                        marginTop: "0.5rem",
-                      }}
-                    >
-                      <p className="text-gray-700 font-normal">
-                        {t(
-                          "Forneça detalhes essenciais que o Creator deve saber, incluindo o objetivo e escopo da campanha, as mensagens principais que precisam ser abordadas, o tom e linguagem desejados, e diretrizes visuais como identidade visual e elementos gráficos."
-                        )}{" "}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </label>
-              <p className="text-gray-500 text-sm mb-2">
-                {t(
-                  "Descreva o propósito da campanha, público-alvo, mensagens principais, tom de voz e as diretrizes visuais."
-                )}
-              </p>
-              <textarea
-                name="briefing"
-                value={data.briefing || ""}
-                onChange={handleInputChange}
-                className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder={t(
-                  "Inclua informações essenciais sobre o objetivo, mensagens principais, tom, linguagem e diretrizes visuais"
-                )}
-              />
-            </div>
-
             <div className="col-span-1">
               <label className="block mb-1 text-gray-700 font-semibold flex items-center">
                 {t(
@@ -2845,6 +2852,164 @@ function CampaignBudgetSection({
   );
 }
 
+interface BriefingSectionProps {
+  briefing: string;
+  onChange: (newBriefing: string) => void;
+  isFormReadyForAI: boolean;
+  generateBriefingViaIA: () => Promise<string>;
+}
+
+export const BriefingSection: React.FC<BriefingSectionProps> = ({
+  briefing,
+  onChange,
+  isFormReadyForAI,
+  generateBriefingViaIA,
+}) => {
+  const [tooltipOpenBriefing, setTooltipOpenBriefing] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const tooltipRefBriefing = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        tooltipRefBriefing.current &&
+        !tooltipRefBriefing.current.contains(event.target as Node)
+      ) {
+        setTooltipOpenBriefing(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleBriefingChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange(e.target.value);
+  };
+
+  const handleGenerateWithAI = async () => {
+    if (briefing.length > 0) {
+      const userConfirmed = window.confirm(
+        "O campo de texto será limpo. Deseja continuar?"
+      );
+
+      if (!userConfirmed) {
+        return;
+      }
+    }
+
+    try {
+      onChange("");
+
+      setIsGenerating(true);
+
+      const newBriefing = await generateBriefingViaIA();
+      onChange(newBriefing);
+
+      toast.success("Briefing gerado com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao gerar briefing com IA");
+      console.error(error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <div className="w-full mt-8">
+      <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
+        {/* Título da Seção */}
+        Briefing da Campanha
+      </h2>
+
+      <div className="px-5 mb-6 grid grid-cols-1">
+        {/* Campo Briefing + Tooltip */}
+        <div className="col-span-1">
+          <label className="block mb-1 text-gray-700 font-semibold flex items-center">
+            {
+              "Briefing da Campanha (Forneça detalhes essenciais que o Creator deve saber)*"
+            }
+            <div className="relative inline-block">
+              <Question
+                size={18}
+                color="#00f"
+                className="ml-2 min-w-[2rem] cursor-pointer"
+                onClick={() => setTooltipOpenBriefing(!tooltipOpenBriefing)}
+              />
+              {tooltipOpenBriefing && (
+                <div
+                  ref={tooltipRefBriefing}
+                  className="absolute bg-white border border-gray-300 rounded-md shadow-lg p-4 z-10 rounded-xl"
+                  style={{
+                    top: "100%",
+                    left: "-100%",
+                    transform: "translateX(-80%)",
+                    width: "300px",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <p className="text-gray-700 font-normal">
+                    {
+                      "Forneça detalhes essenciais que o Creator deve saber, incluindo objetivo, mensagens principais, tom e diretrizes visuais."
+                    }
+                  </p>
+                </div>
+              )}
+            </div>
+          </label>
+
+          <p className="text-gray-500 text-sm mb-2">
+            {
+              "Descreva o propósito da campanha, público-alvo, mensagens principais, tom de voz e diretrizes visuais."
+            }
+          </p>
+
+          <textarea
+            name="briefing"
+            value={briefing}
+            onChange={handleBriefingChange}
+            className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder={
+              "Inclua informações sobre objetivo, mensagens principais, tom, linguagem, diretrizes visuais etc."
+            }
+          />
+        </div>
+
+        {/* Botão Gerar com IA */}
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={handleGenerateWithAI}
+            disabled={isGenerating || !isFormReadyForAI}
+            className={`px-4 py-2 rounded-md text-white transition font-semibold ${
+              !isFormReadyForAI || isGenerating
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+          >
+            {isGenerating ? "Gerando briefing..." : "Gerar com IA"}
+          </button>
+
+          {!isFormReadyForAI && (
+            <p className="text-red-500 text-sm mt-1">
+              Você precisa preencher todos os campos obrigatórios antes de gerar
+              com IA. Os campos opcionais são recomendados para melhorar a
+              qualidade do briefing.
+            </p>
+          )}
+
+          {isGenerating && (
+            <p className="text-gray-500 text-sm mt-1">
+              O texto do briefing foi limpo enquanto geramos um novo...
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 const ResponsibleInfoSection: React.FC<{
   data: ResponsibleInfo;
   onChange: (data: ResponsibleInfo) => void;
