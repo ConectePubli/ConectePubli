@@ -838,19 +838,18 @@ function Page() {
                             {t("Contatar Suporte")}
                           </Button>
 
-                          {campaignData.status !== "ended" &&
-                            campaignData.paid === true && (
-                              <button
-                                className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
-                                onClick={() => {
-                                  setSelectedParticipation(participation);
-                                  setModalType("conclude");
-                                }}
-                              >
-                                <Flag size={18} className="mr-1" />
-                                {t("Trabalho concluído")}
-                              </button>
-                            )}
+                          {campaignData.status !== "ended" && (
+                            <button
+                              className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
+                              onClick={() => {
+                                setSelectedParticipation(participation);
+                                setModalType("conclude");
+                              }}
+                            >
+                              <Flag size={18} className="mr-1" />
+                              {t("Trabalho concluído")}
+                            </button>
+                          )}
                         </>
                       )}
                     </div>
