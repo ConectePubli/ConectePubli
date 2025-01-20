@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import bannerEXPO from "@/assets/banners/BannerPatrocinadorEXPO.jpg";
 import bannerIAPOI from "@/assets/banners/BannerPatrocinadorIAPOI.jpg";
-import bannerYcSummit from "@/assets/banners/BannerYcSummitparaCP.png";
 import bannerLuciano from "@/assets/banners/BannerLuciano.jpeg";
 import bannerAnuncie from "@/assets/banners/BannerPatrocine.jpeg";
 import bannerTrianon from "@/assets/banners/BannerTrianon.jpg";
@@ -33,21 +32,16 @@ const SponsorBanner = () => {
       },
       {
         id: "3",
-        image: bannerYcSummit,
-        url: "https://www.sympla.com.br/evento/yourclub-summit/2772293",
-      },
-      {
-        id: "4",
         image: bannerLuciano,
         url: "https://www.instagram.com/santiagobs.cont?igsh=aHZ5Y253NXdtbzN3",
       },
       {
-        id: "5",
+        id: "4",
         image: bannerAnuncie,
         url: "https://wa.me/5511913185849",
       },
       {
-        id: "6",
+        id: "5",
         image: bannerTrianon,
         url: "https://www.hoteltrianon.com.br",
       },
