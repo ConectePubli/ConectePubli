@@ -58,7 +58,7 @@ export const Route = createFileRoute(
         // conecteRatingsData, TODO: COMENTADO POIS POR ENQUANTO NÃO VAMOS MOSTRAR AS AVALIAÇÕES DA CONECTE
       ] = await Promise.all([
         pb.collection<Campaign>("campaigns").getFullList({
-          filter: `brand="${brandData.id}"`,
+          filter: `brand="${brandData.id}" && status != "draft"`,
           expand: "niche, brand",
         }),
         pb
