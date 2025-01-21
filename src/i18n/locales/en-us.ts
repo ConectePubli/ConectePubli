@@ -796,6 +796,7 @@ export default {
     " de ": " of ",
     "Status: Inscrições Encerradas": "Status: Applications Closed",
     "Trabalho Concluído": "Work Completed",
+    "Trabalho concluído": "Work completed",
     "Campanha em análise": "Campaign under review",
     "/pessoa": "/person",
     "Salvando...": "Saving...",
@@ -1320,7 +1321,9 @@ export default {
     Visualizar: "View",
     "Escolher para a Campanha": "Choose for the Campaign",
     "Contatar Suporte": "Contact Support",
-    "Trabalho concluído": "Work completed",
+    "Proposta recusada": "Proposal declined",
+    "Realize o pagamento para continuar": "Make the payment to continue",
+    "Aguardando confirmação da marca": "Waiting for brand confirmation",
     Total: "Total",
     "Valor por creator": "Value per creator",
     "Creator foi removido": "Creator has been removed",
@@ -1607,6 +1610,8 @@ export default {
     "Visualizar Entregáveis": "View Deliverables",
     "Proposta de Entregável para o Creator":
       "Deliverable Proposal for the Creator",
+    "Aguardando aprovação": "Awaiting approval",
+    "Trabalho em progresso": "Work in progress",
     "Realizar pagamento": "Make payment",
     Suporte: "Support",
     "Seus Entregáveis": "Your Deliverables",
@@ -1619,7 +1624,6 @@ export default {
     "Nenhuma proposta de entregavéis no momento":
       "No deliverable proposals at the moment",
     "Aguardando aprovação do Creator": "Awaiting Creator approval",
-    "Proposta recusada": "Proposal refused",
     "Proposta recusada pelo Creator": "Proposal rejected by Creator",
     "1 Vídeo + Combo de Fotos UGC": "1 Video + UGC Photo Combo",
     "Post no Feed": "Post in Feed",
@@ -1746,5 +1750,6 @@ export default {
     "O período de inscrições para essa campanha foi encerrado.": `The registration period for this campaign has ended.`,
     "Cole aqui a URL da(s) postagem(ns) conforme orientado na campanha. Se desejar, inclua mais de um link e adicione texto adicional para contexto!": `Paste the URL(s) of the post(s) as instructed in the campaign. If you wish, include more than one link and add additional text for context!`,
     "Avaliação enviada com sucesso!": "Rating sent successfully!",
+    "Colaboração concluída": "Collaboration completed",
   },
 };
