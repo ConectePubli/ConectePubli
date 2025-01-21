@@ -981,7 +981,7 @@ function Page() {
                       }
                     >
                       <span className="flex-1 min-w-0 truncate">
-                        {niches.find((f) => f.value === value)?.label}
+                        {t(niches.find((f) => f.value === value)?.label || "")}
                       </span>
                       <span className="ml-1 flex-shrink-0">&times;</span>
                     </Button>

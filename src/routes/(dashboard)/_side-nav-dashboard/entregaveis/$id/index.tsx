@@ -339,15 +339,15 @@ function Page() {
               </div>
             </div>
           </div>
-          <div className="flex justify-between mt-6">
+          <div className="flex flex-wrap lg:flex-nowrap justify-between items-center mt-6 space-y-3 lg:space-y-0 lg:space-x-4">
             {userType === "Influencers" &&
               (proposalStatus === "waiting" ||
                 proposalStatus === "approved" ||
                 proposalStatus === "refused") && (
                 <>
                   {proposalStatus === "approved" ? (
-                    <div className="w-full flex justify-between items-center px-4">
-                      <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default">
+                    <div className="w-full flex flex-wrap justify-between items-center px-4 max-sm:flex-col max-sm:space-y-3">
+                      <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default w-full max-sm:w-full">
                         {t("Proposta aceita")}
                       </button>
 
@@ -362,7 +362,7 @@ function Page() {
                     <>
                       {proposalStatus !== "refused" && (
                         <button
-                          className="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600"
+                          className="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600 w-full max-sm:w-full"
                           onClick={() => setIsAcceptModalOpen(true)}
                         >
                           {t("Aceitar Proposta")}
@@ -373,7 +373,10 @@ function Page() {
 
                   {proposalStatus === "refused" ? (
                     <div className="w-full flex justify-center">
-                      <Button variant={"brown"}>
+                      <Button
+                        variant={"brown"}
+                        className="w-full max-sm:w-full"
+                      >
                         {t("Proposta recusada")}
                       </Button>
                     </div>
@@ -382,7 +385,7 @@ function Page() {
                       {proposalStatus !== "approved" && (
                         <Button
                           variant={"brown"}
-                          className="text-white px-4 py-2 rounded font-semibold"
+                          className="text-white px-4 py-2 rounded font-semibold w-full max-sm:w-full"
                           onClick={() => setIsRefuseModalOpen(true)}
                         >
                           {t("Recusar Proposta")}
@@ -397,7 +400,7 @@ function Page() {
               <>
                 {proposalStatus === "waiting" && (
                   <div className="w-full flex justify-center">
-                    <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default">
+                    <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default w-full max-sm:w-full">
                       {t("Aguardando aprovação do Creator")}
                     </button>
                   </div>
@@ -406,7 +409,7 @@ function Page() {
                 {proposalStatus === "approved" && !deliverable.paid && (
                   <div className="w-full flex justify-center">
                     <button
-                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600"
+                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600 w-full max-sm:w-full"
                       onClick={() => {
                         setIsAcceptBrandModalOpen(true);
                       }}
@@ -418,16 +421,16 @@ function Page() {
 
                 {proposalStatus === "refused" && (
                   <div className="w-full flex justify-center">
-                    <Button variant={"brown"}>
+                    <Button variant={"brown"} className="w-full max-sm:w-full">
                       {t("Proposta recusada pelo Creator")}
                     </Button>
                   </div>
                 )}
 
                 {proposalStatus === "approved" && deliverable.paid && (
-                  <div className="w-full flex justify-between px-4">
+                  <div className="w-full flex flex-wrap justify-between px-4 max-sm:flex-col max-sm:space-y-3">
                     <button
-                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600"
+                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600 w-full max-sm:w-full"
                       onClick={() => setIsCompleteModalOpen(true)}
                     >
                       {t("Concluir Colaboração")}
@@ -435,7 +438,7 @@ function Page() {
 
                     <Button
                       variant={"brown"}
-                      className="text-white px-4 py-2 rounded font-semibold"
+                      className="text-white px-4 py-2 rounded font-semibold w-full max-sm:w-full"
                       onClick={() => setIsSupportModalOpen(true)}
                     >
                       {t("Suporte")}
@@ -447,7 +450,7 @@ function Page() {
 
             {proposalStatus === "completed" && (
               <div className="flex justify-center w-full">
-                <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600">
+                <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600 w-full max-sm:w-full">
                   {t("Colaboração concluída")}
                 </button>
               </div>

@@ -348,9 +348,9 @@ function Page() {
             <button
               key={index}
               className="bg-[#10438F] cursor-default text-white px-3 py-2 text-md rounded-md flex items-center font-semibold hover:bg-[#10438F] hover:text-white transition-colors duration-200"
-              title={tag.niche}
+              title={t(tag.niche)}
             >
-              <span className="">#{tag.niche}</span>{" "}
+              <span className="">#{t(tag.niche)}</span>{" "}
             </button>
           ))}
         </div>

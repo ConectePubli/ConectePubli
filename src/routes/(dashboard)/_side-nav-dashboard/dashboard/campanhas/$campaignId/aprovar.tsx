@@ -521,7 +521,7 @@ function Page() {
         {subscriptionStatusFeedback && (
           <div className="mt-4 bg-red-200 py-2 px-4 rounded-md w-fit flex items-center">
             <Info className="w-4 h-4 min-w-[1rem] mr-2" />
-            <span>{subscriptionStatusFeedback}</span>
+            <span>{t(subscriptionStatusFeedback)}</span>
           </div>
         )}
 
@@ -918,7 +918,7 @@ function Page() {
           <div className="flex flex-col p-2 w-full">
             <p>
               {t(
-                `Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: "Creators Selecionados"`
+                `Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: 'Creators Selecionados'`
               )}
             </p>
 

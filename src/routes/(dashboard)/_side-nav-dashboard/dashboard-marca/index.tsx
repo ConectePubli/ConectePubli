@@ -134,7 +134,7 @@ function Page() {
             </div>
           </Modal>
         )}
-        <div className="space-x-3">
+        <div className="space-x-3 max-sm:space-x-0">
           <Button
             variant={"orange"}
             className="mt-4 ml-auto max-sm:w-full "
@@ -142,7 +142,7 @@ function Page() {
               openDeliverableModal();
             }}
           >
-            <Workflow className="w-5 h-5 mr-2" />
+            <Workflow className="w-5 h-5 mr-2 max-sm:mr-0" />
             {t("Visualizar Entregáveis")}
           </Button>
 
@@ -175,7 +175,7 @@ function Page() {
 
       {isModalDeliverableOpen && (
         <Modal onClose={() => setModalDeliverableOpen(false)}>
-          <div className="p-6">
+          <div className="p-6 max-sm:p-1">
             <h2 className="text-xl font-bold mb-2">{t("Seus Entregáveis")}</h2>
             <p className="text-gray-700 mb-6">
               {t("Aqui estão todos os entregáveis que foram criados por você")}:
@@ -230,13 +230,13 @@ function Page() {
                             {deliverable.expand.influencer.name}
                           </h3>
                         </div>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between max-sm:flex-col">
                           <span className="text-blue-500 font-semibold">
                             {formatCentsToCurrency(deliverable.total_price)}
                           </span>
-                          <span className="text-gray-500">
+                          <span className="text-gray-500 max-sm:flex max-sm:w-full max-sm:align-start">
                             Status:{" "}
-                            <span className="font-semibold">
+                            <span className="font-semibold max-sm:ml-2">
                               {returnStatus(
                                 deliverable.status,
                                 deliverable.paid,

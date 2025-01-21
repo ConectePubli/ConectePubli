@@ -89,7 +89,7 @@ const CampaignBrandProfile: React.FC = () => {
         {/* Bio da Empresa */}
         <p className="text-black mt-3 font-bold">{t("Sobre a empresa")}</p>
         <p className="text-black text-md mt-2 break-words line-clamp-6">
-          {brand.bio || "Biografia não informada."}
+          {brand.bio || t("Biografia não informada.")}
         </p>
 
         {/* Redes Sociais */}
