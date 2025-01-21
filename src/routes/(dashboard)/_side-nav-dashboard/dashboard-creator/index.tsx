@@ -91,7 +91,7 @@ function Page() {
 
   return (
     <div className="mx-auto py-6 px-4">
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full max-sm:flex-col">
         <div>
           <h1 className="text-2xl font-bold mb-2">
             {t("Minhas Participações")}
@@ -103,7 +103,11 @@ function Page() {
           </p>
         </div>
 
-        <Button variant={"blue"} onClick={openDeliverableModal}>
+        <Button
+          variant={"blue"}
+          onClick={openDeliverableModal}
+          className="max-sm:w-full max-sm:flex max-sm:align-start"
+        >
           {t("Ver meus Entregavéis")}
         </Button>
       </div>
@@ -167,7 +171,7 @@ function Page() {
 
       {isModalOpen && (
         <Modal onClose={() => setModalOpen(false)}>
-          <div className="p-6">
+          <div className="p-6 max-sm:p-1">
             <h2 className="text-xl font-bold mb-2">{t("Seus Entregáveis")}</h2>
             <p className="text-gray-700 mb-6">
               {t(
@@ -193,7 +197,7 @@ function Page() {
                 {deliverables.length >= 1 &&
                   deliverables.map((deliverable) => {
                     return (
-                      <div className="border rounded-lg p-4 shadow-md">
+                      <div className="border border-gray-300 rounded-lg p-4 shadow-sm mb-4">
                         <div className="flex items-center mb-1">
                           <img
                             src={
@@ -216,14 +220,14 @@ function Page() {
                             ? `${deliverable.description.slice(0, 200)}...`
                             : deliverable.description}
                         </p>
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between max-sm:flex-col">
                           <span className="text-blue-500 font-semibold flex items-center">
                             <HandCoins size={20} className="mr-2" />{" "}
                             {formatCentsToCurrency(deliverable.total_price)}
                           </span>
-                          <span className="text-gray-500">
+                          <span className="text-gray-500 max-sm:flex max-sm:w-full max-sm:align-start">
                             Status:{" "}
-                            <span className="font-semibold">
+                            <span className="font-semibold max-sm:ml-2">
                               {returnStatus(
                                 deliverable.status,
                                 deliverable.paid
