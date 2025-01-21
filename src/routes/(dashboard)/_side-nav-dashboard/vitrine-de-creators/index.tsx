@@ -307,11 +307,11 @@ function Page() {
             const deliverablesData = [
               { product: "1 Reels", price: creator.reels_price },
               {
-                product: "1 Vídeo + Combo de Fotos UGC",
+                product: t("1 Vídeo + Combo de Fotos UGC"),
                 price: creator.ugc_price,
               },
               { product: "Stories IGC", price: creator.stories_price },
-              { product: "Post no Feed", price: creator.feed_price },
+              { product: t("Post no Feed"), price: creator.feed_price },
             ];
 
             const creatorSelected = selectedCreators.find(
@@ -674,7 +674,7 @@ function Page() {
           {!showSuccess && modalCreator && (
             <div className="p-4 w-full">
               <h2 className="text-xl font-bold mb-4">
-                Enviar Proposta de Entregável para{" "}
+                {t("Enviar Proposta de Entregável para")}{" "}
                 <span className="text-[#10438F]">
                   {modalCreator.creator.name &&
                   modalCreator.creator.name.length > 25
@@ -683,13 +683,14 @@ function Page() {
                 </span>
               </h2>
               <p className="font-semibold mb-2">
-                Envie propostas diretamente para os creators que você deseja!
+                {t(
+                  "Envie propostas diretamente para os creators que você deseja!"
+                )}
               </p>
               <p className="font-semibold mb-2">
-                Na vitrine de Creators da Conecte Publi, você pode navegar pelos
-                perfis e selecionar aquele que melhor se conecta com a sua
-                marca. Envie uma proposta exclusiva para um Creator específico e
-                garanta uma parceria personalizada e assertiva.
+                {t(
+                  "Na vitrine de Creators da Conecte Publi, você pode navegar pelos perfis e selecionar aquele que melhor se conecta com a sua marca. Envie uma proposta exclusiva para um Creator específico e garanta uma parceria personalizada e assertiva."
+                )}
               </p>
               <div className="mb-4">
                 {modalCreator.deliverables.map((d) => (
@@ -723,17 +724,17 @@ function Page() {
                   htmlFor="description"
                   className="block text-base font-semibold text-gray-700 mb-1"
                 >
-                  Detalhes da Proposta de Entregável*
+                  {t("Detalhes da Proposta de Entregável")}*
                 </label>
                 <p className="text-sm text-gray-700 mb-2">
-                  Informe ao Creator exatamente o que você espera deste
-                  entregável. Quanto mais claro e específico for, melhor será o
-                  resultado!
+                  {t(
+                    "Informe ao Creator exatamente o que você espera deste entregável. Quanto mais claro e específico for, melhor será o resultado!"
+                  )}
                 </p>
                 <textarea
                   id="description"
                   rows={4}
-                  placeholder="Descreva aqui"
+                  placeholder={t("Descreva aqui")}
                   className="w-full p-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
                   onChange={(e) => {
                     setModalCreator({
@@ -753,7 +754,7 @@ function Page() {
                 className="bg-[#FF672F] text-white px-4 py-2 rounded hover:bg-[#FF672F]/90 font-bold disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-white"
                 value={modalCreator.description}
               >
-                {loadingProposal ? "Enviando..." : "Enviar Proposta"}
+                {loadingProposal ? t("Enviando...") : t("Enviar Proposta")}
               </button>
             </div>
           )}
@@ -761,14 +762,17 @@ function Page() {
           {showSuccess && (
             <div className="p-4 text-left w-full">
               <h2 className="text-xl font-bold mb-4">
-                🎉 Proposta Enviada com Sucesso!
+                🎉 {t("Proposta Enviada com Sucesso")}!
               </h2>
               <p className="mb-4">
-                Agora é só aguardar a aprovação. Assim que o Creator avaliar e
-                aceitar, você será notificado para dar sequência. Enquanto isso,
-                qualquer dúvida ou ajuste, estamos aqui para ajudar. 🚀
+                {t(
+                  "Agora é só aguardar a aprovação. Assim que o Creator avaliar e aceitar, você será notificado para dar sequência. Enquanto isso, qualquer dúvida ou ajuste, estamos aqui para ajudar."
+                )}{" "}
+                🚀
               </p>
-              <p className="text-sm text-gray-700 mb-4">Equipe Conecte Publi</p>
+              <p className="text-sm text-gray-700 mb-4">
+                {t("Equipe")} Conecte Publi
+              </p>
               <div className="flex justify-center">
                 <Button
                   variant={"orange"}
@@ -777,7 +781,7 @@ function Page() {
                   }}
                   className=" text-white px-4 py-2 rounded font-bold"
                 >
-                  Voltar para a Vitrine
+                  {t("Voltar para a Vitrine")}
                 </Button>
               </div>
             </div>

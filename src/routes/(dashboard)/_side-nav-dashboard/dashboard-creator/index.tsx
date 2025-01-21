@@ -18,6 +18,7 @@ import { getUserType } from "@/lib/auth";
 import { getCreatorDeliverables, returnStatus } from "@/services/deliverables";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import { useCampaignStore } from "@/store/useCampaignStore";
+import { HandCoins } from "lucide-react";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-creator/"
@@ -103,7 +104,7 @@ function Page() {
         </div>
 
         <Button variant={"blue"} onClick={openDeliverableModal}>
-          Ver meus Entregavéis
+          {t("Ver meus Entregavéis")}
         </Button>
       </div>
 
@@ -167,9 +168,12 @@ function Page() {
       {isModalOpen && (
         <Modal onClose={() => setModalOpen(false)}>
           <div className="p-6">
-            <h2 className="text-xl font-bold mb-2">Seus Entregáveis</h2>
+            <h2 className="text-xl font-bold mb-2">{t("Seus Entregáveis")}</h2>
             <p className="text-gray-700 mb-6">
-              Aqui estão todos os entregáveis que foram enviados para você:
+              {t(
+                "Aqui estão todos os entregáveis que foram enviados para você"
+              )}
+              :
             </p>
 
             {loadingDeliverables && (
@@ -182,7 +186,7 @@ function Page() {
               <>
                 {deliverables.length === 0 && (
                   <div className="text-center text-gray-700">
-                    <p>Nenhuma proposta de entregavéis no momento</p>
+                    <p>{t("Nenhuma proposta de entregavéis no momento")}</p>
                   </div>
                 )}
 
@@ -207,10 +211,14 @@ function Page() {
                           </h3>
                         </div>
                         <p className="text-gray-700 mb-4">
-                          {deliverable.description}
+                          {deliverable.description &&
+                          deliverable.description.length > 200
+                            ? `${deliverable.description.slice(0, 200)}...`
+                            : deliverable.description}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="text-blue-500 font-semibold">
+                          <span className="text-blue-500 font-semibold flex items-center">
+                            <HandCoins size={20} className="mr-2" />{" "}
                             {formatCentsToCurrency(deliverable.total_price)}
                           </span>
                           <span className="text-gray-500">
@@ -231,7 +239,7 @@ function Page() {
                             navigate({ to: `/entregaveis/${deliverable.id}` });
                           }}
                         >
-                          Visualizar
+                          {t("Visualizar")}
                         </Button>
                       </div>
                     );

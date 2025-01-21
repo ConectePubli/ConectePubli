@@ -1,11 +1,16 @@
+import axios from "axios";
 import {
   createFileRoute,
+  Link,
   redirect,
   useLoaderData,
 } from "@tanstack/react-router";
+import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { t } from "i18next";
 import { ClientResponseError } from "pocketbase";
+import { toast, ToastContainer } from "react-toastify";
+import { LinkIcon } from "lucide-react";
 
 import BackgroundPlaceholder from "@/assets/background-placeholder.webp";
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
@@ -13,18 +18,19 @@ import GoBack from "@/assets/icons/go-back.svg";
 import LocationPin from "@/assets/icons/location-pin.svg";
 
 import { Deliverables } from "@/types/Deliverables";
+import SocialNetworks from "@/types/SocialNetworks";
 
 import Spinner from "@/components/ui/Spinner";
+import Modal from "@/components/ui/Modal";
 import { Button } from "@/components/ui/button";
 
 import pb from "@/lib/pb";
-import FormattedText from "@/utils/FormattedText";
 import { getUserType } from "@/lib/auth";
 import { formatLocation } from "@/utils/formatLocation";
-import SocialNetworks from "@/types/SocialNetworks";
-import { LinkIcon } from "lucide-react";
-import { useState } from "react";
-import Modal from "@/components/ui/Modal";
+import FormattedText from "@/utils/FormattedText";
+import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import GatewayPaymentModal from "@/components/ui/GatewayPaymentModal";
+import ModalSendDeliverable from "@/components/ui/ModalSendDeliverable";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/entregaveis/$id/"
@@ -45,7 +51,7 @@ export const Route = createFileRoute(
           expand: "brand, influencer",
         });
 
-      return { deliverableData };
+      return { deliverableData, userTypeData: userType };
     } catch (error) {
       if (error instanceof ClientResponseError) {
         if (error.status === 404) {
@@ -63,7 +69,7 @@ export const Route = createFileRoute(
   ),
   component: Page,
   errorComponent: () => (
-    <div>
+    <div className="p-4">
       {t(
         "Aconteceu um erro ao carregar essa página, não se preocupe o erro é do nosso lado e vamos trabalhar para resolve-lo!"
       )}
@@ -75,10 +81,12 @@ export const Route = createFileRoute(
 function Page() {
   const navigate = useNavigate();
 
-  const { deliverableData } = useLoaderData({ from: Route.id });
+  const { deliverableData, userTypeData } = useLoaderData({ from: Route.id });
 
   const deliverable = deliverableData as Deliverables;
+  const userType = userTypeData as "Brands" | "Influencers";
 
+  // creator
   const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
   const [isRefuseModalOpen, setIsRefuseModalOpen] = useState(false);
   const [isLoadingAccept, setIsLoadingAccept] = useState(false);
@@ -89,6 +97,19 @@ function Page() {
     "waiting" | "approved" | "completed" | "refused"
   >(deliverable.status);
 
+  // brand
+  const [isAcceptBrandModalOpen, setIsAcceptBrandModalOpen] = useState(false);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
+  const [supportMessage, setSupportMessage] = useState("");
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const [isLoadingSupport, setIsLoadingSupport] = useState(false);
+
+  // payment
+  const [paymentModal, setPaymentModal] = useState(false);
+  const [setLoadingPayment] = useState<boolean>(false);
+
+  // CREATOR
   const handleAcceptProposal = async () => {
     setIsLoadingAccept(true);
     try {
@@ -105,12 +126,13 @@ function Page() {
     }
   };
 
+  // CREATOR
   const handleRefuseProposal = async () => {
     setIsLoadingRefuse(true);
     try {
       await pb.collection("deliverable_proposals").update(deliverable.id, {
         status: "refused",
-        refusal_reason: refuseReason,
+        refused_text: refuseReason,
       });
       setProposalStatus("refused");
       setIsRefuseModalOpen(false);
@@ -118,6 +140,63 @@ function Page() {
       console.error("Erro ao recusar proposta:", error);
     } finally {
       setIsLoadingRefuse(false);
+    }
+  };
+
+  // BRAND
+  const handleCompleteCollaboration = async () => {
+    setIsLoadingComplete(true);
+    try {
+      await pb.collection("deliverable_proposals").update(deliverable.id, {
+        status: "completed",
+      });
+      setProposalStatus("completed");
+      setIsCompleteModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao concluir colaboração:", error);
+    } finally {
+      setIsLoadingComplete(false);
+    }
+  };
+
+  // BRAND
+  const handleSendSupportMessage = async () => {
+    setIsLoadingSupport(true);
+
+    try {
+      const message = `
+        **Detalhes da Marca:**
+        - Nome da Marca: ${deliverable.expand.brand?.name || "Não informado"}
+        - Email da Marca: ${deliverable.expand.brand.email || "Não informado"}
+        - Número de telefone: ${deliverable.expand.brand.cell_phone}
+     
+        **Detalhes do Entregável:**
+        - Nome do creator: ${deliverable.expand.influencer?.name || "Não informado"}
+        - Email do creator: ${deliverable.expand.influencer.email || "Não informado"} 
+        - Preço Total: ${formatCentsToCurrency(deliverable.total_price)}
+        - Descrição do entregável: ${deliverable.description || "Não informado"}   
+  
+        **Mensagem de suporte:**
+        ${supportMessage.trim() || "Nenhuma mensagem adicional."}
+      `;
+
+      await axios.post(
+        "https://conecte-publi.pockethost.io/api/support_email",
+        {
+          title: `Solicitação de Suporte - Entregável`,
+          email: deliverable.expand.brand?.email || "sem-email@dominio.com",
+          message: message,
+        }
+      );
+      setSupportMessage("");
+      toast.info(
+        "Mensagem enviada com sucesso, responderemos o mais breve possivel"
+      );
+      setIsSupportModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao enviar mensagem de suporte:", error);
+    } finally {
+      setIsLoadingSupport(false);
     }
   };
 
@@ -140,8 +219,17 @@ function Page() {
       </div>
 
       <h2 className="text-2xl font-semibold my-4 text-left">
-        {t("Proposta de Entregável da Marca")}:{" "}
-        <span className="text-[#10438F]">{deliverable.expand.brand.name}</span>
+        {t(
+          userType === "Brands"
+            ? "Proposta de Entregável para o Creator"
+            : "Proposta de Entregável da Marca"
+        )}
+        :{" "}
+        <span className="text-[#10438F]">
+          {userType === "Brands"
+            ? deliverable.expand.influencer.name
+            : deliverable.expand.brand.name}
+        </span>
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full">
@@ -180,7 +268,7 @@ function Page() {
               {deliverable.ugc_qty >= 1 && (
                 <div className="flex justify-between mb-2">
                   <span>
-                    1 Video + UGC Photos Combo{" "}
+                    {t("1 Video + UGC Photos Combo")}{" "}
                     <span className="text-[#10438F] font-semibold">
                       x {deliverable.ugc_qty}
                     </span>
@@ -222,7 +310,7 @@ function Page() {
               {deliverable.feed_qty >= 1 && (
                 <div className="flex justify-between mb-2">
                   <span>
-                    Stories IGC{" "}
+                    {t("Posts no Feed")}{" "}
                     <span className="text-[#10438F] font-semibold">
                       x {deliverable.feed_qty}
                     </span>
@@ -252,42 +340,117 @@ function Page() {
             </div>
           </div>
           <div className="flex justify-between mt-6">
-            {proposalStatus === "approved" ? (
-              <div className="w-full flex justify-center">
-                <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default">
-                  {t("Proposta aceita")}
-                </button>
-              </div>
-            ) : (
+            {userType === "Influencers" &&
+              (proposalStatus === "waiting" ||
+                proposalStatus === "approved" ||
+                proposalStatus === "refused") && (
+                <>
+                  {proposalStatus === "approved" ? (
+                    <div className="w-full flex justify-between items-center px-4">
+                      <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default">
+                        {t("Proposta aceita")}
+                      </button>
+
+                      {deliverable.paid === true && (
+                        <ModalSendDeliverable
+                          creatorId={pb.authStore.model?.id}
+                          brandId={deliverable.expand.brand.id}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      {proposalStatus !== "refused" && (
+                        <button
+                          className="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600"
+                          onClick={() => setIsAcceptModalOpen(true)}
+                        >
+                          {t("Aceitar Proposta")}
+                        </button>
+                      )}
+                    </>
+                  )}
+
+                  {proposalStatus === "refused" ? (
+                    <div className="w-full flex justify-center">
+                      <Button variant={"brown"}>
+                        {t("Proposta recusada")}
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      {proposalStatus !== "approved" && (
+                        <Button
+                          variant={"brown"}
+                          className="text-white px-4 py-2 rounded font-semibold"
+                          onClick={() => setIsRefuseModalOpen(true)}
+                        >
+                          {t("Recusar Proposta")}
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+
+            {userType === "Brands" && (
               <>
-                {proposalStatus !== "refused" && (
-                  <button
-                    className="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600"
-                    onClick={() => setIsAcceptModalOpen(true)}
-                  >
-                    {t("Aceitar Proposta")}
-                  </button>
+                {proposalStatus === "waiting" && (
+                  <div className="w-full flex justify-center">
+                    <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default">
+                      {t("Aguardando aprovação do Creator")}
+                    </button>
+                  </div>
+                )}
+
+                {proposalStatus === "approved" && !deliverable.paid && (
+                  <div className="w-full flex justify-center">
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600"
+                      onClick={() => {
+                        setIsAcceptBrandModalOpen(true);
+                      }}
+                    >
+                      {t("Realizar pagamento")}
+                    </button>
+                  </div>
+                )}
+
+                {proposalStatus === "refused" && (
+                  <div className="w-full flex justify-center">
+                    <Button variant={"brown"}>
+                      {t("Proposta recusada pelo Creator")}
+                    </Button>
+                  </div>
+                )}
+
+                {proposalStatus === "approved" && deliverable.paid && (
+                  <div className="w-full flex justify-between px-4">
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600"
+                      onClick={() => setIsCompleteModalOpen(true)}
+                    >
+                      {t("Concluir Colaboração")}
+                    </button>
+
+                    <Button
+                      variant={"brown"}
+                      className="text-white px-4 py-2 rounded font-semibold"
+                      onClick={() => setIsSupportModalOpen(true)}
+                    >
+                      {t("Suporte")}
+                    </Button>
+                  </div>
                 )}
               </>
             )}
-            {proposalStatus === "refused" ? (
-              <div className="w-full flex justify-center">
-                <button className="bg-brown-500 text-white px-4 py-2 rounded font-semibold cursor-default">
-                  {t("Proposta recusada")}
+
+            {proposalStatus === "completed" && (
+              <div className="flex justify-center w-full">
+                <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600">
+                  {t("Colaboração concluída")}
                 </button>
               </div>
-            ) : (
-              <>
-                {proposalStatus !== "approved" && (
-                  <Button
-                    variant={"brown"}
-                    className="text-white px-4 py-2 rounded font-semibold"
-                    onClick={() => setIsRefuseModalOpen(true)}
-                  >
-                    {t("Recusar Proposta")}
-                  </Button>
-                )}
-              </>
             )}
           </div>
         </div>
@@ -428,14 +591,13 @@ function Page() {
               />
               <span className="text-sm text-gray-700">
                 {t("Li e concordo com o ")}{" "}
-                <a
-                  className="text-[#10438F] font-semibold hover:underline"
-                  href={deliverable.expand.brand.web_site}
+                <Link
+                  to={"/entregaveis/contrato"}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  className="text-[#10438F] font-semibold hover:underline"
                 >
                   {t("Contrato da campanha")}
-                </a>
+                </Link>
               </span>
             </label>
             <div className="flex justify-end space-x-4">
@@ -454,6 +616,58 @@ function Page() {
                 {isLoadingAccept
                   ? t("Aguarde...")
                   : t("Confirmar participação")}
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {isAcceptBrandModalOpen && (
+        <Modal onClose={() => setIsAcceptBrandModalOpen(false)}>
+          <div className="p-6">
+            <h2 className="text-xl font-semibold mb-4">
+              {t(
+                "Para continuar o trabalho com o Creator, aceite o contrato abaixo"
+              )}
+              :{" "}
+            </h2>
+            <p className="text-gray-700 mb-6"></p>
+            <label className="flex items-center mb-6">
+              <input
+                type="checkbox"
+                className="w-4 h-4 mr-2"
+                checked={isContractChecked}
+                onChange={(e) => setIsContractChecked(e.target.checked)}
+                required
+              />
+              <span className="text-sm text-gray-700">
+                {t("Li e concordo com o ")}{" "}
+                <Link
+                  to={"/entregaveis/contrato"}
+                  target="_blank"
+                  className="text-[#10438F] font-semibold hover:underline"
+                >
+                  {t("Contrato da campanha")}
+                </Link>
+              </span>
+            </label>
+            <div className="flex justify-end space-x-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsAcceptBrandModalOpen(false)}
+              >
+                {t("Cancelar")}
+              </Button>
+              <Button
+                variant="orange"
+                onClick={() => {
+                  setIsAcceptBrandModalOpen(false);
+                  setPaymentModal(true);
+                }}
+                disabled={isLoadingAccept || !isContractChecked}
+                className="disabled:bg-gray-400 disabled:text-white disabled:cursor-not-allowed"
+              >
+                {t("Realizar Pagamento")}
               </Button>
             </div>
           </div>
@@ -492,6 +706,84 @@ function Page() {
           </div>
         </Modal>
       )}
+
+      {isCompleteModalOpen && (
+        <Modal onClose={() => setIsCompleteModalOpen(false)}>
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-4">
+              {t("Concluir Colaboração")}
+            </h2>
+            <p className="text-gray-700 mb-6">
+              {t(
+                "Tem certeza de que deseja marcar esta colaboração como concluída?"
+              )}
+            </p>
+            <div className="flex justify-end space-x-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsCompleteModalOpen(false)}
+              >
+                {t("Cancelar")}
+              </Button>
+              <Button
+                variant={"blue"}
+                onClick={handleCompleteCollaboration}
+                disabled={isLoadingComplete}
+              >
+                {isLoadingComplete ? t("Aguarde...") : t("Concluir")}
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {isSupportModalOpen && (
+        <Modal onClose={() => setIsSupportModalOpen(false)}>
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-4">{t("Suporte")}</h2>
+            <p className="text-gray-700 mb-6">
+              {t(
+                "Por favor, descreva o problema ou dúvida abaixo para que possamos ajudá-lo."
+              )}
+            </p>
+            <textarea
+              className="w-full border border-gray-400 resize-none rounded-lg p-2 text-gray-700"
+              rows={5}
+              placeholder={t("Digite sua mensagem aqui...")}
+              value={supportMessage}
+              onChange={(e) => setSupportMessage(e.target.value)}
+            />
+            <div className="flex justify-end space-x-4 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsSupportModalOpen(false)}
+              >
+                {t("Cancelar")}
+              </Button>
+              <Button
+                variant={"blue"}
+                onClick={handleSendSupportMessage}
+                disabled={isLoadingSupport || !supportMessage.trim()}
+              >
+                {isLoadingSupport ? t("Aguarde...") : t("Enviar")}
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {paymentModal && (
+        <Modal onClose={() => setPaymentModal(false)}>
+          <GatewayPaymentModal
+            type={"deliverable"}
+            deliverable={deliverable}
+            toast={toast}
+            setLoadingPayment={setLoadingPayment}
+          />
+        </Modal>
+      )}
+
+      <ToastContainer />
     </div>
   );
 }

@@ -47,7 +47,7 @@ function TermosDeUso() {
       <h3 className="text-lg font-semibold mt-4 mb-2">
         {t("1. Compromisso da Marca:")}
       </h3>
-      <ul className="list-inside space-y-2 pl-4">
+      <ul className="list-disc list-inside space-y-2">
         <li>
           <span className="font-semibold">1.1</span>{" "}
           {t(
@@ -157,6 +157,7 @@ function TermosDeUso() {
           <span className="font-semibold">
             2.3 {t(" Início Condicional da Campanha")}
           </span>{" "}
+          <br />
           {t(
             "O início da campanha só ocorre após a confirmação do pagamento de cada creator pela marca. Caso o pagamento do creator aprovado, não seja efetuado, o Creator não poderá iniciar o seu trabalho na campanha."
           )}
@@ -252,7 +253,7 @@ function TermosDeUso() {
       </ul>
 
       <h2 className="text-lg font-semibold mt-6 mb-2">
-        {t("CLÁUSULA QUARTA - Uso de Conteúdo em Tráfego Pago")}
+        {t("CLÁUSULA QUARTA - USO DE CONTEÚDO EM TRÁFEGO PAGO")}
       </h2>
 
       <h3 className="text-lg font-semibold mt-4 mb-2">
@@ -306,7 +307,7 @@ function TermosDeUso() {
       </p>
 
       <h2 className="text-lg font-semibold mt-6 mb-2">
-        {t("CLÁUSULA QUINTA - Contratação Através da Vitrine de Creators")}
+        {t("CLÁUSULA QUINTA - CONTRATAÇÃO ATRAVÉS DA VITRINE DE CREATORS")}
       </h2>
 
       <h3 className="text-lg font-semibold mt-4 mb-2">
