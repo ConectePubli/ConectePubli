@@ -2,6 +2,7 @@
 import pb from "@/lib/pb";
 import { Deliverables } from "@/types/Deliverables";
 import axios from "axios";
+import { t } from "i18next";
 import React from "react";
 
 export const getCreatorDeliverables = async (
@@ -130,22 +131,22 @@ export const returnStatus = (
 ) => {
   switch (status) {
     case "waiting":
-      return <p style={{ color: "#FFC107" }}>Aguardando aprovação</p>;
+      return <p style={{ color: "#FFC107" }}>{t("Aguardando aprovação")}</p>;
     case "approved":
       return paid ? (
-        <p style={{ color: "#2881A7" }}>Trabalho em progresso</p>
+        <p style={{ color: "#2881A7" }}>{t("Trabalho em progresso")}</p>
       ) : (
         <p style={{ color: "#FFC107" }}>
           {isBrand
-            ? "Realize o pagamento para continuar"
-            : "Aguardando confirmação da marca"}
+            ? t("Realize o pagamento para continuar")
+            : t("Aguardando confirmação da marca")}
         </p>
       );
     case "completed":
-      return <p style={{ color: "#28A745" }}>Trabalho concluído</p>;
+      return <p style={{ color: "#28A745" }}>{t("Trabalho concluído")}</p>;
     case "refused":
-      return <p style={{ color: "#DC3545" }}>Proposta recusada</p>;
+      return <p style={{ color: "#DC3545" }}>{t("Proposta recusada")}</p>;
     default:
-      return <p style={{ color: "#000000" }}>Status desconhecido</p>;
+      return <p style={{ color: "#000000" }}>{t("Status desconhecido")}</p>;
   }
 };
