@@ -532,10 +532,10 @@ export default {
     Rescisão: "Termination",
     "Alterações nos Termos de Uso": "Changes to the Terms of Use",
     "Disposições Gerais": "General Provisions",
-    "CLÁUSULA QUARTA - Uso de Conteúdo em Tráfego Pago":
-      "FOURTH CLAUSE - Use of Content in Paid Traffic",
-    "CLÁUSULA QUINTA - Contratação Através da Vitrine de Creators":
-      "CLAUSE FIVE - Hiring Through the Creators Showcase",
+    "CLÁUSULA QUARTA - USO DE CONTEÚDO EM TRÁFEGO PAGO":
+      "FOURTH CLAUSE - USE OF CONTENT IN PAID TRAFFIC",
+    "CLÁUSULA QUINTA - CONTRATAÇÃO ATRAVÉS DA VITRINE DE CREATORS":
+      "CLAUSE FIVE - HIRING THROUGH THE CREATORS SHOWCASE",
 
     // Headings within Clauses
     "1.1": "1.1",
@@ -1565,5 +1565,141 @@ export default {
     "Em uma escala de 1 a 5, como você avalia sua satisfação geral com a plataforma Conecte Publi, considerando navegação, funcionalidades e suporte?": `On a scale of 1 to 5, how do you rate your overall satisfaction with the Conecte Publi platform, considering navigation, features and support?`,
     "(1 = Muito insatisfeito(a), 5 = Muito satisfeito)": `(1 = Very dissatisfied, 5 = Very satisfied)`,
     "Sugestões, críticas ou comentários*": `Suggestions, criticisms or comments*`,
+    "Entregável não encontrado": "Deliverable not found",
+    "Proposta de Entregável da Marca": "Brand Deliverable Proposal",
+    "Detalhes do Entregável": "Deliverable Details",
+    "Aceitar Proposta": "Accept Proposal",
+    "Recusar Proposta": "Refuse Proposal",
+    "Sobre a empresa": "About the company",
+    "Confirme sua participação": "Confirm your participation",
+    "Li e concordo com o ": "I have read and agree with the",
+    "Contrato da campanha": "Campaign contract",
+    "Confirmar participação": "Confirm participation",
+    "Por favor, informe o motivo da recusa abaixo.":
+      "Please provide the reason for refusal below.",
+    "Digite aqui o motivo da recusa...": "Enter the reason for refusal here...",
+    "Visualizar Entregáveis": "View Deliverables",
+    "Proposta de Entregável para o Creator":
+      "Deliverable Proposal for the Creator",
+    "Realizar pagamento": "Make payment",
+    Suporte: "Support",
+    "Seus Entregáveis": "Your Deliverables",
+    "Aqui estão todos os entregáveis que foram criados por você":
+      "Here are all the deliverables that were created by you",
+    "Nenhuma proposta de entregavéis foi criada até o momento":
+      "No deliverable proposals have been created so far",
+    "Aqui estão todos os entregáveis que foram enviados para você":
+      "Here are all the deliverables that were sent to you",
+    "Nenhuma proposta de entregavéis no momento":
+      "No deliverable proposals at the moment",
+    "Aguardando aprovação do Creator": "Awaiting Creator approval",
+    "Proposta recusada": "Proposal refused",
+    "Proposta recusada pelo Creator": "Proposal rejected by Creator",
+    "1 Vídeo + Combo de Fotos UGC": "1 Video + UGC Photo Combo",
+    "Post no Feed": "Post in Feed",
+    "Enviar Proposta de Entregável para": "Send Deliverable Proposal to",
+    "Envie propostas diretamente para os creators que você deseja!":
+      "Send proposals directly to the creators you want!",
+    "Na vitrine de Creators da Conecte Publi, você pode navegar pelos perfis e selecionar aquele que melhor se conecta com a sua marca. Envie uma proposta exclusiva para um Creator específico e garanta uma parceria personalizada e assertiva.":
+      "In the Conecte Publi Creators showcase, you can browse the profiles and select the one that best connects with your brand. Send an exclusive proposal to a specific Creator and guarantee a personalized and assertive partnership.",
+    "Detalhes da Proposta de Entregável": "Deliverable Proposal Details",
+    "Informe ao Creator exatamente o que você espera deste entregável. Quanto mais claro e específico for, melhor será o resultado!":
+      "Tell Creator exactly what you expect from this deliverable. The clearer and more specific it is, the better the result will be!",
+    "Descreva aqui": "Describe here",
+    "Enviar Proposta": "Send Proposal",
+    "Proposta Enviada com Sucesso": "Proposal Submitted Successfully",
+    "Agora é só aguardar a aprovação. Assim que o Creator avaliar e aceitar, você será notificado para dar sequência. Enquanto isso, qualquer dúvida ou ajuste, estamos aqui para ajudar.":
+      "Now just wait for approval. Once the Creator evaluates and accepts it, you will be notified to proceed. In the meantime, if you have any questions or adjustments, we are here to help.",
+    Equipe: "Team",
+    "Voltar para a Vitrine": "Return to Showcase",
+    Detalhes: "Details",
+    Entregáveis: "Deliverables",
+    "Enviar Entregáveis": "Send Deliverables",
+    "Envie o conteúdo dos entregáveis requisitados pela Marca ou envie suas dúvidas":
+      "Send the content of the deliverables requested by the Brand or send your questions",
+    "Proposta aceita": "Proposal accepted",
+    "Por favor, preencha os campos obrigatórios":
+      "Please fill in the required fields",
+    "Tem certeza de que deseja marcar esta colaboração como concluída?":
+      "Are you sure you want to mark this collaboration as complete?",
+    "Por favor, descreva o problema ou dúvida abaixo para que possamos ajudá-lo.":
+      "Please describe your issue or question below so we can help you.",
+    Concluir: "Finish",
+    "Ver meus Entregavéis": "View my Deliverables",
+    "Contrato de Campanha para Contratação via Vitrine de Creators":
+      "Campaign Contract for Hiring via Creator Showcase",
+    OBJETO: "OBJECT",
+    "O presente contrato tem por objeto regular as condições para a execução de entregáveis selecionados e contratados pela Marca através da Vitrine de Creators da Plataforma.":
+      "This contract aims to regulate the conditions for the execution of deliverables selected and contracted by the Brand through the Platform's Creator Showcase.",
+    "FLUXO CONTRATUAL": "CONTRACTUAL FLOW",
+    "Seleção de Entregáveis e Proposta pela Marca":
+      "Selection of Deliverables and Proposal by the Brand",
+    "A Marca acessa a Vitrine de Creators para selecionar o tipo e a quantidade de entregáveis desejados, como Reels, Fotos ou Combos.":
+      "The Brand accesses the Creator Showcase to select the type and quantity of desired deliverables, such as Reels, Photos, or Combos.",
+    "Após a seleção, a Marca enviará uma proposta detalhada ao Creator, incluindo formato, prazo e valores por entregável, conforme informado no perfil do Creator.":
+      "After selection, the Brand will send a detailed proposal to the Creator, including format, deadlines, and values per deliverable, as specified in the Creator's profile.",
+    "Notificação e Aprovação pelo Creator":
+      "Notification and Approval by the Creator",
+    "O Creator será notificado por e-mail sobre a proposta enviada.":
+      "The Creator will be notified by email about the proposal sent.",
+    "Ao aceitar a proposta, o Creator concordará automaticamente com os termos do presente contrato.":
+      "By accepting the proposal, the Creator automatically agrees to the terms of this contract.",
+    "Caso o Creator recuse a proposta, ele poderá justificar a recusa, enviando detalhes por e-mail à Marca.":
+      "If the Creator rejects the proposal, they may justify the refusal by sending details to the Brand via email.",
+    "Aceitação pela Marca e Pagamento": "Acceptance by the Brand and Payment",
+    "Após a aprovação do Creator, a Marca deverá acessar a Plataforma para aceitar formalmente o contrato.":
+      "After the Creator's approval, the Brand must access the Platform to formally accept the contract.",
+    "O pagamento deverá ser realizado pela Marca no momento da aceitação, somando os valores indicados para cada entregável selecionado.":
+      "Payment must be made by the Brand at the time of acceptance, totaling the values indicated for each selected deliverable.",
+    "O Creator só poderá iniciar a produção do entregável após a confirmação do pagamento pela Plataforma.":
+      "The Creator can only start producing the deliverable after payment confirmation by the Platform.",
+    "OBRIGAÇÕES DAS PARTES": "OBLIGATIONS OF THE PARTIES",
+    "Obrigações da Marca": "Obligations of the Brand",
+    "Fornecer ao Creator todas as informações necessárias para a execução do entregável, incluindo diretrizes específicas.":
+      "Provide the Creator with all the necessary information for the execution of the deliverable, including specific guidelines.",
+    "Efetuar o pagamento diretamente na Plataforma, garantindo o desbloqueio do trabalho.":
+      "Make payment directly on the Platform, ensuring the work is unlocked.",
+    "Revisar e aprovar o material entregue no prazo acordado.":
+      "Review and approve the delivered material within the agreed timeframe.",
+    "Obrigações do Creator": "Obligations of the Creator",
+    "Cumprir rigorosamente as diretrizes e prazos definidos pela Marca.":
+      "Strictly adhere to the guidelines and deadlines set by the Brand.",
+    "Garantir que o conteúdo entregue esteja em conformidade com as leis aplicáveis, especialmente em relação a direitos autorais e de imagem.":
+      "Ensure that the delivered content complies with applicable laws, especially regarding copyrights and image rights.",
+    "Enviar o entregável por meio do chat da Plataforma para aprovação da Marca.":
+      "Send the deliverable through the Platform's chat for Brand approval.",
+    "REMUNERAÇÃO E PAGAMENTO": "COMPENSATION AND PAYMENT",
+    "O valor acordado será liberado ao Creator após a aprovação final do material pela Marca.":
+      "The agreed amount will be released to the Creator after the final approval of the material by the Brand.",
+    "A Conecte Publi reterá 20% como taxa de serviço, e 80% será destinado ao Creator.":
+      "Conecte Publi will retain 20% as a service fee, and 80% will be allocated to the Creator.",
+    "Em caso de não entrega ou descumprimento das condições acordadas, o valor será devolvido integralmente à Marca.":
+      "In case of non-delivery or breach of agreed conditions, the amount will be fully refunded to the Brand.",
+    "NOTIFICAÇÕES E APROVAÇÕES": "NOTIFICATIONS AND APPROVALS",
+    "CANCELAMENTO E RESCISÃO": "CANCELLATION AND TERMINATION",
+    "O contrato poderá ser rescindido em caso de não cumprimento das obrigações por qualquer das partes.":
+      "The contract may be terminated in case of non-compliance by either party.",
+    "Em caso de cancelamento pela Marca após o pagamento, o valor será retido e analisado conforme as políticas da Plataforma.":
+      "In case of cancellation by the Brand after payment, the amount will be retained and reviewed according to the Platform's policies.",
+    "RESOLUÇÃO DE CONFLITOS": "DISPUTE RESOLUTION",
+    "Em caso de disputa, as partes concordam em buscar solução direta antes de qualquer procedimento judicial ou arbitral.":
+      "In case of a dispute, the parties agree to seek a direct solution before any judicial or arbitration proceedings.",
+    "A Plataforma não será responsável por mediar ou intervir nos conflitos entre Marca e Creator.":
+      "The Platform will not be responsible for mediating or intervening in disputes between the Brand and the Creator.",
+    "DISPOSIÇÕES GERAIS": "GENERAL PROVISIONS",
+    "Este contrato é regido pelas leis vigentes no Brasil.":
+      "This contract is governed by the laws in force in Brazil.",
+    "Ambas as partes declaram ciência e concordância com todos os termos aqui descritos, ao aceitarem a proposta e realizarem o pagamento pela Plataforma.":
+      "Both parties declare awareness and agreement with all terms described herein, by accepting the proposal and making payment through the Platform.",
+    "Ambas as partes serão notificadas sobre:":
+      "Both parties will be notified about:",
+    "Proposta enviada, aprovada ou recusada.":
+      "Proposal sent, approved, or rejected.",
+    "Confirmação do pagamento e início autorizado.":
+      "Payment confirmation and authorization to start.",
+    "Finalização e aprovação do entregável.":
+      "Completion and approval of the deliverable.",
+    "Para continuar o trabalho com o Creator, aceite o contrato abaixo":
+      "To continue working with Creator, accept the agreement below",
   },
 };

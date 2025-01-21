@@ -1,6 +1,6 @@
 import React from "react";
 import { Campaign } from "@/types/Campaign";
-import { Calendar, InfoIcon, Tag, User } from "lucide-react";
+import { Calendar, Tag, User } from "lucide-react";
 import { Coins, Image } from "phosphor-react";
 import pb from "@/lib/pb";
 import SocialNetworks from "@/types/SocialNetworks";
@@ -24,7 +24,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
   campaignData,
   participationStatus,
   fromMyCampaigns,
-  hideStatusSubscription
+  hideStatusSubscription,
 }) => {
   const beginningDate = formatDateUTC(campaignData.beginning);
   const endDate = formatDateUTC(campaignData.end);
@@ -110,16 +110,16 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           </div>
 
           {/* Date */}
-          <div className="flex justify-end items-center">
+          <div className="flex justify-end items-center max-sm:flex-col max-sm:items-end">
             {campaignData.subscription_start_date &&
               campaignData.subscription_end_date &&
-              !isEnableSubscription(campaignData).status && !hideStatusSubscription && (
+              !isEnableSubscription(campaignData).status &&
+              !hideStatusSubscription && (
                 <span className="mr-4 text-red-500 flex items-center">
-                  <InfoIcon className="min-w-[2rem] w-4 h-4" />
                   {isEnableSubscription(campaignData).message ===
-                    "not_started" && "Inscrições ainda não iniciaram"}
+                    "not_started" && "Inscrições não iniciadas"}
                   {isEnableSubscription(campaignData).message === "time_out" &&
-                    "A campanha encerrou as inscrições"}
+                    "Inscrições encerradas"}
                 </span>
               )}
 

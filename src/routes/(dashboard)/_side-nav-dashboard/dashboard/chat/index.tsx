@@ -464,7 +464,9 @@ function ChatPage() {
                               : "bg-gray-200"
                           }`}
                         >
-                          <p className="break-words">{linkify(message.text)}</p>
+                          <p className="break-words whitespace-pre-wrap">
+                            {linkify(message.text)}
+                          </p>
                         </div>
                       </div>
                     ))

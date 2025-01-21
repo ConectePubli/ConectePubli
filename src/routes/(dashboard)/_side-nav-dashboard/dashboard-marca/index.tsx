@@ -1,17 +1,25 @@
+import MuxPlayer from "@mux/mux-player-react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Plus, Workflow } from "lucide-react";
+import { File } from "phosphor-react";
+import { useTranslation } from "react-i18next";
+
+import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
+
 import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
 import CampaignsTable from "@/components/ui/CampaignsTable";
-import { useCampaignStore } from "@/store/useCampaignStore";
-import { getUserType } from "@/lib/auth";
 import Pagination from "@/components/ui/Pagination";
 import Spinner from "@/components/ui/Spinner";
-import { File } from "phosphor-react";
 import Modal from "@/components/ui/Modal";
-import MuxPlayer from "@mux/mux-player-react";
-import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+
+import { Deliverables } from "@/types/Deliverables";
+
+import { useCampaignStore } from "@/store/useCampaignStore";
+import { getUserType } from "@/lib/auth";
+import { getBrandDeliverables, returnStatus } from "@/services/deliverables";
+import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/"
@@ -63,6 +71,21 @@ function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const playbackId = "OtAqjPz6J5oR7lVldgjVhBmlmxWIHiomTc0100mfUMGSc";
 
+  const [isModalDeliverableOpen, setModalDeliverableOpen] = useState(false);
+  const [loadingDeliverables, setLoadingDeliverables] = useState(false);
+  const [deliverables, setDeliverables] = useState<Deliverables[]>([]);
+
+  const openDeliverableModal = async () => {
+    setModalDeliverableOpen(true);
+
+    try {
+      const data = await getBrandDeliverables(setLoadingDeliverables);
+      setDeliverables(data);
+    } catch (e) {
+      console.log(`error processing modal deliverable info: ${e}`);
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="font-bold">{t("Minhas Campanhas")}</h1>
@@ -111,16 +134,29 @@ function Page() {
             </div>
           </Modal>
         )}
-        <Button
-          variant={"orange"}
-          className="mt-4 ml-auto max-sm:w-full"
-          onClick={() => {
-            navigate({ to: "/dashboard-marca/rascunhos/" });
-          }}
-        >
-          <File className="w-5 h-5 mr-2" weight="bold" />
-          {t("Rascunhos Salvos")}
-        </Button>
+        <div className="space-x-3">
+          <Button
+            variant={"orange"}
+            className="mt-4 ml-auto max-sm:w-full "
+            onClick={() => {
+              openDeliverableModal();
+            }}
+          >
+            <Workflow className="w-5 h-5 mr-2" />
+            {t("Visualizar Entregáveis")}
+          </Button>
+
+          <Button
+            variant={"orange"}
+            className="mt-4 ml-auto max-sm:w-full"
+            onClick={() => {
+              navigate({ to: "/dashboard-marca/rascunhos/" });
+            }}
+          >
+            <File className="w-5 h-5 mr-2" weight="bold" />
+            {t("Rascunhos Salvos")}
+          </Button>
+        </div>
       </div>
 
       <BrandCampaignFilter
@@ -136,6 +172,97 @@ function Page() {
       </div>
 
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+
+      {isModalDeliverableOpen && (
+        <Modal onClose={() => setModalDeliverableOpen(false)}>
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-2">{t("Seus Entregáveis")}</h2>
+            <p className="text-gray-700 mb-6">
+              {t("Aqui estão todos os entregáveis que foram criados por você")}:
+            </p>
+
+            {loadingDeliverables && (
+              <div className="flex items-center justify-center mt-10 w-full">
+                <Spinner />
+              </div>
+            )}
+
+            {!loadingDeliverables && (
+              <>
+                {deliverables.length === 0 && (
+                  <div className="text-center text-gray-700">
+                    <p>
+                      {t(
+                        "Nenhuma proposta de entregavéis foi criada até o momento"
+                      )}
+                    </p>
+
+                    <div className="w-full flex justify-center mt-5">
+                      <Button
+                        variant={"blue"}
+                        onClick={() => {
+                          navigate({ to: "/vitrine-de-creators" });
+                        }}
+                      >
+                        {t("Vitrine de Creators")}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {deliverables.length >= 1 &&
+                  deliverables.map((deliverable) => {
+                    return (
+                      <div className="border rounded-lg p-4 shadow-md">
+                        <div className="flex items-center mb-1">
+                          <img
+                            src={
+                              deliverable.expand.influencer.profile_img
+                                ? `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${deliverable.expand.influencer.collectionName}/${deliverable.expand.influencer.id}/${deliverable.expand.influencer.profile_img}`
+                                : ProfilePlaceholder
+                            }
+                            alt="avatar"
+                            draggable={false}
+                            className="w-10 h-10 mr-2 rounded-md object-cover"
+                          />
+
+                          <h3 className="font-semibold text-lg">
+                            {deliverable.expand.influencer.name}
+                          </h3>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-blue-500 font-semibold">
+                            {formatCentsToCurrency(deliverable.total_price)}
+                          </span>
+                          <span className="text-gray-500">
+                            Status:{" "}
+                            <span className="font-semibold">
+                              {returnStatus(
+                                deliverable.status,
+                                deliverable.paid,
+                                true
+                              )}
+                            </span>
+                          </span>
+                        </div>
+
+                        <Button
+                          variant="blue"
+                          className="mt-4"
+                          onClick={() => {
+                            navigate({ to: `/entregaveis/${deliverable.id}` });
+                          }}
+                        >
+                          {t("Visualizar")}
+                        </Button>
+                      </div>
+                    );
+                  })}
+              </>
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

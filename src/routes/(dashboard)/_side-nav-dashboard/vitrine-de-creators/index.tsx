@@ -1,26 +1,47 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import debounce from "lodash.debounce";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
-import Spinner from "@/components/ui/Spinner";
-import { Spinner as SpinnerPhosphor } from "phosphor-react";
-import pb from "@/lib/pb";
-import { Influencer } from "@/types/Influencer";
 import { useState, useMemo, useEffect } from "react";
-import { createOrGetChat } from "@/services/chatService";
+import { Spinner as SpinnerPhosphor } from "phosphor-react";
 import { toast } from "react-toastify";
 import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
-import debounce from "lodash.debounce";
-import { channelIcons } from "@/utils/socialMediasIcons";
+import { useTranslation } from "react-i18next";
+import { Search } from "lucide-react";
+
 import GoldCheckIcon from "@/assets/icons/gold-check.svg";
 import LocationPin from "@/assets/icons/location-pin.svg";
 import Tag from "@/assets/icons/tag.svg";
-import { Search } from "lucide-react";
-import { useTranslation } from "react-i18next";
+
+import Spinner from "@/components/ui/Spinner";
+import Modal from "@/components/ui/Modal";
+import { Button } from "@/components/ui/button";
+
+import { Influencer } from "@/types/Influencer";
+import { Deliverables } from "@/types/Deliverables";
+
+import pb from "@/lib/pb";
+import { createOrGetChat } from "@/services/chatService";
+import { channelIcons } from "@/utils/socialMediasIcons";
 import { getSocialLink } from "@/utils/getSocialLink";
 
 const searchSchema = z.object({
   page: z.number().optional(),
   q: z.string().optional(),
 });
+
+type SelectedDeliverable = {
+  product: string;
+  price: number;
+  quantity: number;
+};
+
+type SelectedCreator = {
+  creator: Influencer;
+  deliverables: SelectedDeliverable[];
+  totalPrice: number;
+  description: string;
+};
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/vitrine-de-creators/"
@@ -82,10 +103,81 @@ export const Route = createFileRoute(
 
 function Page() {
   const { t } = useTranslation();
+
   const { creators, totalPages, page, hasPlan } = Route.useLoaderData();
   const router = useRouter();
+
   const [loadingChatId, setLoadingChatId] = useState<string | null>(null);
   const [loadingPage, setLoadingPage] = useState(false);
+
+  const [selectedCreators, setSelectedCreators] = useState<SelectedCreator[]>(
+    []
+  );
+  const [modalCreator, setModalCreator] = useState<SelectedCreator | null>(
+    null
+  );
+  const [openModal, setOpenModal] = useState(false);
+  const [loadingProposal, setLoadingProposal] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const handleSendProposal = async () => {
+    if (!modalCreator) return;
+
+    setLoadingProposal(true);
+
+    try {
+      let storiesQty = 0;
+      let feedQty = 0;
+      let reelsQty = 0;
+      let ugcQty = 0;
+      modalCreator.deliverables.forEach((d) => {
+        if (d.product.toLowerCase().includes("stories"))
+          storiesQty += d.quantity;
+        if (
+          d.product.toLowerCase().includes("feed") &&
+          !d.product.toLowerCase().includes("reels")
+        )
+          feedQty += d.quantity;
+        if (d.product.toLowerCase().includes("reels")) reelsQty += d.quantity;
+        if (d.product.toLowerCase().includes("ugc")) ugcQty += d.quantity;
+      });
+
+      const body: Partial<Deliverables> = {
+        brand: pb.authStore.model?.id,
+        influencer: modalCreator.creator.id,
+        status: "waiting",
+        total_price: modalCreator.totalPrice,
+        description: modalCreator.description,
+        paid: false,
+      };
+
+      if (storiesQty !== 0) {
+        body.stories_qty = storiesQty;
+      }
+      if (feedQty !== 0) {
+        body.feed_qty = feedQty;
+      }
+      if (reelsQty !== 0) {
+        body.reels_qty = reelsQty;
+      }
+      if (ugcQty !== 0) {
+        body.ugc_qty = ugcQty;
+      }
+
+      await pb.collection("deliverable_proposals").create(body);
+      setShowSuccess(true);
+
+      // remover dados do creators quando enviar a proposta
+      setSelectedCreators((prev) =>
+        prev.filter((creator) => creator.creator.id !== modalCreator.creator.id)
+      );
+    } catch (e) {
+      console.log(`error create derivelable proposal: ${e}`);
+      toast.error("Não foi possível enviar a proposta, tente novamente");
+    } finally {
+      setLoadingProposal(false);
+    }
+  };
 
   const debouncedNavigate = useMemo(
     () =>
@@ -212,6 +304,21 @@ function Page() {
               { name: "YourClub", url: creator.yourclub_url },
             ].filter((link) => link.url);
 
+            const deliverablesData = [
+              { product: "1 Reels", price: creator.reels_price },
+              {
+                product: t("1 Vídeo + Combo de Fotos UGC"),
+                price: creator.ugc_price,
+              },
+              { product: "Stories IGC", price: creator.stories_price },
+              { product: t("Post no Feed"), price: creator.feed_price },
+            ];
+
+            const creatorSelected = selectedCreators.find(
+              (sc) => sc.creator.id === creator.id
+            );
+            const hasDeliverables = creatorSelected?.deliverables.length;
+
             return (
               <div
                 key={creator.id}
@@ -235,7 +342,7 @@ function Page() {
                       <div className="flex items-center justify-center h-full text-gray-500 font-bold line-clamp-1">
                         {creator.name
                           .split(" ")
-                          .map((name) => name[0])
+                          .map((name: string) => name[0])
                           .join("")}
                       </div>
                     </div>
@@ -249,8 +356,8 @@ function Page() {
                     }
                   >
                     {creator.full_name !== ""
-                      ? creator.full_name
-                      : creator.name}
+                      ? `${creator.full_name && creator.full_name.length > 25 ? `${creator.full_name.slice(0, 25)}...` : creator.full_name}`
+                      : `${creator.name && creator.name.length > 25 ? `${creator.name.slice(0, 20)}...` : creator.name}`}
                   </h2>
                   {creator.top_creator && (
                     <div
@@ -312,40 +419,144 @@ function Page() {
                   {creator.bio || t("Biografia não informada.")}
                 </p>
 
-                <div className="text-sm text-gray-800 mb-4">
-                  <p>
-                    <strong>1 Reels:</strong>{" "}
-                    {(creator.feed_price / 100).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                      minimumFractionDigits: 2,
-                    })}
-                  </p>
-                  <p>
-                    <strong>{t("1 Vídeo + Combo de Fotos UGC:")}</strong>{" "}
-                    {(creator.feed_price / 100).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                      minimumFractionDigits: 2,
-                    })}
-                  </p>
-                  <p>
-                    <strong>Stories IGC:</strong>{" "}
-                    {(creator.stories_price / 100).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                      minimumFractionDigits: 2,
-                    })}
-                  </p>
-                  <p>
-                    <strong>Post no Feed:</strong>{" "}
-                    {(creator.feed_price / 100).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                      minimumFractionDigits: 2,
-                    })}
-                  </p>
-                </div>
+                {deliverablesData.map((item) => {
+                  const creatorInState = selectedCreators.find(
+                    (sc) => sc.creator.id === creator.id
+                  );
+                  const deliverableInState = creatorInState?.deliverables.find(
+                    (d) => d.product === item.product
+                  );
+
+                  return (
+                    <div key={item.product} className="flex flex-col mb-2">
+                      <label className="inline-flex items-center">
+                        {item.price > 0 && (
+                          <input
+                            type="checkbox"
+                            checked={!!deliverableInState}
+                            onChange={() => {
+                              setSelectedCreators((prev: any) => {
+                                const exists = prev.find(
+                                  (sc: { creator: Influencer }) =>
+                                    sc.creator.id === creator.id
+                                );
+                                if (!exists) {
+                                  const newDeliverables = [
+                                    {
+                                      product: item.product,
+                                      price: item.price,
+                                      quantity: 1,
+                                    },
+                                  ];
+                                  const total = newDeliverables.reduce(
+                                    (acc, d) => acc + d.price * d.quantity,
+                                    0
+                                  );
+                                  return [
+                                    ...prev,
+                                    {
+                                      creator: creator,
+                                      deliverables: newDeliverables,
+                                      totalPrice: total,
+                                    },
+                                  ];
+                                }
+                                return prev.map(
+                                  (sc: {
+                                    creator: Influencer;
+                                    deliverables: SelectedDeliverable[];
+                                  }) => {
+                                    if (sc.creator.id === creator.id) {
+                                      const alreadySelected =
+                                        sc.deliverables.find(
+                                          (d) => d.product === item.product
+                                        );
+                                      let newDeliverables;
+                                      if (alreadySelected) {
+                                        newDeliverables =
+                                          sc.deliverables.filter(
+                                            (d) => d.product !== item.product
+                                          );
+                                      } else {
+                                        newDeliverables = [
+                                          ...sc.deliverables,
+                                          {
+                                            product: item.product,
+                                            price: item.price,
+                                            quantity: 1,
+                                          },
+                                        ];
+                                      }
+                                      const total = newDeliverables.reduce(
+                                        (acc, d) => acc + d.price * d.quantity,
+                                        0
+                                      );
+                                      return {
+                                        ...sc,
+                                        deliverables: newDeliverables,
+                                        totalPrice: total,
+                                      };
+                                    }
+                                    return sc;
+                                  }
+                                );
+                              });
+                            }}
+                            className="h-4 w-4"
+                          />
+                        )}
+                        <span className="ml-2 text-sm">
+                          <strong>{item.product}:</strong>{" "}
+                          {(item.price / 100).toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                            minimumFractionDigits: 2,
+                          })}
+                        </span>
+                      </label>
+
+                      {deliverableInState && (
+                        <input
+                          type="number"
+                          value={deliverableInState.quantity}
+                          onChange={(e) => {
+                            setSelectedCreators((prev) => {
+                              return prev.map((sc) => {
+                                if (sc.creator.id === creator.id) {
+                                  const newDeliverables = sc.deliverables.map(
+                                    (d) => {
+                                      if (d.product === item.product) {
+                                        return {
+                                          ...d,
+                                          quantity: parseInt(
+                                            e.target.value,
+                                            10
+                                          ),
+                                        };
+                                      }
+                                      return d;
+                                    }
+                                  );
+                                  const total = newDeliverables.reduce(
+                                    (acc, d) => acc + d.price * d.quantity,
+                                    0
+                                  );
+                                  return {
+                                    ...sc,
+                                    deliverables: newDeliverables,
+                                    totalPrice: total,
+                                  };
+                                }
+                                return sc;
+                              });
+                            });
+                          }}
+                          className="mt-1 w-16 border border-gray-300 rounded px-2 py-1 text-center appearance-none focus:outline-none focus:ring-2 focus:ring-blue-600 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
 
                 <div className="flex flex-wrap space-x-2 mb-4">
                   {socialLinks.length > 0 ? (
@@ -381,23 +592,46 @@ function Page() {
                   )}
                 </div>
 
-                <button
-                  className="bg-[#FF672F] text-white px-4 py-2 rounded hover:bg-[#FF672F]/90 font-bold mt-auto disabled:cursor-not-allowed"
-                  onClick={() =>
-                    handleStartChat(creator.id, pb.authStore.model?.id)
-                  }
-                  disabled={
-                    loadingChatId === creator.id ||
-                    creator.id === pb.authStore.model?.id ||
-                    loadingChatId !== null
-                  }
-                >
-                  {loadingChatId === creator.id ? (
-                    <SpinnerPhosphor className="animate-spin w-6 h-6" />
-                  ) : (
-                    t("Enviar mensagem")
-                  )}
-                </button>
+                <div className="flex items-center justify-between w-full">
+                  <button
+                    className="bg-[#FF672F] text-white px-4 py-2 rounded hover:bg-[#FF672F]/90 font-bold mt-auto disabled:cursor-not-allowed"
+                    onClick={() =>
+                      handleStartChat(creator.id, pb.authStore.model?.id)
+                    }
+                    disabled={
+                      loadingChatId === creator.id ||
+                      creator.id === pb.authStore.model?.id ||
+                      loadingChatId !== null
+                    }
+                  >
+                    {loadingChatId === creator.id ? (
+                      <SpinnerPhosphor className="animate-spin w-6 h-6" />
+                    ) : (
+                      t("Enviar mensagem")
+                    )}
+                  </button>
+
+                  {hasDeliverables ? (
+                    <button
+                      className="bg-green-600 text-white px-4 py-2 rounded font-bold mt-2 disabled:cursor-not-allowed"
+                      disabled={!hasDeliverables}
+                      onClick={() => {
+                        const emptyQty = creatorSelected.deliverables.some(
+                          (d) => !d.quantity || d.quantity < 1
+                        );
+                        if (emptyQty) {
+                          toast.warning("A quantidade deve ser preenchida");
+                          return;
+                        }
+                        setModalCreator(creatorSelected);
+                        setShowSuccess(false);
+                        setOpenModal(true);
+                      }}
+                    >
+                      Continuar
+                    </button>
+                  ) : null}
+                </div>
               </div>
             );
           })}
@@ -433,6 +667,126 @@ function Page() {
             )}
           </button>
         </div>
+      )}
+
+      {openModal && (
+        <Modal onClose={() => setOpenModal(false)}>
+          {!showSuccess && modalCreator && (
+            <div className="p-4 w-full">
+              <h2 className="text-xl font-bold mb-4">
+                {t("Enviar Proposta de Entregável para")}{" "}
+                <span className="text-[#10438F]">
+                  {modalCreator.creator.name &&
+                  modalCreator.creator.name.length > 25
+                    ? `${modalCreator.creator.name.slice(0, 25)}...`
+                    : modalCreator.creator.name}
+                </span>
+              </h2>
+              <p className="font-semibold mb-2">
+                {t(
+                  "Envie propostas diretamente para os creators que você deseja!"
+                )}
+              </p>
+              <p className="font-semibold mb-2">
+                {t(
+                  "Na vitrine de Creators da Conecte Publi, você pode navegar pelos perfis e selecionar aquele que melhor se conecta com a sua marca. Envie uma proposta exclusiva para um Creator específico e garanta uma parceria personalizada e assertiva."
+                )}
+              </p>
+              <div className="mb-4">
+                {modalCreator.deliverables.map((d) => (
+                  <div key={d.product} className="flex justify-between mb-2">
+                    <span>
+                      {d.product}{" "}
+                      <span className="text-[#10438F] font-semibold">
+                        x {d.quantity}
+                      </span>
+                    </span>
+                    <span>
+                      {((d.quantity * d.price) / 100).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </span>
+                  </div>
+                ))}
+                <div className="border-t border-gray-300 pt-2 flex justify-between font-bold">
+                  <span>Total</span>
+                  <span>
+                    {(modalCreator.totalPrice / 100).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </span>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="description"
+                  className="block text-base font-semibold text-gray-700 mb-1"
+                >
+                  {t("Detalhes da Proposta de Entregável")}*
+                </label>
+                <p className="text-sm text-gray-700 mb-2">
+                  {t(
+                    "Informe ao Creator exatamente o que você espera deste entregável. Quanto mais claro e específico for, melhor será o resultado!"
+                  )}
+                </p>
+                <textarea
+                  id="description"
+                  rows={4}
+                  placeholder={t("Descreva aqui")}
+                  className="w-full p-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+                  onChange={(e) => {
+                    setModalCreator({
+                      ...modalCreator,
+                      description: e.target.value,
+                    });
+                  }}
+                ></textarea>
+              </div>
+              <button
+                onClick={() => {
+                  if (!loadingProposal) {
+                    handleSendProposal();
+                  }
+                }}
+                disabled={!modalCreator.description}
+                className="bg-[#FF672F] text-white px-4 py-2 rounded hover:bg-[#FF672F]/90 font-bold disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-white"
+                value={modalCreator.description}
+              >
+                {loadingProposal ? t("Enviando...") : t("Enviar Proposta")}
+              </button>
+            </div>
+          )}
+
+          {showSuccess && (
+            <div className="p-4 text-left w-full">
+              <h2 className="text-xl font-bold mb-4">
+                🎉 {t("Proposta Enviada com Sucesso")}!
+              </h2>
+              <p className="mb-4">
+                {t(
+                  "Agora é só aguardar a aprovação. Assim que o Creator avaliar e aceitar, você será notificado para dar sequência. Enquanto isso, qualquer dúvida ou ajuste, estamos aqui para ajudar."
+                )}{" "}
+                🚀
+              </p>
+              <p className="text-sm text-gray-700 mb-4">
+                {t("Equipe")} Conecte Publi
+              </p>
+              <div className="flex justify-center">
+                <Button
+                  variant={"orange"}
+                  onClick={() => {
+                    setOpenModal(false);
+                  }}
+                  className=" text-white px-4 py-2 rounded font-bold"
+                >
+                  {t("Voltar para a Vitrine")}
+                </Button>
+              </div>
+            </div>
+          )}
+        </Modal>
       )}
     </div>
   );
