@@ -87,5 +87,18 @@ export default {
     "Receba de forma rápida, simples e protegida com o Conecte Pay.":
       "Receba de forma rápida, simples e protegida com o Conecte Pay.",
     "Como funciona": "Como funciona",
+    campaing_ended_brand: 'Sua campanha "{{campaign}}" foi finalizada.',
+    campaign_completed_influencer:
+      'Parabéns, {{user}}! Você concluiu a campanha "{{campaign}}".',
+    new_campaign_participation:
+      "Você se inscreveu com sucesso na campanha: {{campaign}}.",
+    campaign_participation_confirmation:
+      'A participação na campanha "{{campaign}}" foi confirmada.',
+    campaign_approval_influencer:
+      'Sua campanha "{{campaign}}" foi aprovada pela marca.',
+    campaign_approval_brand:
+      "Um novo influenciador concluiu sua campanha: {{campaign}}.",
+    avaliacao_one: "({{count}} Avaliação)",
+    avaliacao_other: "({{count}} Avaliações)",
   },
 };

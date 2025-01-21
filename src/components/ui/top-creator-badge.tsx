@@ -1,6 +1,7 @@
 import GoldCheckIcon from "@/assets/icons/gold-check.svg";
 import GrayCheckIcon from "@/assets/icons/gray-check.svg";
 import { useNavigate } from "@tanstack/react-router";
+import { t } from "i18next";
 
 interface BadgeProps {
   status: true | false;
@@ -32,7 +33,7 @@ const TopCreatorBadge: React.FC<BadgeProps> = ({ status }) => {
           className="w-4 h-4"
         />
       </span>
-      {isActive ? "Top Creator" : "Torne-se um Top Creator"}
+      {isActive ? "Top Creator" : t("Torne-se um Top Creator")}
     </div>
   );
 };

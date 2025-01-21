@@ -37,6 +37,7 @@ import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import CampaignSpotlight from "./CampaignSpotlight";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
+import { t } from "i18next";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -1410,9 +1411,9 @@ function BasicInfoSection({
                       }}
                     >
                       <p className="text-gray-700 font-normal">
-                        {
+                        {t(
                           "Especifique a quantidade e o tipo de conteúdos que o Creator deve produzir. Inclua Reels, Stories, Posts no feed, vídeos ou fotos entregues via WeTransfer ou Google Drive, detalhando a quantidade e duração para uso em tráfego orgânico e pago. Adicione outros formatos necessários, se houver."
-                        }
+                        )}
                       </p>
                     </div>
                   )}
@@ -2892,7 +2893,7 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
   const handleGenerateWithAI = async () => {
     if (briefing.length > 0) {
       const userConfirmed = window.confirm(
-        "O campo de texto será limpo. Deseja continuar?"
+        t("O campo de texto será limpo. Deseja continuar?")
       );
 
       if (!userConfirmed) {
@@ -2908,7 +2909,7 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
       const newBriefing = await generateBriefingViaIA();
       onChange(newBriefing);
 
-      toast.success("Briefing gerado com sucesso!");
+      toast.success(t("Briefing gerado com sucesso!"));
     } catch (error) {
       toast.error("Erro ao gerar briefing com IA");
       console.error(error);
@@ -2921,16 +2922,16 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
     <div className="w-full mt-8">
       <h2 className="text-lg font-medium text-white mb-6 bg-[#10438F] py-2 px-5">
         {/* Título da Seção */}
-        Briefing da Campanha
+        {t("Briefing da Campanha")}
       </h2>
 
       <div className="px-5 mb-6 grid grid-cols-1">
         {/* Campo Briefing + Tooltip */}
         <div className="col-span-1">
           <label className="block mb-1 text-gray-700 font-semibold flex items-center">
-            {
+            {t(
               "Briefing da Campanha (Forneça detalhes essenciais que o Creator deve saber)*"
-            }
+            )}
             <div className="relative inline-block">
               <Question
                 size={18}
@@ -2951,9 +2952,9 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
                   }}
                 >
                   <p className="text-gray-700 font-normal">
-                    {
+                    {t(
                       "Forneça detalhes essenciais que o Creator deve saber, incluindo objetivo, mensagens principais, tom e diretrizes visuais."
-                    }
+                    )}
                   </p>
                 </div>
               )}
@@ -2961,9 +2962,9 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
           </label>
 
           <p className="text-gray-500 text-sm mb-2">
-            {
+            {t(
               "Descreva o propósito da campanha, público-alvo, mensagens principais, tom de voz e diretrizes visuais."
-            }
+            )}
           </p>
 
           <textarea
@@ -2971,9 +2972,9 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
             value={briefing}
             onChange={handleBriefingChange}
             className="w-full h-[120px] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder={
+            placeholder={t(
               "Inclua informações sobre objetivo, mensagens principais, tom, linguagem, diretrizes visuais etc."
-            }
+            )}
           />
         </div>
 
@@ -2989,20 +2990,20 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
                 : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
-            {isGenerating ? "Gerando briefing..." : "Gerar com IA"}
+            {isGenerating ? t("Gerando briefing...") : t("Gerar com IA")}
           </button>
 
           {!isFormReadyForAI && (
             <p className="text-red-500 text-sm mt-1">
-              Você precisa preencher todos os campos obrigatórios antes de gerar
-              com IA. Os campos opcionais são recomendados para melhorar a
-              qualidade do briefing.
+              {t(
+                "Você precisa preencher todos os campos obrigatórios antes de gerar com IA. Os campos opcionais são recomendados para melhorar a qualidade do briefing."
+              )}
             </p>
           )}
 
           {isGenerating && (
             <p className="text-gray-500 text-sm mt-1">
-              O texto do briefing foi limpo enquanto geramos um novo...
+              {t("O texto do briefing foi limpo enquanto geramos um novo...")}
             </p>
           )}
         </div>

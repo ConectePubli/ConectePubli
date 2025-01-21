@@ -90,7 +90,9 @@ const ModalSendLinkCampaign: React.FC<Props> = ({ campaignId, brandId }) => {
               <textarea
                 id="linkInput"
                 className="w-full border border-gray-300 rounded-md p-2 max-h-[60dvh] min-h-40"
-                placeholder="Cole aqui a URL da(s) postagem(ns) conforme orientado na campanha. Se desejar, inclua mais de um link e adicione texto adicional para contexto!"
+                placeholder={t(
+                  "Cole aqui a URL da(s) postagem(ns) conforme orientado na campanha. Se desejar, inclua mais de um link e adicione texto adicional para contexto!"
+                )}
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
               ></textarea>

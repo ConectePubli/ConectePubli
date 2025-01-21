@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import br_flag from "@/assets/icons/br-flag.png";
@@ -27,6 +27,7 @@ import {
   payDeliverablePagseguro,
   payDeliverableStripe,
 } from "@/services/deliverables";
+import i18n from "@/i18n";
 interface Props {
   plans?: SpotlightCampaignPlan[];
   selectedOption?: string;
@@ -55,6 +56,15 @@ const GatewayPaymentModal: React.FC<Props> = ({
   deliverable,
 }) => {
   const [language, setLanguage] = useState<"pt" | "en">("pt");
+
+  useEffect(() => {
+    const i18nLanguage = i18n.language;
+    if (i18nLanguage === "en-US") {
+      setLanguage("en");
+    } else {
+      setLanguage("pt");
+    }
+  }, []);
 
   // COMPRAR DESTAQUE
   const pagSeguroMutateSpotlight = useMutation({

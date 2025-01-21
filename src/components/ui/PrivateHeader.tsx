@@ -63,6 +63,46 @@ export const PrivateHeader = () => {
     }
   };
 
+  function getNotificationText(notification: Notification) {
+    // Exemplo de extração dinâmica de nome de usuário/campanha
+    const user =
+      notification.expand?.from_influencer?.name ||
+      notification.expand?.from_brand?.name ||
+      "";
+    const campaign = notification.expand?.campaign?.name || "";
+
+    switch (notification.type) {
+      case "campaing_ended_brand":
+        return t("campaing_ended_brand", {
+          campaign,
+        });
+      case "campaign_completed_influencer":
+        return t("campaign_completed_influencer", {
+          user,
+          campaign,
+        });
+      case "new_campaign_participation":
+        return t("new_campaign_participation", {
+          campaign,
+        });
+      case "campaign_participation_confirmation":
+        return t("campaign_participation_confirmation", {
+          campaign,
+        });
+      case "campaign_approval_influencer":
+        return t("campaign_approval_influencer", {
+          campaign,
+        });
+      case "campaign_approval_brand":
+        return t("campaign_approval_brand", {
+          campaign,
+        });
+      default:
+        // Caso não esteja mapeado
+        return notification.description;
+    }
+  }
+
   return (
     <header className="bg-white border-b-[1px] sticky top-0 z-[1]">
       <div
@@ -141,7 +181,9 @@ export const PrivateHeader = () => {
                       }`}
                       onClick={() => handleNotificationClick(notification)}
                     >
-                      <p className="text-sm">{notification.description}</p>
+                      <p className="text-sm">
+                        {getNotificationText(notification)}
+                      </p>
                       <span className="text-xs text-gray-500">
                         {formatDistanceToNow(new Date(notification.created!), {
                           addSuffix: true,

@@ -45,9 +45,9 @@ export const Route = createFileRoute(
 
     if (!purchasedPlan || purchasedPlan.length === 0) {
       console.log("redirect");
-      throw redirect({
-        to: "/premium/marca",
-      });
+      // throw redirect({
+      //   to: "/premium/marca",
+      // });
     }
   },
 });
@@ -69,7 +69,7 @@ function Page() {
     <div className="w-full p-4 md:p-8">
       <div className="max-w-6xl mx-auto text-left">
         <h1 className="text-xl md:text-3xl font-semibold text-gray-800">
-          {pageTitle}
+          {t(pageTitle)}
         </h1>
         <p className="mt-3 text-gray-700">
           {t("Faça o download dos produtos abaixo")}

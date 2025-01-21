@@ -1,5 +1,17 @@
 export default {
   translations: {
+    campaing_ended_brand: 'Your campaign "{{campaign}}" has ended.',
+    campaign_completed_influencer:
+      'Congrats, {{user}}! You\'ve completed the "{{campaign}}" campaign.',
+    new_campaign_participation:
+      "You have successfully joined the campaign: {{campaign}}.",
+    campaign_participation_confirmation:
+      'Participation in "{{campaign}}" was confirmed.',
+    campaign_approval_influencer:
+      'Your campaign "{{campaign}}" was approved by the brand.',
+    campaign_approval_brand:
+      "A new influencer completed your campaign: {{campaign}}.",
+
     "Aprovado Por:": "Approved By:",
     "Marcas Conectadas": "Connected Brands",
     "Conexão digital direta entre marcas e creators":
@@ -91,7 +103,13 @@ export default {
     "Receba de forma rápida, simples e protegida com o Conecte Pay.":
       "Receive quickly, simply, and securely with Conecte Pay.",
     "Como Funciona?": "How It Works?",
+    "Como Funciona": "How It Works",
+    Benefícios: "Benefits",
+    "Ao acessar ou utilizar a plataforma Conecte Publi, você concorda em cumprir e ficar vinculado a estes Termos de Uso, bem como a todas as leis e regulamentos aplicáveis. Se você não concordar com qualquer parte destes termos, não acesse ou utilize nossa plataforma.":
+      "By accessing or using the Conecte Publi platform, you agree to comply with and be bound by these Terms of Use, as well as all applicable laws and regulations. If you do not agree with any part of these terms, do not access or use our platform.",
     Notificações: "Notifications",
+    "A plataforma Conecte Publi tem como objetivo facilitar a conexão entre marcas e criadores digitais para a realização de campanhas de marketing e divulgação de produtos ou serviços. Fornecemos uma interface onde marcas podem criar propostas de colaboração e criadores podem se candidatar para participar dessas campanhas.":
+      "The Conecte Publi platform aims to facilitate the connection between brands and digital creators for marketing campaigns and product or service promotion. We provide an interface where brands can create collaboration proposals and creators can apply to participate in these campaigns.",
     "Você tem {{count}} notificações não lidas":
       "You have {{count}} unread notifications",
     "Olá, {{name}}!": "Hello, {{name}}!",
@@ -394,6 +412,7 @@ export default {
       "6. Consent to Use Content and Image",
     "7. Responsabilidades e Conformidade": "7. Responsibilities and Compliance",
     "8.  Resolução de Conflitos": "8. Conflict Resolution",
+    "8. Resolução de Conflitos": "8. Conflict Resolution",
 
     "Proposta de Entregável": "Deliverable Proposal",
     "A Marca deve detalhar claramente os requisitos do entregável, incluindo formato, estilo, prazos e orientações específicas.":
@@ -503,6 +522,15 @@ export default {
     "9.3 Remuneração e Direitos": "9.3 Compensation and Rights",
     "9.4 Direitos e Responsabilidades": "9.4 Rights and Responsibilities",
     "9.5 Penalidades": "9.5 Penalties",
+
+    "3. Remuneração e Direitos": "3. Compensation and Rights",
+    "2. Alterações nas Condições": "2. Changes in Conditions",
+    "1. Termos de Veiculação": "1. Broadcasting Terms",
+    "4. Direitos e Responsabilidades": "4. Rights and Responsibilities",
+    "5. Penalidades": "5. Penalties",
+
+    "Faça o download dos produtos abaixo": "Download the products below",
+    "Compra realizada com sucesso": "Purchase completed successfully",
 
     "Termos de Uso da Plataforma Conecte Publi":
       "Terms of Use of the Conecte Publi Platform",
@@ -663,7 +691,7 @@ export default {
     "A privacidade dos usuários é importante para nós. Oo uso das informações pessoais fornecidas por você está sujeito à nossa Política de Privacidade, que descreve como coletamos, usamos, armazenamos e divulgamos essas informações.":
       "User privacy is important to us. The use of personal information provided by you is subject to our Privacy Policy, which describes how we collect, use, store, and disclose this information.",
 
-    "(a) Uso por sua Conta e Risco Você compreende e concorda que utiliza a plataforma Conecte Publi de livre e consciente vontade, sendo ciente e responsável por sua própria vontade, conta e risco. A plataforma não se responsabiliza por qualquer dano ou prejuízo decorrente do uso da plataforma.":
+    "(a) Uso por sua Conta e Risco: Você compreende e concorda que utiliza a plataforma Conecte Publi de livre e consciente vontade, sendo ciente e responsável por sua própria vontade, conta e risco. A plataforma não se responsabiliza por qualquer dano ou prejuízo decorrente do uso da plataforma.":
       "(a) Use at Your Own Risk: You understand and agree that you use the Conecte Publi platform of your own free will, being aware and responsible for your own will, account, and risk. The platform is not responsible for any damage or loss resulting from the use of the platform.",
     "(b) Terceiros: A plataforma não se responsabiliza por quaisquer ações, omissões ou condutas de marcas, creators ou terceiros relacionados às transações realizadas na plataforma.":
       "(b) Third Parties: The platform is not responsible for any actions, omissions, or conduct of brands, creators, or third parties related to transactions conducted on the platform.",
@@ -1145,10 +1173,8 @@ export default {
     "Esta página ou não existe ou foi removida, tente novamente!":
       "This page either does not exist or has been removed, try again!",
     "Creator/Influencer": "Creator/Influencer",
-    Avaliações: {
-      one: "({{count}} Review)",
-      other: "({{count}} Reviews)",
-    },
+    avaliacao_one: "({{count}} Review)",
+    avaliacao_other: "({{count}} Reviews)",
     "Ver Reviews do Usuário": "View User Reviews",
     "Acessar mídia kit": "Access media kit",
     "Editar Perfil": "Edit Profile",
@@ -1701,5 +1727,24 @@ export default {
       "Completion and approval of the deliverable.",
     "Para continuar o trabalho com o Creator, aceite o contrato abaixo":
       "To continue working with Creator, accept the agreement below",
+    "Torne-se um Top Creator": "Become a Top Creator",
+    "Selecione os nichos...": "Select niches...",
+    "Finalize a seleção e efetue o pagamento do creator no topo desta página, clicando no botão: 'Creators Selecionados'": `Finalize the selection and pay the creator at the top of this page, by clicking on the button: "Selected Creators"`,
+    "O texto do briefing foi limpo enquanto geramos um novo...":
+      "The briefing text was cleared while we generated a new one...",
+    "Você precisa preencher todos os campos obrigatórios antes de gerar com IA. Os campos opcionais são recomendados para melhorar a qualidade do briefing.":
+      "You need to fill in all required fields before generating with AI. Optional fields are recommended to improve the quality of the briefing.",
+    "Inclua informações sobre objetivo, mensagens principais, tom, linguagem, diretrizes visuais etc.":
+      "Include information about objective, key messages, tone, language, visual guidelines, etc.",
+    "Gerando briefing...": "Generating briefing...",
+    "Gerar com IA": "Generate with AI",
+    "Descreva o propósito da campanha, público-alvo, mensagens principais, tom de voz e diretrizes visuais.": `Describe the purpose of the campaign, target audience, key messages, tone of voice, and visual guidelines.`,
+    "Forneça detalhes essenciais que o Creator deve saber, incluindo objetivo, mensagens principais, tom e diretrizes visuais.": `Provide essential details that the Creator should know, including objective, key messages, tone, and visual guidelines.`,
+    "Briefing gerado com sucesso!": "Briefing generated successfully!",
+    "O campo de texto será limpo. Deseja continuar?": `The text field will be cleared. Do you want to continue?`,
+    "O período de inscrição para essa campanha ainda não iniciou.": `The registration period for this campaign has not started yet.`,
+    "O período de inscrições para essa campanha foi encerrado.": `The registration period for this campaign has ended.`,
+    "Cole aqui a URL da(s) postagem(ns) conforme orientado na campanha. Se desejar, inclua mais de um link e adicione texto adicional para contexto!": `Paste the URL(s) of the post(s) as instructed in the campaign. If you wish, include more than one link and add additional text for context!`,
+    "Avaliação enviada com sucesso!": "Rating sent successfully!",
   },
 };

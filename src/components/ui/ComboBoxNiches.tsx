@@ -18,6 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { t } from "i18next";
 
 interface Niche {
   value: string;
@@ -53,11 +54,11 @@ export function ComboboxNiches({
               ? selectedNiches
                   .map((value) => {
                     const niche = niches.find((niche) => niche.value === value);
-                    return niche ? niche.label : "";
+                    return niche ? t(niche.label) : "";
                   })
                   .filter((label) => label !== "")
                   .join(", ")
-              : "Selecione os nichos..."}
+              : t("Selecione os nichos...")}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -112,7 +113,7 @@ export function ComboboxNiches({
                         : "opacity-0"
                     )}
                   />
-                  {niche.label}
+                  {t(niche.label)}
                 </CommandItem>
               ))}
             </CommandGroup>
