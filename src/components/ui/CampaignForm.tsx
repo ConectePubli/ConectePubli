@@ -2979,7 +2979,7 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
         </div>
 
         {/* Botão Gerar com IA */}
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <button
             type="button"
             onClick={handleGenerateWithAI}
@@ -3006,7 +3006,7 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
               {t("O texto do briefing foi limpo enquanto geramos um novo...")}
             </p>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   );
