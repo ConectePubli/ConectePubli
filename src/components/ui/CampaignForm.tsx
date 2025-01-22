@@ -2863,11 +2863,11 @@ interface BriefingSectionProps {
 export const BriefingSection: React.FC<BriefingSectionProps> = ({
   briefing,
   onChange,
-  isFormReadyForAI,
-  generateBriefingViaIA,
+  // isFormReadyForAI,
+  // generateBriefingViaIA,
 }) => {
   const [tooltipOpenBriefing, setTooltipOpenBriefing] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
+  // const [isGenerating, setIsGenerating] = useState(false);
 
   const tooltipRefBriefing = useRef<HTMLDivElement>(null);
 
@@ -2890,33 +2890,33 @@ export const BriefingSection: React.FC<BriefingSectionProps> = ({
     onChange(e.target.value);
   };
 
-  const handleGenerateWithAI = async () => {
-    if (briefing.length > 0) {
-      const userConfirmed = window.confirm(
-        t("O campo de texto será limpo. Deseja continuar?")
-      );
+  // const handleGenerateWithAI = async () => {
+  //   if (briefing.length > 0) {
+  //     const userConfirmed = window.confirm(
+  //       t("O campo de texto será limpo. Deseja continuar?")
+  //     );
 
-      if (!userConfirmed) {
-        return;
-      }
-    }
+  //     if (!userConfirmed) {
+  //       return;
+  //     }
+  //   }
 
-    try {
-      onChange("");
+  //   try {
+  //     onChange("");
 
-      setIsGenerating(true);
+  //     setIsGenerating(true);
 
-      const newBriefing = await generateBriefingViaIA();
-      onChange(newBriefing);
+  //     const newBriefing = await generateBriefingViaIA();
+  //     onChange(newBriefing);
 
-      toast.success(t("Briefing gerado com sucesso!"));
-    } catch (error) {
-      toast.error("Erro ao gerar briefing com IA");
-      console.error(error);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  //     toast.success(t("Briefing gerado com sucesso!"));
+  //   } catch (error) {
+  //     toast.error("Erro ao gerar briefing com IA");
+  //     console.error(error);
+  //   } finally {
+  //     setIsGenerating(false);
+  //   }
+  // };
 
   return (
     <div className="w-full mt-8">
