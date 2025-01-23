@@ -65,7 +65,7 @@ const ModalSendDeliverable: React.FC<Props> = ({ creatorId, brandId }) => {
   return (
     <>
       <button
-        className="px-4 py-2 rounded-md font-bold border bg-[#10438F] text-white hover:bg-[#10438F]/90 flex items-center"
+        className="w-full lg:w-auto flex justify-center items-center px-4 py-2 rounded-md font-bold border bg-[#10438F] text-white hover:bg-[#10438F]/90 flex items-center"
         onClick={() => setIsSendDeliverableOpen(true)}
       >
         <PaperPlaneTilt weight="bold" className="mr-2" />{" "}
