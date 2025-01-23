@@ -189,6 +189,10 @@ function Page() {
   const totalReviews = ratings.length;
   const overallAverage = calculateOverallAverage();
 
+  const isOne = totalReviews === 1;
+  const review = isOne
+    ? t("avaliacao_one", { count: totalReviews })
+    : t("avaliacao_other", { count: totalReviews });
   return (
     <div className="flex p-0 flex-col ">
       <img
@@ -251,9 +255,7 @@ function Page() {
           />
 
           <div className="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1">
-            <span className="text-black/75 text-sm ml-0 sm:ml-3">
-              {t("Avaliações", { count: totalReviews })}
-            </span>
+            <span className="text-black/75 text-sm ml-0 sm:ml-3">{review}</span>
 
             <div className="flex items-center mt-2 sm:mt-0">
               <div className="w-[6px] h-[6px] bg-orange-600 rounded-full ml-0 sm:ml-3"></div>

@@ -591,7 +591,7 @@ function Page() {
             <option value="">{t("Nicho")}</option>
             {niches.map((niche) => (
               <option key={niche.id} value={niche.id}>
-                {niche.niche}
+                {t(niche.niche)}
               </option>
             ))}
           </select>

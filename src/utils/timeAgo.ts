@@ -1,3 +1,5 @@
+import { t } from "i18next";
+
 // utils/timeAgo.ts
 export function timeAgo(date: Date): string {
   const now = new Date();
@@ -17,9 +19,11 @@ export function timeAgo(date: Date): string {
     const intervalSeconds = intervals[interval];
     const count = Math.floor(seconds / intervalSeconds);
     if (count >= 1) {
-      return count === 1 ? `${count} ${interval}` : `${count} ${interval}s`;
+      return count === 1
+        ? `${count} ${t(interval)}`
+        : `${count} ${t(interval)}s`;
     }
   }
 
-  return "agora mesmo";
+  return t("agora mesmo");
 }
