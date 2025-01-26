@@ -213,7 +213,7 @@ function Page() {
                 {deliverables.length >= 1 &&
                   deliverables.map((deliverable) => {
                     return (
-                      <div className="border rounded-lg p-4 shadow-md">
+                      <div className="border border-gray-300 rounded-lg p-4 mb-5">
                         <div className="flex items-center mb-1">
                           <img
                             src={

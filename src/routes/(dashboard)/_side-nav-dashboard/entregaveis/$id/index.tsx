@@ -346,8 +346,8 @@ function Page() {
                 proposalStatus === "refused") && (
                 <>
                   {proposalStatus === "approved" ? (
-                    <div className="w-full flex flex-wrap justify-between items-center px-4 max-sm:flex-col max-sm:space-y-3">
-                      <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default w-full max-sm:w-full">
+                    <div className="flex flex-wrap lg:flex-nowrap justify-between items-center px-4 mt-6 space-y-3 lg:space-y-0 lg:space-x-4 w-full">
+                      <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default w-full lg:w-auto">
                         {t("Proposta aceita")}
                       </button>
 
@@ -428,17 +428,16 @@ function Page() {
                 )}
 
                 {proposalStatus === "approved" && deliverable.paid && (
-                  <div className="w-full flex flex-wrap justify-between px-4 max-sm:flex-col max-sm:space-y-3">
+                  <div className="flex flex-wrap lg:flex-nowrap justify-between items-center mt-6 space-y-3 lg:space-y-0 lg:space-x-4 w-full">
                     <button
-                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-pointer hover:bg-green-600 w-full max-sm:w-full"
-                      onClick={() => setIsCompleteModalOpen(true)}
+                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600 w-full lg:w-auto"
+                      onClick={() => setIsAcceptBrandModalOpen(true)}
                     >
                       {t("Concluir Colaboração")}
                     </button>
-
                     <Button
                       variant={"brown"}
-                      className="text-white px-4 py-2 rounded font-semibold w-full max-sm:w-full"
+                      className="text-white px-4 py-2 rounded font-semibold w-full lg:w-auto"
                       onClick={() => setIsSupportModalOpen(true)}
                     >
                       {t("Suporte")}
@@ -579,7 +578,7 @@ function Page() {
 
       {isAcceptModalOpen && (
         <Modal onClose={() => setIsAcceptModalOpen(false)}>
-          <div className="p-6">
+          <div className="p-6 max-sm:p-1">
             <h2 className="text-xl font-semibold mb-4">
               {t("Confirme sua participação")}{" "}
             </h2>
@@ -627,7 +626,7 @@ function Page() {
 
       {isAcceptBrandModalOpen && (
         <Modal onClose={() => setIsAcceptBrandModalOpen(false)}>
-          <div className="p-6">
+          <div className="p-6 max-sm:p-1">
             <h2 className="text-xl font-semibold mb-4">
               {t(
                 "Para continuar o trabalho com o Creator, aceite o contrato abaixo"
@@ -679,7 +678,7 @@ function Page() {
 
       {isRefuseModalOpen && (
         <Modal onClose={() => setIsRefuseModalOpen(false)}>
-          <div className="p-6">
+          <div className="p-6 max-sm:p-1">
             <h2 className="text-xl font-bold mb-4">{t("Recusar Proposta")}</h2>
             <p className="text-gray-700 mb-6">
               {t("Por favor, informe o motivo da recusa abaixo.")}
@@ -712,7 +711,7 @@ function Page() {
 
       {isCompleteModalOpen && (
         <Modal onClose={() => setIsCompleteModalOpen(false)}>
-          <div className="p-6">
+          <div className="p-6 max-sm:p-1">
             <h2 className="text-xl font-bold mb-4">
               {t("Concluir Colaboração")}
             </h2>
@@ -742,7 +741,7 @@ function Page() {
 
       {isSupportModalOpen && (
         <Modal onClose={() => setIsSupportModalOpen(false)}>
-          <div className="p-6">
+          <div className="p-6 max-sm:p-1">
             <h2 className="text-xl font-bold mb-4">{t("Suporte")}</h2>
             <p className="text-gray-700 mb-6">
               {t(
