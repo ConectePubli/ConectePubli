@@ -492,8 +492,9 @@ function InfluencerProfilePage() {
                 "gif",
                 "bmp",
                 "webp",
+                "heic",
               ];
-              const videoExtensions = ["mp4", "webm", "ogg"];
+              const videoExtensions = ["mp4", "webm", "ogg", "mov"];
 
               const mediaUrl = pb.getFileUrl(influencer, media);
 
