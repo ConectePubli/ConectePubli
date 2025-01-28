@@ -126,7 +126,7 @@ const CampaignSpotlight: React.FC<Props> = ({ campaign }) => {
               >
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-medium">
-                    {plan.stripe_product_name}
+                    {t(plan.stripe_product_name)}
                   </span>
                   <span className="text-lg font-medium">
                     {formatCentsToCurrency(plan.pagseguro_price)}

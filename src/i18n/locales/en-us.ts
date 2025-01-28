@@ -1153,8 +1153,10 @@ export default {
     "Sua campanha não receberá destaque.":
       "Your campaign will not be highlighted.",
     "Destaque da assinatura": "Subscription highlight",
+    "Destauqe por 10 dias": "Highlight for 10 days",
     "Sua campanha receberá um destaque de 5 dias.":
       "Your campaign will receive a 5-day highlight.",
+    "Campanha criada com sucesso!": "Campaign created successfully!",
     "Sua campanha ficará no topo por {{days}} dias.":
       "Your campaign will stay at the top for {{days}} days.",
     "O pagamento da campanha deverá ser realizado somente após a marca selecionar e aprovar todos os creators que deseja incluir na campanha. O valor final será calculado com base na multiplicação do valor definido por creator pelo número de creators aprovados. Após a confirmação do pagamento, a campanha será iniciada conforme o planejamento aprovado. Nota: Caso algum influenciador não cumpra os requisitos ou ocorra um problema comprovado, você poderá solicitar o reembolso de 100% do valor pago referente àquele influenciador. O valor do destaque, no entanto, não é reembolsável, pois corresponde ao serviço já prestado.":
@@ -1763,5 +1765,6 @@ export default {
     ano: "year",
     anos: "years",
     "agora mesmo": "just now",
+    "Pronta para começar": "Ready to start",
   },
 };
