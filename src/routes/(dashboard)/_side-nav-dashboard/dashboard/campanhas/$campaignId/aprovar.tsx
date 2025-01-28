@@ -578,7 +578,7 @@ function Page() {
           >
             <option value="">{t("Status")}</option>
             <option value="waiting">{t("Pendente")}</option>
-            <option value="approved">{t("Em Progresso")}</option>
+            <option value="approved">{t("Aprovados")}</option>
             <option value="completed">{t("Concluído")}</option>
             <option value="sold_out">{t("Esgotado")}</option>
           </select>
@@ -765,8 +765,9 @@ function Page() {
                       {(status === "approved" || status === "completed") &&
                         campaignData.status !== "ended" &&
                         campaignData.paid === true && (
-                          <button
-                            className="px-4 py-2 text-gray-900 rounded transition flex items-center hover:underline"
+                          <Button
+                            variant={"orange"}
+                            className="px-4 py-2 rounded transition flex items-center"
                             onClick={() => {
                               handleStartChat(
                                 participation.expand?.influencer?.id || "",
@@ -782,7 +783,7 @@ function Page() {
                                 {t("Enviar Mensagem")}
                               </>
                             )}
-                          </button>
+                          </Button>
                         )}
                     </div>
 

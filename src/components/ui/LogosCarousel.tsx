@@ -60,7 +60,7 @@ const LogosCarousel = () => {
             key={index}
             src={logo}
             alt={`Logo ${index + 1}`}
-            className="inline-block max-h-[40px] sm:max-h-[60px] object-contain mx-10 sm:mx-16"
+            className="inline-block max-h-[60px] sm:max-h-[80px] object-contain mx-10 sm:mx-16"
             style={{ width: "auto" }}
             draggable="false"
           />

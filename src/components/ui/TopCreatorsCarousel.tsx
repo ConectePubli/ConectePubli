@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import Lais from "@/assets/topcreators/Laís.png";
 import Vittoria from "@/assets/topcreators/Vittoria.png";
 import Thais from "@/assets/topcreators/Thaís.png";
-import GoldCheckIcon from "@/assets/icons/gold-check.svg";
+import GoldCheckIcon from "@/assets/icons/gold-check.png";
 import Catarino from "@/assets/topcreators/Catarino.png";
 import FelipeMaia from "@/assets/topcreators/FelipeMaia.png";
 import Stefano from "@/assets/topcreators/Stefano.jpg";
@@ -106,7 +106,7 @@ export default function TopCreatorsCarousel() {
                   <img
                     src={GoldCheckIcon}
                     alt="Gold Check"
-                    className="w-5 h-5"
+                    className="w-6 h-6"
                     draggable={false}
                   />
                 </div>

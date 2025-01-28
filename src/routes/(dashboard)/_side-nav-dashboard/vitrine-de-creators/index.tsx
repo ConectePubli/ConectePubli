@@ -9,7 +9,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 
-import GoldCheckIcon from "@/assets/icons/gold-check.svg";
+import GoldCheckIcon from "@/assets/icons/gold-check.png";
 import LocationPin from "@/assets/icons/location-pin.svg";
 import Tag from "@/assets/icons/tag.svg";
 
@@ -361,12 +361,12 @@ function Page() {
                   </h2>
                   {creator.top_creator && (
                     <div
-                      className={`inline-flex items-center gap-x-1 px-2 py-1 rounded-full font-bold text-xs cursor-default select-none bg-blue-900 text-yellow-300`}
+                      className={`inline-flex items-center gap-x-1 px-3 py-1 rounded-full font-bold text-xs cursor-default select-none bg-blue-900 text-white`}
                     >
                       <img
                         src={GoldCheckIcon}
                         alt={"Gold Check"}
-                        className="w-4 h-4"
+                        className="w-6 h-6"
                         draggable={false}
                       />
                       Top Creator
