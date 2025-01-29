@@ -11,7 +11,7 @@ import Stefano from "@/assets/topcreators/Stefano.jpg";
 import ViviamCostta from "@/assets/topcreators/Viviam.png";
 import FabioBraz from "@/assets/topcreators/FabioBraz.png";
 import FlavinhaCheirosa from "@/assets/topcreators/Flavinha.png";
-import TatyZatto from "@/assets/topcreators/Taty.png";
+import TatyZatto from "@/assets/topcreators/Taty.jpg";
 import { useMemo } from "react";
 
 const topCreatorsData = [
