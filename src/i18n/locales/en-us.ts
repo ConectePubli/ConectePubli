@@ -1153,7 +1153,7 @@ export default {
     "Sua campanha não receberá destaque.":
       "Your campaign will not be highlighted.",
     "Destaque da assinatura": "Subscription highlight",
-    "Destauqe por 10 dias": "Highlight for 10 days",
+    "Destaque por 10 dias": "Highlight for 10 days",
     "Sua campanha receberá um destaque de 5 dias.":
       "Your campaign will receive a 5-day highlight.",
     "Campanha criada com sucesso!": "Campaign created successfully!",
