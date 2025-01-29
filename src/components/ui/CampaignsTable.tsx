@@ -66,12 +66,22 @@ const CampaignsTable: React.FC = () => {
                 <tr
                   key={campaign.id}
                   className="border-t border-gray-200 cursor-pointer hover:bg-gray-100"
-                  onClick={() =>
-                    navigate({
-                      to: "/dashboard/campanhas/$campaignId/aprovar",
-                      params: { campaignId: campaign.id },
-                    })
-                  }
+                  onClick={() => {
+                    if (
+                      campaign.status === "analyzing" ||
+                      campaign.status === "rejected"
+                    ) {
+                      navigate({
+                        to: "/dashboard/campanhas/$campaignId/status",
+                        params: { campaignId: campaign.id },
+                      });
+                    } else {
+                      navigate({
+                        to: "/dashboard/campanhas/$campaignId/aprovar",
+                        params: { campaignId: campaign.id },
+                      });
+                    }
+                  }}
                 >
                   <td className="py-2 px-4 font-semibold">
                     {campaign.name}
@@ -127,7 +137,11 @@ const CampaignsTable: React.FC = () => {
                         ? t("Encerrado")
                         : campaign.status === "ready"
                           ? t("Pronto para iniciar")
-                          : ""}
+                          : campaign.status === "analyzing"
+                            ? t("Em análise")
+                            : campaign.status === "rejected"
+                              ? t("Campanha recusada")
+                              : ""}
                   </td>
                 </tr>
               );

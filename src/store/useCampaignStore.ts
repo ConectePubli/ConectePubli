@@ -143,7 +143,9 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
     try {
       // Monta o filtro
       const filters: string[] = [];
-      filters.push(`status != "draft"`);
+      filters.push(
+        `status != "draft" && status != "analyzing" && status != "rejected"`
+      );
       if (campaignGoalFilter)
         filters.push(`objective = "${campaignGoalFilter}"`);
       if (searchTerm) filters.push(`name ~ "${searchTerm}"`);
@@ -310,7 +312,7 @@ export const useCampaignStore = create<CampaignState>((set, get) => ({
       }
 
       filters.push(
-        `influencer = "${user.model.id}" && campaign.status != "draft"`
+        `influencer = "${user.model.id}" && campaign.status != "draft" && status != "analyzing" && status != "rejected"`
       );
       if (campaignGoalFilter)
         filters.push(`campaign.objective ~ "${campaignGoalFilter}"`);

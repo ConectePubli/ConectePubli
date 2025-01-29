@@ -46,12 +46,19 @@ import {
 } from "@/services/carCreators";
 import CartSidebar from "@/components/ui/cartSidebar";
 import { isEnableSubscription } from "@/utils/campaignSubscription";
+import CampaignSpotlight from "@/components/ui/CampaignSpotlight";
 
 type LoaderData = {
   campaignData: Campaign | null;
   campaignParticipations: CampaignParticipation[];
   error?: string;
+  isSpotlightCampaign: boolean;
 };
+
+interface SpotlightCampaign {
+  state: boolean;
+  campaign: Campaign | null;
+}
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar"
@@ -79,17 +86,49 @@ export const Route = createFileRoute(
           expand: "campaign,influencer",
         });
 
-      if (campaignData.brand !== currentBrandId) {
-        throw redirect({ to: "/dashboard" });
+      if (
+        campaignData.brand !== currentBrandId ||
+        campaignData.status === "analyzing" ||
+        campaignData.status === "rejected"
+      ) {
+        throw redirect({
+          to: `/dashboard/campanhas/${campaignData.id}/status`,
+        });
       }
 
-      return { campaignData, campaignParticipations };
+      const now = new Date();
+      let isSpotlightCampaign: boolean = false;
+
+      try {
+        // 3.1 Buscar todos os spotlights ativos
+        const activeSpotlights = await pb
+          .collection("purchased_campaigns_spotlights")
+          .getFullList({
+            filter: `spotlight_end >= "${now.toISOString()}"`,
+            sort: "created",
+          });
+
+        const filteredRecords = activeSpotlights.filter(
+          (spotlight) => spotlight.campaign === campaignData.id
+        );
+
+        if (filteredRecords.length >= 1) {
+          isSpotlightCampaign = true;
+        } else {
+          isSpotlightCampaign = false;
+        }
+      } catch (spotlightError) {
+        console.error("Erro ao buscar spotlights:", spotlightError);
+      }
+
+      return { campaignData, campaignParticipations, isSpotlightCampaign };
     } catch (error) {
       if (error instanceof ClientResponseError && error.status === 404) {
         return {
           error: "not_found",
           campaignData: null,
           campaignParticipations: [],
+          isSpotlightCampaign: false,
         };
       }
       throw error;
@@ -108,7 +147,9 @@ export const Route = createFileRoute(
       )}
     </div>
   ),
-  notFoundComponent: () => <div className="p-10">Campanha não encontrada</div>,
+  notFoundComponent: () => (
+    <div className="p-10">{t("Campanha não encontrada")}</div>
+  ),
 });
 
 function Page() {
@@ -122,7 +163,7 @@ function Page() {
     from: Route.id,
   }) as LoaderData;
 
-  const { campaignData, error } = loaderData;
+  const { campaignData, error, isSpotlightCampaign } = loaderData;
   const [campaignParticipations, setCampaignParticipations] = useState<
     CampaignParticipation[]
   >(loaderData.campaignParticipations);
@@ -151,6 +192,13 @@ function Page() {
   const [cartParticipations, setCartParticipations] = useState<
     CampaignParticipation[]
   >([]);
+
+  // spotlight
+  const [spotlightCampaignPlans, setSpotlightCampaignPlans] =
+    useState<SpotlightCampaign>({
+      state: false,
+      campaign: null,
+    });
 
   // Controla se o modal "Escolher Influencer" está aberto ou não
   const [chooseModalOpen, setChooseModalOpen] = useState(false);
@@ -463,6 +511,7 @@ function Page() {
           />
         </Modal>
       )}
+
       {showModalMinParticipant && (
         <Modal onClose={() => setShowModalMinParticipant(false)}>
           <div className="flex flex-col gap-4">
@@ -485,382 +534,430 @@ function Page() {
           </div>
         </Modal>
       )}
-      <div className="p-4">
-        <div className="flex items-center gap-1 mb-2">
-          <button
-            className="bg-white pr-1 rounded-full"
-            onClick={() => {
-              if (window.history.length > 1) {
-                window.history.back();
-              } else {
-                navigate({ to: "/dashboard" });
-              }
-            }}
-          >
-            <img src={GoBack} alt="Go Back" className="w-5 h-5" />
-          </button>
-          <button
-            className="text-black/75 font-semibold"
-            onClick={() => {
-              if (window.history.length > 1) {
-                window.history.back();
-              } else {
-                navigate({ to: "/dashboard" });
-              }
-            }}
-          >
-            Voltar
-          </button>
-        </div>
 
-        <h1 className="text-2xl font-bold">{campaignData.name}</h1>
-        <p className="text-gray-600">
-          {t("Visualize todos os inscritos dessa campanha.")}
-        </p>
+      {spotlightCampaignPlans.state === false && (
+        <>
+          <div className="p-4">
+            <div className="flex items-center gap-1 mb-2">
+              <button
+                className="bg-white pr-1 rounded-full"
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    window.history.back();
+                  } else {
+                    navigate({ to: "/dashboard" });
+                  }
+                }}
+              >
+                <img src={GoBack} alt="Go Back" className="w-5 h-5" />
+              </button>
+              <button
+                className="text-black/75 font-semibold"
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    window.history.back();
+                  } else {
+                    navigate({ to: "/dashboard" });
+                  }
+                }}
+              >
+                Voltar
+              </button>
+            </div>
 
-        {subscriptionStatusFeedback && (
-          <div className="mt-4 bg-red-200 py-2 px-4 rounded-md w-fit flex items-center">
-            <Info className="w-4 h-4 min-w-[1rem] mr-2" />
-            <span>{t(subscriptionStatusFeedback)}</span>
-          </div>
-        )}
-
-        {campaignData.status === "ended" && (
-          <p className="flex items-center text-red-500 mt-3">
-            <Info size={18} color="#e61919" className="mr-1" />{" "}
-            {t("Esta campanha terminou, então você pode apenas visualizá-la!")}
-          </p>
-        )}
-
-        <div className="flex flex-col sm:flex-row items-start justify-between mt-4 max-sm:space-y-2">
-          <Button
-            variant={"blue"}
-            onClick={() =>
-              navigate({
-                to: `/dashboard/campanhas/${campaignData.unique_name}`,
-              })
-            }
-          >
-            {t("Visualizar Campanha")}
-          </Button>
-
-          <div className="flex flex-col space-y-2 justify-end items-end max-sm:justify-start max-sm:items-start">
-            <Button
-              variant={"orange"}
-              className="font-semibold text-white sm:mt-0 sm:ml-4"
-              disabled={loadingPayment}
-              onClick={() => {
-                setIsCartOpen(true);
-              }}
-            >
-              {loadingPayment ? (
-                t("Aguarde...")
-              ) : (
-                <>{t("Creators selecionados")}</>
-              )}
-            </Button>
-          </div>
-        </div>
-
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-4">
-          <input
-            type="text"
-            placeholder={t("Pesquisar pelo nome do influencer")}
-            className="w-full border border-gray-300 rounded p-2 md:col-span-4"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-          />
-
-          <select
-            className="w-full border border-gray-300 rounded p-2 md:col-span-2"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="">{t("Status")}</option>
-            <option value="waiting">{t("Pendente")}</option>
-            <option value="approved">{t("Aprovados")}</option>
-            <option value="completed">{t("Concluído")}</option>
-            <option value="sold_out">{t("Esgotado")}</option>
-          </select>
-
-          <select
-            className="w-full border border-gray-300 rounded p-2 md:col-span-3"
-            value={filterNiche}
-            onChange={(e) => setFilterNiche(e.target.value)}
-          >
-            <option value="">{t("Nicho")}</option>
-            {niches.map((niche) => (
-              <option key={niche.id} value={niche.id}>
-                {t(niche.niche)}
-              </option>
-            ))}
-          </select>
-
-          <select
-            className="w-full border border-gray-300 rounded p-2 md:col-span-3"
-            value={filterState}
-            onChange={(e) => setFilterState(e.target.value)}
-          >
-            <option value="">{t("Estado")}</option>
-            {states.map((state) => (
-              <option key={state} value={state}>
-                {state}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mt-4">
-          <h3 className="font-semibold text-lg">
-            {campaignParticipations.length}{" "}
-            <span className="text-base text-gray-700">
-              {campaignParticipations.length === 1
-                ? t("Inscrito")
-                : t("Inscritos")}
-            </span>
-          </h3>
-        </div>
-
-        {campaignParticipations.length === 0 ? (
-          <div className="mt-10 w-full flex flex-col items-center justify-center">
-            <p className="mb-4 text-center">
-              {t(
-                "Você só poderá editar esta campanha enquanto não tiverem inscritos"
-              )}
+            <h1 className="text-2xl font-bold">{campaignData.name}</h1>
+            <p className="text-gray-600">
+              {t("Visualize todos os inscritos dessa campanha.")}
             </p>
-            <Button
-              variant={"blue"}
-              onClick={() =>
-                navigate({
-                  to: `/dashboard/campanhas/${campaignData.id}/editar`,
-                })
-              }
-            >
-              {t("Editar Campanha")}
-            </Button>
-          </div>
-        ) : filteredParticipations.length === 0 ? (
-          <div className="mt-10 w-full flex flex-col items-center justify-center">
-            <p className="mb-4">
-              {t("Nenhum resultado para os filtros aplicados.")}
-            </p>
-            <Button
-              onClick={() => {
-                setSearchName("");
-                setFilterStatus("");
-                setFilterNiche("");
-                setFilterState("");
-              }}
-            >
-              {t("Limpar Filtros")}
-            </Button>
-          </div>
-        ) : (
-          <div className="mt-6 flex flex-col gap-4">
-            {filteredParticipations.map((participation) => {
-              const influencer = participation.expand?.influencer;
-              if (!influencer) return null;
 
-              const createdAt = new Date(participation.created as Date);
-              createdAt.setHours(createdAt.getHours() - 3);
+            {subscriptionStatusFeedback && (
+              <div className="mt-4 bg-red-200 py-2 px-4 rounded-md w-fit flex items-center">
+                <Info className="w-4 h-4 min-w-[1rem] mr-2" />
+                <span>{t(subscriptionStatusFeedback)}</span>
+              </div>
+            )}
 
-              const dateString = createdAt.toLocaleDateString();
-              const timeString = createdAt.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              });
+            {campaignData.status === "ended" && (
+              <p className="flex items-center text-red-500 mt-3">
+                <Info size={18} color="#e61919" className="mr-1" />{" "}
+                {t(
+                  "Esta campanha terminou, então você pode apenas visualizá-la!"
+                )}
+              </p>
+            )}
 
-              const status = participation.status;
-              const proposalText = participation.description || "";
-              const isTextLong = proposalText.length > 100;
-              const displayedText = isTextLong
-                ? proposalText.slice(0, 100) + "..."
-                : proposalText;
-
-              return (
-                <div
-                  key={participation.id}
-                  className="border border-gray-300 rounded-lg p-4 shadow-sm flex flex-col gap-4"
+            <div className="flex flex-col sm:flex-row items-start justify-between mt-4 max-sm:space-y-2">
+              <div className="space-x-3 max-sm:space-x-0 max-sm:space-y-2">
+                <Button
+                  variant={"blue"}
+                  onClick={() =>
+                    navigate({
+                      to: `/dashboard/campanhas/${campaignData.unique_name}`,
+                    })
+                  }
                 >
-                  <div className="flex flex-col md:flex-row gap-4">
-                    <div className="flex md:border-r border-gray-300 md:pr-2">
-                      {influencer.profile_img ? (
-                        <img
-                          src={pb.files.getUrl(
-                            influencer,
-                            influencer.profile_img
+                  {t("Visualizar Campanha")}
+                </Button>
+
+                {campaignParticipations.length >= 1 && !isSpotlightCampaign && (
+                  <Button
+                    variant={"blue"}
+                    onClick={() => {
+                      setSpotlightCampaignPlans({
+                        ...spotlightCampaignPlans,
+                        state: true,
+                        campaign: campaignData,
+                      });
+                    }}
+                  >
+                    {t("Comprar Destaque para a Campanha")}
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex flex-col space-y-2 justify-end items-end max-sm:justify-start max-sm:items-start">
+                <Button
+                  variant={"orange"}
+                  className="font-semibold text-white sm:mt-0 sm:ml-4"
+                  disabled={loadingPayment}
+                  onClick={() => {
+                    setIsCartOpen(true);
+                  }}
+                >
+                  {loadingPayment ? (
+                    t("Aguarde...")
+                  ) : (
+                    <>{t("Creators selecionados")}</>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-4">
+              <input
+                type="text"
+                placeholder={t("Pesquisar pelo nome do influencer")}
+                className="w-full border border-gray-300 rounded p-2 md:col-span-4"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+              />
+
+              <select
+                className="w-full border border-gray-300 rounded p-2 md:col-span-2"
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                <option value="">{t("Status")}</option>
+                <option value="waiting">{t("Pendente")}</option>
+                <option value="approved">{t("Aprovados")}</option>
+                <option value="completed">{t("Concluído")}</option>
+                <option value="sold_out">{t("Esgotado")}</option>
+              </select>
+
+              <select
+                className="w-full border border-gray-300 rounded p-2 md:col-span-3"
+                value={filterNiche}
+                onChange={(e) => setFilterNiche(e.target.value)}
+              >
+                <option value="">{t("Nicho")}</option>
+                {niches.map((niche) => (
+                  <option key={niche.id} value={niche.id}>
+                    {t(niche.niche)}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="w-full border border-gray-300 rounded p-2 md:col-span-3"
+                value={filterState}
+                onChange={(e) => setFilterState(e.target.value)}
+              >
+                <option value="">{t("Estado")}</option>
+                {states.map((state) => (
+                  <option key={state} value={state}>
+                    {state}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="font-semibold text-lg">
+                {campaignParticipations.length}{" "}
+                <span className="text-base text-gray-700">
+                  {campaignParticipations.length === 1
+                    ? t("Inscrito")
+                    : t("Inscritos")}
+                </span>
+              </h3>
+            </div>
+
+            {campaignParticipations.length === 0 ? (
+              <div className="mt-10 w-full flex flex-col items-center justify-center">
+                {isSpotlightCampaign ? (
+                  <>
+                    <p className="mb-4 text-center">
+                      {t("A campanha ainda não possui inscritos")}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="mb-4 text-center">
+                      {t(
+                        "A campanha ainda não possui inscritos, deseja deixar ela em destaque?"
+                      )}
+                    </p>
+                    <Button
+                      variant={"blue"}
+                      onClick={() => {
+                        setSpotlightCampaignPlans({
+                          ...spotlightCampaignPlans,
+                          state: true,
+                          campaign: campaignData,
+                        });
+                      }}
+                    >
+                      {t("Comprar Destaque para a Campanha")}
+                    </Button>
+                  </>
+                )}
+              </div>
+            ) : filteredParticipations.length === 0 ? (
+              <div className="mt-10 w-full flex flex-col items-center justify-center">
+                <p className="mb-4">
+                  {t("Nenhum resultado para os filtros aplicados.")}
+                </p>
+                <Button
+                  onClick={() => {
+                    setSearchName("");
+                    setFilterStatus("");
+                    setFilterNiche("");
+                    setFilterState("");
+                  }}
+                >
+                  {t("Limpar Filtros")}
+                </Button>
+              </div>
+            ) : (
+              <div className="mt-6 flex flex-col gap-4">
+                {filteredParticipations.map((participation) => {
+                  const influencer = participation.expand?.influencer;
+                  if (!influencer) return null;
+
+                  const createdAt = new Date(participation.created as Date);
+                  createdAt.setHours(createdAt.getHours() - 3);
+
+                  const dateString = createdAt.toLocaleDateString();
+                  const timeString = createdAt.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  });
+
+                  const status = participation.status;
+                  const proposalText = participation.description || "";
+                  const isTextLong = proposalText.length > 100;
+                  const displayedText = isTextLong
+                    ? proposalText.slice(0, 100) + "..."
+                    : proposalText;
+
+                  return (
+                    <div
+                      key={participation.id}
+                      className="border border-gray-300 rounded-lg p-4 shadow-sm flex flex-col gap-4"
+                    >
+                      <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex md:border-r border-gray-300 md:pr-2">
+                          {influencer.profile_img ? (
+                            <img
+                              src={pb.files.getUrl(
+                                influencer,
+                                influencer.profile_img
+                              )}
+                              alt="Foto do Creator"
+                              className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2"
+                            />
+                          ) : (
+                            <div className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
+                              <User size={20} color="#fff" />
+                            </div>
                           )}
-                          alt="Foto do Creator"
-                          className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 min-w-[4rem] rounded-full object-cover mr-2 flex items-center justify-center bg-gray-300">
-                          <User size={20} color="#fff" />
-                        </div>
-                      )}
-                      <div>
-                        <p className="text-sm">
-                          {dateString} {timeString} / {influencer.state}
-                        </p>
-                        <h3 className="font-semibold text-lg text-gray-900">
-                          {influencer.name}
-                        </h3>
-                        {cartParticipations.some(
-                          (cartItem) => cartItem.id === participation.id
-                        ) ? (
-                          <>
-                            <p
-                              className="text-sm mt-1 font-semibold"
-                              style={{
-                                color: getStatusColor(status),
-                              }}
-                            >
-                              {t("Status: Pagamento pendente")}
+                          <div>
+                            <p className="text-sm">
+                              {dateString} {timeString} / {influencer.state}
                             </p>
-                          </>
-                        ) : (
-                          <p
-                            className="text-sm mt-1 font-semibold"
-                            style={{
-                              color: getStatusColor(status),
-                            }}
-                          >
-                            Status:{" "}
-                            {status === "waiting"
-                              ? t("Proposta Pendente")
-                              : status === "approved"
-                                ? t("Trabalho em Progresso")
-                                : status === "completed"
-                                  ? t("Trabalho Concluído")
-                                  : ""}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <p
-                        className="text-base"
-                        style={!displayedText ? { color: "#777" } : {}}
-                      >
-                        {displayedText || t("Sem texto de proposta")}
-                      </p>
-                      {isTextLong && (
-                        <button
-                          className="text-blue-500"
-                          onClick={() => {
-                            setSelectedParticipation(participation);
-                            setModalType("viewProposal");
-                          }}
-                        >
-                          {t("Ver mais")}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col md:flex-row items-center md:justify-between border-t-2 pt-5 gap-2">
-                    <div>
-                      {(status === "approved" || status === "completed") &&
-                        campaignData.status !== "ended" &&
-                        campaignData.paid === true && (
-                          <Button
-                            variant={"orange"}
-                            className="px-4 py-2 rounded transition flex items-center"
-                            onClick={() => {
-                              handleStartChat(
-                                participation.expand?.influencer?.id || "",
-                                participation.expand?.campaign?.brand || ""
-                              );
-                            }}
-                          >
-                            {loadingChat ? (
-                              t("Aguarde...")
-                            ) : (
+                            <h3 className="font-semibold text-lg text-gray-900">
+                              {influencer.name}
+                            </h3>
+                            {cartParticipations.some(
+                              (cartItem) => cartItem.id === participation.id
+                            ) ? (
                               <>
-                                <MessageCircle size={18} className="mr-1" />
-                                {t("Enviar Mensagem")}
+                                <p
+                                  className="text-sm mt-1 font-semibold"
+                                  style={{
+                                    color: getStatusColor(status),
+                                  }}
+                                >
+                                  {t("Status: Pagamento pendente")}
+                                </p>
                               </>
+                            ) : (
+                              <p
+                                className="text-sm mt-1 font-semibold"
+                                style={{
+                                  color: getStatusColor(status),
+                                }}
+                              >
+                                Status:{" "}
+                                {status === "waiting"
+                                  ? t("Proposta Pendente")
+                                  : status === "approved"
+                                    ? t("Trabalho em Progresso")
+                                    : status === "completed"
+                                      ? t("Trabalho Concluído")
+                                      : ""}
+                              </p>
                             )}
-                          </Button>
-                        )}
-                    </div>
+                          </div>
+                        </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        variant={"blue"}
-                        className="text-base"
-                        onClick={() => {
-                          setSelectedParticipation(participation);
-                          setModalType("viewProposal");
-                        }}
-                      >
-                        <MagnifyingGlassPlus size={19} className="mr-1" />{" "}
-                        {t("Visualizar")}
-                      </Button>
-
-                      {status === "waiting" &&
-                        campaignData.status !== "ended" &&
-                        (cartParticipations.some(
-                          (cartItem) => cartItem.id === participation.id
-                        ) ? (
-                          <Button
-                            disabled
-                            className="cursor-not-allowed px-4 py-2 text-base flex items-center"
+                        <div>
+                          <p
+                            className="text-base"
+                            style={!displayedText ? { color: "#777" } : {}}
                           >
-                            <ThumbsUp size={19} className="mr-1" />
-                            {t("Selecionado")}
-                          </Button>
-                        ) : (
-                          <Button
-                            variant={"blue"}
-                            className="px-4 py-2 text-base flex items-center"
-                            onClick={() => {
-                              handleAddToCart(participation.id!);
-                            }}
-                          >
-                            <ThumbsUp size={19} className="mr-1" />
-                            {t("Escolher para a Campanha")}
-                          </Button>
-                        ))}
-
-                      {status === "approved" && (
-                        <>
-                          <Button
-                            variant={"brown"}
-                            className="px-4 py-2 rounded flex items-center text-base"
-                            onClick={() => {
-                              setSelectedParticipation(participation);
-                              setModalType("contactSupport");
-                            }}
-                          >
-                            <Headset size={18} className="mr-1" />
-                            {t("Contatar Suporte")}
-                          </Button>
-
-                          {campaignData.status !== "ended" && (
+                            {displayedText || t("Sem texto de proposta")}
+                          </p>
+                          {isTextLong && (
                             <button
-                              className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
+                              className="text-blue-500"
                               onClick={() => {
                                 setSelectedParticipation(participation);
-                                setModalType("conclude");
+                                setModalType("viewProposal");
                               }}
                             >
-                              <Flag size={18} className="mr-1" />
-                              {t("Trabalho concluído")}
+                              {t("Ver mais")}
                             </button>
                           )}
-                        </>
-                      )}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col md:flex-row items-center md:justify-between border-t-2 pt-5 gap-2">
+                        <div>
+                          {(status === "approved" || status === "completed") &&
+                            campaignData.status !== "ended" &&
+                            campaignData.paid === true && (
+                              <Button
+                                variant={"orange"}
+                                className="px-4 py-2 rounded transition flex items-center"
+                                onClick={() => {
+                                  handleStartChat(
+                                    participation.expand?.influencer?.id || "",
+                                    participation.expand?.campaign?.brand || ""
+                                  );
+                                }}
+                              >
+                                {loadingChat ? (
+                                  t("Aguarde...")
+                                ) : (
+                                  <>
+                                    <MessageCircle size={18} className="mr-1" />
+                                    {t("Enviar Mensagem")}
+                                  </>
+                                )}
+                              </Button>
+                            )}
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            variant={"blue"}
+                            className="text-base"
+                            onClick={() => {
+                              setSelectedParticipation(participation);
+                              setModalType("viewProposal");
+                            }}
+                          >
+                            <MagnifyingGlassPlus size={19} className="mr-1" />{" "}
+                            {t("Visualizar")}
+                          </Button>
+
+                          {status === "waiting" &&
+                            campaignData.status !== "ended" &&
+                            (cartParticipations.some(
+                              (cartItem) => cartItem.id === participation.id
+                            ) ? (
+                              <Button
+                                disabled
+                                className="cursor-not-allowed px-4 py-2 text-base flex items-center"
+                              >
+                                <ThumbsUp size={19} className="mr-1" />
+                                {t("Selecionado")}
+                              </Button>
+                            ) : (
+                              <Button
+                                variant={"blue"}
+                                className="px-4 py-2 text-base flex items-center"
+                                onClick={() => {
+                                  handleAddToCart(participation.id!);
+                                }}
+                              >
+                                <ThumbsUp size={19} className="mr-1" />
+                                {t("Escolher para a Campanha")}
+                              </Button>
+                            ))}
+
+                          {status === "approved" && (
+                            <>
+                              <Button
+                                variant={"brown"}
+                                className="px-4 py-2 rounded flex items-center text-base"
+                                onClick={() => {
+                                  setSelectedParticipation(participation);
+                                  setModalType("contactSupport");
+                                }}
+                              >
+                                <Headset size={18} className="mr-1" />
+                                {t("Contatar Suporte")}
+                              </Button>
+
+                              {campaignData.status !== "ended" && (
+                                <button
+                                  className="px-4 py-2 bg-[#338B13] text-white rounded hover:bg-[#25670d] transition flex items-center"
+                                  onClick={() => {
+                                    setSelectedParticipation(participation);
+                                    setModalType("conclude");
+                                  }}
+                                >
+                                  <Flag size={18} className="mr-1" />
+                                  {t("Trabalho concluído")}
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            )}
           </div>
+        </>
+      )}
+
+      {spotlightCampaignPlans.state === true &&
+        spotlightCampaignPlans.campaign && (
+          <main className="flex flex-col items-center justify-center flex-1 p-4 md:p-8">
+            <CampaignSpotlight
+              campaign={spotlightCampaignPlans.campaign as Campaign}
+              setSpotlightCampaignPlans={setSpotlightCampaignPlans}
+              spotlightCampaignPlans={spotlightCampaignPlans}
+            />
+          </main>
         )}
-      </div>
+
       {/* Modals */}
       {modalType === "choose" && selectedParticipation && (
         <ChooseParticipantModal

@@ -77,7 +77,7 @@ export const populateCampaignFormData = (
   userId: string | undefined
 ) => {
   if (userId) formData.append("brand", userId);
-  formData.append("status", "ready");
+  formData.append("status", "analyzing");
 
   formData.append("name", campaignData.basicInfo.campaignName);
   if (campaignData.basicInfo.coverImage) {

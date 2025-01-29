@@ -4,8 +4,11 @@ import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
-import { getUserData } from "@/utils/getUserData";
 import { Question } from "phosphor-react";
+import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import { ArrowLeft, File, Save } from "lucide-react";
+import i18n from "@/i18n";
 
 import pb from "@/lib/pb";
 
@@ -30,14 +33,19 @@ import {
 import { Niche } from "@/types/Niche";
 import { Campaign } from "@/types/Campaign";
 
+import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import { getUserData } from "@/utils/getUserData";
+
 import { Button } from "./button";
 import FloatingHelpButton from "./FloatingHelpButton";
-import { ArrowLeft, File, Save } from "lucide-react";
-import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
-import CampaignSpotlight from "./CampaignSpotlight";
-import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
-import { t } from "i18next";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -101,11 +109,6 @@ interface CampaignFormProps {
   campaignIdDraft?: string;
 }
 
-interface SpotlightCampaign {
-  state: boolean;
-  campaign: Campaign | null;
-}
-
 export const CampaignForm: React.FC<CampaignFormProps> = ({
   campaignId,
   initialCampaignData,
@@ -120,12 +123,6 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   const [campaignIdDraftState] = useState(campaignIdDraft);
 
   const [loadingCreate, setLoadingCreate] = useState(false);
-
-  const [spotlightCampaignPlans, setSpotlightCampaignPlans] =
-    useState<SpotlightCampaign>({
-      state: false,
-      campaign: null,
-    });
 
   const [campaignData, setCampaignData] = useState<CampaignData>({
     basicInfo: {
@@ -185,6 +182,10 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
     useState<CampaignBudget | null>(null);
   const [initialResponsibleInfoState, setInitialResponsibleInfoState] =
     useState<ResponsibleInfo | null>(null);
+
+  // modal contract
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isContractAccepted, setIsContractAccepted] = useState(false);
 
   useEffect(() => {
     if (!isEditMode) {
@@ -560,14 +561,8 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
         setIsDirty(false);
 
-        console.log(createdCampaign);
-
         if (createdCampaign) {
-          setSpotlightCampaignPlans({
-            ...spotlightCampaignPlans,
-            state: true,
-            campaign: createdCampaign,
-          });
+          navigate({ to: `/dashboard/campanhas/${createdCampaign.id}/status` });
         }
       }
     },
@@ -749,7 +744,7 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           responsible_email: responsibleInfo.email,
           responsible_phone: responsibleInfo.phone.replace(/\D/g, ""),
           responsible_cpf: responsibleInfo.cpf,
-          status: "ready",
+          status: "analyzing",
           unique_name: uniqueName,
         };
 
@@ -757,11 +752,9 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
           .collection("Campaigns")
           .update(campaignIdDraftState, draftData);
 
-        setSpotlightCampaignPlans({
-          ...spotlightCampaignPlans,
-          state: true,
-          campaign: record as Campaign,
-        });
+        setIsModalOpen(false);
+
+        navigate({ to: `/dashboard/campanhas/${record.id}/status` });
       } catch (e) {
         toast.error(t("Erro ao salvar campanha: ") + e);
       }
@@ -773,179 +766,244 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
         toast,
         mutate
       );
+
+      setIsModalOpen(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {!spotlightCampaignPlans.state && (
-        <>
-          {showLeaveModal && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white p-6 rounded-md w-full max-w-xl mx-4">
-                <h2 className="text-lg font-semibold">
-                  {t("Você tem dados não salvos, deseja realmente sair?")}
-                </h2>
-                <p className="mt-4 text-sm text-gray-900">
-                  {t(
-                    "Sair da tela de criação de campanha sem salvar os dados pode fazer você perder todo o progresso feito até agora."
-                  )}
-                </p>
-                <p className="mt-2 text-sm text-gray-900">
-                  {t(
-                    "Para garantir que suas informações estejam seguras e você não precise começar do zero, clique em 'Salvar como Rascunho' antes de sair. Assim, você pode continuar de onde parou, sem preocupações! 🚀"
-                  )}
-                </p>
-                <div className="mt-6 flex justify-between items-center">
-                  <button
-                    onClick={() => setShowLeaveModal(false)}
-                    className="text-sm text-gray-800 flex items-center space-x-1"
-                  >
-                    <ArrowLeft className="" />
-                    <span>{t("Voltar a Campanha")}</span>
-                  </button>
+      {showLeaveModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-md w-full max-w-xl mx-4">
+            <h2 className="text-lg font-semibold">
+              {t("Você tem dados não salvos, deseja realmente sair?")}
+            </h2>
+            <p className="mt-4 text-sm text-gray-900">
+              {t(
+                "Sair da tela de criação de campanha sem salvar os dados pode fazer você perder todo o progresso feito até agora."
+              )}
+            </p>
+            <p className="mt-2 text-sm text-gray-900">
+              {t(
+                "Para garantir que suas informações estejam seguras e você não precise começar do zero, clique em 'Salvar como Rascunho' antes de sair. Assim, você pode continuar de onde parou, sem preocupações! 🚀"
+              )}
+            </p>
+            <div className="mt-6 flex justify-between items-center">
+              <button
+                onClick={() => setShowLeaveModal(false)}
+                className="text-sm text-gray-800 flex items-center space-x-1"
+              >
+                <ArrowLeft className="" />
+                <span>{t("Voltar a Campanha")}</span>
+              </button>
 
-                  <div className="flex space-x-4">
-                    <button
-                      onClick={() => {
-                        setIsDirty(false);
-                        setShowLeaveModal(false);
-                        if (pendingNavigation) {
-                          originalNavigate(pendingNavigation);
-                          setPendingNavigation(null);
-                        } else {
-                          window.location.href = "/";
-                        }
-                      }}
-                      className="px-4 py-2 bg-red-500 text-white rounded text-sm"
-                    >
-                      {t("Sair")}
-                    </button>
-                    <Button
-                      variant={"blue"}
-                      onClick={() => {
-                        saveDraftMutation.mutate();
-                      }}
-                      className="px-4 py-2 text-white rounded text-sm"
-                    >
-                      {saveDraftMutation.isPending
-                        ? t("Salvando...")
-                        : t("Salvar como Rascunho")}
-                    </Button>
-                  </div>
-                </div>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => {
+                    setIsDirty(false);
+                    setShowLeaveModal(false);
+                    if (pendingNavigation) {
+                      originalNavigate(pendingNavigation);
+                      setPendingNavigation(null);
+                    } else {
+                      window.location.href = "/";
+                    }
+                  }}
+                  className="px-4 py-2 bg-red-500 text-white rounded text-sm"
+                >
+                  {t("Sair")}
+                </button>
+                <Button
+                  variant={"blue"}
+                  onClick={() => {
+                    saveDraftMutation.mutate();
+                  }}
+                  className="px-4 py-2 text-white rounded text-sm"
+                >
+                  {saveDraftMutation.isPending
+                    ? t("Salvando...")
+                    : t("Salvar como Rascunho")}
+                </Button>
               </div>
             </div>
-          )}
+          </div>
+        </div>
+      )}
 
-          {isDirty && !isEditMode && (
-            <div className="my-4 w-full flex justify-end px-10">
+      {isDirty && !isEditMode && (
+        <div className="my-4 w-full flex justify-end px-10">
+          <Button
+            variant={"orange"}
+            onClick={() => {
+              saveDraftMutation.mutate();
+            }}
+          >
+            {saveDraftMutation.isPending ? (
+              t("Salvando...")
+            ) : (
+              <>
+                <Save className="w-4 h-4 mr-2" />
+                {t(" Salvar como rascunho")}
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+
+      <BasicInfoSection
+        data={campaignData.basicInfo}
+        onChange={(data) => {
+          setCampaignData((prev) => ({ ...prev, basicInfo: data }));
+          setIsDirty(true);
+        }}
+        initialCampaignData={initialCampaignData as Campaign}
+        isEditMode={isEditMode}
+        isDraft={isDraft}
+      />
+
+      <AudienceSegmentationSection
+        data={campaignData.audienceSegmentation}
+        onChange={(data) => {
+          setCampaignData((prev) => ({
+            ...prev,
+            audienceSegmentation: data,
+          }));
+          setIsDirty(true);
+        }}
+        niches={niches}
+        nichesLoading={nichesLoading}
+      />
+
+      <CampaignBudgetSection
+        startSuscriptionDate={campaignBudget.startSuscriptionDate}
+        endSubscriptionDate={campaignBudget.endSubscriptionDate}
+        startDate={campaignBudget.startDate}
+        endDate={campaignBudget.endDate}
+        creatorFee={campaignBudget.creatorFee}
+        onChange={(data) => {
+          setCampaignBudget(data);
+          setIsDirty(true);
+        }}
+        isEditMode={isEditMode}
+      />
+
+      <BriefingSection
+        briefing={campaignData.basicInfo.briefing}
+        onChange={(newVal) => {
+          setCampaignData((prev) => ({
+            ...prev,
+            basicInfo: {
+              ...prev.basicInfo,
+              briefing: newVal,
+            },
+          }));
+          setIsDirty(true);
+        }}
+        isFormReadyForAI={isFormReadyForAI}
+        generateBriefingViaIA={generateBriefingViaIA}
+      />
+
+      <ResponsibleInfoSection
+        data={responsibleInfo}
+        onChange={(e) => {
+          setResponsibleInfo(e);
+          setIsDirty(true);
+        }}
+      />
+
+      <div className="px-5 w-full flex justify-center">
+        <Button
+          variant={"blue"}
+          disabled={mutate.isPending}
+          onClick={() => {
+            const isValid = validateFields(
+              campaignData,
+              campaignBudget,
+              responsibleInfo,
+              toast
+            );
+            if (!isValid) {
+              return;
+            }
+
+            if (isEditMode) {
+              mutate.mutate();
+            } else {
+              setIsModalOpen(true);
+            }
+          }}
+          className="w-auto min-w-[200px] text-white py-2 px-5 rounded-md mt-6 mb-8"
+        >
+          {isEditMode
+            ? t(`${!mutate.isPending ? "Atualizar Campanha" : "Carregando..."}`)
+            : t("Publicar campanha")}
+        </Button>
+      </div>
+
+      {!isEditMode && <FloatingHelpButton />}
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-lg h-auto flex flex-col justify-center">
+          <DialogHeader>
+            <DialogTitle className="mb-2">
+              {t("Conclua a publicação da sua campanha")}
+            </DialogTitle>
+            <DialogDescription className="text-black">
+              {t(
+                "Antes de prosseguir, é importante garantir que você está de acordo com o Contrato de Campanha da Conecte Publi."
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <div className="mt-4 flex items-center">
+              <input
+                type="checkbox"
+                id="acceptContract"
+                checked={isContractAccepted}
+                onChange={(e) => setIsContractAccepted(e.target.checked)}
+                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                required
+              />
+              <label htmlFor="acceptContract" className="ml-2 text-sm">
+                {t("Li e concordo com o")}{" "}
+                <a
+                  href={`${window.location.origin}/contrato-campanha`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-blue-600 font-semibold"
+                >
+                  {t("Contrato da Campanha")}
+                </a>
+              </label>
+            </div>
+
+            <DialogFooter>
               <Button
                 variant={"orange"}
                 onClick={() => {
-                  saveDraftMutation.mutate();
+                  handleFinalSubmit();
                 }}
+                className="w-auto min-w-[200px] text-white py-2 px-5 rounded-md mt-6 disabled:cursor-not-allowed disabled:bg-gray-700"
+                disabled={
+                  mutate.isPending || loadingCreate || !isContractAccepted
+                }
               >
-                {saveDraftMutation.isPending ? (
-                  t("Salvando...")
-                ) : (
-                  <>
-                    <Save className="w-4 h-4 mr-2" />
-                    {t(" Salvar como rascunho")}
-                  </>
-                )}
+                {mutate.isPending || loadingCreate
+                  ? t("Carregando...")
+                  : isEditMode
+                    ? t("Atualizar Campanha")
+                    : t("Publicar campanha")}
               </Button>
-            </div>
-          )}
-
-          <BasicInfoSection
-            data={campaignData.basicInfo}
-            onChange={(data) => {
-              setCampaignData((prev) => ({ ...prev, basicInfo: data }));
-              setIsDirty(true);
-            }}
-            initialCampaignData={initialCampaignData as Campaign}
-            isEditMode={isEditMode}
-            isDraft={isDraft}
-          />
-
-          <AudienceSegmentationSection
-            data={campaignData.audienceSegmentation}
-            onChange={(data) => {
-              setCampaignData((prev) => ({
-                ...prev,
-                audienceSegmentation: data,
-              }));
-              setIsDirty(true);
-            }}
-            niches={niches}
-            nichesLoading={nichesLoading}
-          />
-
-          <CampaignBudgetSection
-            startSuscriptionDate={campaignBudget.startSuscriptionDate}
-            endSubscriptionDate={campaignBudget.endSubscriptionDate}
-            startDate={campaignBudget.startDate}
-            endDate={campaignBudget.endDate}
-            creatorFee={campaignBudget.creatorFee}
-            onChange={(data) => {
-              setCampaignBudget(data);
-              setIsDirty(true);
-            }}
-            isEditMode={isEditMode}
-          />
-
-          <BriefingSection
-            briefing={campaignData.basicInfo.briefing}
-            onChange={(newVal) => {
-              setCampaignData((prev) => ({
-                ...prev,
-                basicInfo: {
-                  ...prev.basicInfo,
-                  briefing: newVal,
-                },
-              }));
-              setIsDirty(true);
-            }}
-            isFormReadyForAI={isFormReadyForAI}
-            generateBriefingViaIA={generateBriefingViaIA}
-          />
-
-          <ResponsibleInfoSection
-            data={responsibleInfo}
-            onChange={(e) => {
-              setResponsibleInfo(e);
-              setIsDirty(true);
-            }}
-          />
-
-          <div className="px-5 w-full flex justify-center">
-            <Button
-              variant={"blue"}
-              onClick={() => {
-                handleFinalSubmit();
-              }}
-              className="w-auto min-w-[200px] text-white py-2 px-5 rounded-md mt-6 mb-8"
-              disabled={mutate.isPending || loadingCreate}
-            >
-              {mutate.isPending || loadingCreate
-                ? t("Carregando...")
-                : isEditMode
-                  ? t("Atualizar Campanha")
-                  : t("Publicar campanha")}
-            </Button>
-          </div>
-
-          {!isEditMode && <FloatingHelpButton />}
-        </>
-      )}
-
-      {spotlightCampaignPlans.state === true &&
-        spotlightCampaignPlans.campaign && (
-          <CampaignSpotlight
-            campaign={spotlightCampaignPlans.campaign as Campaign}
-          />
-        )}
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <ToastContainer />
     </div>

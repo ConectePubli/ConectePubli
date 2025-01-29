@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import {
   createFileRoute,
   notFound,
@@ -6,26 +8,28 @@ import {
   useNavigate,
   useSearch,
 } from "@tanstack/react-router";
-import pb from "@/lib/pb";
+import { t } from "i18next";
+import { ClientResponseError } from "pocketbase";
+
+import GoBack from "@/assets/icons/go-back.svg";
+
 import { Campaign } from "@/types/Campaign";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
-import { ClientResponseError } from "pocketbase";
-import GoBack from "@/assets/icons/go-back.svg";
+import { Influencer } from "@/types/Influencer";
+import { Brand } from "@/types/Brand";
+
+import pb from "@/lib/pb";
+import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
+import FormattedText from "@/utils/FormattedText";
+import { getUserType } from "@/lib/auth";
+
 import CampaignRequirements from "@/components/ui/CampaignRequirements";
 import CampaignVideoCharacteristics from "@/components/ui/CampaignVideoCharacteristics";
 import CampaignDetails from "@/components/ui/CampaignDetails";
 import CampaignBrandProfile from "@/components/ui/CampaignBrandProfile";
-import { getUserType } from "@/lib/auth";
-import useIndividualCampaignStore from "@/store/useIndividualCampaignStore";
-import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
 import RateBrandModal from "@/components/ui/RateBrandModal";
-import { Influencer } from "@/types/Influencer";
-import { Brand } from "@/types/Brand";
-import FormattedText from "@/utils/FormattedText";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
 import Spinner from "@/components/ui/Spinner";
-import { t } from "i18next";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/"
@@ -262,7 +266,9 @@ function CampaignPage() {
             <h2 className="font-bold mt-4">{t("Entregavéis obrigatórios")}</h2>
             <FormattedText text={campaign?.mandatory_deliverables || ""} />
 
-            <h2 className="font-bold mt-4">{t("Envio de Produtos ou Serviços")}</h2>
+            <h2 className="font-bold mt-4">
+              {t("Envio de Produtos ou Serviços")}
+            </h2>
             <FormattedText
               text={campaign?.sending_products_or_services || ""}
             />
@@ -272,7 +278,9 @@ function CampaignPage() {
             </h2>
             <FormattedText text={campaign?.expected_actions || ""} />
 
-            <h2 className="font-bold mt-4">{t("Ações a Serem Evitadas (Don'ts)")}</h2>
+            <h2 className="font-bold mt-4">
+              {t("Ações a Serem Evitadas (Don'ts)")}
+            </h2>
             <FormattedText text={campaign?.avoid_actions || ""} />
 
             <h2 className="font-bold mt-4">{t("Informações adicionais")}</h2>
@@ -302,7 +310,9 @@ function CampaignPage() {
 
             {/* Warning Message */}
             <p className="text-yellow-600 font-semibold mt-4">
-              {t("Atenção: Todas as interações e pagamentos desta campanha estão protegidos pelo nosso sistema de garantia. Evite contato fora da plataforma para garantir sua segurança e o pagamento integral.")}
+              {t(
+                "Atenção: Todas as interações e pagamentos desta campanha estão protegidos pelo nosso sistema de garantia. Evite contato fora da plataforma para garantir sua segurança e o pagamento integral."
+              )}
             </p>
           </div>
 
@@ -316,7 +326,9 @@ function CampaignPage() {
 
             {!campaign?.paid_traffic && (
               <p className="text-black">
-                {t("Compartilhado nas redes sociais da marca de forma orgânica")}
+                {t(
+                  "Compartilhado nas redes sociais da marca de forma orgânica"
+                )}
               </p>
             )}
 

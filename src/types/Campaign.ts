@@ -24,7 +24,14 @@ export interface Campaign {
   max_subscriptions: number;
   open_jobs?: number;
   objective?: "UGC" | "IGC" | "UGC+IGC";
-  status: "draft" | "ready" | "in_progress" | "subscription_ended" | "ended";
+  status:
+    | "draft"
+    | "analyzing"
+    | "ready"
+    | "in_progress"
+    | "subscription_ended"
+    | "ended"
+    | "rejected";
   niche: string[];
   cover_img?: string;
   gender?: string;

@@ -39,6 +39,7 @@ import { Route as dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexImpor
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/index'
 import { Route as dashboardSideNavDashboardperfisMarcaUserNameIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/index'
 import { Route as dashboardSideNavDashboardperfisCreatorUsernameIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/index'
+import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/status'
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar'
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
 import { Route as dashboardSideNavDashboardperfisMarcaUserNameEditarIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/editar/index'
@@ -205,6 +206,12 @@ const dashboardSideNavDashboardperfisMarcaUserNameIndexRoute =
 const dashboardSideNavDashboardperfisCreatorUsernameIndexRoute =
   dashboardSideNavDashboardperfisCreatorUsernameIndexImport.update({
     path: '/creator/$username/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute =
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusImport.update({
+    path: '/dashboard/campanhas/$campaignId/status',
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
@@ -425,6 +432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/status': {
+      id: '/_side-nav-dashboard/dashboard/campanhas/$campaignId/status'
+      path: '/dashboard/campanhas/$campaignId/status'
+      fullPath: '/dashboard/campanhas/$campaignId/status'
+      preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/': {
       id: '/_side-nav-dashboard/creator/$username/'
       path: '/creator/$username'
@@ -482,6 +496,7 @@ interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardPremiumMarcaIndexRoute: typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
+  dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
   dashboardSideNavDashboardperfisCreatorUsernameIndexRoute: typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   dashboardSideNavDashboardperfisMarcaUserNameIndexRoute: typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
@@ -523,6 +538,8 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute,
     dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute:
       dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute,
+    dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute:
+      dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute,
     dashboardSideNavDashboardperfisCreatorUsernameIndexRoute:
       dashboardSideNavDashboardperfisCreatorUsernameIndexRoute,
     dashboardSideNavDashboardperfisMarcaUserNameIndexRoute:
@@ -578,6 +595,7 @@ export interface FileRoutesByFullPath {
   '/premium/marca': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
+  '/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
   '/creator/$username': typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   '/marca/$userName': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
@@ -611,6 +629,7 @@ export interface FileRoutesByTo {
   '/premium/marca': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
+  '/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
   '/creator/$username': typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   '/marca/$userName': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
@@ -646,6 +665,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/premium/marca/': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
+  '/_side-nav-dashboard/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
   '/_side-nav-dashboard/creator/$username/': typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   '/_side-nav-dashboard/marca/$userName/': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
@@ -681,6 +701,7 @@ export interface FileRouteTypes {
     | '/premium/marca'
     | '/dashboard/campanhas/$campaignId/aprovar'
     | '/dashboard/campanhas/$campaignId/editar'
+    | '/dashboard/campanhas/$campaignId/status'
     | '/creator/$username'
     | '/marca/$userName'
     | '/dashboard/campanhas/$campaignId'
@@ -713,6 +734,7 @@ export interface FileRouteTypes {
     | '/premium/marca'
     | '/dashboard/campanhas/$campaignId/aprovar'
     | '/dashboard/campanhas/$campaignId/editar'
+    | '/dashboard/campanhas/$campaignId/status'
     | '/creator/$username'
     | '/marca/$userName'
     | '/dashboard/campanhas/$campaignId'
@@ -746,6 +768,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/premium/marca/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar'
+    | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/status'
     | '/_side-nav-dashboard/creator/$username/'
     | '/_side-nav-dashboard/marca/$userName/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/'
@@ -830,6 +853,7 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/premium/marca/",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar",
+        "/_side-nav-dashboard/dashboard/campanhas/$campaignId/status",
         "/_side-nav-dashboard/creator/$username/",
         "/_side-nav-dashboard/marca/$userName/",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/",
@@ -923,6 +947,10 @@ export const routeTree = rootRoute
     },
     "/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar": {
       "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
+    "/_side-nav-dashboard/dashboard/campanhas/$campaignId/status": {
+      "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/status.tsx",
       "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/creator/$username/": {

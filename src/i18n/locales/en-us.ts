@@ -1522,6 +1522,9 @@ export default {
     "Inscrições não iniciadas": "Registrations not started",
     "Para se inscrever, complete seu perfil preenchendo os seguintes campos:": `To sign up, complete your profile by filling in the following fields:`,
     "Conclua sua Inscrição": "Complete your Registration",
+    "Conclua a publicação da sua campanha": "Complete publishing your campaign",
+    "Antes de prosseguir, é importante garantir que você está de acordo com o Contrato de Campanha da Conecte Publi.":
+      "Before proceeding, it is important to ensure that you are in agreement with the Conecte Publi Campaign Agreement.",
     "Escreva aqui sua ideia/roteiro de conteúdo para essa campanha e/ou porquê a marca deve te escolher":
       "Write here your idea/content script for this campaign and/or why the brand should choose you",
     "Li e concordo com o": "I have read and agree with the",
@@ -1766,5 +1769,28 @@ export default {
     anos: "years",
     "agora mesmo": "just now",
     "Pronta para começar": "Ready to start",
+    "Campanha está em análise": "Campaign is under review",
+    "Em análise": "Under review",
+    "Campanha Aprovada e Liberada na Vitrine":
+      "Campaign Approved and Published in the Showcase",
+    "Campanha Reprovada": "Campaign Rejected",
+    "Sua campanha foi criada com sucesso! Agora, nossa equipe da Conecte está analisando os detalhes para garantir que tudo esteja perfeito.":
+      "Your campaign has been successfully created! Our Conecte team is now reviewing the details to make sure everything is perfect.",
+    "O prazo para aprovação é de até 48 horas. Assim que sua campanha for aprovada, você receberá uma notificação e poderá começar a receber inscrições dos creators!":
+      "The approval period is up to 48 hours. Once your campaign is approved, you will receive a notification and can begin receiving applications from creators!",
+    "Enquanto isso, você pode fazer qualquer alteração na campanha, se precisar!":
+      "Meanwhile, you can make any changes to the campaign if necessary!",
+    "Sua campanha foi aprovada e já se encontra na Vitrine de Campanhas para os creators se candidatarem!":
+      "Your campaign has been approved and is now in the Campaign Showcase for creators to apply!",
+    "Comprar Destaque para a Campanha": "Buy Highlight for the Campaign",
+    "Sua campanha foi reprovada pela equipe da Conecte Publi. Para mais informações, entre em contato com nosso suporte.":
+      "Your campaign was rejected by the Conecte Publi team. For more information, please contact our support.",
+    "Sua campanha foi criada com sucesso! Agora, a equipe da Conecte está analisando os detalhes para garantir que tudo esteja perfeito.":
+      "Your campaign has been created successfully! Now, the Conecte team is analyzing the details to ensure everything is perfect.",
+    "A campanha ainda não possui inscritos, deseja deixar ela em destaque?":
+      "The campaign does not have subscribers yet, do you want to highlight it?",
+    "A campanha ainda não possui inscritos":
+      "The campaign does not have subscribers yet",
+    "Campanha recusada": "Campaign rejected",
   },
 };
