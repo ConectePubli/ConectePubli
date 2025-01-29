@@ -233,7 +233,7 @@ function Page() {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl w-full">
-        <div className="bg-white rounded-lg border p-6">
+        <div className="bg-white rounded-lg border p-6 max-sm:p-1">
           <div className="p-4">
             <h3 className="text-lg font-semibold mb-3">{t("Detalhes")}</h3>
             <p className="text-gray-700 mb-4">
@@ -346,10 +346,19 @@ function Page() {
                 proposalStatus === "refused") && (
                 <>
                   {proposalStatus === "approved" ? (
-                    <div className="flex flex-wrap lg:flex-nowrap justify-between items-center px-4 mt-6 space-y-3 lg:space-y-0 lg:space-x-4 w-full">
-                      <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default w-full lg:w-auto">
+                    <div
+                      className={`flex flex-wrap lg:flex-nowrap justify-between items-center px-4 mt-6 w-full ${deliverable.paid === false ? "flex flex-col" : ""}`}
+                    >
+                      <button className="bg-green-500 text-white px-4 py-2 rounded font-semibold cursor-default w-full lg:w-auto mb-3 lg:mb-0 lg:flex-1 lg:mr-3">
                         {t("Proposta aceita")}
                       </button>
+
+                      {!deliverable.paid && (
+                        <p className="pt-2 text-gray-700">
+                          A Marca será comunicada que você aceitou a proposta,
+                          aguarde a confirmação para iniciar os Entregáveis.
+                        </p>
+                      )}
 
                       {deliverable.paid === true && (
                         <ModalSendDeliverable
@@ -430,14 +439,14 @@ function Page() {
                 {proposalStatus === "approved" && deliverable.paid && (
                   <div className="flex flex-wrap lg:flex-nowrap justify-between items-center mt-6 space-y-3 lg:space-y-0 lg:space-x-4 w-full">
                     <button
-                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600 w-full lg:w-auto"
-                      onClick={() => setIsAcceptBrandModalOpen(true)}
+                      className="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600 w-full lg:flex-1"
+                      onClick={() => setIsCompleteModalOpen(true)}
                     >
                       {t("Concluir Colaboração")}
                     </button>
                     <Button
                       variant={"brown"}
-                      className="text-white px-4 py-2 rounded font-semibold w-full lg:w-auto"
+                      className="bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600 w-full lg:flex-1"
                       onClick={() => setIsSupportModalOpen(true)}
                     >
                       {t("Suporte")}
