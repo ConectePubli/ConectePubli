@@ -111,18 +111,6 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
 
           {/* Date */}
           <div className="flex justify-end items-center max-sm:flex-col max-sm:items-end">
-            {campaignData.subscription_start_date &&
-              campaignData.subscription_end_date &&
-              !isEnableSubscription(campaignData).status &&
-              !hideStatusSubscription && (
-                <span className="mr-4 text-red-500 flex items-center">
-                  {isEnableSubscription(campaignData).message ===
-                    "not_started" && "Inscrições não iniciadas"}
-                  {isEnableSubscription(campaignData).message === "time_out" &&
-                    "Inscrições encerradas"}
-                </span>
-              )}
-
             <div className="flex items-center gap-2 text-gray-500">
               <Calendar className="w-4 h-4" />
               {`${beginningDate} - ${endDate}`}
@@ -139,6 +127,23 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
             </div>
           </div>
 
+          {campaignData.subscription_start_date &&
+            campaignData.subscription_end_date &&
+            !isEnableSubscription(campaignData).status &&
+            !hideStatusSubscription && (
+              <span
+                className="font-semibold"
+                style={{
+                  color: "red",
+                }}
+              >
+                {isEnableSubscription(campaignData).message === "not_started" &&
+                  "Inscrições não iniciadas"}
+                {isEnableSubscription(campaignData).message === "time_out" &&
+                  t("Status: Inscrições Encerradas")}
+              </span>
+            )}
+
           {participationStatus && (
             <span
               className="font-semibold"
@@ -149,6 +154,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
               Status: {readTextStatus(participationStatus)}
             </span>
           )}
+
           {!participationStatus &&
             campaignData.status === "subscription_ended" && (
               <span
