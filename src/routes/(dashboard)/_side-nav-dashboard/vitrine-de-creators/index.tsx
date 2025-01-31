@@ -130,16 +130,20 @@ function Page() {
       let feedQty = 0;
       let reelsQty = 0;
       let ugcQty = 0;
+      let comboUgcQty = 0;
+      let comboRecomendoQty = 0;
+
       modalCreator.deliverables.forEach((d) => {
-        if (d.product.toLowerCase().includes("stories"))
-          storiesQty += d.quantity;
-        if (
-          d.product.toLowerCase().includes("feed") &&
-          !d.product.toLowerCase().includes("reels")
-        )
+        const product = d.product.toLowerCase();
+        if (product.includes("stories")) storiesQty += d.quantity;
+        if (product.includes("feed") && !product.includes("reels"))
           feedQty += d.quantity;
-        if (d.product.toLowerCase().includes("reels")) reelsQty += d.quantity;
-        if (d.product.toLowerCase().includes("ugc")) ugcQty += d.quantity;
+        if (product.includes("reels")) reelsQty += d.quantity;
+        if (product.includes("ugc") && !product.includes("combo"))
+          ugcQty += d.quantity;
+        if (product.includes("combo ugc")) comboUgcQty += d.quantity;
+        if (product.includes("combo recomendo"))
+          comboRecomendoQty += d.quantity;
       });
 
       const body: Partial<Deliverables> = {
@@ -151,28 +155,22 @@ function Page() {
         paid: false,
       };
 
-      if (storiesQty !== 0) {
-        body.stories_qty = storiesQty;
-      }
-      if (feedQty !== 0) {
-        body.feed_qty = feedQty;
-      }
-      if (reelsQty !== 0) {
-        body.reels_qty = reelsQty;
-      }
-      if (ugcQty !== 0) {
-        body.ugc_qty = ugcQty;
-      }
+      if (storiesQty !== 0) body.stories_qty = storiesQty;
+      if (feedQty !== 0) body.feed_qty = feedQty;
+      if (reelsQty !== 0) body.reels_qty = reelsQty;
+      if (ugcQty !== 0) body.ugc_qty = ugcQty;
+      if (comboUgcQty !== 0) body.combo_ugc_qty = comboUgcQty;
+      if (comboRecomendoQty !== 0) body.combo_recommend_qty = comboRecomendoQty;
 
       await pb.collection("deliverable_proposals").create(body);
       setShowSuccess(true);
 
-      // remover dados do creators quando enviar a proposta
+      // Remover creator do estado após envio da proposta
       setSelectedCreators((prev) =>
         prev.filter((creator) => creator.creator.id !== modalCreator.creator.id)
       );
     } catch (e) {
-      console.log(`error create derivelable proposal: ${e}`);
+      console.log(`error create deliverable proposal: ${e}`);
       toast.error("Não foi possível enviar a proposta, tente novamente");
     } finally {
       setLoadingProposal(false);
@@ -312,6 +310,11 @@ function Page() {
               },
               { product: "Stories IGC", price: creator.stories_price },
               { product: t("Post no Feed"), price: creator.feed_price },
+              { product: t("Combo UGC"), price: creator.combo_ugc_price },
+              {
+                product: t("Combo Recomendo"),
+                price: creator.combo_recommend_price,
+              },
             ];
 
             const creatorSelected = selectedCreators.find(
@@ -428,83 +431,82 @@ function Page() {
                   );
 
                   return (
-                    <div key={item.product} className="flex flex-col mb-2">
+                    <div key={item.product} className="flex flex-col mb-3">
                       <label className="inline-flex items-center">
-                        {item.price > 0 && (
-                          <input
-                            type="checkbox"
-                            checked={!!deliverableInState}
-                            onChange={() => {
-                              setSelectedCreators((prev: any) => {
-                                const exists = prev.find(
-                                  (sc: { creator: Influencer }) =>
-                                    sc.creator.id === creator.id
+                        <input
+                          disabled={item.price === 0}
+                          type="checkbox"
+                          checked={!!deliverableInState}
+                          onChange={() => {
+                            setSelectedCreators((prev: any) => {
+                              const exists = prev.find(
+                                (sc: { creator: Influencer }) =>
+                                  sc.creator.id === creator.id
+                              );
+                              if (!exists) {
+                                const newDeliverables = [
+                                  {
+                                    product: item.product,
+                                    price: item.price,
+                                    quantity: 1,
+                                  },
+                                ];
+                                const total = newDeliverables.reduce(
+                                  (acc, d) => acc + d.price * d.quantity,
+                                  0
                                 );
-                                if (!exists) {
-                                  const newDeliverables = [
-                                    {
-                                      product: item.product,
-                                      price: item.price,
-                                      quantity: 1,
-                                    },
-                                  ];
-                                  const total = newDeliverables.reduce(
-                                    (acc, d) => acc + d.price * d.quantity,
-                                    0
-                                  );
-                                  return [
-                                    ...prev,
-                                    {
-                                      creator: creator,
+                                return [
+                                  ...prev,
+                                  {
+                                    creator: creator,
+                                    deliverables: newDeliverables,
+                                    totalPrice: total,
+                                  },
+                                ];
+                              }
+                              return prev.map(
+                                (sc: {
+                                  creator: Influencer;
+                                  deliverables: SelectedDeliverable[];
+                                }) => {
+                                  if (sc.creator.id === creator.id) {
+                                    const alreadySelected =
+                                      sc.deliverables.find(
+                                        (d) => d.product === item.product
+                                      );
+                                    let newDeliverables;
+                                    if (alreadySelected) {
+                                      newDeliverables = sc.deliverables.filter(
+                                        (d) => d.product !== item.product
+                                      );
+                                    } else {
+                                      newDeliverables = [
+                                        ...sc.deliverables,
+                                        {
+                                          product: item.product,
+                                          price: item.price,
+                                          quantity: 1,
+                                        },
+                                      ];
+                                    }
+                                    const total = newDeliverables.reduce(
+                                      (acc, d) => acc + d.price * d.quantity,
+                                      0
+                                    );
+                                    return {
+                                      ...sc,
                                       deliverables: newDeliverables,
                                       totalPrice: total,
-                                    },
-                                  ];
-                                }
-                                return prev.map(
-                                  (sc: {
-                                    creator: Influencer;
-                                    deliverables: SelectedDeliverable[];
-                                  }) => {
-                                    if (sc.creator.id === creator.id) {
-                                      const alreadySelected =
-                                        sc.deliverables.find(
-                                          (d) => d.product === item.product
-                                        );
-                                      let newDeliverables;
-                                      if (alreadySelected) {
-                                        newDeliverables =
-                                          sc.deliverables.filter(
-                                            (d) => d.product !== item.product
-                                          );
-                                      } else {
-                                        newDeliverables = [
-                                          ...sc.deliverables,
-                                          {
-                                            product: item.product,
-                                            price: item.price,
-                                            quantity: 1,
-                                          },
-                                        ];
-                                      }
-                                      const total = newDeliverables.reduce(
-                                        (acc, d) => acc + d.price * d.quantity,
-                                        0
-                                      );
-                                      return {
-                                        ...sc,
-                                        deliverables: newDeliverables,
-                                        totalPrice: total,
-                                      };
-                                    }
-                                    return sc;
+                                    };
                                   }
-                                );
-                              });
-                            }}
-                            className="h-4 w-4"
-                          />
-                        )}
+                                  return sc;
+                                }
+                              );
+                            });
+                          }}
+                          className="h-4 w-4"
+                        />
+
                         <span className="ml-2 text-sm">
                           <strong>{item.product}:</strong>{" "}
                           {(item.price / 100).toLocaleString("pt-BR", {
@@ -514,6 +516,20 @@ function Page() {
                           })}
                         </span>
                       </label>
+
+                      {item.product === "Combo UGC" && (
+                        <p className="text-xs mt-1 font-gray-800">
+                          1 vídeo para a marca usar + 3 fotos + avaliação
+                          escrita
+                        </p>
+                      )}
+
+                      {item.product === "Combo Recomendo" &&
+                        creator.description_combo_recommend && (
+                          <p className="text-xs mt-1 font-gray-800">
+                            {creator.description_combo_recommend}
+                          </p>
+                        )}
 
                       {deliverableInState && (
                         <input

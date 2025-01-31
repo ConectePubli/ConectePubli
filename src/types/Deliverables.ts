@@ -9,6 +9,8 @@ export interface Deliverables {
   feed_qty: number;
   reels_qty: number;
   ugc_qty: number;
+  combo_ugc_qty: number;
+  combo_recommend_qty: number;
   status: "waiting" | "approved" | "completed" | "refused";
   total_price: number;
   description: string;

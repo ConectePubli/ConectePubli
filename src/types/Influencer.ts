@@ -56,6 +56,9 @@ export interface Influencer {
   feed_price: number;
   reels_price: number;
   ugc_price: number;
+  combo_ugc_price: number;
+  combo_recommend_price: number;
+  description_combo_recommend: string;
   created: Date;
   updated: Date;
   collectionId: string;

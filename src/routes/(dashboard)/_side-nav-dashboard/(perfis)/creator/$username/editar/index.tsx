@@ -91,7 +91,15 @@ function InfluencerEditProfilePage() {
     skills: ["languages"],
     accountInfo: [],
     portfolio: [],
-    prices: ["stories_price", "feed_price", "reels_price", "ugc_price"],
+    prices: [
+      "stories_price",
+      "feed_price",
+      "reels_price",
+      "ugc_price",
+      "combo_ugc_price",
+      "combo_recommend_price",
+      "description_combo_recommend",
+    ],
   };
 
   // State to manage isFormChanged and loading per section
@@ -395,7 +403,12 @@ function InfluencerEditProfilePage() {
                   stories_price: t("Preço por stories"),
                   feed_price: t("Preço por post no feed"),
                   reels_price: t("Preço por reels"),
-                  ugc_price: t("Preço por vídeo e combo UGC"),
+                  ugc_price: t("Preço por vídeo e combo de fotos UGC"),
+                  combo_ugc_price: t("Preço por combo UGC"),
+                  combo_recommend_price: t("Preço por Combo Recomendo"),
+                  description_combo_recommend: t(
+                    "Descrição do Combo Recomendo"
+                  ),
                 };
                 missingFields.push(fieldNames[field] || field);
               }
@@ -497,6 +510,10 @@ function InfluencerEditProfilePage() {
           updateData["feed_price"] = formData.feed_price;
           updateData["reels_price"] = formData.reels_price;
           updateData["ugc_price"] = formData.ugc_price;
+          updateData["combo_ugc_price"] = formData.combo_ugc_price;
+          updateData["combo_recommend_price"] = formData.combo_recommend_price;
+          updateData["description_combo_recommend"] =
+            formData.description_combo_recommend;
         } else if (section === "skills") {
           updateData["languages"] = formData.languages;
         }
@@ -1841,22 +1858,29 @@ function PricesSection({
   setIsFormChangedStates,
   loading,
 }: FormProps) {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
-    const digits = value.replace(/\D/g, "");
-    const numberValue = parseFloat(digits);
-
-    setFormData((prev: any) => {
-      const updatedFormData = {
+    if (e.target instanceof HTMLInputElement) {
+      const digits = value.replace(/\D/g, "");
+      const numberValue = parseFloat(digits);
+      setFormData((prev: any) => ({
         ...prev,
         [name]: isNaN(numberValue) ? 0 : numberValue,
-      };
-      return updatedFormData;
-    });
+      }));
+    } else {
+      setFormData((prev: any) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
-  const handleSectionInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSectionInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     handleInputChange(e);
     setIsFormChangedStates((prev: any) => ({ ...prev, prices: true }));
   };
@@ -1929,6 +1953,55 @@ function PricesSection({
           value={
             formData.ugc_price ? formatCentsToCurrency(formData.ugc_price) : ""
           }
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {t(
+            "Quanto você cobra por um Combo UGC? (Inclui 1 vídeo para a marca usar + 3 fotos + avaliação escrita)*"
+          )}
+        </label>
+        <input
+          type="text"
+          name="combo_ugc_price"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder={t("Ex: R$200,00")}
+          value={
+            formData.combo_ugc_price
+              ? formatCentsToCurrency(formData.combo_ugc_price)
+              : ""
+          }
+          onChange={handleSectionInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {t(
+            "Quanto você cobra por um Combo Recomendo? (Insira o que você mais trabalha e o valor referente)*"
+          )}
+        </label>
+        <input
+          type="text"
+          name="combo_recommend_price"
+          className="border border-gray-300 p-2 rounded-lg w-full"
+          placeholder={t("Ex: R$200,00")}
+          value={
+            formData.combo_recommend_price
+              ? formatCentsToCurrency(formData.combo_recommend_price)
+              : ""
+          }
+          onChange={handleSectionInputChange}
+        />
+
+        <textarea
+          className="border border-gray-300 p-2 rounded-lg w-full h-[100px] mt-3 resize-none"
+          name="description_combo_recommend"
+          id="description_combo_recommend"
+          placeholder={t("Insira o que você mais trabalha...")}
+          value={formData.description_combo_recommend}
           onChange={handleSectionInputChange}
         />
       </div>

@@ -176,7 +176,12 @@ export default {
     "Preço por stories": "Price per Story",
     "Preço por post no feed": "Price per Feed Post",
     "Preço por reels": "Price per Reel",
-    "Preço por vídeo e combo UGC": "Price per UGC Video and Combo",
+    "Preço por vídeo e combo de fotos UGC":
+      "Price per UGC video and photo combo",
+    "Preço por combo UGC": "Price per UGC combo",
+    "Preço por Combo Recomendo": "Price per Combo I recommend",
+    "Descrição do Combo Recomendo": "Description of the Combo I recommend",
+    "Insira o que você mais trabalha...": "Enter what you work on most...",
     "Nome da Marca/Empresa": "Brand/Company Name",
     "Nome do Responsável": "Responsible Person's Name",
     "Como você conheceu a Conecte Publi?":
@@ -859,6 +864,10 @@ export default {
     "Ex: R$150,00": "E.g. R$150.00",
     "Quanto você cobra por um vídeo e um combo de fotos UGC?*":
       "How much do you charge for a video and a UGC photo combo?",
+    "Quanto você cobra por um Combo UGC? (Inclui 1 vídeo para a marca usar + 3 fotos + avaliação escrita)*":
+      "How much do you charge for a UGC Combo? (Includes 1 video for the brand to use + 3 photos + written evaluation)",
+    "Quanto você cobra por um Combo Recomendo? (Insira o que você mais trabalha e o valor referente)*":
+      "How much do you charge for a Recommend Combo? (Insert what you work most and the corresponding amount)*",
     "Ex: R$200,00": "E.g. R$200.00",
     "Insira os idiomas que você domina": "Enter the languages you master",
     "Nenhuma linguagem adicionada": "No language added",
@@ -1632,6 +1641,8 @@ export default {
     "Proposta recusada pelo Creator": "Proposal rejected by Creator",
     "1 Vídeo + Combo de Fotos UGC": "1 Video + UGC Photo Combo",
     "Post no Feed": "Post in Feed",
+    "Combo UGC": "Combo UGC",
+    "Combo Recomendo": "Combo Recommend",
     "Enviar Proposta de Entregável para": "Send Deliverable Proposal to",
     "Envie propostas diretamente para os creators que você deseja!":
       "Send proposals directly to the creators you want!",

@@ -23,7 +23,7 @@ const TopCreatorBadge: React.FC<BadgeProps> = ({ status }) => {
       className={`inline-flex items-center gap-x-1 px-3 py-1 rounded-full font-bold text-xs cursor-default select-none bg-blue-900 text-white ${
         isActive
           ? ""
-          : "bg-white text-gray-700 border border-gray-700 hover:bg-gray-100"
+          : "bg-blue-900 text-gray-700 hover:bg-blue-800 cursor-pointer"
       }`}
     >
       <span>

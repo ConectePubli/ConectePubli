@@ -51,6 +51,8 @@ export const Route = createFileRoute(
           expand: "brand, influencer",
         });
 
+      console.log(deliverableData);
+
       return { deliverableData, userTypeData: userType };
     } catch (error) {
       if (error instanceof ClientResponseError) {
@@ -319,6 +321,48 @@ function Page() {
                     {(
                       (deliverable.feed_qty *
                         deliverable.expand.influencer.feed_price) /
+                      100
+                    ).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </span>
+                </div>
+              )}
+
+              {deliverable.combo_ugc_qty >= 1 && (
+                <div className="flex justify-between mb-2">
+                  <span>
+                    {t("Combo UGC")}{" "}
+                    <span className="text-[#10438F] font-semibold">
+                      x {deliverable.combo_ugc_qty}
+                    </span>
+                  </span>
+                  <span>
+                    {(
+                      (deliverable.combo_ugc_qty *
+                        deliverable.expand.influencer.combo_ugc_price) /
+                      100
+                    ).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </span>
+                </div>
+              )}
+
+              {deliverable.combo_recommend_qty >= 1 && (
+                <div className="flex justify-between mb-2">
+                  <span>
+                    {t("Combo Recomendo")}{" "}
+                    <span className="text-[#10438F] font-semibold">
+                      x {deliverable.combo_recommend_qty}
+                    </span>
+                  </span>
+                  <span>
+                    {(
+                      (deliverable.combo_recommend_qty *
+                        deliverable.expand.influencer.combo_recommend_price) /
                       100
                     ).toLocaleString("pt-BR", {
                       style: "currency",

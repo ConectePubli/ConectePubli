@@ -16,6 +16,7 @@ export const getCreatorDeliverables = async (
       .getFullList({
         filter: `influencer="${pb.authStore.model?.id}"`,
         expand: "brand, influencer",
+        sort: "-created",
       });
 
     return deliverables as unknown as Deliverables[];
@@ -38,6 +39,7 @@ export const getBrandDeliverables = async (
       .getFullList({
         filter: `brand="${pb.authStore.model?.id}"`,
         expand: "brand, influencer",
+        sort: "-created",
       });
 
     return deliverables as unknown as Deliverables[];
