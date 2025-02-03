@@ -405,9 +405,9 @@ function InfluencerEditProfilePage() {
                   reels_price: t("Preço por reels"),
                   ugc_price: t("Preço por vídeo e combo de fotos UGC"),
                   combo_ugc_price: t("Preço por combo UGC"),
-                  combo_recommend_price: t("Preço por Combo Recomendo"),
+                  combo_recommend_price: t("Preço por Combo Recomendado"),
                   description_combo_recommend: t(
-                    "Descrição do Combo Recomendo"
+                    "Descrição do Combo Recomendado"
                   ),
                 };
                 missingFields.push(fieldNames[field] || field);
@@ -1980,7 +1980,7 @@ function PricesSection({
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           {t(
-            "Quanto você cobra por um Combo Recomendo? (Insira o que você mais trabalha e o valor referente)*"
+            "Quanto você cobra por um Combo Recomendado? (Insira o que você mais trabalha e o valor referente)*"
           )}
         </label>
         <input
