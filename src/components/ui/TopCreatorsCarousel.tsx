@@ -12,7 +12,7 @@ import ViviamCostta from "@/assets/topcreators/Viviam.png";
 import FabioBraz from "@/assets/topcreators/FabioBraz.png";
 import FlavinhaCheirosa from "@/assets/topcreators/Flavinha.png";
 import TatyZatto from "@/assets/topcreators/Taty.jpg";
-import ThaisGuedes from "@/assets/topcreators/ThaisGuedes.png";
+import ThaisGuedes from "@/assets/topcreators/ThaisGuedes.jpg";
 import { useMemo } from "react";
 
 const topCreatorsData = [
