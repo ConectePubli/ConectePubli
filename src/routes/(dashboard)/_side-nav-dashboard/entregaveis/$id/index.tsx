@@ -354,7 +354,7 @@ function Page() {
               {deliverable.combo_recommend_qty >= 1 && (
                 <div className="flex justify-between mb-2">
                   <span>
-                    {t("Combo Recomendo")}{" "}
+                    {t("Combo Recomendado")}{" "}
                     <span className="text-[#10438F] font-semibold">
                       x {deliverable.combo_recommend_qty}
                     </span>

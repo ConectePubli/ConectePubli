@@ -131,7 +131,7 @@ function Page() {
       let reelsQty = 0;
       let ugcQty = 0;
       let comboUgcQty = 0;
-      let comboRecomendoQty = 0;
+      let comboRecomendadoQty = 0;
 
       modalCreator.deliverables.forEach((d) => {
         const product = d.product.toLowerCase();
@@ -142,8 +142,8 @@ function Page() {
         if (product.includes("ugc") && !product.includes("combo"))
           ugcQty += d.quantity;
         if (product.includes("combo ugc")) comboUgcQty += d.quantity;
-        if (product.includes("combo recomendo"))
-          comboRecomendoQty += d.quantity;
+        if (product.includes("combo recomendado"))
+          comboRecomendadoQty += d.quantity;
       });
 
       const body: Partial<Deliverables> = {
@@ -160,7 +160,8 @@ function Page() {
       if (reelsQty !== 0) body.reels_qty = reelsQty;
       if (ugcQty !== 0) body.ugc_qty = ugcQty;
       if (comboUgcQty !== 0) body.combo_ugc_qty = comboUgcQty;
-      if (comboRecomendoQty !== 0) body.combo_recommend_qty = comboRecomendoQty;
+      if (comboRecomendadoQty !== 0)
+        body.combo_recommend_qty = comboRecomendadoQty;
 
       await pb.collection("deliverable_proposals").create(body);
       setShowSuccess(true);
@@ -312,7 +313,7 @@ function Page() {
               { product: t("Post no Feed"), price: creator.feed_price },
               { product: t("Combo UGC"), price: creator.combo_ugc_price },
               {
-                product: t("Combo Recomendo"),
+                product: t("Combo Recomendado"),
                 price: creator.combo_recommend_price,
               },
             ];
@@ -524,7 +525,7 @@ function Page() {
                         </p>
                       )}
 
-                      {item.product === "Combo Recomendo" &&
+                      {item.product === "Combo Recomendado" &&
                         creator.description_combo_recommend && (
                           <p className="text-xs mt-1 font-gray-800">
                             {creator.description_combo_recommend}
