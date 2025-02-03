@@ -1,5 +1,4 @@
 import GoldCheckIcon from "@/assets/icons/gold-check.png";
-import GrayCheckIcon from "@/assets/icons/gray-check.svg";
 import { useNavigate } from "@tanstack/react-router";
 import { t } from "i18next";
 
@@ -27,11 +26,7 @@ const TopCreatorBadge: React.FC<BadgeProps> = ({ status }) => {
       }`}
     >
       <span>
-        <img
-          src={isActive ? GoldCheckIcon : GrayCheckIcon}
-          alt={isActive ? "Gold Check" : "Gray Check"}
-          className="w-6 h-6"
-        />
+        <img src={GoldCheckIcon} alt={"Gold Check"} className="w-6 h-6" />
       </span>
       {isActive ? "Top Creator" : t("Torne-se um Top Creator")}
     </div>
