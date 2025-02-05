@@ -1011,12 +1011,17 @@ export default {
       "Select the disclosure channels that the influencer must post (only for IGC)",
     "Briefing da Campanha (Forneça detalhes essenciais que o Creator deve saber)*":
       "Campaign Briefing (Provide essential details that the Creator should know)*",
+    "Descreva o objetivo da campanha, público-alvo, mensagens principais, diretrizes visuais e sonoras e informações essenciais sobre a marca e o produto. Ou, se preferir, preencha os campos obrigatórios e clique em ‘Gerar com IA’ para que a IA crie o briefing da sua campanha.":
+      "Describe the campaign's objective, target audience, main messages, visual and sound guidelines, and essential information about the brand and product. Or, if you prefer, fill in the required fields and click 'Generate with AI' for the AI to create your campaign briefing.",
+    "Para usar nossa Inteligência Artificial, preencha todos os campos obrigatórios. Os opcionais são recomendados para um briefing mais completo. Você pode preenchê-los manualmente ou clicar em 'Gerar com IA' para que a IA crie o briefing da sua campanha.":
+      "To use our Artificial Intelligence, fill in all required fields. The optional ones are recommended for a more complete briefing. You can fill them in manually or click 'Generate with AI' for the AI to create your campaign briefing.",
     "Forneça detalhes essenciais que o Creator deve saber, incluindo o objetivo e escopo da campanha, as mensagens principais que precisam ser abordadas, o tom e linguagem desejados, e diretrizes visuais como identidade visual e elementos gráficos.":
       "Provide essential details that the Creator should know, including the campaign's objective and scope, the main messages that need to be addressed, the desired tone and language, and visual guidelines such as visual identity and graphic elements.",
     "Descreva o propósito da campanha, público-alvo, mensagens principais, tom de voz e as diretrizes visuais.":
       "Describe the purpose of the campaign, target audience, main messages, tone of voice, and visual guidelines.",
     "Inclua informações essenciais sobre o objetivo, mensagens principais, tom, linguagem e diretrizes visuais":
       "Include essential information about the objective, main messages, tone, language, and visual guidelines",
+    "Quero Gerar o Briefing com IA": "I Want to Generate Briefing with AI",
     "Entregáveis Obrigatórios (Especifique a quantidade e o tipo de conteúdos que o Creator deve produzir)*":
       "Mandatory Deliverables (Specify the quantity and type of content the Creator must produce)*",
     "Especifique a quantidade e o tipo de conteúdos que o Creator deve produzir. Inclua Reels, Stories, Posts no feed, vídeos ou fotos entregues via WeTransfer ou Google Drive, detalhando a quantidade e duração para uso em tráfego orgânico e pago. Adicione outros formatos necessários, se houver.":
