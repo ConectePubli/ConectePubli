@@ -57,10 +57,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
           <div
             className="w-full h-full bg-cover bg-center rounded-t-lg md:rounded-l-lg md:rounded-tr-none"
             style={{
-              backgroundImage: `url(${pb.getFileUrl(
-                campaignData,
-                campaignData.cover_img
-              )})`,
+              backgroundImage: `url(${
+                typeof campaignData.cover_img === "string"
+                  ? pb.getFileUrl(campaignData, campaignData.cover_img)
+                  : URL.createObjectURL(campaignData.cover_img)
+              })`,
             }}
           ></div>
         ) : (
