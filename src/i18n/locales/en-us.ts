@@ -1808,5 +1808,17 @@ export default {
     "A campanha ainda não possui inscritos":
       "The campaign does not have subscribers yet",
     "Campanha recusada": "Campaign rejected",
+    "Duplicar Campanha": "Duplicate Campaign",
+    "Atenção: Revise as datas da sua campanha duplicada": `Attention: Review the dates of your duplicated campaign`,
+    "Duplicar campanha": "Duplicate campaign",
+    "Você acabou de duplicar a campanha": "You just duplicated the campaign",
+    "com sucesso! 🎉": "successfully! 🎉",
+    "Para evitar problemas no planejamento, revise com atenção as datas de inscrições e da campanha. Por padrão, as mesmas datas da campanha original foram mantidas.": `To avoid problems in planning, carefully review the registration and campaign dates. By default, the same dates as the original campaign have been maintained.`,
+    "O que revisar:": "What to review:",
+    "Datas de inscrição": "Registration dates",
+    "Data de início e fim da campanha": "Start and end date of the campaign",
+    "Valor da remuneração do criador": "Creator's remuneration value",
+    "Altere as datas, se necessário, para garantir que tudo esteja alinhado com seus objetivos.": `Change the dates, if necessary, to ensure everything is aligned with your goals.`,
+    "Duplicando...": "Duplicating...",
   },
 };

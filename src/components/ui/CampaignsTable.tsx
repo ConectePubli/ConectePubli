@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { format } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
@@ -14,20 +15,23 @@ import { Campaign } from "@/types/Campaign";
 import pb from "@/lib/pb";
 import { generateUniqueName } from "@/services/createCampaign";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import { Spinner } from "phosphor-react";
 
 const CampaignsTable: React.FC = () => {
   const { t } = useTranslation();
   const { campaigns, isLoading, error } = useCampaignStore();
-
+  const [isDuplicating, setIsDuplicating] = useState(false);
   const navigate = useNavigate();
 
   const handleDuplicateCampaign = async (originalCampaign: Campaign) => {
+    setIsDuplicating(true);
     if (originalCampaign.status !== "ready") {
       toast.error(t("Somente campanhas prontas podem ser duplicadas."));
       return;
     }
+
     try {
-      // Gerar unique_name único
       const existingUniqueNames: string[] = await pb
         .collection("Campaigns")
         .getFullList({ fields: "unique_name" })
@@ -45,16 +49,37 @@ const CampaignsTable: React.FC = () => {
 
       const newUniqueName = generateUniqueName(baseName, existingUniqueNames);
 
-      const newDraftData = {
-        ...originalCampaign,
-        id: undefined,
-        created: undefined,
-        updated: undefined,
-        collectionId: undefined,
-        collectionName: undefined,
+      let coverFile: File | undefined = undefined;
+      if (originalCampaign.cover_img && originalCampaign.collectionId) {
+        const fileUrl = `${import.meta.env.VITE_POCKETBASE_URL}/api/files/${originalCampaign.collectionId}/${originalCampaign.id}/${originalCampaign.cover_img}`;
+        const res = await fetch(fileUrl);
+        if (!res.ok) {
+          throw new Error("Erro ao baixar a imagem de capa.");
+        }
+        const blob = await res.blob();
+        coverFile = new File([blob], originalCampaign.cover_img as string, {
+          type: blob.type,
+        });
+      }
+
+      const {
+        id,
+        created,
+        updated,
+        collectionId,
+        collectionName,
+        ...restCampaign
+      } = originalCampaign;
+
+      const newDraftData: Partial<Campaign> = {
+        ...restCampaign,
         status: "draft",
         unique_name: newUniqueName,
       };
+
+      if (coverFile) {
+        newDraftData.cover_img = coverFile;
+      }
 
       const newCampaign = await pb.collection("Campaigns").create(newDraftData);
 
@@ -63,11 +88,14 @@ const CampaignsTable: React.FC = () => {
         search: {
           campaign_id: newCampaign.id,
           is_draft: true,
+          is_duplicated: true,
         },
       });
     } catch (error) {
       console.error("Erro ao duplicar campanha:", error);
       toast.error(t("Erro ao duplicar campanha"));
+    } finally {
+      setIsDuplicating(false);
     }
   };
 
@@ -220,10 +248,17 @@ const CampaignsTable: React.FC = () => {
                         <Button
                           variant="blue"
                           size="sm"
-                          className="w-full"
+                          className="w-full flex items-center justify-center"
                           onClick={() => handleDuplicateCampaign(campaign)}
                         >
-                          Duplicar Campanha
+                          {isDuplicating ? (
+                            <>
+                              <Spinner className="mr-2 h-4 w-4 animate-spin" />{" "}
+                              {t("Duplicando...")}
+                            </>
+                          ) : (
+                            t("Duplicar campanha")
+                          )}
                         </Button>
                       </DropdownMenuContent>
                     </DropdownMenu>
