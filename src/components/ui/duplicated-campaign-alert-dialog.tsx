@@ -69,7 +69,10 @@ const DuplicatedCampaignAlertDialog: React.FC<
           <AlertDialogCancel onClick={() => onOpenChange(false)}>
             {t("Fechar")}
           </AlertDialogCancel>
-          <AlertDialogAction onClick={() => onOpenChange(false)}>
+          <AlertDialogAction
+            onClick={() => onOpenChange(false)}
+            className="bg-blue-900 hover:bg-blue-800 transition-all"
+          >
             {t("Ok")}
           </AlertDialogAction>
         </AlertDialogFooter>

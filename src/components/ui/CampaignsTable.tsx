@@ -25,12 +25,11 @@ const CampaignsTable: React.FC = () => {
   const navigate = useNavigate();
 
   const handleDuplicateCampaign = async (originalCampaign: Campaign) => {
-    setIsDuplicating(true);
     if (originalCampaign.status !== "ready") {
-      toast.error(t("Somente campanhas prontas podem ser duplicadas."));
+      toast.error(t("Apenas campanhas prontas podem ser duplicadas."));
       return;
     }
-
+    setIsDuplicating(true);
     try {
       const existingUniqueNames: string[] = await pb
         .collection("Campaigns")
