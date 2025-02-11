@@ -25,8 +25,11 @@ const CampaignsTable: React.FC = () => {
   const navigate = useNavigate();
 
   const handleDuplicateCampaign = async (originalCampaign: Campaign) => {
-    if (originalCampaign.status !== "ready") {
-      toast.error(t("Apenas campanhas prontas podem ser duplicadas."));
+    if (
+      originalCampaign.status === "analyzing" ||
+      originalCampaign.status === "rejected"
+    ) {
+      toast.error(t("Apenas campanhas aprovadas podem ser duplicadas."));
       return;
     }
     setIsDuplicating(true);

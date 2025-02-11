@@ -1820,6 +1820,6 @@ export default {
     "Valor da remuneração do criador": "Creator's remuneration value",
     "Altere as datas, se necessário, para garantir que tudo esteja alinhado com seus objetivos.": `Change the dates, if necessary, to ensure everything is aligned with your goals.`,
     "Duplicando...": "Duplicating...",
-    "Apenas campanhas prontas podem ser duplicadas.": `Only ready campaigns can be duplicated.`,
+    "Apenas campanhas aprovadas podem ser duplicadas.": `Only approved campaigns can be duplicated.`,
   },
 };
