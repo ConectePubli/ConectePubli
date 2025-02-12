@@ -1808,5 +1808,26 @@ export default {
     "A campanha ainda não possui inscritos":
       "The campaign does not have subscribers yet",
     "Campanha recusada": "Campaign rejected",
+    "Assinatura Premium para Creators: Eleve Seu Potencial!":
+      "Premium Creator Subscription: Elevate Your Potential!",
+    "Desbloqueie vantagens exclusivas como destaque nas campanhas, acesso a conteúdos e ferramentas indispensáveis, e torne-se o Creator preferido das marcas. Escolha o plano que mais combina com seu sucesso!":
+      "Unlock exclusive benefits such as being featured in campaigns, access to essential content and tools, and become the brands' favorite Creator. Choose the plan that best suits your success!",
+    "Prioridade nas campanhas": "Priority in campaigns",
+    "Destaque na Vitrine de Creators por 5 dias ao mês":
+      "Featured in the Creators Showcase for 5 days a month",
+    "Aula Edição de Conteúdo Cap Cut": "Cap Cut Content Editing Class",
+    "Modelo de Midia Kit Promos + Tutorial Como Editar":
+      "Promos Kit Media Template + Tutorial How to Edit",
+    "E-book: Como Criar Roteiros - Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT":
+      "E-book: How to Create Scripts - Practical Techniques and Strategic Prompts with AI and ChatGPT",
+    "E-book: Como Criar Conteúdo - Ferramentas, Dicas e Prompts Estratégicos com ChatGPT":
+      "E-book: How to Create Content - Tools, Tips and Strategic Prompts with ChatGPT",
+    "Dicionário completo da Creators Economy":
+      "Complete Creators Economy Dictionary",
+    "E-book: Guia Prático para Emitir Nota Fiscal como Creator":
+      "E-book: Practical Guide to Issuing Invoices as a Creator",
+    "E-book Creator Economy 360°: O Guia completo para Criadores de Conteúdo Digital":
+      "E-book Creator Economy 360°: The Complete Guide for Digital Content Creators",
+    "Acessar conteúdos": "Access contents",
   },
 };

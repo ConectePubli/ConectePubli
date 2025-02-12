@@ -31,11 +31,13 @@ import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './r
 import { Route as dashboardSideNavDashboardDashboardCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-creator/index'
 import { Route as dashboardSideNavDashboardPremiumMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/premium/marca/index'
 import { Route as dashboardSideNavDashboardPremiumEbooksIndexImport } from './routes/(dashboard)/_side-nav-dashboard/premium/ebooks/index'
+import { Route as dashboardSideNavDashboardPremiumCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/premium/creator/index'
 import { Route as dashboardSideNavDashboardEntregaveisContratoIndexImport } from './routes/(dashboard)/_side-nav-dashboard/entregaveis/contrato/index'
 import { Route as dashboardSideNavDashboardEntregaveisIdIndexImport } from './routes/(dashboard)/_side-nav-dashboard/entregaveis/$id/index'
 import { Route as dashboardSideNavDashboardDashboardChatIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/chat/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaRascunhosIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/rascunhos/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/criar-campanha/index'
+import { Route as dashboardSideNavDashboardPremiumCreatorConteudosIndexImport } from './routes/(dashboard)/_side-nav-dashboard/premium/creator/conteudos/index'
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/index'
 import { Route as dashboardSideNavDashboardperfisMarcaUserNameIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/index'
 import { Route as dashboardSideNavDashboardperfisCreatorUsernameIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/index'
@@ -161,6 +163,12 @@ const dashboardSideNavDashboardPremiumEbooksIndexRoute =
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
+const dashboardSideNavDashboardPremiumCreatorIndexRoute =
+  dashboardSideNavDashboardPremiumCreatorIndexImport.update({
+    path: '/premium/creator/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
 const dashboardSideNavDashboardEntregaveisContratoIndexRoute =
   dashboardSideNavDashboardEntregaveisContratoIndexImport.update({
     path: '/entregaveis/contrato/',
@@ -188,6 +196,12 @@ const dashboardSideNavDashboardDashboardMarcaRascunhosIndexRoute =
 const dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute =
   dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexImport.update({
     path: '/dashboard-marca/criar-campanha/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute =
+  dashboardSideNavDashboardPremiumCreatorConteudosIndexImport.update({
+    path: '/premium/creator/conteudos/',
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
@@ -404,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardEntregaveisContratoIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/premium/creator/': {
+      id: '/_side-nav-dashboard/premium/creator/'
+      path: '/premium/creator'
+      fullPath: '/premium/creator'
+      preLoaderRoute: typeof dashboardSideNavDashboardPremiumCreatorIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/premium/ebooks/': {
       id: '/_side-nav-dashboard/premium/ebooks/'
       path: '/premium/ebooks'
@@ -460,6 +481,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/premium/creator/conteudos/': {
+      id: '/_side-nav-dashboard/premium/creator/conteudos/'
+      path: '/premium/creator/conteudos'
+      fullPath: '/premium/creator/conteudos'
+      preLoaderRoute: typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/editar/': {
       id: '/_side-nav-dashboard/creator/$username/editar/'
       path: '/creator/$username/editar'
@@ -492,6 +520,7 @@ interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardDashboardChatIndexRoute: typeof dashboardSideNavDashboardDashboardChatIndexRoute
   dashboardSideNavDashboardEntregaveisIdIndexRoute: typeof dashboardSideNavDashboardEntregaveisIdIndexRoute
   dashboardSideNavDashboardEntregaveisContratoIndexRoute: typeof dashboardSideNavDashboardEntregaveisContratoIndexRoute
+  dashboardSideNavDashboardPremiumCreatorIndexRoute: typeof dashboardSideNavDashboardPremiumCreatorIndexRoute
   dashboardSideNavDashboardPremiumEbooksIndexRoute: typeof dashboardSideNavDashboardPremiumEbooksIndexRoute
   dashboardSideNavDashboardPremiumMarcaIndexRoute: typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
@@ -500,6 +529,7 @@ interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardperfisCreatorUsernameIndexRoute: typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   dashboardSideNavDashboardperfisMarcaUserNameIndexRoute: typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
+  dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute: typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute
   dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute: typeof dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute
   dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute: typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
@@ -530,6 +560,8 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardEntregaveisIdIndexRoute,
     dashboardSideNavDashboardEntregaveisContratoIndexRoute:
       dashboardSideNavDashboardEntregaveisContratoIndexRoute,
+    dashboardSideNavDashboardPremiumCreatorIndexRoute:
+      dashboardSideNavDashboardPremiumCreatorIndexRoute,
     dashboardSideNavDashboardPremiumEbooksIndexRoute:
       dashboardSideNavDashboardPremiumEbooksIndexRoute,
     dashboardSideNavDashboardPremiumMarcaIndexRoute:
@@ -546,6 +578,8 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardperfisMarcaUserNameIndexRoute,
     dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute:
       dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute,
+    dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute:
+      dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute,
     dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute:
       dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute,
     dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute:
@@ -591,6 +625,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/chat': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/entregaveis/$id': typeof dashboardSideNavDashboardEntregaveisIdIndexRoute
   '/entregaveis/contrato': typeof dashboardSideNavDashboardEntregaveisContratoIndexRoute
+  '/premium/creator': typeof dashboardSideNavDashboardPremiumCreatorIndexRoute
   '/premium/ebooks': typeof dashboardSideNavDashboardPremiumEbooksIndexRoute
   '/premium/marca': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
@@ -599,6 +634,7 @@ export interface FileRoutesByFullPath {
   '/creator/$username': typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   '/marca/$userName': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
+  '/premium/creator/conteudos': typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute
   '/creator/$username/editar': typeof dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute
   '/marca/$userName/editar': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
@@ -625,6 +661,7 @@ export interface FileRoutesByTo {
   '/dashboard/chat': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/entregaveis/$id': typeof dashboardSideNavDashboardEntregaveisIdIndexRoute
   '/entregaveis/contrato': typeof dashboardSideNavDashboardEntregaveisContratoIndexRoute
+  '/premium/creator': typeof dashboardSideNavDashboardPremiumCreatorIndexRoute
   '/premium/ebooks': typeof dashboardSideNavDashboardPremiumEbooksIndexRoute
   '/premium/marca': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
@@ -633,6 +670,7 @@ export interface FileRoutesByTo {
   '/creator/$username': typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   '/marca/$userName': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
+  '/premium/creator/conteudos': typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute
   '/creator/$username/editar': typeof dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute
   '/marca/$userName/editar': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
@@ -661,6 +699,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/dashboard/chat/': typeof dashboardSideNavDashboardDashboardChatIndexRoute
   '/_side-nav-dashboard/entregaveis/$id/': typeof dashboardSideNavDashboardEntregaveisIdIndexRoute
   '/_side-nav-dashboard/entregaveis/contrato/': typeof dashboardSideNavDashboardEntregaveisContratoIndexRoute
+  '/_side-nav-dashboard/premium/creator/': typeof dashboardSideNavDashboardPremiumCreatorIndexRoute
   '/_side-nav-dashboard/premium/ebooks/': typeof dashboardSideNavDashboardPremiumEbooksIndexRoute
   '/_side-nav-dashboard/premium/marca/': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
@@ -669,6 +708,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/creator/$username/': typeof dashboardSideNavDashboardperfisCreatorUsernameIndexRoute
   '/_side-nav-dashboard/marca/$userName/': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
+  '/_side-nav-dashboard/premium/creator/conteudos/': typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute
   '/_side-nav-dashboard/creator/$username/editar/': typeof dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute
   '/_side-nav-dashboard/marca/$userName/editar/': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
@@ -697,6 +737,7 @@ export interface FileRouteTypes {
     | '/dashboard/chat'
     | '/entregaveis/$id'
     | '/entregaveis/contrato'
+    | '/premium/creator'
     | '/premium/ebooks'
     | '/premium/marca'
     | '/dashboard/campanhas/$campaignId/aprovar'
@@ -705,6 +746,7 @@ export interface FileRouteTypes {
     | '/creator/$username'
     | '/marca/$userName'
     | '/dashboard/campanhas/$campaignId'
+    | '/premium/creator/conteudos'
     | '/creator/$username/editar'
     | '/marca/$userName/editar'
   fileRoutesByTo: FileRoutesByTo
@@ -730,6 +772,7 @@ export interface FileRouteTypes {
     | '/dashboard/chat'
     | '/entregaveis/$id'
     | '/entregaveis/contrato'
+    | '/premium/creator'
     | '/premium/ebooks'
     | '/premium/marca'
     | '/dashboard/campanhas/$campaignId/aprovar'
@@ -738,6 +781,7 @@ export interface FileRouteTypes {
     | '/creator/$username'
     | '/marca/$userName'
     | '/dashboard/campanhas/$campaignId'
+    | '/premium/creator/conteudos'
     | '/creator/$username/editar'
     | '/marca/$userName/editar'
   id:
@@ -764,6 +808,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/dashboard/chat/'
     | '/_side-nav-dashboard/entregaveis/$id/'
     | '/_side-nav-dashboard/entregaveis/contrato/'
+    | '/_side-nav-dashboard/premium/creator/'
     | '/_side-nav-dashboard/premium/ebooks/'
     | '/_side-nav-dashboard/premium/marca/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
@@ -772,6 +817,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/creator/$username/'
     | '/_side-nav-dashboard/marca/$userName/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/'
+    | '/_side-nav-dashboard/premium/creator/conteudos/'
     | '/_side-nav-dashboard/creator/$username/editar/'
     | '/_side-nav-dashboard/marca/$userName/editar/'
   fileRoutesById: FileRoutesById
@@ -849,6 +895,7 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/dashboard/chat/",
         "/_side-nav-dashboard/entregaveis/$id/",
         "/_side-nav-dashboard/entregaveis/contrato/",
+        "/_side-nav-dashboard/premium/creator/",
         "/_side-nav-dashboard/premium/ebooks/",
         "/_side-nav-dashboard/premium/marca/",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar",
@@ -857,6 +904,7 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/creator/$username/",
         "/_side-nav-dashboard/marca/$userName/",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/",
+        "/_side-nav-dashboard/premium/creator/conteudos/",
         "/_side-nav-dashboard/creator/$username/editar/",
         "/_side-nav-dashboard/marca/$userName/editar/"
       ]
@@ -933,6 +981,10 @@ export const routeTree = rootRoute
       "filePath": "(dashboard)/_side-nav-dashboard/entregaveis/contrato/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
+    "/_side-nav-dashboard/premium/creator/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/premium/creator/index.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
     "/_side-nav-dashboard/premium/ebooks/": {
       "filePath": "(dashboard)/_side-nav-dashboard/premium/ebooks/index.tsx",
       "parent": "/_side-nav-dashboard"
@@ -963,6 +1015,10 @@ export const routeTree = rootRoute
     },
     "/_side-nav-dashboard/dashboard/campanhas/$campaignId/": {
       "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/index.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
+    "/_side-nav-dashboard/premium/creator/conteudos/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/premium/creator/conteudos/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/creator/$username/editar/": {

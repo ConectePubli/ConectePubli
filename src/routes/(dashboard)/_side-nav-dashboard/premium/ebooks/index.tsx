@@ -44,10 +44,9 @@ export const Route = createFileRoute(
     }
 
     if (!purchasedPlan || purchasedPlan.length === 0) {
-      console.log("redirect");
-      // throw redirect({
-      //   to: "/premium/marca",
-      // });
+      throw redirect({
+        to: "/premium/marca",
+      });
     }
   },
 });

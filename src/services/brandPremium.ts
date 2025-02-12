@@ -3,7 +3,7 @@ import pb from "@/lib/pb";
 import { BrandPremiumPlan } from "@/types/BrandPremiumPlan";
 import axios from "axios";
 
-export const subscribeClubPremium = async (
+export const subscribeBrandPremium = async (
   plan: BrandPremiumPlan,
   toast: any,
   loadingPayment: React.ComponentState,
@@ -50,7 +50,7 @@ export const subscribeClubPremium = async (
   }
 };
 
-export const unsubscribeClubPremium = async (
+export const unsubscribeBrandPremium = async (
   setLoadingCancel: React.ComponentState,
   subscription_id: string,
   toast: any
@@ -100,7 +100,7 @@ export const isBrandPremium = async () => {
       return false;
     }
   } catch (e) {
-    console.log(`error fetch club premium plan: ${e}`);
+    console.log(`error fetch brand premium plan: ${e}`);
 
     return false;
   }

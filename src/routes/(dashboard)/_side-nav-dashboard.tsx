@@ -95,6 +95,17 @@ export function SideNavDashboard() {
             </li>
           )}
 
+          {!isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link to="/premium/creator" className="flex items-center gap-2">
+                  <Flame className="w-6 h-6" />
+                  {t("Assinatura premium")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
           {isBrand && hasPlan && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
@@ -212,6 +223,22 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                 onClick={closeSheet}
               >
                 <Link to="/premium/marca" className="flex items-center gap-2">
+                  <Flame className="w-6 h-6" />
+                  {t("Assinatura premium")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {!isBrand && (
+            <li>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                asChild
+                onClick={closeSheet}
+              >
+                <Link to="/premium/creator" className="flex items-center gap-2">
                   <Flame className="w-6 h-6" />
                   {t("Assinatura premium")}
                 </Link>

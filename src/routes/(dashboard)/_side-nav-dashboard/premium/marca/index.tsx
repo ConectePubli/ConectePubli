@@ -7,24 +7,25 @@ import {
 } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/ReactToastify.css";
 import { CaretRight } from "phosphor-react";
+import { Info } from "lucide-react";
+import { t } from "i18next";
+import "react-toastify/ReactToastify.css";
 
 import Spinner from "@/components/ui/Spinner";
 import Modal from "@/components/ui/Modal";
 
 import { PurchasedPremiumPlan } from "@/types/PurchasedPremiumPlan";
-
-import { t } from "i18next";
 import { BrandPremiumPlan } from "@/types/BrandPremiumPlan";
+
+import { formatDateUTC } from "@/utils/formatDateUTC";
 import { getUserType } from "@/lib/auth";
 import pb from "@/lib/pb";
+
 import {
-  subscribeClubPremium,
-  unsubscribeClubPremium,
+  subscribeBrandPremium,
+  unsubscribeBrandPremium,
 } from "@/services/brandPremium";
-import { formatDateUTC } from "@/utils/formatDateUTC";
-import { Info } from "lucide-react";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/premium/marca/"
@@ -120,7 +121,7 @@ function Page() {
                   loadingCancel && "opacity-30 cursor-not-allowed"
                 }`}
                 onClick={() => {
-                  unsubscribeClubPremium(
+                  unsubscribeBrandPremium(
                     setLoadingCancel,
                     currentPlan.subscription_stripe_id,
                     toast
@@ -239,7 +240,7 @@ function Page() {
               variant={"blue"}
               className="mt-4 w-full text-white py-2 px-4 rounded-md text-base"
               onClick={() =>
-                subscribeClubPremium(
+                subscribeBrandPremium(
                   plans[0],
                   toast,
                   loadingPayment,
@@ -335,7 +336,7 @@ function Page() {
                 variant={"blue"}
                 className="mt-6 w-full text-white py-2 px-4 rounded-md text-base disabled:bg-gray-700"
                 onClick={() =>
-                  subscribeClubPremium(
+                  subscribeBrandPremium(
                     plans[1],
                     toast,
                     loadingPayment,
