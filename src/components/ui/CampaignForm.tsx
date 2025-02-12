@@ -45,6 +45,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import DuplicatedCampaignAlertDialog from "./duplicated-campaign-alert-dialog";
 
 const minAgeOptions = Array.from({ length: 65 }, (_, i) => ({
   label: (i + 18).toString(),
@@ -106,12 +107,14 @@ interface CampaignFormProps {
   campaignId?: string;
   initialCampaignData?: Campaign;
   campaignIdDraft?: string;
+  isDuplicated?: boolean;
 }
 
 export const CampaignForm: React.FC<CampaignFormProps> = ({
   campaignId,
   initialCampaignData,
   campaignIdDraft,
+  isDuplicated,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -120,6 +123,14 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   const isEditMode = Boolean(campaignId);
   const [isDraft] = useState(initialCampaignData?.status === "draft");
   const [campaignIdDraftState] = useState(campaignIdDraft);
+
+  const [showDuplicatedDialog, setShowDuplicatedDialog] = useState(false);
+
+  useEffect(() => {
+    if (isDuplicated) {
+      setShowDuplicatedDialog(true);
+    }
+  }, [isDuplicated]);
 
   const [loadingCreate, setLoadingCreate] = useState(false);
 
@@ -772,6 +783,12 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
   return (
     <div className="flex flex-col items-center justify-center">
+      <DuplicatedCampaignAlertDialog
+        open={showDuplicatedDialog}
+        onOpenChange={setShowDuplicatedDialog}
+        campaignName={initialCampaignData?.name || ""}
+      />
+
       {showLeaveModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-md w-full max-w-xl mx-4">

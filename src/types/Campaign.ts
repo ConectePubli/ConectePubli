@@ -33,7 +33,7 @@ export interface Campaign {
     | "ended"
     | "rejected";
   niche: string[];
-  cover_img?: string;
+  cover_img?: string | File;
   gender?: string;
   min_age?: number;
   max_age?: number;

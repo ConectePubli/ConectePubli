@@ -18,6 +18,7 @@ export const Route = createFileRoute(
     const match = useMatch(Route.id as any);
     const campaignIdFromURL = match.search?.campaign_id || null;
     const isDraftFromURL = match.search?.is_draft === true;
+    const isDuplicatedFromURL = match.search?.is_duplicated === true;
 
     const [campaignData, setCampaignData] = useState<Campaign | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -74,7 +75,9 @@ export const Route = createFileRoute(
       return (
         <div className="p-10 flex flex-col items-center justify-center w-full">
           <Spinner />
-          <p className="text-center mt-2">{t("Carregando dados da campanha...")}</p>
+          <p className="text-center mt-2">
+            {t("Carregando dados da campanha...")}
+          </p>
         </div>
       );
     }
@@ -91,6 +94,7 @@ export const Route = createFileRoute(
       <CampaignForm
         initialCampaignData={campaignData as Campaign}
         campaignIdDraft={campaignData?.id}
+        isDuplicated={isDuplicatedFromURL}
       />
     );
   },

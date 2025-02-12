@@ -306,8 +306,8 @@ function Page() {
             const deliverablesData = [
               { product: "1 Reels", price: creator.reels_price },
               {
-                product: t("1 Vídeo + Combo de Fotos UGC"),
-                price: creator.ugc_price,
+                product: t("1 Vídeo + Combo de Fotos IGC"),
+                price: creator.igc_price,
               },
               { product: "Stories IGC", price: creator.stories_price },
               { product: t("Post no Feed"), price: creator.feed_price },

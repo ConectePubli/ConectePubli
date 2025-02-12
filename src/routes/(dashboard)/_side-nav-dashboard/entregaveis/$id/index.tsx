@@ -270,7 +270,7 @@ function Page() {
               {deliverable.ugc_qty >= 1 && (
                 <div className="flex justify-between mb-2">
                   <span>
-                    {t("1 Video + UGC Photos Combo")}{" "}
+                    {t("1 Vídeo + Combo de Fotos IGC")}{" "}
                     <span className="text-[#10438F] font-semibold">
                       x {deliverable.ugc_qty}
                     </span>
@@ -278,7 +278,7 @@ function Page() {
                   <span>
                     {(
                       (deliverable.ugc_qty *
-                        deliverable.expand.influencer.ugc_price) /
+                        deliverable.expand.influencer.igc_price) /
                       100
                     ).toLocaleString("pt-BR", {
                       style: "currency",

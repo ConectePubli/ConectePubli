@@ -95,7 +95,7 @@ function InfluencerEditProfilePage() {
       "stories_price",
       "feed_price",
       "reels_price",
-      "ugc_price",
+      "igc_price",
       "combo_ugc_price",
       "combo_recommend_price",
       "description_combo_recommend",
@@ -403,7 +403,7 @@ function InfluencerEditProfilePage() {
                   stories_price: t("Preço por stories"),
                   feed_price: t("Preço por post no feed"),
                   reels_price: t("Preço por reels"),
-                  ugc_price: t("Preço por vídeo e combo de fotos UGC"),
+                  igc_price: t("Preço por vídeo e combo de fotos IGC"),
                   combo_ugc_price: t("Preço por combo UGC"),
                   combo_recommend_price: t("Preço por Combo Recomendado"),
                   description_combo_recommend: t(
@@ -509,7 +509,7 @@ function InfluencerEditProfilePage() {
           updateData["stories_price"] = formData.stories_price;
           updateData["feed_price"] = formData.feed_price;
           updateData["reels_price"] = formData.reels_price;
-          updateData["ugc_price"] = formData.ugc_price;
+          updateData["igc_price"] = formData.igc_price;
           updateData["combo_ugc_price"] = formData.combo_ugc_price;
           updateData["combo_recommend_price"] = formData.combo_recommend_price;
           updateData["description_combo_recommend"] =
@@ -1943,15 +1943,15 @@ function PricesSection({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          {t("Quanto você cobra por um vídeo e um combo de fotos UGC?*")}
+          {t("Quanto você cobra por um vídeo e um combo de fotos IGC?*")}
         </label>
         <input
           type="text"
-          name="ugc_price"
+          name="igc_price"
           className="border border-gray-300 p-2 rounded-lg w-full"
           placeholder={t("Ex: R$200,00")}
           value={
-            formData.ugc_price ? formatCentsToCurrency(formData.ugc_price) : ""
+            formData.igc_price ? formatCentsToCurrency(formData.igc_price) : ""
           }
           onChange={handleSectionInputChange}
         />
