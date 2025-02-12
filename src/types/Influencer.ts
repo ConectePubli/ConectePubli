@@ -55,7 +55,7 @@ export interface Influencer {
   stories_price: number;
   feed_price: number;
   reels_price: number;
-  ugc_price: number;
+  igc_price: number;
   combo_ugc_price: number;
   combo_recommend_price: number;
   description_combo_recommend: string;

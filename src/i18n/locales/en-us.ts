@@ -176,7 +176,7 @@ export default {
     "Preço por stories": "Price per Story",
     "Preço por post no feed": "Price per Feed Post",
     "Preço por reels": "Price per Reel",
-    "Preço por vídeo e combo de fotos UGC":
+    "Preço por vídeo e combo de fotos IGC":
       "Price per UGC video and photo combo",
     "Preço por combo UGC": "Price per UGC combo",
     "Preço por Combo Recomendado": "Price per Combo I recommend",
@@ -736,7 +736,7 @@ export default {
     "Nenhum creator encontrado.": "No creators found.",
     "Não informado": "Not informed",
     "Localização não informada": "Location not informed",
-    "1 Vídeo + Combo de Fotos UGC:": "1 Video + UGC Photos Combo:",
+    "1 Vídeo + Combo de Fotos IGC:": "1 Video + IGC Photos Combo:",
     "Enviar mensagem": "Send message",
     "Biografia não informada.": "Biography not informed.",
     Próxima: "Next",
@@ -862,7 +862,7 @@ export default {
     "Ex: R$100,00": "E.g. R$100.00",
     "Quanto você cobra por um reels?*": "How much do you charge for a reels?",
     "Ex: R$150,00": "E.g. R$150.00",
-    "Quanto você cobra por um vídeo e um combo de fotos UGC?*":
+    "Quanto você cobra por um vídeo e um combo de fotos IGC?*":
       "How much do you charge for a video and a UGC photo combo?",
     "Quanto você cobra por um Combo UGC? (Inclui 1 vídeo para a marca usar + 3 fotos + avaliação escrita)*":
       "How much do you charge for a UGC Combo? (Includes 1 video for the brand to use + 3 photos + written evaluation)",
@@ -1644,7 +1644,7 @@ export default {
       "No deliverable proposals at the moment",
     "Aguardando aprovação do Creator": "Awaiting Creator approval",
     "Proposta recusada pelo Creator": "Proposal rejected by Creator",
-    "1 Vídeo + Combo de Fotos UGC": "1 Video + UGC Photo Combo",
+    "1 Vídeo + Combo de Fotos IGC": "1 Video + UGC Photo Combo",
     "Post no Feed": "Post in Feed",
     "Combo UGC": "Combo UGC",
     "Combo Recomendado": "Recommended Combo",
