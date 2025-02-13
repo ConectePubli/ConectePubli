@@ -65,5 +65,6 @@ export interface Influencer {
   collectionName: string;
   expand?: {
     niche: Niche[];
+    purchased_influencers_plans_via_influencer: boolean;
   };
 }

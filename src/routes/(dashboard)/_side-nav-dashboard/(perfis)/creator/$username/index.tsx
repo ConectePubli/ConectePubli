@@ -3,17 +3,22 @@ import { useEffect, useState } from "react";
 import {
   createFileRoute,
   redirect,
+  useLoaderData,
   useMatch,
   useNavigate,
 } from "@tanstack/react-router";
 import { MapPin, Globe, User } from "lucide-react";
 import { Hourglass, GenderIntersex, Image, Tag } from "phosphor-react";
 import { useMutation } from "@tanstack/react-query";
+import { t } from "i18next";
+import { Rating as StarRating } from "react-simple-star-rating";
+import { RecordModel } from "pocketbase";
 
 import { UserAuth } from "@/types/UserAuth";
-import SocialNetworks from "@/types/SocialNetworks";
 import { Influencer } from "@/types/Influencer";
 import { Niche } from "@/types/Niche";
+import { Rating } from "@/types/Rating";
+import SocialNetworks from "@/types/SocialNetworks";
 
 import CreatorIcon from "@/assets/icons/megaphone.svg";
 import LocationPin from "@/assets/icons/location-pin.svg";
@@ -21,13 +26,12 @@ import EditIcon from "@/assets/icons/edit.svg";
 
 import pb from "@/lib/pb";
 import { getUserType } from "@/lib/auth";
-import { Rating } from "@/types/Rating";
+import { isInfluencerPremium } from "@/services/influencerPremium";
+
 import AllRatingsModal from "@/components/ui/AllRatingsModal";
-import { RecordModel } from "pocketbase";
-import { Rating as StarRating } from "react-simple-star-rating";
 import Spinner from "@/components/ui/Spinner";
 import TopCreatorBadge from "@/components/ui/top-creator-badge";
-import { t } from "i18next";
+import { CreatorPremiumBadge } from "@/components/ui/CreatorPremiumBadge";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/"
@@ -41,6 +45,10 @@ export const Route = createFileRoute(
         to: "/login",
       });
     }
+
+    const isPremium = await isInfluencerPremium();
+
+    return { isPremium };
   },
   pendingComponent: () => (
     <div className="flex justify-center items-center h-screen">
@@ -51,6 +59,8 @@ export const Route = createFileRoute(
 
 function InfluencerProfilePage() {
   const navigate = useNavigate();
+
+  const { isPremium } = useLoaderData({ from: Route.id });
 
   const {
     params: { username },
@@ -281,6 +291,7 @@ function InfluencerProfilePage() {
               <span className="break-words break-all">
                 {influencer.name || "..."}
               </span>
+
               <div className="mt-2 sm:mt-0 sm:ml-4">
                 {influencer.top_creator ? (
                   <TopCreatorBadge status={true} />
@@ -288,6 +299,12 @@ function InfluencerProfilePage() {
                   <TopCreatorBadge status={false} />
                 ) : null}
               </div>
+
+              {isPremium ? (
+                <div className="sm:ml-4">
+                  <CreatorPremiumBadge />
+                </div>
+              ) : null}
             </h1>
           </div>
         </div>

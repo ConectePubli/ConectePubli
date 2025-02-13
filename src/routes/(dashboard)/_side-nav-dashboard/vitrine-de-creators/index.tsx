@@ -13,17 +13,18 @@ import GoldCheckIcon from "@/assets/icons/gold-check.png";
 import LocationPin from "@/assets/icons/location-pin.svg";
 import Tag from "@/assets/icons/tag.svg";
 
-import Spinner from "@/components/ui/Spinner";
-import Modal from "@/components/ui/Modal";
 import { Button } from "@/components/ui/button";
+import { CreatorPremiumBadge } from "@/components/ui/CreatorPremiumBadge";
+import Modal from "@/components/ui/Modal";
+import Spinner from "@/components/ui/Spinner";
 
 import { Influencer } from "@/types/Influencer";
 import { Deliverables } from "@/types/Deliverables";
 
-import pb from "@/lib/pb";
 import { createOrGetChat } from "@/services/chatService";
 import { channelIcons } from "@/utils/socialMediasIcons";
 import { getSocialLink } from "@/utils/getSocialLink";
+import pb from "@/lib/pb";
 
 const searchSchema = z.object({
   page: z.number().optional(),
@@ -81,6 +82,7 @@ export const Route = createFileRoute(
       .getList<Influencer>(page, perPage, {
         filter,
         sort: "-top_creator,created",
+        expand: "purchased_influencers_plans_via_influencer",
       });
 
     return {
@@ -352,7 +354,7 @@ function Page() {
                     </div>
                   )}
                 </div>
-                <div className="flex flex-row">
+                <div className="flex flex-row flex-wrap">
                   <h2
                     className="text-lg font-semibold mr-2 hover:cursor-pointer line-clamp-1"
                     onClick={() =>
@@ -376,6 +378,12 @@ function Page() {
                       Top Creator
                     </div>
                   )}
+                  {creator.expand &&
+                  creator.expand.purchased_influencers_plans_via_influencer ? (
+                    <div>
+                      <CreatorPremiumBadge />
+                    </div>
+                  ) : null}
                 </div>
 
                 <div className="text-sm text-gray-700 mb-2 flex flex-col">

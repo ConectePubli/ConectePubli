@@ -88,12 +88,12 @@ export const unsubscribeInfluencerPremium = async (
   }
 };
 
-export const isInfluencerPremium = async () => {
+export const isInfluencerPremium = async (influencerId?: string) => {
   try {
     const purchasedPlan = await pb
       .collection("purchased_influencers_plans")
       .getFullList({
-        filter: `influencer="${pb.authStore?.model?.id}" && active=true`,
+        filter: `influencer="${influencerId || pb.authStore?.model?.id}" && active=true`,
       });
 
     if (purchasedPlan && purchasedPlan.length >= 1) {
