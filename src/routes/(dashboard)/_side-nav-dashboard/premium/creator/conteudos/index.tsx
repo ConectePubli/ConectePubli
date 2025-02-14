@@ -1,6 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Books } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
+import { t } from "i18next";
+import { Video } from "lucide-react";
+import MuxPlayer from "@mux/mux-player-react";
 
 import contratos_prontos from "@/assets/contents_creators/contratos_prontos.png";
 import guia_completo_criadores from "@/assets/contents_creators/guia_completo_criadores.png";
@@ -18,8 +21,7 @@ import creator_economy_dicionario_pdf from "@/assets/contents_creators/downloads
 import guia_precificacao_pdf from "@/assets/contents_creators/downloads/GuiaTabela de Precificação UGC e IGC.pdf";
 import ebook_emitir_nota_fiscal_pdf from "@/assets/contents_creators/downloads/E-Book Guia Prático para Emitir Nota Fiscal como Creator.pdf";
 import como_criar_roteiros_pdf from "@/assets/contents_creators/downloads/Ebook Como Criar Roteiros – Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT.pdf";
-import { Video } from "lucide-react";
-import MuxPlayer from "@mux/mux-player-react";
+
 import { getUserType } from "@/lib/auth";
 import pb from "@/lib/pb";
 
@@ -77,6 +79,13 @@ export const Route = createFileRoute(
       });
     }
   },
+  errorComponent: () => (
+    <div className="p-4">
+      {t(
+        "Aconteceu um erro ao carregar essa página, não se preocupe o erro é do nosso lado e vamos trabalhar para resolve-lo!"
+      )}
+    </div>
+  ),
 });
 
 function VideoSection({ videoData }: { videoData: VideoLessonType }) {
@@ -154,7 +163,7 @@ function VideoSection({ videoData }: { videoData: VideoLessonType }) {
                 onClick={() => setShowMore(true)}
                 className="mt-4 text-[#10438F] font-semibold underline"
               >
-                Ver Mais
+                {t("Ver mais")}
               </button>
             )}
 
@@ -222,7 +231,7 @@ function VideoSection({ videoData }: { videoData: VideoLessonType }) {
                   onClick={() => setShowMore(false)}
                   className="mt-4 text-[#10438F] font-semibold underline"
                 >
-                  Ver Menos
+                  {t("Ver Menos")}
                 </button>
               </>
             )}
@@ -237,14 +246,14 @@ function Page() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-left">
-        Seu Hub de Conteúdos Premium para Criadores
+        {t("Seu Hub de Conteúdos Premium para Criadores")}
       </h1>
       <p className="text-left text-gray-700 mb-8">
-        Faça o download dos produtos e Assista as Aulas!
+        {t("Faça o download dos produtos e Assista as Aulas!")}
       </p>
       <div className="mt-8 mb-4 flex items-center text-[#10438F]">
         <Books className="w-6 h-6 mr-1" />{" "}
-        <p className="font-semibold text-base">E-books e PDF's</p>
+        <p className="font-semibold text-base">{t("E-books e PDF's")}</p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {products.map((product, index) => (
@@ -280,7 +289,7 @@ function Page() {
       <div className="w-full border mt-12 border-gray-300"></div>
       <div className="mt-12 mb-2 flex items-center text-[#10438F]">
         <Video className="w-6 h-6 mr-1" />{" "}
-        <p className="font-semibold text-base">Vídeos</p>
+        <p className="font-semibold text-base">{t("Vídeos")}</p>
       </div>
       {videoLessons.map((video, index) => (
         <VideoSection key={index} videoData={video} />
@@ -291,40 +300,43 @@ function Page() {
 
 const products = [
   {
-    title: "Kit Completo: Contratos Prontos + Tutorial de Edição",
+    title: t("Kit Completo: Contratos Prontos + Tutorial de Edição"),
     image: contratos_prontos,
     file: contratos_prontos_pdf,
   },
   {
-    title:
-      "Creator Economy 360°: O Guia Completo para Criadores de Conteúdo Digital",
+    title: t(
+      "Creator Economy 360°: O Guia Completo para Criadores de Conteúdo Digital"
+    ),
     image: guia_completo_criadores,
     file: guia_completo_criadores_pdf,
   },
   {
-    title:
-      "Ebook: Como Criar Conteúdo Ferramentas, Dicas e Prompts Estratégicos com ChatGPT",
+    title: t(
+      "Ebook: Como Criar Conteúdo Ferramentas, Dicas e Prompts Estratégicos com ChatGPT"
+    ),
     image: como_criar_conteudo,
     file: como_criar_conteudo_pdf,
   },
   {
-    title: "Creator Economy 360°: Dicionário",
+    title: t("Creator Economy 360°: Dicionário"),
     image: creator_economy_dicionario,
     file: creator_economy_dicionario_pdf,
   },
   {
-    title: "Guia de Precificação UGC e IGC",
+    title: t("Guia de Precificação UGC e IGC"),
     image: guia_precificacao,
     file: guia_precificacao_pdf,
   },
   {
-    title: "E-Book: Guia Prático para Emitir Nota Fiscal como Creator",
+    title: t("E-Book: Guia Prático para Emitir Nota Fiscal como Creator"),
     image: ebook_emitir_nota_fiscal,
     file: ebook_emitir_nota_fiscal_pdf,
   },
   {
-    title:
-      "Ebook: Como Criar Roteiros Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT",
+    title: t(
+      "Ebook: Como Criar Roteiros Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT"
+    ),
     image: como_criar_roteiros,
     file: como_criar_roteiros_pdf,
   },
@@ -333,107 +345,125 @@ const products = [
 const videoLessons: VideoLessonType[] = [
   {
     index: 0,
-    title: "Aula Tutorial: Edição de Conteúdo no CapCut para Creators",
+    title: t("Aula Tutorial: Edição de Conteúdo no CapCut para Creators"),
     video_id: "Lfpv7x35zHdvuyPt7XHIML00nUwCeMoNEoD6CpeHH02Vw",
-    subtitle: "Edite Seus Próprios Vídeos Como um Profissional!",
-    intro:
-      "Bem-vindos à aula de edição de vídeos no CapCut, onde vou ensinar três tipos de edição essenciais para criadores de conteúdo:",
+    subtitle: t("Edite Seus Próprios Vídeos Como um Profissional!"),
+    intro: t(
+      "Bem-vindos à aula de edição de vídeos no CapCut, onde vou ensinar três tipos de edição essenciais para criadores de conteúdo:"
+    ),
     highlights: [
       {
-        title: "Vídeo longo",
-        description: "Perfeito para tutoriais, como o do Mídia Kit.",
+        title: t("Vídeo longo"),
+        description: t("Perfeito para tutoriais, como o do Mídia Kit."),
       },
       {
-        title: "Vídeo curto (Reels até 90s)",
-        description: "Demonstra recursos essenciais.",
+        title: t("Vídeo curto (Reels até 90s)"),
+        description: t("Demonstra recursos essenciais."),
       },
       {
-        title: "B-rolls (até 15s)",
-        description: "Destaque para detalhes do produto.",
+        title: t("B-rolls (até 15s)"),
+        description: t("Destaque para detalhes do produto."),
       },
     ],
-    moreIntro:
-      "Além disso, vamos aprender recursos avançados para deixar a edição ainda mais fluida:",
+    moreIntro: t(
+      "Além disso, vamos aprender recursos avançados para deixar a edição ainda mais fluida:"
+    ),
     advancedFeatures: [
       {
-        title: "Isolamento de voz",
-        description: "Como extrair a voz para editar de forma rápida.",
+        title: t("Isolamento de voz"),
+        description: t("Como extrair a voz para editar de forma rápida."),
       },
       {
-        title: "Sincronização de imagem e áudio",
-        description: "Ajustar pontos exatos.",
+        title: t("Sincronização de imagem e áudio"),
+        description: t("Ajustar pontos exatos."),
       },
       {
-        title: "Melhoria de imagem",
-        description: "Ajustes de brilho, nitidez e contraste.",
+        title: t("Melhoria de imagem"),
+        description: t("Ajustes de brilho, nitidez e contraste."),
       },
       {
-        title: "Efeitos e animações",
-        description: "Adicionar transições e camadas.",
+        title: t("Efeitos e animações"),
+        description: t("Adicionar transições e camadas."),
       },
     ],
-    stepsTitle: "📌 Passo a passo da edição:",
+    stepsTitle: t("📌 Passo a passo da edição:"),
     steps: [
-      "Criar um novo projeto no CapCut.",
-      "Adicionar todos os vídeos que serão editados.",
-      "Dividir as partes mais importantes e excluir o que não será usado.",
-      "Aplicar efeitos, cortes, transições e ajustes.",
-      "Exportar e salvar no formato ideal.",
+      t("Criar um novo projeto no CapCut."),
+      t("Adicionar todos os vídeos que serão editados."),
+      t("Dividir as partes mais importantes e excluir o que não será usado."),
+      t("Aplicar efeitos, cortes, transições e ajustes."),
+      t("Exportar e salvar no formato ideal."),
     ],
     downloadLinks: [
       "https://drive.google.com/file/d/1XvIq2yUXDqNN-T3M1m8GQ2Fv0m-ueN7W",
     ],
-    downloadText: "Link para baixar os overlays",
+    downloadText: t("Link para baixar os overlays"),
   },
   {
     index: 1,
-    title: "Aula Tutorial: Como Criar Seu Mídia Kit",
+    title: t("Aula Tutorial: Como Criar Seu Mídia Kit"),
     video_id: "025zekBN02QhG6FXwcVBFUsvsVrzvEtuZANFB3UC5CwUU",
-    subtitle: "Transforme Seu Mídia Kit em um Site Profissional!",
+    subtitle: t("Transforme Seu Mídia Kit em um Site Profissional!"),
     intro: [
-      "Vocês viram que na Conecte Publi temos um espaço para colocar o link do mídia kit, certo? Para facilitar, estou disponibilizando + de 10 modelos gratuitos de mídia kit prontos no Canva para vocês editarem com suas informações e personalizarem do seu jeito.",
-      "Além disso, neste vídeo, vou ensinar como transformar seu mídia kit em um site, para que vocês tenham um link profissional para colocar na Conecte Publi e compartilhar com quem quiserem.",
-      "O que você vai aprender neste vídeo?",
+      t(
+        "Vocês viram que na Conecte Publi temos um espaço para colocar o link do mídia kit, certo? Para facilitar, estou disponibilizando + de 10 modelos gratuitos de mídia kit prontos no Canva para vocês editarem com suas informações e personalizarem do seu jeito."
+      ),
+      t(
+        "Além disso, neste vídeo, vou ensinar como transformar seu mídia kit em um site, para que vocês tenham um link profissional para colocar na Conecte Publi e compartilhar com quem quiserem."
+      ),
+      t("O que você vai aprender neste vídeo?"),
     ],
     highlights: [
       {
-        title: "Como escolher um modelo de mídia kit pronto no Canva.",
+        title: t("Como escolher um modelo de mídia kit pronto no Canva."),
         description: "",
       },
       {
-        title: "Como editar e personalizar com suas informações.",
+        title: t("Como editar e personalizar com suas informações."),
         description: "",
       },
       {
-        title: "Como transformar o mídia kit em um site gratuito no Canva.",
+        title: t("Como transformar o mídia kit em um site gratuito no Canva."),
         description: "",
       },
       {
-        title:
-          "Como gerar um link profissional e onde adicioná-lo na Conecte Publi.",
+        title: t(
+          "Como gerar um link profissional e onde adicioná-lo na Conecte Publi."
+        ),
         description: "",
       },
     ],
-    moreIntro: "📌 No final, você terá seu mídia kit em dois formatos:",
+    moreIntro: t("📌 No final, você terá seu mídia kit em dois formatos:"),
     advancedFeatures: [
-      { title: "PDF", description: "Para enviar diretamente para marcas." },
+      { title: "PDF", description: t("Para enviar diretamente para marcas.") },
       {
-        title: "Link de site publicado",
-        description: "Para compartilhar de forma profissional.",
+        title: t("Link de site publicado"),
+        description: t("Para compartilhar de forma profissional."),
       },
     ],
-    stepsTitle: "Passo a Passo:",
+    stepsTitle: t("Passo a Passo:"),
     steps: [
-      "1️⃣ Escolha o modelo de mídia kit que mais combina com você.",
-      "2️⃣ Faça uma cópia no Canva e renomeie com seu nome. Exemplo: Mídia Kit [Seu Nome].",
-      "3️⃣ Edite com todas as suas informações: Sobre você, trabalhos realizados, resultados obtidos, tipos de entrega, nichos, estatísticas e métricas, valores, formas de trabalho e seus contatos.",
-      "4️⃣ Personalize! Ajuste fontes, cores, layout e adicione sua logo (se tiver).",
-      "5️⃣ Publique como site! No final, transforme seu mídia kit em um site gratuito no Canva.",
-      "6️⃣ Agora você tem dois formatos: PDF e Link do site.",
-      "7️⃣ Vá até a Conecte Publi, adicione o link do seu mídia kit na plataforma e salve!",
+      t("1️⃣ Escolha o modelo de mídia kit que mais combina com você."),
+      t(
+        "2️⃣ Faça uma cópia no Canva e renomeie com seu nome. Exemplo: Mídia Kit [Seu Nome]."
+      ),
+      t(
+        "3️⃣ Edite com todas as suas informações: Sobre você, trabalhos realizados, resultados obtidos, tipos de entrega, nichos, estatísticas e métricas, valores, formas de trabalho e seus contatos."
+      ),
+      t(
+        "4️⃣ Personalize! Ajuste fontes, cores, layout e adicione sua logo (se tiver)."
+      ),
+      t(
+        "5️⃣ Publique como site! No final, transforme seu mídia kit em um site gratuito no Canva."
+      ),
+      t("6️⃣ Agora você tem dois formatos: PDF e Link do site."),
+      t(
+        "7️⃣ Vá até a Conecte Publi, adicione o link do seu mídia kit na plataforma e salve!"
+      ),
     ],
-    downloadText:
-      "📌 Acesse os links gratuitos dos modelos de mídia kit aqui: 👇",
+    downloadText: t(
+      "📌 Acesse os links gratuitos dos modelos de mídia kit aqui: 👇"
+    ),
     downloadLinks: [
       "https://www.canva.com/design/DAGd5x5nXRs/Bsea2TNOvdCQPrW8b22WqA/edit?utm_content=DAGd5x5nXRs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
       "https://www.canva.com/design/DAGd6LMEfU0/VEIn2Cn7o2zLBb476m7_8Q/edit?utm_content=DAGd6LMEfU0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
@@ -449,11 +479,13 @@ const videoLessons: VideoLessonType[] = [
     ],
     additionalLinks: [
       {
-        text: "🌟 Vou deixar aqui abaixo o link do meu mídia kit, que mostrei no vídeo. Vocês também podem usá-lo como base, apenas modificando com as informações de vocês! 😉 Segue:",
+        text: t(
+          "🌟 Vou deixar aqui abaixo o link do meu mídia kit, que mostrei no vídeo. Vocês também podem usá-lo como base, apenas modificando com as informações de vocês! 😉 Segue:"
+        ),
         url: "https://www.canva.com/design/DAF6ezDbMLY/W0dYgjJa18EvT6x03LyZHA/edit?utm_content=DAF6ezDbMLY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
       },
       {
-        text: "🔗 Link do que editei no vídeo tutorial com vocês:",
+        text: t("🔗 Link do que editei no vídeo tutorial com vocês:"),
         url: "https://www.canva.com/design/DAGd6eAhavw/LPgHYUerXMP5EmwMJKaemg/edit?utm_content=DAGd6eAhavw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
       },
     ],

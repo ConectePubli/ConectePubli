@@ -1842,5 +1842,103 @@ export default {
     "Altere as datas, se necessário, para garantir que tudo esteja alinhado com seus objetivos.": `Change the dates, if necessary, to ensure everything is aligned with your goals.`,
     "Duplicando...": "Duplicating...",
     "Apenas campanhas aprovadas podem ser duplicadas.": `Only approved campaigns can be duplicated.`,
+    "Seu Hub de Conteúdos Premium para Criadores":
+      "Your Premium Content Hub for Creators",
+    "Faça o download dos produtos e Assista as Aulas!":
+      "Download the products and Watch the Classes!",
+    "E-books e PDF's": "E-books and PDFs",
+    Vídeos: "Videos",
+    "Kit Completo: Contratos Prontos + Tutorial de Edição":
+      "Complete Kit: Ready-made Contracts + Editing Tutorial",
+    "Creator Economy 360°: O Guia Completo para Criadores de Conteúdo Digital":
+      "Creator Economy 360°: The Complete Guide for Digital Content Creators",
+    "Ebook: Como Criar Conteúdo Ferramentas, Dicas e Prompts Estratégicos com ChatGPT":
+      "Ebook: How to Create Content Tools, Tips and Strategic Prompts with ChatGPT",
+    "Creator Economy 360°: Dicionário": "Creator Economy 360°: Dictionary",
+    "E-Book: Guia Prático para Emitir Nota Fiscal como Creator":
+      "E-Book: Practical Guide to Issuing Invoices as a Creator",
+    "Ebook: Como Criar Roteiros Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT":
+      "Ebook: How to Create Practical Technical Roadmaps and Strategic Prompts with AI and ChatGPT",
+    "Aula Tutorial: Edição de Conteúdo no CapCut para Creators":
+      "Tutorial Class: Content Editing in CapCut for Creators",
+    "Edite Seus Próprios Vídeos Como um Profissional!":
+      "Edit Your Own Videos Like a Pro!",
+    "Bem-vindos à aula de edição de vídeos no CapCut, onde vou ensinar três tipos de edição essenciais para criadores de conteúdo:":
+      "Welcome to the video editing class at CapCut, where I will teach three essential types of editing for content creators:",
+    "Vídeo longo": "Long video",
+    "Perfeito para tutoriais, como o do Mídia Kit.":
+      "Perfect for tutorials, like the one in Mídia Kit.",
+    "Vídeo curto (Reels até 90s)": "Short video (Reels up to 90s)",
+    "Demonstra recursos essenciais.": "Demonstrates essential capabilities.",
+    "B-rolls (até 15s)": "B-rolls (up to 15s)",
+    "Destaque para detalhes do produto.": "Highlight for product details.",
+    "Além disso, vamos aprender recursos avançados para deixar a edição ainda mais fluida:":
+      "In addition, we will learn advanced features to make editing even more fluid:",
+    "Isolamento de voz": "Voice Isolation",
+    "Como extrair a voz para editar de forma rápida.":
+      "How to extract the voice to edit quickly.",
+    "Sincronização de imagem e áudio": "Image and audio synchronization",
+    "Ajustar pontos exatos.": "Adjust exact points.",
+    "Melhoria de imagem": "Image Enhancement",
+    "Ajustes de brilho, nitidez e contraste.":
+      "Brightness, sharpness and contrast adjustments.",
+    "Efeitos e animações": "Effects and animations",
+    "Adicionar transições e camadas.": "Add transitions and layers.",
+    "📌 Passo a passo da edição:": "📌 Editing step by step:",
+    "Criar um novo projeto no CapCut.": "Create a new project in CapCut.",
+    "Adicionar todos os vídeos que serão editados.":
+      "Add all videos that will be edited.",
+    "Dividir as partes mais importantes e excluir o que não será usado.":
+      "Break down the most important parts and delete what won't be used.",
+    "Aplicar efeitos, cortes, transições e ajustes.":
+      "Apply effects, cuts, transitions and adjustments.",
+    "Exportar e salvar no formato ideal.":
+      "Export and save in the ideal format.",
+    "Link para baixar os overlays": "Link to download the overlays",
+    "Aula Tutorial: Como Criar Seu Mídia Kit":
+      "Tutorial Class: How to Create Your Media Kit",
+    "Transforme Seu Mídia Kit em um Site Profissional!":
+      "Turn Your Media Kit into a Professional Website!",
+    "Vocês viram que na Conecte Publi temos um espaço para colocar o link do mídia kit, certo? Para facilitar, estou disponibilizando + de 10 modelos gratuitos de mídia kit prontos no Canva para vocês editarem com suas informações e personalizarem do seu jeito.":
+      "You saw that at Conecte Publi we have a space to place the media kit link, right? To make things easier, I'm providing +10 free media kit templates ready on Canva for you to edit with your information and customize in your own way.",
+    "Além disso, neste vídeo, vou ensinar como transformar seu mídia kit em um site, para que vocês tenham um link profissional para colocar na Conecte Publi e compartilhar com quem quiserem.":
+      "Furthermore, in this video, I will teach you how to turn your media kit into a website, so that you have a professional link to put on Conecte Publi and share with whoever you want.",
+    "O que você vai aprender neste vídeo?":
+      "What will you learn in this video?",
+    "Como escolher um modelo de mídia kit pronto no Canva.":
+      "How to choose a ready-made media kit template in Canva.",
+    "Como editar e personalizar com suas informações.":
+      "How to edit and customize with your information.",
+    "Como transformar o mídia kit em um site gratuito no Canva.":
+      "How to turn your media kit into a free website on Canva.",
+    "Como gerar um link profissional e onde adicioná-lo na Conecte Publi.":
+      "How to generate a professional link and where to add it in Conecte Publi.",
+    "📌 No final, você terá seu mídia kit em dois formatos:":
+      "📌 In the end, you will have your media kit in two formats:",
+    "Para enviar diretamente para marcas.": "To send directly to brands.",
+    "Link de site publicado": "Published website link",
+    "Para compartilhar de forma profissional.":
+      "To share in a professional way.",
+    "Passo a Passo:": "Step by step:",
+    "1️⃣ Escolha o modelo de mídia kit que mais combina com você.":
+      "1️⃣ Choose the media kit model that best suits you.",
+    "2️⃣ Faça uma cópia no Canva e renomeie com seu nome. Exemplo: Mídia Kit [Seu Nome].":
+      "2️⃣ Make a copy on Canva and rename it with your name. Example: Media Kit [Your Name].",
+    "3️⃣ Edite com todas as suas informações: Sobre você, trabalhos realizados, resultados obtidos, tipos de entrega, nichos, estatísticas e métricas, valores, formas de trabalho e seus contatos.":
+      "3️⃣ Edit with all your information: About you, work carried out, results obtained, types of delivery, niches, statistics and metrics, values, ways of working and your contacts.",
+    "4️⃣ Personalize! Ajuste fontes, cores, layout e adicione sua logo (se tiver).":
+      "4️⃣ Personalize! Adjust fonts, colors, layout and add your logo (if you have one).",
+    "5️⃣ Publique como site! No final, transforme seu mídia kit em um site gratuito no Canva.":
+      "5️⃣ Publish as a website! In the end, turn your media kit into a free website on Canva.",
+    "6️⃣ Agora você tem dois formatos: PDF e Link do site.":
+      "6️⃣ Now you have two formats: PDF and Website Link.",
+    "7️⃣ Vá até a Conecte Publi, adicione o link do seu mídia kit na plataforma e salve!":
+      "7️⃣ Go to Conecte Publi, add the link to your media kit on the platform and save!",
+    "📌 Acesse os links gratuitos dos modelos de mídia kit aqui: 👇":
+      "📌 Access the free media kit template links here: 👇",
+    "🌟 Vou deixar aqui abaixo o link do meu mídia kit, que mostrei no vídeo. Vocês também podem usá-lo como base, apenas modificando com as informações de vocês! 😉 Segue:":
+      "🌟 I'll leave the link to my media kit below, which I showed in the video. You can also use it as a base, just modifying it with your information! 😉 Follow:",
+    "🔗 Link do que editei no vídeo tutorial com vocês:":
+      "🔗 Link to what I edited in the video tutorial with you:",
   },
 };
