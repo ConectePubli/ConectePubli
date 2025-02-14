@@ -1,6 +1,7 @@
 import { Campaign } from "./Campaign";
 import { Influencer } from "./Influencer";
 import { ParticipationStatusFilter } from "@/types/Filters";
+import { PurchasedPremiumPlan } from "./PurchasedPremiumPlan";
 
 export interface CampaignParticipation {
   id?: string;
@@ -15,5 +16,6 @@ export interface CampaignParticipation {
   expand?: {
     campaign?: Campaign;
     influencer?: Influencer;
+    purchased_influencers_plans: PurchasedPremiumPlan[];
   };
 }

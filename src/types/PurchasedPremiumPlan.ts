@@ -5,4 +5,5 @@ export interface PurchasedPremiumPlan {
   subscription_stripe_id: string;
   active: boolean;
   cancel_at: Date;
+  created: Date;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import debounce from "lodash.debounce";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
@@ -25,6 +26,7 @@ import { createOrGetChat } from "@/services/chatService";
 import { channelIcons } from "@/utils/socialMediasIcons";
 import { getSocialLink } from "@/utils/getSocialLink";
 import pb from "@/lib/pb";
+import { getDaysInMonth } from "@/utils/getDaysInMonth";
 
 const searchSchema = z.object({
   page: z.number().optional(),
@@ -81,7 +83,7 @@ export const Route = createFileRoute(
       .collection("Influencers")
       .getList<Influencer>(page, perPage, {
         filter,
-        sort: "-top_creator,created",
+        sort: "-top_creator,-purchased_influencers_plans_via_influencer.active,created",
         expand: "purchased_influencers_plans_via_influencer",
       });
 
@@ -121,6 +123,125 @@ function Page() {
   const [openModal, setOpenModal] = useState(false);
   const [loadingProposal, setLoadingProposal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const [sortedCreators, setSortedCreators] = useState<Influencer[]>([]);
+
+  function getLatestActivePlan(creator: Influencer) {
+    const plans =
+      creator.expand?.purchased_influencers_plans_via_influencer || [];
+    const activePlans = plans.filter(
+      (p: { active: boolean }) => p.active === true
+    );
+
+    if (!activePlans.length) return null;
+
+    // Se quiser o mais recente:
+    activePlans.sort(
+      (
+        a: { created: string | number | Date },
+        b: { created: string | number | Date }
+      ) => {
+        return new Date(b.created).getTime() - new Date(a.created).getTime();
+      }
+    );
+    return activePlans[0];
+  }
+
+  function isInHighlightForMonth(
+    subscriptionDay: number,
+    currentDate: Date,
+    year: number,
+    monthIndex: number
+  ) {
+    // Quantos dias tem o mês que estamos testando
+    const daysInThisMonth = getDaysInMonth(year, monthIndex);
+
+    // Dia de início do destaque é min(subscriptionDay, daysInThisMonth)
+    const startDay = Math.min(subscriptionDay, daysInThisMonth);
+
+    // Montamos a data de início (horário 00:00)
+    const startDate = new Date(year, monthIndex, startDay, 0, 0, 0);
+
+    // Data de fim = startDate + 4 dias
+    const endDate = new Date(startDate.getTime() + 4 * 24 * 60 * 60 * 1000);
+
+    // Verificar se currentDate está dentro desse [startDate, endDate]
+    return currentDate >= startDate && currentDate <= endDate;
+  }
+
+  function isInHighlightWindow(creator: Influencer): boolean {
+    const plan = getLatestActivePlan(creator);
+    if (!plan) return false; // Não é premium ou não está ativo
+
+    const subscriptionDate = new Date(plan.created);
+    const subscriptionDay = subscriptionDate.getDate();
+
+    const now = new Date();
+    const currentMonth = now.getMonth(); // 0-based
+    const currentYear = now.getFullYear();
+
+    // Verifica se está no destaque do mês atual
+    const inThisMonth = isInHighlightForMonth(
+      subscriptionDay,
+      now,
+      currentYear,
+      currentMonth
+    );
+
+    // Verifica se está no destaque do mês anterior
+    // Pode ter "transbordado" para o início do mês atual
+    // Lida com mudança de ano (ex.: janeiro -> dezembro do ano anterior)
+    const previousMonthDate = new Date(currentYear, currentMonth - 1, 1);
+    const prevMonth = previousMonthDate.getMonth();
+    const prevYear = previousMonthDate.getFullYear();
+
+    const inPrevMonth = isInHighlightForMonth(
+      subscriptionDay,
+      now,
+      prevYear,
+      prevMonth
+    );
+
+    return inThisMonth || inPrevMonth;
+  }
+
+  useEffect(() => {
+    if (!creators?.length) return;
+
+    const sorted = [...creators].sort((a, b) => {
+      // 1. top_creator primeiro
+      if (a.top_creator && !b.top_creator) return -1;
+      if (!a.top_creator && b.top_creator) return 1;
+
+      // 2. Verifica se cada um é premium e se está em destaque
+      const aPlan = getLatestActivePlan(a);
+      const bPlan = getLatestActivePlan(b);
+
+      const aIsPremium = !!aPlan;
+      const bIsPremium = !!bPlan;
+
+      const aInHighlight = aIsPremium && isInHighlightWindow(a);
+      const bInHighlight = bIsPremium && isInHighlightWindow(b);
+
+      // a) premium em destaque
+      if (aInHighlight && !bInHighlight) return -1;
+      if (!aInHighlight && bInHighlight) return 1;
+
+      // b) premium normal
+      if (aIsPremium && !bIsPremium) return -1;
+      if (!aIsPremium && bIsPremium) return 1;
+
+      // 3. Por fim, ordena por data de criação (ascendente ou descendente?)
+      // Observando que no seu sort original, era `created` sem sinal de -,
+      // o PocketBase interpreta como asc. Então faremos asc:
+      const aCreated = new Date(a.created || 0).getTime();
+      const bCreated = new Date(b.created || 0).getTime();
+
+      return aCreated - bCreated;
+    });
+
+    setSortedCreators(sorted);
+  }, [creators]);
 
   const handleSendProposal = async () => {
     if (!modalCreator) return;
@@ -287,11 +408,11 @@ function Page() {
         />
       </div>
 
-      {creators.length === 0 ? (
+      {sortedCreators.length === 0 ? (
         <p className="text-gray-600">{t("Nenhum creator encontrado.")}</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
-          {creators.map((creator) => {
+          {sortedCreators.map((creator) => {
             const socialLinks = [
               { name: "Instagram", url: creator.instagram_url },
               { name: "YouTube", url: creator.youtube_url },
@@ -379,7 +500,8 @@ function Page() {
                     </div>
                   )}
                   {creator.expand &&
-                  creator.expand.purchased_influencers_plans_via_influencer ? (
+                  creator.expand.purchased_influencers_plans_via_influencer[0]
+                    .active === true ? (
                     <div>
                       <CreatorPremiumBadge />
                     </div>

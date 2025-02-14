@@ -1,4 +1,5 @@
 import { Niche } from "./Niche";
+import { PurchasedPremiumPlan } from "./PurchasedPremiumPlan";
 
 export interface Influencer {
   id: string;
@@ -65,6 +66,6 @@ export interface Influencer {
   collectionName: string;
   expand?: {
     niche: Niche[];
-    purchased_influencers_plans_via_influencer: boolean;
+    purchased_influencers_plans_via_influencer: PurchasedPremiumPlan[];
   };
 }

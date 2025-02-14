@@ -8,15 +8,15 @@ import {
   useRouter,
   useSearch,
 } from "@tanstack/react-router";
-import pb from "@/lib/pb";
 import { t } from "i18next";
 import { ClientResponseError } from "pocketbase";
 import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { Info, MessageCircle, ThumbsUp, User } from "lucide-react";
-import { getStatusColor } from "@/utils/getColorStatusInfluencer";
 import { Flag, Headset, MagnifyingGlassPlus, Warning } from "phosphor-react";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import pb from "@/lib/pb";
 
 import GoBack from "@/assets/icons/go-back.svg";
 
@@ -24,29 +24,32 @@ import { Campaign } from "@/types/Campaign";
 import { Niche } from "@/types/Niche";
 
 import { Button } from "@/components/ui/button";
-import SupportModal from "@/components/ui/supportModal";
-import { Influencer } from "@/types/Influencer";
-import ConcludeModalParticipant from "@/components/ui/concludeParticipantModal";
-import InfoParticipantModal from "@/components/ui/infoParticipantModal";
-import { states } from "@/utils/states";
 import ModalCancelCampaign from "@/components/ui/ModalCancelCampaign";
 import ChooseParticipantModal from "@/components/ui/chooseParticipantModal";
 import RateParticipantModal from "@/components/ui/rateParticipantModal";
-import { toast, ToastContainer } from "react-toastify";
-import { createOrGetChat } from "@/services/chatService";
 import RatePlatformModal from "@/components/ui/RatePlatformModal";
 import Spinner from "@/components/ui/Spinner";
 import Modal from "@/components/ui/Modal";
 import GatewayPaymentModal from "@/components/ui/GatewayPaymentModal";
+import ConcludeModalParticipant from "@/components/ui/concludeParticipantModal";
+import InfoParticipantModal from "@/components/ui/infoParticipantModal";
+import SupportModal from "@/components/ui/supportModal";
+import CartSidebar from "@/components/ui/cartSidebar";
+import CampaignSpotlight from "@/components/ui/CampaignSpotlight";
+
+import { Influencer } from "@/types/Influencer";
+
+import { states } from "@/utils/states";
+import { isEnableSubscription } from "@/utils/campaignSubscription";
+import { getStatusColor } from "@/utils/getColorStatusInfluencer";
+
+import { createOrGetChat } from "@/services/chatService";
 import {
   addToCart,
   clearCart,
   getCartItems,
   removeFromCart,
 } from "@/services/carCreators";
-import CartSidebar from "@/components/ui/cartSidebar";
-import { isEnableSubscription } from "@/utils/campaignSubscription";
-import CampaignSpotlight from "@/components/ui/CampaignSpotlight";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -79,12 +82,73 @@ export const Route = createFileRoute(
         throw notFound();
       }
 
+      // 1. Buscar as participações da campanha
       const campaignParticipations = await pb
         .collection("Campaigns_Participations")
         .getFullList<CampaignParticipation>({
           filter: `campaign="${campaignData.id}"`,
+          sort: "created",
           expand: "campaign,influencer",
         });
+
+      // 2. Extrair os IDs dos influencers presentes nas participações
+      const influencerIds = campaignParticipations.map((p) => p.influencer);
+      console.log("Influencer IDs das participações:", influencerIds);
+
+      // Função auxiliar para dividir um array em chunks
+      function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+        const chunks: T[][] = [];
+        for (let i = 0; i < array.length; i += chunkSize) {
+          chunks.push(array.slice(i, i + chunkSize));
+        }
+        return chunks;
+      }
+
+      // 3. Dividir os IDs em chunks (para evitar filtros gigantes)
+      const chunkSize = 50;
+      const idChunks = chunkArray(influencerIds, chunkSize);
+      console.log("Chunks de IDs:", idChunks);
+
+      // 4. Para cada chunk, construir o filtro e fazer a requisição
+      const premiumRecordPromises = idChunks.map((chunk) => {
+        const filterChunk = `(${chunk.map((id) => `influencer="${id}"`).join(" || ")}) && active = true`;
+        console.log("Filtro gerado para chunk:", filterChunk);
+        return pb
+          .collection("purchased_influencers_plans")
+          .getFullList({ filter: filterChunk });
+      });
+
+      // 5. Aguardar todas as requisições e combinar os resultados
+      const premiumRecordsArrays = await Promise.all(premiumRecordPromises);
+      const premiumRecords = premiumRecordsArrays.flat();
+      console.log("Registros premium obtidos:", premiumRecords);
+
+      // 6. Criar um Set com os IDs dos influencers que possuem plano ativo
+      const premiumInfluencerIds = new Set(
+        premiumRecords.map((record) => record.influencer)
+      );
+      console.log(
+        "IDs de influencers premium:",
+        Array.from(premiumInfluencerIds)
+      );
+
+      // 7. Ordenar as participações: premium primeiro, depois por data de criação
+      campaignParticipations.sort((a, b) => {
+        const isPremiumA = premiumInfluencerIds.has(a.influencer);
+        const isPremiumB = premiumInfluencerIds.has(b.influencer);
+
+        if (isPremiumA && !isPremiumB) return -1; // A vem antes se for premium
+        if (!isPremiumA && isPremiumB) return 1; // B vem antes se for premium
+
+        // Se ambos têm o mesmo status, ordena pela data de criação (mais antigos primeiro)
+        return (
+          new Date(a.created ?? 0).getTime() -
+          new Date(b.created ?? 0).getTime()
+        );
+      });
+
+      console.log("participações");
+      console.log(campaignParticipations);
 
       if (
         campaignData.brand !== currentBrandId ||
@@ -217,19 +281,89 @@ function Page() {
     }
   }
 
+  async function getPremiumInfluencerIds(
+    influencerIds: string[]
+  ): Promise<Set<string>> {
+    // Função auxiliar para dividir o array em chunks
+    function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+      const chunks: T[][] = [];
+      for (let i = 0; i < array.length; i += chunkSize) {
+        chunks.push(array.slice(i, i + chunkSize));
+      }
+      return chunks;
+    }
+
+    // Dividir os IDs em chunks para evitar filtros gigantes
+    const chunkSize = 50;
+    const idChunks = chunkArray(influencerIds, chunkSize);
+
+    // Para cada chunk, construir o filtro e fazer a requisição
+    const premiumRecordPromises = idChunks.map((chunk) => {
+      const filterChunk = `(${chunk.map((id) => `influencer="${id}"`).join(" || ")}) && active = true`;
+      return pb
+        .collection("purchased_influencers_plans")
+        .getFullList({ filter: filterChunk });
+    });
+
+    // Aguardar todas as requisições e combinar os resultados
+    const premiumRecordsArrays = await Promise.all(premiumRecordPromises);
+    const premiumRecords = premiumRecordsArrays.flat();
+
+    // Criar um Set com os IDs dos influencers que possuem plano ativo
+    const premiumInfluencerIds = new Set(
+      premiumRecords.map((record) => record.influencer)
+    );
+
+    return premiumInfluencerIds;
+  }
+
+  // Ordenar participações por creators premium
+  function sortParticipations(
+    participations: CampaignParticipation[],
+    premiumInfluencerIds: Set<string>
+  ) {
+    return participations.sort((a, b) => {
+      const isPremiumA = premiumInfluencerIds.has(a.influencer);
+      const isPremiumB = premiumInfluencerIds.has(b.influencer);
+
+      if (isPremiumA && !isPremiumB) return -1;
+      if (!isPremiumA && isPremiumB) return 1;
+
+      return (
+        new Date(a.created ?? 0).getTime() - new Date(b.created ?? 0).getTime()
+      );
+    });
+  }
+
   useEffect(() => {
     (async () => {
       try {
+        // 1. Buscar as participações
         const participations = await pb
           .collection("Campaigns_Participations")
           .getFullList<CampaignParticipation>({
             filter: `campaign="${campaignData?.id || ""}"`,
             expand: "campaign,influencer",
           });
-        setCampaignParticipations(participations);
+
+        // 2. Buscar os IDs dos influencers nas participações
+        const influencerIds = participations.map((p) => p.influencer);
+
+        // 3. Buscar os registros premium (dividindo em chunks se necessário)
+        const premiumInfluencerIds =
+          await getPremiumInfluencerIds(influencerIds);
+
+        const sortedParticipations = sortParticipations(
+          participations,
+          premiumInfluencerIds
+        );
+
+        setCampaignParticipations(sortedParticipations);
 
         const localIds = getCartItems(campaignData?.id || "");
-        const filtered = participations.filter((p) => localIds.includes(p.id!));
+        const filtered = sortedParticipations.filter((p) =>
+          localIds.includes(p.id!)
+        );
         setCartParticipations(filtered);
       } catch (error) {
         console.error(error);

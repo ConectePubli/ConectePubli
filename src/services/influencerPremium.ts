@@ -20,8 +20,8 @@ export const subscribeInfluencerPremium = async (
     const response = await axios.post(
       `https://conecte-publi.pockethost.io/api/stripe/influencer_premium_checkout`,
       {
-        stripe_price_id: plan.test_stripe_price_id,
-        stripe_product_id: plan.test_stripe_product_id,
+        stripe_price_id: plan.stripe_price_id,
+        stripe_product_id: plan.stripe_product_id,
         plan_id: plan.id,
         influencer_id: pb?.authStore?.model?.id || "",
       },
