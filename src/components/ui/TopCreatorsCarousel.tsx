@@ -13,6 +13,7 @@ import FabioBraz from "@/assets/topcreators/FabioBraz.png";
 import FlavinhaCheirosa from "@/assets/topcreators/Flavinha.png";
 import TatyZatto from "@/assets/topcreators/Taty.jpg";
 import ThaisGuedes from "@/assets/topcreators/ThaisGuedes.jpg";
+import Henriki from "@/assets/topcreators/Henriki.png";
 import { useMemo } from "react";
 
 const topCreatorsData = [
@@ -47,6 +48,10 @@ const topCreatorsData = [
   {
     name: "Taty Zatto",
     imageUrl: TatyZatto,
+  },
+  {
+    name: "Henriki",
+    imageUrl: Henriki,
   },
 ];
 
