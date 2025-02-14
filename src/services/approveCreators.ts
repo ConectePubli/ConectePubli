@@ -17,7 +17,7 @@ interface PaymentBody {
   campaign_id: string;
   campaign_name: string;
   unit_amount: number;
-  campaign_participations: string[];
+  campaign_participations: string[] | string;
 }
 
 export const paymentCreatorsByPagseguro = async (
@@ -32,11 +32,17 @@ export const paymentCreatorsByPagseguro = async (
       (participation) => participation.id
     );
 
+    const cartCreated = await pb.collection("cart").create({
+      creators: ids,
+      brand: pb.authStore?.model?.id,
+      campaign: campaignId,
+    });
+
     const body: PaymentBody = {
       campaign_id: campaignId,
       campaign_name: campaignName,
       unit_amount: unit_amount,
-      campaign_participations: ids as string[],
+      campaign_participations: cartCreated.id,
     };
 
     const response: AxiosResponse<PaymentResponsePagseguro> = await axios.post(
