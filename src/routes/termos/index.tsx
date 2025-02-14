@@ -178,7 +178,7 @@ function TermosDeUso() {
       </h3>
       <p className="mb-4">
         {t(
-          "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês, referentes às campanhas finalizadas no mês anterior. O Creator deve garantir que a chave PIX cadastrada na plataforma esteja atualizada."
+          "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês. O pagamento corresponderá às campanhas concluídas até o último dia do mês anterior. Para garantir o recebimento, o Creator deve manter sua chave PIX cadastrada na plataforma sempre atualizada."
         )}
       </p>
 

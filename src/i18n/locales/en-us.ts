@@ -406,6 +406,12 @@ export default {
       "ConectePubli will retain 20% as a service fee, while the Creator will receive 80% of the total amount paid by the Brand",
     "O valor volta para a marca caso vença a data final e o creator não entregue todos os entregáveis obrigatórios":
       "The value returns to the brand if the final date passes and the creator does not deliver all the mandatory deliverables",
+    "Pagamento ao Creator (Tradicional)": "Payment to Creator (Traditional)",
+    "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês. O pagamento corresponderá às campanhas concluídas até o último dia do mês anterior. Para garantir o recebimento, o Creator deve manter sua chave PIX cadastrada na plataforma sempre atualizada.":
+      "The amounts accumulated for the Creator will be transferred via PIX on the 15th (fifteenth) of each month. Payment will correspond to campaigns completed until the last day of the previous month. To guarantee receipt, the Creator must keep their PIX key registered on the platform always updated.",
+    "Pagamento ao Creator (Inverso)": "Payment to Creator (Inverse)",
+    "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês. O pagamento corresponderá aos entregáveis concluídos até o último dia do mês anterior. Para garantir o recebimento, o Creator deve manter sua chave PIX cadastrada na plataforma sempre atualizada.":
+      "The amounts accumulated for the Creator will be transferred via PIX on the 15th (fifteenth) of each month. Payment will correspond to deliverables completed by the last day of the previous month. To guarantee receipt, the Creator must keep their PIX key registered on the platform always updated.",
 
     // Section Headings
     "1. Relação Contratual": "1. Contractual Relationship",
