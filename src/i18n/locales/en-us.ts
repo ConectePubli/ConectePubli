@@ -1848,8 +1848,7 @@ export default {
     "Altere as datas, se necessário, para garantir que tudo esteja alinhado com seus objetivos.": `Change the dates, if necessary, to ensure everything is aligned with your goals.`,
     "Duplicando...": "Duplicating...",
     "Apenas campanhas aprovadas podem ser duplicadas.": `Only approved campaigns can be duplicated.`,
-    "Seu Hub de Conteúdos Premium para Criadores":
-      "Your Premium Content Hub for Creators",
+    "Conteúdos Premium para Criadores": "Premium Content for Creators",
     "Faça o download dos produtos e Assista as Aulas!":
       "Download the products and Watch the Classes!",
     "E-books e PDF's": "E-books and PDFs",
@@ -1872,12 +1871,14 @@ export default {
     "Bem-vindos à aula de edição de vídeos no CapCut, onde vou ensinar três tipos de edição essenciais para criadores de conteúdo:":
       "Welcome to the video editing class at CapCut, where I will teach three essential types of editing for content creators:",
     "Vídeo longo": "Long video",
-    "Perfeito para tutoriais, como o do Mídia Kit.":
+    "Perfeito para tutoriais, como o que fiz do Mídia Kit. O resultado completo está disponível na Central de Recursos dos Creators da Conecte Publi, e vou mostrar um pedacinho aqui para vocês!":
       "Perfect for tutorials, like the one in Mídia Kit.",
     "Vídeo curto (Reels até 90s)": "Short video (Reels up to 90s)",
-    "Demonstra recursos essenciais.": "Demonstrates essential capabilities.",
+    "Aqui, vou editar um trecho do podcast para demonstrar todos os recursos que vocês podem aplicar em qualquer vídeo. Também vou mostrar exemplos reais: o vídeo da marca Reserva, onde utilizei camadas para destacar elementos importantes, e o vídeo da DUH, com edição de unboxing.":
+      "Here, I'll edit an excerpt from the podcast to demonstrate all the features you can apply to any video. I will also show real examples: the Reserva brand video, where I used layers to highlight important elements, and the DUH video, with unboxing editing.",
     "B-rolls (até 15s)": "B-rolls (up to 15s)",
-    "Destaque para detalhes do produto.": "Highlight for product details.",
+    "São aqueles takes rápidos que enfatizam detalhes do produto. Vou mostrar um B-roll que editei, destacando a textura e os detalhes do produto de forma profissional.":
+      "These are those quick takes that emphasize product details. I'll show you a B-roll that I edited, highlighting the texture and details of the product in a professional way.",
     "Além disso, vamos aprender recursos avançados para deixar a edição ainda mais fluida:":
       "In addition, we will learn advanced features to make editing even more fluid:",
     "Isolamento de voz": "Voice Isolation",
@@ -1890,6 +1891,22 @@ export default {
       "Brightness, sharpness and contrast adjustments.",
     "Efeitos e animações": "Effects and animations",
     "Adicionar transições e camadas.": "Add transitions and layers.",
+    "Remoção e substituição de fundo": "Background removal and replacement",
+    "Trocar o fundo e criar sobreposições.":
+      "Change the background and create overlays.",
+    "Resolução e qualidade": "Resolution and quality",
+    "Melhorar a qualidade do vídeo, mesmo que não tenha sido gravado na melhor configuração.":
+      "Improve video quality, even if it wasn't recorded in the best setting.",
+    "Legendas, trilha sonora e efeitos de áudio":
+      "Subtitles, soundtrack and audio effects",
+    "Como adicionar legendas automáticas, músicas e efeitos sonoros.":
+      "How to add automatic subtitles, music and sound effects.",
+    "Velocidade do vídeo": "Video speed",
+    "Como acelerar ou usar câmera lenta para dar mais impacto.":
+      "How to speed up or use slow motion to give more impact.",
+    "Salvar e compartilhar": "Save and share",
+    "Como exportar em alta qualidade (2K e mais), salvar no Google Drive, WeTransfer ou arquivos, e enviar o link para a marca na Conecte Publi, caso tenha sido aprovado em uma campanha.":
+      "How to export in high quality (2K and more), save to Google Drive, WeTransfer or files, and send the link to the brand on Conecte Publi, if it has been approved for a campaign.",
     "📌 Passo a passo da edição:": "📌 Editing step by step:",
     "Criar um novo projeto no CapCut.": "Create a new project in CapCut.",
     "Adicionar todos os vídeos que serão editados.":
@@ -1898,9 +1915,13 @@ export default {
       "Break down the most important parts and delete what won't be used.",
     "Aplicar efeitos, cortes, transições e ajustes.":
       "Apply effects, cuts, transitions and adjustments.",
-    "Exportar e salvar no formato ideal.":
-      "Export and save in the ideal format.",
-    "Link para baixar os overlays": "Link to download the overlays",
+    "Exportar e salvar no formato ideal para garantir qualidade máxima ao enviar para as marcas.":
+      "Export and save in the ideal format to ensure maximum quality when sending to brands.",
+    "E para facilitar, vou disponibilizar 4 overlays exclusivos para sobreposições. O link para baixar está na descrição do vídeo! 🎁":
+      "And to make it easier, I will provide 4 exclusive overlays for overlays. The download link is in the video description! 🎁",
+    "Agora, bora começar a edição e transformar seus vídeos em conteúdos ainda mais incríveis? 🚀":
+      "Now, let's start editing and transform your videos into even more incredible content? 🚀",
+    "Link com overlays:": "Link overlays with:",
     "Aula Tutorial: Como Criar Seu Mídia Kit":
       "Tutorial Class: How to Create Your Media Kit",
     "Transforme Seu Mídia Kit em um Site Profissional!":

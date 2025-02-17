@@ -36,6 +36,7 @@ interface VideoLessonType {
   advancedFeatures: { title: string; description: string }[];
   stepsTitle: string;
   steps: string[];
+  lastTexts?: string[];
   downloadText: string;
   downloadLinks?: string[];
   additionalLinks?: { text: string; url: string }[];
@@ -198,6 +199,10 @@ function VideoSection({ videoData }: { videoData: VideoLessonType }) {
                     <li key={index}>{step}</li>
                   ))}
                 </ol>
+                {videoData.lastTexts &&
+                  videoData.lastTexts?.map((text) => {
+                    return <p className="mt-4">{text}</p>;
+                  })}
                 {videoData.downloadLinks && (
                   <p className="mt-4">{videoData.downloadText}</p>
                 )}
@@ -246,7 +251,7 @@ function Page() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-left">
-        {t("Seu Hub de Conteúdos Premium para Criadores")}
+        {t("Conteúdos Premium para Criadores")}
       </h1>
       <p className="text-left text-gray-700 mb-8">
         {t("Faça o download dos produtos e Assista as Aulas!")}
@@ -354,15 +359,21 @@ const videoLessons: VideoLessonType[] = [
     highlights: [
       {
         title: t("Vídeo longo"),
-        description: t("Perfeito para tutoriais, como o do Mídia Kit."),
+        description: t(
+          "Perfeito para tutoriais, como o que fiz do Mídia Kit. O resultado completo está disponível na Central de Recursos dos Creators da Conecte Publi, e vou mostrar um pedacinho aqui para vocês!"
+        ),
       },
       {
         title: t("Vídeo curto (Reels até 90s)"),
-        description: t("Demonstra recursos essenciais."),
+        description: t(
+          "Aqui, vou editar um trecho do podcast para demonstrar todos os recursos que vocês podem aplicar em qualquer vídeo. Também vou mostrar exemplos reais: o vídeo da marca Reserva, onde utilizei camadas para destacar elementos importantes, e o vídeo da DUH, com edição de unboxing."
+        ),
       },
       {
         title: t("B-rolls (até 15s)"),
-        description: t("Destaque para detalhes do produto."),
+        description: t(
+          "São aqueles takes rápidos que enfatizam detalhes do produto. Vou mostrar um B-roll que editei, destacando a textura e os detalhes do produto de forma profissional."
+        ),
       },
     ],
     moreIntro: t(
@@ -385,19 +396,55 @@ const videoLessons: VideoLessonType[] = [
         title: t("Efeitos e animações"),
         description: t("Adicionar transições e camadas."),
       },
+      {
+        title: t("Remoção e substituição de fundo"),
+        description: t("Trocar o fundo e criar sobreposições."),
+      },
+      {
+        title: t("Resolução e qualidade"),
+        description: t(
+          "Melhorar a qualidade do vídeo, mesmo que não tenha sido gravado na melhor configuração."
+        ),
+      },
+      {
+        title: t("Legendas, trilha sonora e efeitos de áudio"),
+        description: t(
+          "Como adicionar legendas automáticas, músicas e efeitos sonoros."
+        ),
+      },
+      {
+        title: t("Velocidade do vídeo"),
+        description: t(
+          "Como acelerar ou usar câmera lenta para dar mais impacto."
+        ),
+      },
+      {
+        title: t("Salvar e compartilhar"),
+        description: t(
+          "Como exportar em alta qualidade (2K e mais), salvar no Google Drive, WeTransfer ou arquivos, e enviar o link para a marca na Conecte Publi, caso tenha sido aprovado em uma campanha."
+        ),
+      },
     ],
     stepsTitle: t("📌 Passo a passo da edição:"),
     steps: [
-      t("Criar um novo projeto no CapCut."),
-      t("Adicionar todos os vídeos que serão editados."),
-      t("Dividir as partes mais importantes e excluir o que não será usado."),
-      t("Aplicar efeitos, cortes, transições e ajustes."),
-      t("Exportar e salvar no formato ideal."),
+      t("1️⃣ Criar um novo projeto no CapCut."),
+      t("2️⃣ Adicionar todos os vídeos que serão editados."),
+      t(
+        "3️⃣ Dividir as partes mais importantes e excluir o que não será usado."
+      ),
+      t("4️⃣ Aplicar efeitos, cortes, transições e ajustes."),
+      t(
+        "5️⃣ Exportar e salvar no formato ideal para garantir qualidade máxima ao enviar para as marcas."
+      ),
+    ],
+    lastTexts: [
+      "E para facilitar, vou disponibilizar 4 overlays exclusivos para sobreposições. O link para baixar está na descrição do vídeo! 🎁",
+      "Agora, bora começar a edição e transformar seus vídeos em conteúdos ainda mais incríveis? 🚀",
     ],
     downloadLinks: [
       "https://drive.google.com/file/d/1XvIq2yUXDqNN-T3M1m8GQ2Fv0m-ueN7W",
     ],
-    downloadText: t("Link para baixar os overlays"),
+    downloadText: t("Link com overlays:"),
   },
   {
     index: 1,

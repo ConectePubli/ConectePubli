@@ -14,6 +14,7 @@ import FlavinhaCheirosa from "@/assets/topcreators/Flavinha.png";
 import TatyZatto from "@/assets/topcreators/Taty.jpg";
 import ThaisGuedes from "@/assets/topcreators/ThaisGuedes.jpg";
 import Henriki from "@/assets/topcreators/Henriki.png";
+import SophiaMartins from "@/assets/topcreators/shopia_martins.jpeg";
 import { useMemo } from "react";
 
 const topCreatorsData = [
@@ -52,6 +53,10 @@ const topCreatorsData = [
   {
     name: "Henriki",
     imageUrl: Henriki,
+  },
+  {
+    name: "Sophia Martins",
+    imageUrl: SophiaMartins,
   },
 ];
 
