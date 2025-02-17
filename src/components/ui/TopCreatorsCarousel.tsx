@@ -51,7 +51,7 @@ const topCreatorsData = [
     imageUrl: TatyZatto,
   },
   {
-    name: "Henriki",
+    name: "Henriki Borges",
     imageUrl: Henriki,
   },
   {
