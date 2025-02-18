@@ -195,11 +195,19 @@ function Page() {
               </li>
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
-                {t("Aula Edição de Conteúdo Cap Cut")}
+                {t(
+                  "Aula Tutorial: Edição de Conteúdo no CapCut para Creators! Edite Seus Próprios Vídeos Como um Profissional!"
+                )}
               </li>
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
-                {t("Modelo de Midia Kit Promos + Tutorial Como Editar")}
+                {t(
+                  "Aula Tutorial: Como Criar Seu Mídia Kit + Transformá-lo em Site + Gerar um Link Profissional + Acessar Mais de 10 Modelos Gratuitos para Editar e Personalizar!"
+                )}
+              </li>
+              <li className="flex items-start">
+                <span className="text-[#ff7a49] mr-2">✔</span>
+                {t("Kit Completo: Contratos Prontos + Tutorial de Edição")}
               </li>
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
@@ -208,13 +216,13 @@ function Page() {
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
                 {t(
-                  "E-book: Como Criar Roteiros - Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT"
+                  "Ebook: Como Criar Roteiros - Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT"
                 )}
               </li>
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
                 {t(
-                  "E-book: Como Criar Conteúdo - Ferramentas, Dicas e Prompts Estratégicos com ChatGPT"
+                  "Ebook: Como Criar Conteúdo - Ferramentas, Dicas e Prompts Estratégicos com ChatGPT"
                 )}
               </li>
               <li className="flex items-start">
@@ -305,11 +313,19 @@ function Page() {
               </li>
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
-                {t("Aula Edição de Conteúdo Cap Cut")}
+                {t(
+                  "Aula Tutorial: Edição de Conteúdo no CapCut para Creators! Edite Seus Próprios Vídeos Como um Profissional!"
+                )}
               </li>
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
-                {t("Modelo de Midia Kit Promos + Tutorial Como Editar")}
+                {t(
+                  "Aula Tutorial: Como Criar Seu Mídia Kit + Transformá-lo em Site + Gerar um Link Profissional + Acessar Mais de 10 Modelos Gratuitos para Editar e Personalizar!"
+                )}
+              </li>
+              <li className="flex items-start">
+                <span className="text-[#ff7a49] mr-2">✔</span>
+                {t("Kit Completo: Contratos Prontos + Tutorial de Edição")}
               </li>
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
@@ -318,13 +334,13 @@ function Page() {
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
                 {t(
-                  "E-book: Como Criar Roteiros - Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT"
+                  "Ebook: Como Criar Roteiros - Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT"
                 )}
               </li>
               <li className="flex items-start">
                 <span className="text-[#ff7a49] mr-2">✔</span>
                 {t(
-                  "E-book: Como Criar Conteúdo - Ferramentas, Dicas e Prompts Estratégicos com ChatGPT"
+                  "Ebook: Como Criar Conteúdo - Ferramentas, Dicas e Prompts Estratégicos com ChatGPT"
                 )}
               </li>
               <li className="flex items-start">

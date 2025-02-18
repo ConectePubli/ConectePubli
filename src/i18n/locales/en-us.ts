@@ -1967,5 +1967,13 @@ export default {
       "🌟 I'll leave the link to my media kit below, which I showed in the video. You can also use it as a base, just modifying it with your information! 😉 Follow:",
     "🔗 Link do que editei no vídeo tutorial com vocês:":
       "🔗 Link to what I edited in the video tutorial with you:",
+    "Aula Tutorial: Edição de Conteúdo no CapCut para Creators! Edite Seus Próprios Vídeos Como um Profissional!":
+      "Tutorial Class: Content Editing in CapCut for Creators! Edit Your Own Videos Like a Pro!",
+    "Aula Tutorial: Como Criar Seu Mídia Kit + Transformá-lo em Site + Gerar um Link Profissional + Acessar Mais de 10 Modelos Gratuitos para Editar e Personalizar!":
+      "Tutorial Class: How to Create Your Media Kit + Turn it into a Website + Generate a Professional Link + Access More than 10 Free Templates to Edit and Customize!",
+    "Ebook: Como Criar Roteiros - Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT":
+      "Ebook: How to Create Scripts - Practical Techniques and Strategic Prompts with AI and ChatGPT",
+    "Ebook: Como Criar Conteúdo - Ferramentas, Dicas e Prompts Estratégicos com ChatGPT":
+      "Ebook: How to Create Content - Tools, Tips and Strategic Prompts with ChatGPT",
   },
 };
