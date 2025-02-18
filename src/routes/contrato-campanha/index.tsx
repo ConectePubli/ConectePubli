@@ -118,15 +118,9 @@ function ContratoDeCampanha() {
         )}
       </p>
       <p className="mb-4">
-        ● {t("Pagamento ao Creator (Tradicional)")}:{" "}
+        <strong>●</strong>{" "}
         {t(
           "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês. O pagamento corresponderá às campanhas concluídas até o último dia do mês anterior. Para garantir o recebimento, o Creator deve manter sua chave PIX cadastrada na plataforma sempre atualizada."
-        )}
-      </p>
-      <p className="mb-4">
-        ● {t("Pagamento ao Creator (Inverso)")}:{" "}
-        {t(
-          "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês. O pagamento corresponderá aos entregáveis concluídos até o último dia do mês anterior. Para garantir o recebimento, o Creator deve manter sua chave PIX cadastrada na plataforma sempre atualizada."
         )}
       </p>
 

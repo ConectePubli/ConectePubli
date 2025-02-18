@@ -146,6 +146,12 @@ function Page() {
             "Em caso de não entrega ou descumprimento das condições acordadas, o valor será devolvido integralmente à Marca."
           )}
         </p>
+        <p className="mb-4">
+          3.4{" "}
+          {t(
+            "Os valores acumulados para o Creator serão transferidos via PIX no dia 15 (quinze) de cada mês. O pagamento corresponderá aos entregáveis concluídos até o último dia do mês anterior. Para garantir o recebimento, o Creator deve manter sua chave PIX cadastrada na plataforma sempre atualizada."
+          )}
+        </p>
 
         <h2 className="text-xl font-semibold mt-6">
           4. {t("NOTIFICAÇÕES E APROVAÇÕES")}
