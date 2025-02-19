@@ -168,8 +168,7 @@ function Page() {
 
       <div className="max-w-4xl mx-auto mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6 max-xl:mt-0 md:w-[80%]">
         <div
-          className={`relative bg-white shadow ${currentPlan && !currentPlan.cancel_at ? "h-[815px]" : "h-[770px]"} rounded-md flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] order-2 xl:order-1 max-xl:translate-y-0 py-6 
-          ${currentPlan && !currentPlan.cancel_at ? "max-lg:h-[745px]" : "max-lg:h-[700px]"}`}
+          className={`relative bg-white shadow ${currentPlan && !currentPlan.cancel_at ? "h-[815px]" : "h-[770px]"} rounded-md flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] order-2 xl:order-1 max-xl:translate-y-0 py-6`}
         >
           <div className="flex-1 px-4">
             <h2 className="text-xl md:text-2xl font-semibold text-gray-700 text-left">
@@ -278,7 +277,7 @@ function Page() {
         </div>
 
         <div
-          className={`relative bg-white shadow ${currentPlan && !currentPlan.cancel_at ? "h-[860px]" : "h-[815px]"} rounded-md flex flex-col justify-between border-2 border-[#FF7A49] order-1 xl:order-2 max-xl:mt-[60px] max-lg:h-[745px]`}
+          className={`relative bg-white shadow ${currentPlan && !currentPlan.cancel_at ? "h-[860px]" : "h-[815px]"} rounded-md flex flex-col justify-between border-2 border-[#FF7A49] order-1 xl:order-2 max-xl:mt-[60px]`}
         >
           <div className="bg-[#ff7a49] px-3 h-[45px] flex items-center justify-center text-center font-semibold">
             <p className="text-white">{t("MAIS POPULAR")}</p>
