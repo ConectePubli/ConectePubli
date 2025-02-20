@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "./Modal";
 import { Flag, MapPin, MessageCircle, Stars, User } from "lucide-react";
-import { CaretDown, MagnifyingGlassPlus } from "phosphor-react";
+import { CaretDown, MagnifyingGlassPlus, WhatsappLogo } from "phosphor-react";
 import { t } from "i18next";
 
 import { Influencer } from "@/types/Influencer";
@@ -14,6 +14,7 @@ import pb from "@/lib/pb";
 import { useRouter } from "@tanstack/react-router";
 import { createOrGetChat } from "@/services/chatService";
 import { toast, ToastContainer } from "react-toastify";
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 
 interface Props {
   campaignData: Campaign;
@@ -94,12 +95,16 @@ const InfoParticipantModal: React.FC<Props> = ({
           <div className="flex-1">
             <p className="font-semibold text-lg">{participant?.name}</p>
             {selectedParticipation.status !== "waiting" && (
-              <p className="text-sm text-red-600 flex items-center gap-1">
-                <MapPin size={16} />
-                {`${participant?.city || t("Cidade não definida")}, ${
-                  participant?.state || t("Estado não definido")
-                }, ${participant?.country || t("País não definido")}`}
-              </p>
+              <div className="flex flex-col">
+                <p className="text-sm text-red-600 flex items-center gap-1">
+                  <MapPin size={16} />
+                  {`${participant?.city || t("Cidade não definida")}, ${
+                    participant?.state || t("Estado não definido")
+                  }, ${participant?.country || t("País não definido")}`}
+                </p>
+
+                <p className="flex items-center"><WhatsappLogo className="w-4 h-4 mr-1" /> {formatPhoneNumber(String(participant?.cell_phone))}</p>
+              </div>
             )}
           </div>
         </div>
