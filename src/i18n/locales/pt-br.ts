@@ -93,7 +93,7 @@ export default {
     new_campaign_participation:
       "Você se inscreveu com sucesso na campanha: {{campaign}}.",
     campaign_participation_confirmation:
-      'A participação na campanha "{{campaign}}" foi confirmada.',
+      'A inscrição na campanha "{{campaign}}" foi confirmada.',
     campaign_approval_influencer:
       'Sua campanha "{{campaign}}" foi aprovada pela marca.',
     campaign_approval_brand:

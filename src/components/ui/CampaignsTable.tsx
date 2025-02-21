@@ -224,13 +224,12 @@ const CampaignsTable: React.FC = () => {
                           : ""
                     }`}
                   >
-                    Status:{" "}
                     {campaign.status === "in_progress"
                       ? t("Em andamento")
                       : campaign.status === "ended"
-                        ? t("Encerrado")
+                        ? t("Campanha encerrada")
                         : campaign.status === "ready"
-                          ? t("Pronto para iniciar")
+                          ? t("Sua campanha foi aprovada! Pronta para Iniciar")
                           : campaign.status === "analyzing"
                             ? t("Em análise")
                             : campaign.status === "rejected"

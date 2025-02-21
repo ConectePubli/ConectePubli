@@ -120,7 +120,9 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
                 className="w-full p-2 border border-gray-300 rounded-lg"
               >
                 <option value={StatusFilter.All}>{t("Todos")}</option>
-                <option value={StatusFilter.Completed}>{t("Encerrado")}</option>
+                <option value={StatusFilter.Completed}>
+                  {t("Campanha encerrada")}
+                </option>
                 <option value={StatusFilter.In_Progress}>
                   {t("Em andamento")}
                 </option>

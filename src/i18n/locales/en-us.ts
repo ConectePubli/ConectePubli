@@ -6,7 +6,7 @@ export default {
     new_campaign_participation:
       "You have successfully joined the campaign: {{campaign}}.",
     campaign_participation_confirmation:
-      'Participation in "{{campaign}}" was confirmed.',
+      'Registration in "{{campaign}}" was confirmed.',
     campaign_approval_influencer:
       'Your campaign "{{campaign}}" was approved by the brand.',
     campaign_approval_brand:
@@ -970,8 +970,10 @@ export default {
     "Carregando campanhas...": "Loading campaigns...",
     "Nenhuma campanha disponível.": "No campaigns available.",
     "Pronto para iniciar": "Ready to start",
+    "Sua campanha foi aprovada! Pronta para Iniciar": "Your campaign has been approved! Ready to start",
     "Em andamento": "In progress",
     Encerrado: "Closed",
+    "Campanha encerrada": "Campanha encerrada",
     "Minhas Campanhas": "My Campaigns",
     "Rascunho de Campanhas": "Campaign Drafts",
     "Finalize as suas campanhas para que os creators possam se candidatar":
