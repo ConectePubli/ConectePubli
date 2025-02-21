@@ -970,7 +970,8 @@ export default {
     "Carregando campanhas...": "Loading campaigns...",
     "Nenhuma campanha disponível.": "No campaigns available.",
     "Pronto para iniciar": "Ready to start",
-    "Sua campanha foi aprovada! Pronta para Iniciar": "Your campaign has been approved! Ready to start",
+    "Sua campanha foi aprovada! Pronta para Iniciar":
+      "Your campaign has been approved! Ready to start",
     "Em andamento": "In progress",
     Encerrado: "Closed",
     "Campanha encerrada": "Campanha encerrada",
@@ -1346,6 +1347,8 @@ export default {
     "Escolher para a Campanha": "Choose for the Campaign",
     "Contatar Suporte": "Contact Support",
     "Proposta recusada": "Proposal declined",
+    "Proposta recusada, tente outra data":
+      "Proposal declined, try another date",
     "Realize o pagamento para continuar": "Make the payment to continue",
     "Aguardando confirmação da marca": "Waiting for brand confirmation",
     Total: "Total",

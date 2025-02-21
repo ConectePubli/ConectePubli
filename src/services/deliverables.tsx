@@ -147,7 +147,11 @@ export const returnStatus = (
     case "completed":
       return <p style={{ color: "#28A745" }}>{t("Trabalho concluído")}</p>;
     case "refused":
-      return <p style={{ color: "#DC3545" }}>{t("Proposta recusada")}</p>;
+      return (
+        <p style={{ color: "#DC3545" }}>
+          {t("Proposta recusada, tente outra data")}
+        </p>
+      );
     default:
       return <p style={{ color: "#000000" }}>{t("Status desconhecido")}</p>;
   }
