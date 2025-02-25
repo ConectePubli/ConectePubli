@@ -69,7 +69,7 @@ export function SideNavDashboard() {
             </li>
           )}
 
-          {!isBrand && (
+          {/* {!isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link
@@ -81,7 +81,7 @@ export function SideNavDashboard() {
                 </Link>
               </Button>
             </li>
-          )}
+          )} */}
 
           {/* Conditionally render "Criar Campanha" for brands */}
           {isBrand && (
@@ -293,7 +293,7 @@ const Sheet = ({ hasPlan }: SheetProps) => {
             </li>
           )}
 
-          {!isBrand && (
+          {/* {!isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link
@@ -305,7 +305,7 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                 </Link>
               </Button>
             </li>
-          )}
+          )} */}
 
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>
