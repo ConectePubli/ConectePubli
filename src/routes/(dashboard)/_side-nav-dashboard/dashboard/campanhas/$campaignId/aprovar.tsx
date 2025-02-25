@@ -269,7 +269,7 @@ function Page() {
     }
 
     // Dividir os IDs em chunks para evitar filtros gigantes
-    const chunkSize = 50;
+    const chunkSize = 25;
     const idChunks = chunkArray(influencerIds, chunkSize);
 
     // Para cada chunk, construir o filtro e fazer a requisição
