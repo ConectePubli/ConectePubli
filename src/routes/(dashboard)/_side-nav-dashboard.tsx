@@ -69,6 +69,20 @@ export function SideNavDashboard() {
             </li>
           )}
 
+          {!isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-campanhas"
+                  className="flex items-center gap-2"
+                >
+                  <LayoutGrid className="w-6 h-6" />
+                  {t("Central de recursos")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
           {/* Conditionally render "Criar Campanha" for brands */}
           {isBrand && (
             <li>
@@ -274,6 +288,20 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                 >
                   <LayoutGrid className="w-6 h-6" />
                   {t("Vitrine de Campanhas")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {!isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/vitrine-de-campanhas"
+                  className="flex items-center gap-2"
+                >
+                  <LayoutGrid className="w-6 h-6" />
+                  {t("Central de recursos")}
                 </Link>
               </Button>
             </li>

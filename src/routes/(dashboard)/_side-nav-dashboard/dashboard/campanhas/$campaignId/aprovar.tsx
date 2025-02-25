@@ -105,7 +105,7 @@ export const Route = createFileRoute(
       }
 
       // 3. Dividir os IDs em chunks (para evitar filtros gigantes)
-      const chunkSize = 50;
+      const chunkSize = 25;
       const idChunks = chunkArray(influencerIds, chunkSize);
       console.log("Chunks de IDs:", idChunks);
 

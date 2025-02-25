@@ -1980,5 +1980,6 @@ export default {
       "Ebook: How to Create Scripts - Practical Techniques and Strategic Prompts with AI and ChatGPT",
     "Ebook: Como Criar Conteúdo - Ferramentas, Dicas e Prompts Estratégicos com ChatGPT":
       "Ebook: How to Create Content - Tools, Tips and Strategic Prompts with ChatGPT",
+    "Central de recursos": "Resource Center",
   },
 };
