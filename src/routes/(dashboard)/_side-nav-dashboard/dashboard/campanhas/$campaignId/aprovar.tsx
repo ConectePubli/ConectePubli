@@ -66,22 +66,20 @@ interface SpotlightCampaign {
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar"
 )({
-  loader: async ({ params: { campaignId } }): Promise<LoaderData> => {
+    loader: async ({ params: { campaignId } }): Promise<LoaderData> => {
     try {
       const currentBrandId = pb.authStore.model?.id;
-
       if (!currentBrandId) {
         throw redirect({ to: "/login" });
       }
-
+      
       const campaignData = await pb
         .collection("Campaigns")
         .getFirstListItem<Campaign>(`id="${campaignId}"`);
-
       if (!campaignData) {
         throw notFound();
       }
-
+      
       // 1. Buscar as participações da campanha
       const campaignParticipations = await pb
         .collection("Campaigns_Participations")
@@ -90,40 +88,23 @@ export const Route = createFileRoute(
           sort: "created",
           expand: "campaign,influencer",
         });
-
-      // 2. Extrair os IDs dos influencers presentes nas participações
+      
+      // 2. Extrair os IDs dos influencers das participações
       const influencerIds = campaignParticipations.map((p) => p.influencer);
       console.log("Influencer IDs das participações:", influencerIds);
-
-      // Função auxiliar para dividir um array em chunks
-      function chunkArray<T>(array: T[], chunkSize: number): T[][] {
-        const chunks: T[][] = [];
-        for (let i = 0; i < array.length; i += chunkSize) {
-          chunks.push(array.slice(i, i + chunkSize));
-        }
-        return chunks;
-      }
-
-      // 3. Dividir os IDs em chunks (para evitar filtros gigantes)
-      const chunkSize = 25;
-      const idChunks = chunkArray(influencerIds, chunkSize);
-      console.log("Chunks de IDs:", idChunks);
-
-      // 4. Para cada chunk, construir o filtro e fazer a requisição
-      const premiumRecordPromises = idChunks.map((chunk) => {
-        const filterChunk = `(${chunk.map((id) => `influencer="${id}"`).join(" || ")}) && active = true`;
-        console.log("Filtro gerado para chunk:", filterChunk);
-        return pb
-          .collection("purchased_influencers_plans")
-          .getFullList({ filter: filterChunk });
-      });
-
-      // 5. Aguardar todas as requisições e combinar os resultados
-      const premiumRecordsArrays = await Promise.all(premiumRecordPromises);
-      const premiumRecords = premiumRecordsArrays.flat();
+      
+      // 3. Buscar todos os registros ativos de planos (active = true)
+      const allActivePlans = await pb
+        .collection("purchased_influencers_plans")
+        .getFullList({ filter: 'active = true' });
+      
+      // 4. Filtrar os registros para identificar os influencers com plano ativo
+      const premiumRecords = allActivePlans.filter(record =>
+        influencerIds.includes(record.influencer)
+      );
       console.log("Registros premium obtidos:", premiumRecords);
-
-      // 6. Criar um Set com os IDs dos influencers que possuem plano ativo
+      
+      // 5. Criar um Set com os IDs dos influencers premium
       const premiumInfluencerIds = new Set(
         premiumRecords.map((record) => record.influencer)
       );
@@ -131,25 +112,22 @@ export const Route = createFileRoute(
         "IDs de influencers premium:",
         Array.from(premiumInfluencerIds)
       );
-
-      // 7. Ordenar as participações: premium primeiro, depois por data de criação
+      
+      // 6. Ordenar as participações: primeiro os premium, depois pelo mais antigo
       campaignParticipations.sort((a, b) => {
         const isPremiumA = premiumInfluencerIds.has(a.influencer);
         const isPremiumB = premiumInfluencerIds.has(b.influencer);
-
-        if (isPremiumA && !isPremiumB) return -1; // A vem antes se for premium
-        if (!isPremiumA && isPremiumB) return 1; // B vem antes se for premium
-
-        // Se ambos têm o mesmo status, ordena pela data de criação (mais antigos primeiro)
+      
+        if (isPremiumA && !isPremiumB) return -1;
+        if (!isPremiumA && isPremiumB) return 1;
+      
         return (
           new Date(a.created ?? 0).getTime() -
           new Date(b.created ?? 0).getTime()
         );
       });
-
-      console.log("participações");
-      console.log(campaignParticipations);
-
+      console.log("Participações ordenadas:", campaignParticipations);
+      
       if (
         campaignData.brand !== currentBrandId ||
         campaignData.status === "analyzing" ||
@@ -159,32 +137,28 @@ export const Route = createFileRoute(
           to: `/dashboard/campanhas/${campaignData.id}/status`,
         });
       }
-
+      
       const now = new Date();
       let isSpotlightCampaign: boolean = false;
-
+      
       try {
-        // 3.1 Buscar todos os spotlights ativos
+        // Buscar todos os spotlights ativos
         const activeSpotlights = await pb
           .collection("purchased_campaigns_spotlights")
           .getFullList({
             filter: `spotlight_end >= "${now.toISOString()}"`,
             sort: "created",
           });
-
+      
         const filteredRecords = activeSpotlights.filter(
           (spotlight) => spotlight.campaign === campaignData.id
         );
-
-        if (filteredRecords.length >= 1) {
-          isSpotlightCampaign = true;
-        } else {
-          isSpotlightCampaign = false;
-        }
+      
+        isSpotlightCampaign = filteredRecords.length >= 1;
       } catch (spotlightError) {
         console.error("Erro ao buscar spotlights:", spotlightError);
       }
-
+      
       return { campaignData, campaignParticipations, isSpotlightCampaign };
     } catch (error) {
       if (error instanceof ClientResponseError && error.status === 404) {
@@ -198,6 +172,7 @@ export const Route = createFileRoute(
       throw error;
     }
   },
+
   pendingComponent: () => (
     <div className="flex justify-center items-center h-screen">
       <Spinner />
