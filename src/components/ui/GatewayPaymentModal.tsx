@@ -11,8 +11,11 @@ import {
   buyPlanByStripe,
 } from "@/services/spotightCampaign";
 
-import { SpotlightCampaignPlan } from "@/types/SpotlightCampaignPlan";
 import { Campaign } from "@/types/Campaign";
+import { CreatorProduct } from "@/types/CreatorProduct";
+import { Deliverables } from "@/types/Deliverables";
+import { SpotlightCampaignPlan } from "@/types/SpotlightCampaignPlan";
+
 import {
   campaignPaymentByPagSeguro,
   campaignPaymentByStripe,
@@ -22,12 +25,15 @@ import {
   paymentCreatorsByPagseguro,
   paymentCreatorsByStripe,
 } from "@/services/approveCreators";
-import { Deliverables } from "@/types/Deliverables";
 import {
   payDeliverablePagseguro,
   payDeliverableStripe,
 } from "@/services/deliverables";
 import i18n from "@/i18n";
+import {
+  payCreatorProductPagseguro,
+  payCreatorProductStripe,
+} from "@/services/creatorProduct";
 interface Props {
   plans?: SpotlightCampaignPlan[];
   selectedOption?: string;
@@ -36,10 +42,16 @@ interface Props {
   approvedParticipationsCount?: number;
   toast?: any;
   setLoadingPayment?: React.ComponentState;
-  type: "create_campaign" | "buy_spotlight" | "buy_creators" | "deliverable";
+  type:
+    | "create_campaign"
+    | "buy_spotlight"
+    | "buy_creators"
+    | "deliverable"
+    | "creator_product";
   participations?: CampaignParticipation[];
   unit_amount?: number;
   deliverable?: Deliverables;
+  product?: CreatorProduct;
 }
 
 const GatewayPaymentModal: React.FC<Props> = ({
@@ -54,6 +66,7 @@ const GatewayPaymentModal: React.FC<Props> = ({
   participations,
   unit_amount,
   deliverable,
+  product,
 }) => {
   const [language, setLanguage] = useState<"pt" | "en">("pt");
 
@@ -85,7 +98,7 @@ const GatewayPaymentModal: React.FC<Props> = ({
     },
   });
 
-  // PAGAR CLUBE
+  // PAGAR CAMPANHA
   const pagSeguroMutateCampaign = useMutation({
     mutationFn: async () => {
       if (campaignData) {
@@ -164,6 +177,20 @@ const GatewayPaymentModal: React.FC<Props> = ({
     },
   });
 
+  // COMPRAR PRODUTOS CREATOR
+  const pagSeguroMutatePayCreatorProduct = useMutation({
+    mutationFn: async () => {
+      console.log(product);
+      await payCreatorProductPagseguro(product as CreatorProduct, toast);
+    },
+  });
+
+  const stripeMutatePayCreatorProduct = useMutation({
+    mutationFn: async () => {
+      await payCreatorProductStripe(product as CreatorProduct, toast);
+    },
+  });
+
   return (
     <div>
       <div className="flex justify-between items-center border-b pb-4 pt-2">
@@ -216,19 +243,23 @@ const GatewayPaymentModal: React.FC<Props> = ({
                 pagSeguroMutateApproveCreators.mutate();
               } else if (type === "deliverable") {
                 pagSeguroMutatePayDeliverable.mutate();
+              } else if (type === "creator_product") {
+                pagSeguroMutatePayCreatorProduct.mutate();
               }
             }}
             disabled={
               pagSeguroMutateSpotlight.isPending ||
               pagSeguroMutateCampaign.isPending ||
               pagSeguroMutateApproveCreators.isPending ||
-              pagSeguroMutatePayDeliverable.isPending
+              pagSeguroMutatePayDeliverable.isPending ||
+              pagSeguroMutatePayCreatorProduct.isPending
             }
             className={`px-4 py-2 rounded-lg text-white ${
               pagSeguroMutateSpotlight.isPending ||
               pagSeguroMutateCampaign.isPending ||
               pagSeguroMutateApproveCreators.isPending ||
-              pagSeguroMutatePayDeliverable.isPending
+              pagSeguroMutatePayDeliverable.isPending ||
+              pagSeguroMutatePayCreatorProduct.isPending
                 ? "bg-green-300 cursor-not-allowed"
                 : "bg-green-500 hover:bg-green-600"
             }`}
@@ -236,7 +267,8 @@ const GatewayPaymentModal: React.FC<Props> = ({
             {pagSeguroMutateSpotlight.isPending ||
             pagSeguroMutateCampaign.isPending ||
             pagSeguroMutateApproveCreators.isPending ||
-            pagSeguroMutatePayDeliverable.isPending
+            pagSeguroMutatePayDeliverable.isPending ||
+            pagSeguroMutatePayCreatorProduct.isPending
               ? `${language === "pt" ? "Processando..." : "Processing..."}`
               : "PagSeguro"}
           </button>
@@ -265,19 +297,23 @@ const GatewayPaymentModal: React.FC<Props> = ({
                 stripeMutateApproveCreators.mutate();
               } else if (type === "deliverable") {
                 stripeMutatePayDeliverable.mutate();
+              } else if (type === "creator_product") {
+                stripeMutatePayCreatorProduct.mutate();
               }
             }}
             disabled={
               stripeMutateSpotlight.isPending ||
               stripeMutateCampaign.isPending ||
               stripeMutateApproveCreators.isPending ||
-              stripeMutatePayDeliverable.isPending
+              stripeMutatePayDeliverable.isPending ||
+              stripeMutatePayCreatorProduct.isPending
             }
             className={`px-4 py-2 rounded-lg text-white ${
               stripeMutateSpotlight.isPending ||
               stripeMutateCampaign.isPending ||
               stripeMutateApproveCreators.isPending ||
-              stripeMutatePayDeliverable.isPending
+              stripeMutatePayDeliverable.isPending ||
+              stripeMutatePayCreatorProduct.isPending
                 ? "bg-blue-300 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600"
             }`}
@@ -285,7 +321,8 @@ const GatewayPaymentModal: React.FC<Props> = ({
             {stripeMutateSpotlight.isPending ||
             stripeMutateCampaign.isPending ||
             stripeMutateApproveCreators.isPending ||
-            stripeMutatePayDeliverable.isPending
+            stripeMutatePayDeliverable.isPending ||
+            stripeMutatePayCreatorProduct.isPending
               ? `${language === "pt" ? "Processando..." : "Processing..."}`
               : "Stripe"}
           </button>

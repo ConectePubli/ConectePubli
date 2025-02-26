@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link, Outlet } from "@tanstack/react-router";
 import {
+  Compass,
   Flame,
   Folder,
   LayoutGrid,
@@ -69,19 +70,19 @@ export function SideNavDashboard() {
             </li>
           )}
 
-          {/* {!isBrand && (
+          {!isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link
-                  to="/vitrine-de-campanhas"
+                  to="/recursos/creator"
                   className="flex items-center gap-2"
                 >
-                  <LayoutGrid className="w-6 h-6" />
+                  <Compass className="w-6 h-6" />
                   {t("Central de recursos")}
                 </Link>
               </Button>
             </li>
-          )} */}
+          )}
 
           {/* Conditionally render "Criar Campanha" for brands */}
           {isBrand && (
@@ -293,19 +294,19 @@ const Sheet = ({ hasPlan }: SheetProps) => {
             </li>
           )}
 
-          {/* {!isBrand && (
+          {!isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link
-                  to="/vitrine-de-campanhas"
+                  to="/recursos/creator"
                   className="flex items-center gap-2"
                 >
-                  <LayoutGrid className="w-6 h-6" />
+                  <Compass className="w-6 h-6" />
                   {t("Central de recursos")}
                 </Link>
               </Button>
             </li>
-          )} */}
+          )}
 
           <li>
             <Button variant="ghost" className="w-full justify-start" asChild>

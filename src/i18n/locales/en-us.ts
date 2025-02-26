@@ -1981,5 +1981,20 @@ export default {
     "Ebook: Como Criar Conteúdo - Ferramentas, Dicas e Prompts Estratégicos com ChatGPT":
       "Ebook: How to Create Content - Tools, Tips and Strategic Prompts with ChatGPT",
     "Central de recursos": "Resource Center",
+    "Kit Completo para Sucesso na Creator Economy":
+      "Complete Kit for Success in the Creator Economy",
+    "Adquira aulas, ferramentas e materiais exclusivos para aprimorar suas habilidades, otimizar sua rotina e impulsionar seus resultados como creator!":
+      "Purchase exclusive classes, tools and materials to improve your skills, optimize your routine and boost your results as a creator!",
+    "E-book Creator Economy 360°: O Guia Completo para Criadores de Conteúdo Digital":
+      "E-book Creator Economy 360°: The Complete Guide for Digital Content Creators",
+    "Ebook: Como Criar Conteúdo – Ferramentas, Dicas e Prompts Estratégicos com ChatGPT":
+      "Ebook: How to Create Content – ​​Tools, Tips and Strategic Prompts with ChatGPT",
+    "Dicionário da Creators Economy": "Creators Economy Dictionary",
+    "Aula Tutorial: Edição de Conteúdo no CapCut para Creators – Edite Seus Próprios Vídeos Como um Profissional!":
+      "Tutorial Class: Content Editing in CapCut for Creators – Edit Your Own Videos Like a Professional!",
+    "Aula Tutorial: Como Criar Seu Mídia Kit + Transformá-lo em site + Gerar um Link Profissional – Acesse Mais de 10 Modelos Gratuitos para Editar e Personalizar!":
+      "Tutorial Class: How to Create Your Media Kit + Turn it into a website + Generate a Professional Link – Access More than 10 Free Templates to Edit and Customize!",
+    "Ebook: Como Criar Roteiros – Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT":
+      "Ebook: How to Create Scripts – Practical Techniques and Strategic Prompts with AI and ChatGPT",
   },
 };
