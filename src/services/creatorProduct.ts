@@ -54,7 +54,7 @@ export const payCreatorProductStripe = async (
       {
         creator_id: pb.authStore.model?.id,
         creator_product_id: product.id,
-        stripe_price_id: product.test_stripe_price_id,
+        stripe_price_id: product.stripe_price_id,
       },
       {
         headers: {
