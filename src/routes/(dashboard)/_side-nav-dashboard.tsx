@@ -102,6 +102,17 @@ export function SideNavDashboard() {
           {isBrand && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link to="/recursos/marca" className="flex items-center gap-2">
+                  <Compass className="w-6 h-6" />
+                  {t("Central de recursos")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
                 <Link to="/premium/marca" className="flex items-center gap-2">
                   <Flame className="w-6 h-6" />
                   {t("Assinatura premium")}
@@ -224,6 +235,17 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                 >
                   <Plus className="w-6 h-6" />
                   {t("Criar Campanha")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link to="/recursos/marca" className="flex items-center gap-2">
+                  <Compass className="w-6 h-6" />
+                  {t("Central de recursos")}
                 </Link>
               </Button>
             </li>

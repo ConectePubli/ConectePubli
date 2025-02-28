@@ -1996,5 +1996,9 @@ export default {
       "Tutorial Class: How to Create Your Media Kit + Turn it into a website + Generate a Professional Link – Access More than 10 Free Templates to Edit and Customize!",
     "Ebook: Como Criar Roteiros – Técnicas Práticas e Prompts Estratégicos com IA e ChatGPT":
       "Ebook: How to Create Scripts – Practical Techniques and Strategic Prompts with AI and ChatGPT",
+    "Creator Economy 360º: Estratégia e Conhecimento para Marcas":
+      "Creator Economy 360º: Strategy and Knowledge for Brands",
+    "Descubra como transformar suas campanhas com os produtos essenciais Creator Economy":
+      "Discover how to transform your campaigns with Creator Economy essential products",
   },
 };

@@ -34,6 +34,10 @@ import {
   payCreatorProductPagseguro,
   payCreatorProductStripe,
 } from "@/services/creatorProduct";
+import {
+  payBrandProductPagseguro,
+  payBrandProductStripe,
+} from "@/services/brandProduct";
 interface Props {
   plans?: SpotlightCampaignPlan[];
   selectedOption?: string;
@@ -47,7 +51,8 @@ interface Props {
     | "buy_spotlight"
     | "buy_creators"
     | "deliverable"
-    | "creator_product";
+    | "creator_product"
+    | "brand_product";
   participations?: CampaignParticipation[];
   unit_amount?: number;
   deliverable?: Deliverables;
@@ -191,6 +196,20 @@ const GatewayPaymentModal: React.FC<Props> = ({
     },
   });
 
+  // COMPRAR PRODUTOS MARCA
+  const pagSeguroMutatePayBrandProduct = useMutation({
+    mutationFn: async () => {
+      console.log(product);
+      await payBrandProductPagseguro(product as CreatorProduct, toast);
+    },
+  });
+
+  const stripeMutatePayBrandProduct = useMutation({
+    mutationFn: async () => {
+      await payBrandProductStripe(product as CreatorProduct, toast);
+    },
+  });
+
   return (
     <div>
       <div className="flex justify-between items-center border-b pb-4 pt-2">
@@ -245,6 +264,8 @@ const GatewayPaymentModal: React.FC<Props> = ({
                 pagSeguroMutatePayDeliverable.mutate();
               } else if (type === "creator_product") {
                 pagSeguroMutatePayCreatorProduct.mutate();
+              } else if (type === "brand_product") {
+                pagSeguroMutatePayBrandProduct.mutate();
               }
             }}
             disabled={
@@ -252,14 +273,16 @@ const GatewayPaymentModal: React.FC<Props> = ({
               pagSeguroMutateCampaign.isPending ||
               pagSeguroMutateApproveCreators.isPending ||
               pagSeguroMutatePayDeliverable.isPending ||
-              pagSeguroMutatePayCreatorProduct.isPending
+              pagSeguroMutatePayCreatorProduct.isPending ||
+              pagSeguroMutatePayBrandProduct.isPending
             }
             className={`px-4 py-2 rounded-lg text-white ${
               pagSeguroMutateSpotlight.isPending ||
               pagSeguroMutateCampaign.isPending ||
               pagSeguroMutateApproveCreators.isPending ||
               pagSeguroMutatePayDeliverable.isPending ||
-              pagSeguroMutatePayCreatorProduct.isPending
+              pagSeguroMutatePayCreatorProduct.isPending ||
+              pagSeguroMutatePayBrandProduct.isPending
                 ? "bg-green-300 cursor-not-allowed"
                 : "bg-green-500 hover:bg-green-600"
             }`}
@@ -268,7 +291,8 @@ const GatewayPaymentModal: React.FC<Props> = ({
             pagSeguroMutateCampaign.isPending ||
             pagSeguroMutateApproveCreators.isPending ||
             pagSeguroMutatePayDeliverable.isPending ||
-            pagSeguroMutatePayCreatorProduct.isPending
+            pagSeguroMutatePayCreatorProduct.isPending ||
+            pagSeguroMutatePayBrandProduct.isPending
               ? `${language === "pt" ? "Processando..." : "Processing..."}`
               : "PagSeguro"}
           </button>
@@ -299,6 +323,8 @@ const GatewayPaymentModal: React.FC<Props> = ({
                 stripeMutatePayDeliverable.mutate();
               } else if (type === "creator_product") {
                 stripeMutatePayCreatorProduct.mutate();
+              } else if (type === "brand_product") {
+                stripeMutatePayBrandProduct.mutate();
               }
             }}
             disabled={
@@ -306,14 +332,16 @@ const GatewayPaymentModal: React.FC<Props> = ({
               stripeMutateCampaign.isPending ||
               stripeMutateApproveCreators.isPending ||
               stripeMutatePayDeliverable.isPending ||
-              stripeMutatePayCreatorProduct.isPending
+              stripeMutatePayCreatorProduct.isPending ||
+              stripeMutatePayBrandProduct.isPending
             }
             className={`px-4 py-2 rounded-lg text-white ${
               stripeMutateSpotlight.isPending ||
               stripeMutateCampaign.isPending ||
               stripeMutateApproveCreators.isPending ||
               stripeMutatePayDeliverable.isPending ||
-              stripeMutatePayCreatorProduct.isPending
+              stripeMutatePayCreatorProduct.isPending ||
+              stripeMutatePayBrandProduct.isPending
                 ? "bg-blue-300 cursor-not-allowed"
                 : "bg-blue-500 hover:bg-blue-600"
             }`}
@@ -322,7 +350,8 @@ const GatewayPaymentModal: React.FC<Props> = ({
             stripeMutateCampaign.isPending ||
             stripeMutateApproveCreators.isPending ||
             stripeMutatePayDeliverable.isPending ||
-            stripeMutatePayCreatorProduct.isPending
+            stripeMutatePayCreatorProduct.isPending ||
+            stripeMutatePayBrandProduct.isPending
               ? `${language === "pt" ? "Processando..." : "Processing..."}`
               : "Stripe"}
           </button>

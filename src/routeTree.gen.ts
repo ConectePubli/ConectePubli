@@ -29,6 +29,7 @@ import { Route as dashboardSideNavDashboardNotificacoesIndexImport } from './rou
 import { Route as dashboardSideNavDashboardDashboardIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/index'
 import { Route as dashboardSideNavDashboardDashboardCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-creator/index'
+import { Route as dashboardSideNavDashboardRecursosMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/recursos/marca/index'
 import { Route as dashboardSideNavDashboardRecursosCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/recursos/creator/index'
 import { Route as dashboardSideNavDashboardPremiumMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/premium/marca/index'
 import { Route as dashboardSideNavDashboardPremiumEbooksIndexImport } from './routes/(dashboard)/_side-nav-dashboard/premium/ebooks/index'
@@ -149,6 +150,12 @@ const dashboardSideNavDashboardDashboardMarcaIndexRoute =
 const dashboardSideNavDashboardDashboardCreatorIndexRoute =
   dashboardSideNavDashboardDashboardCreatorIndexImport.update({
     path: '/dashboard-creator/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardRecursosMarcaIndexRoute =
+  dashboardSideNavDashboardRecursosMarcaIndexImport.update({
+    path: '/recursos/marca/',
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
@@ -453,6 +460,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardRecursosCreatorIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(dashboard)/_side-nav-dashboard/recursos/marca/': {
+      id: '/_side-nav-dashboard/recursos/marca/'
+      path: '/recursos/marca'
+      fullPath: '/recursos/marca'
+      preLoaderRoute: typeof dashboardSideNavDashboardRecursosMarcaIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': {
       id: '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
       path: '/dashboard/campanhas/$campaignId/aprovar'
@@ -538,6 +552,7 @@ interface dashboardSideNavDashboardRouteChildren {
   dashboardSideNavDashboardPremiumEbooksIndexRoute: typeof dashboardSideNavDashboardPremiumEbooksIndexRoute
   dashboardSideNavDashboardPremiumMarcaIndexRoute: typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   dashboardSideNavDashboardRecursosCreatorIndexRoute: typeof dashboardSideNavDashboardRecursosCreatorIndexRoute
+  dashboardSideNavDashboardRecursosMarcaIndexRoute: typeof dashboardSideNavDashboardRecursosMarcaIndexRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
   dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute: typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
@@ -583,6 +598,8 @@ const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChil
       dashboardSideNavDashboardPremiumMarcaIndexRoute,
     dashboardSideNavDashboardRecursosCreatorIndexRoute:
       dashboardSideNavDashboardRecursosCreatorIndexRoute,
+    dashboardSideNavDashboardRecursosMarcaIndexRoute:
+      dashboardSideNavDashboardRecursosMarcaIndexRoute,
     dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute:
       dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute,
     dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute:
@@ -646,6 +663,7 @@ export interface FileRoutesByFullPath {
   '/premium/ebooks': typeof dashboardSideNavDashboardPremiumEbooksIndexRoute
   '/premium/marca': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/recursos/creator': typeof dashboardSideNavDashboardRecursosCreatorIndexRoute
+  '/recursos/marca': typeof dashboardSideNavDashboardRecursosMarcaIndexRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
   '/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
@@ -683,6 +701,7 @@ export interface FileRoutesByTo {
   '/premium/ebooks': typeof dashboardSideNavDashboardPremiumEbooksIndexRoute
   '/premium/marca': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/recursos/creator': typeof dashboardSideNavDashboardRecursosCreatorIndexRoute
+  '/recursos/marca': typeof dashboardSideNavDashboardRecursosMarcaIndexRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
   '/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
@@ -722,6 +741,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/premium/ebooks/': typeof dashboardSideNavDashboardPremiumEbooksIndexRoute
   '/_side-nav-dashboard/premium/marca/': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/_side-nav-dashboard/recursos/creator/': typeof dashboardSideNavDashboardRecursosCreatorIndexRoute
+  '/_side-nav-dashboard/recursos/marca/': typeof dashboardSideNavDashboardRecursosMarcaIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
@@ -761,6 +781,7 @@ export interface FileRouteTypes {
     | '/premium/ebooks'
     | '/premium/marca'
     | '/recursos/creator'
+    | '/recursos/marca'
     | '/dashboard/campanhas/$campaignId/aprovar'
     | '/dashboard/campanhas/$campaignId/editar'
     | '/dashboard/campanhas/$campaignId/status'
@@ -797,6 +818,7 @@ export interface FileRouteTypes {
     | '/premium/ebooks'
     | '/premium/marca'
     | '/recursos/creator'
+    | '/recursos/marca'
     | '/dashboard/campanhas/$campaignId/aprovar'
     | '/dashboard/campanhas/$campaignId/editar'
     | '/dashboard/campanhas/$campaignId/status'
@@ -834,6 +856,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/premium/ebooks/'
     | '/_side-nav-dashboard/premium/marca/'
     | '/_side-nav-dashboard/recursos/creator/'
+    | '/_side-nav-dashboard/recursos/marca/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/status'
@@ -922,6 +945,7 @@ export const routeTree = rootRoute
         "/_side-nav-dashboard/premium/ebooks/",
         "/_side-nav-dashboard/premium/marca/",
         "/_side-nav-dashboard/recursos/creator/",
+        "/_side-nav-dashboard/recursos/marca/",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar",
         "/_side-nav-dashboard/dashboard/campanhas/$campaignId/status",
@@ -1019,6 +1043,10 @@ export const routeTree = rootRoute
     },
     "/_side-nav-dashboard/recursos/creator/": {
       "filePath": "(dashboard)/_side-nav-dashboard/recursos/creator/index.tsx",
+      "parent": "/_side-nav-dashboard"
+    },
+    "/_side-nav-dashboard/recursos/marca/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/recursos/marca/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar": {
