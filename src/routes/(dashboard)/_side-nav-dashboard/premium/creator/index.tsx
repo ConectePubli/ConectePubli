@@ -166,7 +166,7 @@ function Page() {
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6 max-xl:mt-0 md:w-[80%]">
+      <div className="mx-auto mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6 max-sm:mt-0 lg:max-w-4xl">
         <div
           className={`relative bg-white shadow ${currentPlan && !currentPlan.cancel_at ? "h-[815px]" : "h-[770px]"} rounded-md flex flex-col justify-between border-2 border-[#FF7A49] translate-y-[45px] order-2 xl:order-1 max-xl:translate-y-0 py-6`}
         >
