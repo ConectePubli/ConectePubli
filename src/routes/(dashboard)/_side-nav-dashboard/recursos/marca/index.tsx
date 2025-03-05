@@ -22,7 +22,7 @@ import dicionario_creator_economy360 from "@/assets/contents_creators/dicionario
 import guia_precificacao from "@/assets/contents_creators/guia_precificacao.png";
 
 import dicionario_creator_economy360_pdf from "@/assets/contents_creators/downloads/Dicionário da Creators Economy.pdf";
-import guia_precificacao_pdf from "@/assets/contents_creators/downloads/GuiaTabela de Precificação UGC e IGC.pdf";
+import guia_precificacao_pdf from "@/assets/contents_creators/downloads/GuiaTabela de Precificação UGC e IGC Marcas.pdf";
 import guia_completo_marcas_pdf from "@/assets/contents_creators/downloads/Ebook Creator Economy 360° - Um Guia Completo Para Marcas.pdf";
 
 const medias = [
