@@ -8,6 +8,7 @@ import { Influencer } from "@/types/Influencer";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
 
 interface Props {
   participant: Influencer;
@@ -75,6 +76,25 @@ const RateParticipantModal: React.FC<Props> = ({
       toast.error("Ocorreu um erro ao enviar a avaliação.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const sendMail = async () => {
+    try {
+      const response = await axios.post(
+        `https://conecte-publi.pockethost.io/api/send_brand_reminder_evaluation`,
+        {
+          brandEmail: pb.authStore.model?.email,
+          brandName: pb.authStore.model?.name,
+          creatorName: participant.name,
+          campaignName: selectedParticipation.expand?.campaign?.name,
+          evaluationLink: `/dashboard/campanhas/${selectedParticipation.expand?.campaign?.id}/aprovar`,
+        }
+      );
+
+      console.log(response);
+    } catch (e) {
+      console.log(`error sending reminder brand evaluation: ${e}`);
     }
   };
 
@@ -220,7 +240,10 @@ const RateParticipantModal: React.FC<Props> = ({
 
         <div className="flex justify-end gap-4">
           <button
-            onClick={() => setModalType(null)}
+            onClick={() => {
+              setModalType(null);
+              sendMail();
+            }}
             className="text-gray-600 hover:underline"
             disabled={loading}
           >
