@@ -183,7 +183,7 @@ function Page() {
       `;
 
       await axios.post(
-        "https://conecte-publi.pockethost.io/api/support_email",
+        "https://pocketbase.conectepubli.com/api/support_email",
         {
           title: `Solicitação de Suporte - Entregável`,
           email: deliverable.expand.brand?.email || "sem-email@dominio.com",

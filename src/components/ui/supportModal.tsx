@@ -71,7 +71,7 @@ const SupportModal: React.FC<Props> = ({
 
       // Enviar e-mail
       await axios.post(
-        "https://conecte-publi.pockethost.io/api/support_email",
+        "https://pocketbase.conectepubli.com/api/support_email",
         {
           title: `Solicitação de Mediação - Campanha ${campaignData?.name || "Desconhecida"}`,
           email: brandDetails?.email || "sem-email@dominio.com",

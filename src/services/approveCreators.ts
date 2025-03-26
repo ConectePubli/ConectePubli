@@ -46,7 +46,7 @@ export const paymentCreatorsByPagseguro = async (
     };
 
     const response: AxiosResponse<PaymentResponsePagseguro> = await axios.post(
-      "https://conecte-publi.pockethost.io/api/checkout_campaign",
+      "https://pocketbase.conectepubli.com/api/checkout_campaign",
       body,
       {
         headers: {
@@ -94,7 +94,7 @@ export const paymentCreatorsByStripe = async (
     };
 
     const response: AxiosResponse<PaymentResponseStripe> = await axios.post(
-      "https://conecte-publi.pockethost.io/api/stripe/checkout_campaign",
+      "https://pocketbase.conectepubli.com/api/stripe/checkout_campaign",
       body,
       {
         headers: {

@@ -18,7 +18,7 @@ export const subscribeInfluencerPremium = async (
     }
 
     const response = await axios.post(
-      `https://conecte-publi.pockethost.io/api/stripe/influencer_premium_checkout`,
+      `https://pocketbase.conectepubli.com/api/stripe/influencer_premium_checkout`,
       {
         stripe_price_id: plan.stripe_price_id,
         stripe_product_id: plan.stripe_product_id,
@@ -61,7 +61,7 @@ export const unsubscribeInfluencerPremium = async (
 
   try {
     await axios.post(
-      `https://conecte-publi.pockethost.io/api/stripe/subscription_cancel_end_period_influencer`,
+      `https://pocketbase.conectepubli.com/api/stripe/subscription_cancel_end_period_influencer`,
       {
         subscription_id: subscription_id,
       },

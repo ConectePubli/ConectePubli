@@ -14,7 +14,7 @@ export const campaignPaymentByPagSeguro = async (
     setLoadingPayment(true);
 
     const response = await axios.post(
-      `https://conecte-publi.pockethost.io/api/checkout_campaign`,
+      `https://pocketbase.conectepubli.com/api/checkout_campaign`,
       {
         campaign_id: campaign_id,
         campaign_name: campaign_name,
@@ -56,7 +56,7 @@ export const campaignPaymentByStripe = async (
     setLoadingPayment(true);
 
     const response = await axios.post(
-      `https://conecte-publi.pockethost.io/api/stripe/checkout_campaign`,
+      `https://pocketbase.conectepubli.com/api/stripe/checkout_campaign`,
       {
         campaign_id: campaign_id,
         campaign_name: campaign_name,
