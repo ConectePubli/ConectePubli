@@ -82,7 +82,7 @@ const RateParticipantModal: React.FC<Props> = ({
   const sendMail = async () => {
     try {
       const response = await axios.post(
-        `https://pocketbase.conectepubli.com/api/send_brand_reminder_evaluation`,
+        `${import.meta.env.VITE_POCKETBASE_URL}/api/send_brand_reminder_evaluation`,
         {
           brandEmail: pb.authStore.model?.email,
           brandName: pb.authStore.model?.name,

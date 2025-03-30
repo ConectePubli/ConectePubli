@@ -32,7 +32,7 @@ export const buyPlanByStripe = async (
 ) => {
   try {
     const response = await axios.post(
-      `https://pocketbase.conectepubli.com/api/stripe/product_spotlight_checkout`,
+      `${import.meta.env.VITE_POCKETBASE_URL}/api/stripe/product_spotlight_checkout`,
       {
         stripe_price_id: selectedPlan.stripe_price_id,
         stripe_product_id: selectedPlan.stripe_product_id,
@@ -66,7 +66,7 @@ export const buyPlanByPagSeguro = async (
 ) => {
   try {
     const response = await axios.post(
-      `https://pocketbase.conectepubli.com/api/pagseguro/product_spotlight_checkout`,
+      `${import.meta.env.VITE_POCKETBASE_URL}/api/pagseguro/product_spotlight_checkout`,
       {
         campaign_id: campaign.id,
         spotlight_id: selectedPlan.id,
