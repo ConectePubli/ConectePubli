@@ -11,7 +11,7 @@ export const payBrandProductPagseguro = async (
 ) => {
   try {
     const response = await axios.post(
-      "https://pocketbase.conectepubli.com/api/pagseguro/brand_product_checkout",
+      `${import.meta.env.VITE_POCKETBASE_URL}/api/pagseguro/brand_product_checkout`,
       {
         brand_id: pb.authStore.model?.id,
         brand_product_name: product.stripe_product_name,
@@ -50,7 +50,7 @@ export const payBrandProductStripe = async (
 ) => {
   try {
     const response = await axios.post(
-      "https://pocketbase.conectepubli.com/api/stripe/brand_product_checkout",
+      `${import.meta.env.VITE_POCKETBASE_URL}/api/stripe/brand_product_checkout`,
       {
         brand_id: pb.authStore.model?.id,
         brand_product_id: product.id,

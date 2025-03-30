@@ -58,7 +58,7 @@ export const payDeliverablePagseguro = async (
   try {
     console.log("pag seguro");
     const response = await axios.post(
-      "https://pocketbase.conectepubli.com/api/pagseguro/deliverable_proposal",
+      `${import.meta.env.VITE_POCKETBASE_URL}/api/pagseguro/deliverable_proposal`,
       {
         deliverable_proposal_id: deliverable.id,
         unit_amount: deliverable.total_price,
@@ -95,7 +95,7 @@ export const payDeliverableStripe = async (
 ) => {
   try {
     const response = await axios.post(
-      "https://pocketbase.conectepubli.com/api/stripe/deliverable_proposal",
+      `${import.meta.env.VITE_POCKETBASE_URL}/api/stripe/deliverable_proposal`,
       {
         deliverable_proposal_id: deliverable.id,
         unit_amount: deliverable.total_price,

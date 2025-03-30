@@ -39,7 +39,7 @@ const ModalCancelCampaign: React.FC<Props> = ({
 
     try {
       await axios.post(
-        "https://pocketbase.conectepubli.com/api/support_email",
+        `${import.meta.env.VITE_POCKETBASE_URL}/api/support_email`,
         {
           title: `Cancelamento da campanha: ${campaignData?.name}`,
           email: brandDetails.email,
