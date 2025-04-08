@@ -29,6 +29,8 @@ import { Route as dashboardSideNavDashboardNotificacoesIndexImport } from './rou
 import { Route as dashboardSideNavDashboardDashboardIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/index'
 import { Route as dashboardSideNavDashboardDashboardCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-creator/index'
+import { Route as recibosReciboMarcaCampanhaCampaignIdIndexImport } from './routes/(recibos)/recibo-marca/campanha/$campaignId/index'
+import { Route as recibosReciboCreatorCampanhaCampaignIdIndexImport } from './routes/(recibos)/recibo-creator/campanha/$campaignId/index'
 import { Route as dashboardSideNavDashboardRecursosMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/recursos/marca/index'
 import { Route as dashboardSideNavDashboardRecursosCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/recursos/creator/index'
 import { Route as dashboardSideNavDashboardPremiumMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/premium/marca/index'
@@ -39,6 +41,7 @@ import { Route as dashboardSideNavDashboardEntregaveisIdIndexImport } from './ro
 import { Route as dashboardSideNavDashboardDashboardChatIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/chat/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaRascunhosIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/rascunhos/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/criar-campanha/index'
+import { Route as recibosReciboMarcaCreatorCreatorIdCampaignIdIndexImport } from './routes/(recibos)/recibo-marca/creator/$creatorId/$campaignId/index'
 import { Route as dashboardSideNavDashboardPremiumCreatorConteudosIndexImport } from './routes/(dashboard)/_side-nav-dashboard/premium/creator/conteudos/index'
 import { Route as dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/index'
 import { Route as dashboardSideNavDashboardperfisMarcaUserNameIndexImport } from './routes/(dashboard)/_side-nav-dashboard/(perfis)/marca/$userName/index'
@@ -153,6 +156,18 @@ const dashboardSideNavDashboardDashboardCreatorIndexRoute =
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
+const recibosReciboMarcaCampanhaCampaignIdIndexRoute =
+  recibosReciboMarcaCampanhaCampaignIdIndexImport.update({
+    path: '/recibo-marca/campanha/$campaignId/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const recibosReciboCreatorCampanhaCampaignIdIndexRoute =
+  recibosReciboCreatorCampanhaCampaignIdIndexImport.update({
+    path: '/recibo-creator/campanha/$campaignId/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const dashboardSideNavDashboardRecursosMarcaIndexRoute =
   dashboardSideNavDashboardRecursosMarcaIndexImport.update({
     path: '/recursos/marca/',
@@ -211,6 +226,12 @@ const dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexRoute =
   dashboardSideNavDashboardDashboardMarcaCriarCampanhaIndexImport.update({
     path: '/dashboard-marca/criar-campanha/',
     getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
+const recibosReciboMarcaCreatorCreatorIdCampaignIdIndexRoute =
+  recibosReciboMarcaCreatorCreatorIdCampaignIdIndexImport.update({
+    path: '/recibo-marca/creator/$creatorId/$campaignId/',
+    getParentRoute: () => rootRoute,
   } as any)
 
 const dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute =
@@ -467,6 +488,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof dashboardSideNavDashboardRecursosMarcaIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
     }
+    '/(recibos)/recibo-creator/campanha/$campaignId/': {
+      id: '/recibo-creator/campanha/$campaignId/'
+      path: '/recibo-creator/campanha/$campaignId'
+      fullPath: '/recibo-creator/campanha/$campaignId'
+      preLoaderRoute: typeof recibosReciboCreatorCampanhaCampaignIdIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(recibos)/recibo-marca/campanha/$campaignId/': {
+      id: '/recibo-marca/campanha/$campaignId/'
+      path: '/recibo-marca/campanha/$campaignId'
+      fullPath: '/recibo-marca/campanha/$campaignId'
+      preLoaderRoute: typeof recibosReciboMarcaCampanhaCampaignIdIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': {
       id: '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
       path: '/dashboard/campanhas/$campaignId/aprovar'
@@ -515,6 +550,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/premium/creator/conteudos'
       preLoaderRoute: typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexImport
       parentRoute: typeof dashboardSideNavDashboardImport
+    }
+    '/(recibos)/recibo-marca/creator/$creatorId/$campaignId/': {
+      id: '/recibo-marca/creator/$creatorId/$campaignId/'
+      path: '/recibo-marca/creator/$creatorId/$campaignId'
+      fullPath: '/recibo-marca/creator/$creatorId/$campaignId'
+      preLoaderRoute: typeof recibosReciboMarcaCreatorCreatorIdCampaignIdIndexImport
+      parentRoute: typeof rootRoute
     }
     '/(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/editar/': {
       id: '/_side-nav-dashboard/creator/$username/editar/'
@@ -664,6 +706,8 @@ export interface FileRoutesByFullPath {
   '/premium/marca': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/recursos/creator': typeof dashboardSideNavDashboardRecursosCreatorIndexRoute
   '/recursos/marca': typeof dashboardSideNavDashboardRecursosMarcaIndexRoute
+  '/recibo-creator/campanha/$campaignId': typeof recibosReciboCreatorCampanhaCampaignIdIndexRoute
+  '/recibo-marca/campanha/$campaignId': typeof recibosReciboMarcaCampanhaCampaignIdIndexRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
   '/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
@@ -671,6 +715,7 @@ export interface FileRoutesByFullPath {
   '/marca/$userName': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
   '/premium/creator/conteudos': typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute
+  '/recibo-marca/creator/$creatorId/$campaignId': typeof recibosReciboMarcaCreatorCreatorIdCampaignIdIndexRoute
   '/creator/$username/editar': typeof dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute
   '/marca/$userName/editar': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
@@ -702,6 +747,8 @@ export interface FileRoutesByTo {
   '/premium/marca': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/recursos/creator': typeof dashboardSideNavDashboardRecursosCreatorIndexRoute
   '/recursos/marca': typeof dashboardSideNavDashboardRecursosMarcaIndexRoute
+  '/recibo-creator/campanha/$campaignId': typeof recibosReciboCreatorCampanhaCampaignIdIndexRoute
+  '/recibo-marca/campanha/$campaignId': typeof recibosReciboMarcaCampanhaCampaignIdIndexRoute
   '/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
   '/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
@@ -709,6 +756,7 @@ export interface FileRoutesByTo {
   '/marca/$userName': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/dashboard/campanhas/$campaignId': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
   '/premium/creator/conteudos': typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute
+  '/recibo-marca/creator/$creatorId/$campaignId': typeof recibosReciboMarcaCreatorCreatorIdCampaignIdIndexRoute
   '/creator/$username/editar': typeof dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute
   '/marca/$userName/editar': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
@@ -742,6 +790,8 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/premium/marca/': typeof dashboardSideNavDashboardPremiumMarcaIndexRoute
   '/_side-nav-dashboard/recursos/creator/': typeof dashboardSideNavDashboardRecursosCreatorIndexRoute
   '/_side-nav-dashboard/recursos/marca/': typeof dashboardSideNavDashboardRecursosMarcaIndexRoute
+  '/recibo-creator/campanha/$campaignId/': typeof recibosReciboCreatorCampanhaCampaignIdIndexRoute
+  '/recibo-marca/campanha/$campaignId/': typeof recibosReciboMarcaCampanhaCampaignIdIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdAprovarRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdEditarRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/status': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdStatusRoute
@@ -749,6 +799,7 @@ export interface FileRoutesById {
   '/_side-nav-dashboard/marca/$userName/': typeof dashboardSideNavDashboardperfisMarcaUserNameIndexRoute
   '/_side-nav-dashboard/dashboard/campanhas/$campaignId/': typeof dashboardSideNavDashboardDashboardCampanhasCampaignIdIndexRoute
   '/_side-nav-dashboard/premium/creator/conteudos/': typeof dashboardSideNavDashboardPremiumCreatorConteudosIndexRoute
+  '/recibo-marca/creator/$creatorId/$campaignId/': typeof recibosReciboMarcaCreatorCreatorIdCampaignIdIndexRoute
   '/_side-nav-dashboard/creator/$username/editar/': typeof dashboardSideNavDashboardperfisCreatorUsernameEditarIndexRoute
   '/_side-nav-dashboard/marca/$userName/editar/': typeof dashboardSideNavDashboardperfisMarcaUserNameEditarIndexRoute
 }
@@ -782,6 +833,8 @@ export interface FileRouteTypes {
     | '/premium/marca'
     | '/recursos/creator'
     | '/recursos/marca'
+    | '/recibo-creator/campanha/$campaignId'
+    | '/recibo-marca/campanha/$campaignId'
     | '/dashboard/campanhas/$campaignId/aprovar'
     | '/dashboard/campanhas/$campaignId/editar'
     | '/dashboard/campanhas/$campaignId/status'
@@ -789,6 +842,7 @@ export interface FileRouteTypes {
     | '/marca/$userName'
     | '/dashboard/campanhas/$campaignId'
     | '/premium/creator/conteudos'
+    | '/recibo-marca/creator/$creatorId/$campaignId'
     | '/creator/$username/editar'
     | '/marca/$userName/editar'
   fileRoutesByTo: FileRoutesByTo
@@ -819,6 +873,8 @@ export interface FileRouteTypes {
     | '/premium/marca'
     | '/recursos/creator'
     | '/recursos/marca'
+    | '/recibo-creator/campanha/$campaignId'
+    | '/recibo-marca/campanha/$campaignId'
     | '/dashboard/campanhas/$campaignId/aprovar'
     | '/dashboard/campanhas/$campaignId/editar'
     | '/dashboard/campanhas/$campaignId/status'
@@ -826,6 +882,7 @@ export interface FileRouteTypes {
     | '/marca/$userName'
     | '/dashboard/campanhas/$campaignId'
     | '/premium/creator/conteudos'
+    | '/recibo-marca/creator/$creatorId/$campaignId'
     | '/creator/$username/editar'
     | '/marca/$userName/editar'
   id:
@@ -857,6 +914,8 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/premium/marca/'
     | '/_side-nav-dashboard/recursos/creator/'
     | '/_side-nav-dashboard/recursos/marca/'
+    | '/recibo-creator/campanha/$campaignId/'
+    | '/recibo-marca/campanha/$campaignId/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/editar'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/status'
@@ -864,6 +923,7 @@ export interface FileRouteTypes {
     | '/_side-nav-dashboard/marca/$userName/'
     | '/_side-nav-dashboard/dashboard/campanhas/$campaignId/'
     | '/_side-nav-dashboard/premium/creator/conteudos/'
+    | '/recibo-marca/creator/$creatorId/$campaignId/'
     | '/_side-nav-dashboard/creator/$username/editar/'
     | '/_side-nav-dashboard/marca/$userName/editar/'
   fileRoutesById: FileRoutesById
@@ -880,6 +940,9 @@ export interface RootRouteChildren {
   authCadastroIndexRoute: typeof authCadastroIndexRoute
   authEsquecerSenhaIndexRoute: typeof authEsquecerSenhaIndexRoute
   authLoginIndexRoute: typeof authLoginIndexRoute
+  recibosReciboCreatorCampanhaCampaignIdIndexRoute: typeof recibosReciboCreatorCampanhaCampaignIdIndexRoute
+  recibosReciboMarcaCampanhaCampaignIdIndexRoute: typeof recibosReciboMarcaCampanhaCampaignIdIndexRoute
+  recibosReciboMarcaCreatorCreatorIdCampaignIdIndexRoute: typeof recibosReciboMarcaCreatorCreatorIdCampaignIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -893,6 +956,12 @@ const rootRouteChildren: RootRouteChildren = {
   authCadastroIndexRoute: authCadastroIndexRoute,
   authEsquecerSenhaIndexRoute: authEsquecerSenhaIndexRoute,
   authLoginIndexRoute: authLoginIndexRoute,
+  recibosReciboCreatorCampanhaCampaignIdIndexRoute:
+    recibosReciboCreatorCampanhaCampaignIdIndexRoute,
+  recibosReciboMarcaCampanhaCampaignIdIndexRoute:
+    recibosReciboMarcaCampanhaCampaignIdIndexRoute,
+  recibosReciboMarcaCreatorCreatorIdCampaignIdIndexRoute:
+    recibosReciboMarcaCreatorCreatorIdCampaignIdIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -916,7 +985,10 @@ export const routeTree = rootRoute
         "/cadastro/marca",
         "/cadastro/",
         "/esquecer-senha/",
-        "/login/"
+        "/login/",
+        "/recibo-creator/campanha/$campaignId/",
+        "/recibo-marca/campanha/$campaignId/",
+        "/recibo-marca/creator/$creatorId/$campaignId/"
       ]
     },
     "/": {
@@ -1049,6 +1121,12 @@ export const routeTree = rootRoute
       "filePath": "(dashboard)/_side-nav-dashboard/recursos/marca/index.tsx",
       "parent": "/_side-nav-dashboard"
     },
+    "/recibo-creator/campanha/$campaignId/": {
+      "filePath": "(recibos)/recibo-creator/campanha/$campaignId/index.tsx"
+    },
+    "/recibo-marca/campanha/$campaignId/": {
+      "filePath": "(recibos)/recibo-marca/campanha/$campaignId/index.tsx"
+    },
     "/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar": {
       "filePath": "(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar.tsx",
       "parent": "/_side-nav-dashboard"
@@ -1076,6 +1154,9 @@ export const routeTree = rootRoute
     "/_side-nav-dashboard/premium/creator/conteudos/": {
       "filePath": "(dashboard)/_side-nav-dashboard/premium/creator/conteudos/index.tsx",
       "parent": "/_side-nav-dashboard"
+    },
+    "/recibo-marca/creator/$creatorId/$campaignId/": {
+      "filePath": "(recibos)/recibo-marca/creator/$creatorId/$campaignId/index.tsx"
     },
     "/_side-nav-dashboard/creator/$username/editar/": {
       "filePath": "(dashboard)/_side-nav-dashboard/(perfis)/creator/$username/editar/index.tsx",
