@@ -1,5 +1,5 @@
 import { jsPDF } from "jspdf";
-
+import logo from "@/assets/logo.png";
 export const generateReceiptCompletedCampaign = (data: {
   campaignName: string;
   creators: { name: string; date: string; value: number }[];
@@ -86,7 +86,7 @@ export const generateReceiptCompletedCampaign = (data: {
 
   // Logo no rodapé (dinâmico)
   const logoY = y + 30;
-  doc.addImage("/src/assets/logo.png", "PNG", 20, logoY, 44, 10);
+  doc.addImage(logo, "PNG", 20, logoY, 44, 10);
 
   return doc;
 };

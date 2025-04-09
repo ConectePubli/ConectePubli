@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+import logo from "@/assets/logo.png";
 
 export const generateReceiptBrand = (data: {
   campaignName: string;
@@ -99,7 +100,7 @@ export const generateReceiptBrand = (data: {
 
   // Logo final
   const logoY = subtotalY + 25;
-  doc.addImage("/src/assets/logo.png", "PNG", 20, logoY, 44, 10);
+  doc.addImage(logo, "PNG", 20, logoY, 44, 10);
 
   return doc;
 };

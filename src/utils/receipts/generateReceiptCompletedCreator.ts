@@ -1,4 +1,5 @@
 import jsPDF from "jspdf";
+import logo from "@/assets/logo.png";
 
 interface ReceiptData {
   campaignName: string;
@@ -82,7 +83,7 @@ export const generateReceiptCompletedCreator = (data: ReceiptData) => {
   doc.text(`R$${data.totalAmount.toFixed(2)}`, 145, startY + 67);
 
   // Logo (simulação — ajuste o caminho correto se usar Vite/webpack)
-  doc.addImage("/src/assets/logo.png", "PNG", 20, 140, 44, 10);
+  doc.addImage(logo, "PNG", 20, 140, 44, 10);
 
   return doc;
 };
