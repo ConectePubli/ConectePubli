@@ -29,6 +29,7 @@ import { Route as dashboardSideNavDashboardNotificacoesIndexImport } from './rou
 import { Route as dashboardSideNavDashboardDashboardIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard/index'
 import { Route as dashboardSideNavDashboardDashboardMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-marca/index'
 import { Route as dashboardSideNavDashboardDashboardCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/dashboard-creator/index'
+import { Route as dashboardSideNavDashboardCarteiraCreatorIndexImport } from './routes/(dashboard)/_side-nav-dashboard/carteira-creator/index'
 import { Route as recibosReciboMarcaCampanhaCampaignIdIndexImport } from './routes/(recibos)/recibo-marca/campanha/$campaignId/index'
 import { Route as recibosReciboCreatorCampanhaCampaignIdIndexImport } from './routes/(recibos)/recibo-creator/campanha/$campaignId/index'
 import { Route as dashboardSideNavDashboardRecursosMarcaIndexImport } from './routes/(dashboard)/_side-nav-dashboard/recursos/marca/index'
@@ -153,6 +154,12 @@ const dashboardSideNavDashboardDashboardMarcaIndexRoute =
 const dashboardSideNavDashboardDashboardCreatorIndexRoute =
   dashboardSideNavDashboardDashboardCreatorIndexImport.update({
     path: '/dashboard-creator/',
+    getParentRoute: () => dashboardSideNavDashboardRoute,
+  } as any)
+
+const dashboardSideNavDashboardCarteiraCreatorIndexRoute =
+  dashboardSideNavDashboardCarteiraCreatorIndexImport.update({
+    path: '/carteira-creator/',
     getParentRoute: () => dashboardSideNavDashboardRoute,
   } as any)
 
@@ -369,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginIndexImport
       parentRoute: typeof rootRoute
     }
+    '/(dashboard)/_side-nav-dashboard/carteira-creator/': {
+      id: '/_side-nav-dashboard/carteira-creator/'
+      path: '/carteira-creator'
+      fullPath: '/carteira-creator'
+      preLoaderRoute: typeof dashboardSideNavDashboardCarteiraCreatorIndexImport
+      parentRoute: typeof dashboardSideNavDashboardImport
+    }
     '/(dashboard)/_side-nav-dashboard/dashboard-creator/': {
       id: '/_side-nav-dashboard/dashboard-creator/'
       path: '/dashboard-creator'
@@ -578,6 +592,7 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface dashboardSideNavDashboardRouteChildren {
+  dashboardSideNavDashboardCarteiraCreatorIndexRoute: typeof dashboardSideNavDashboardCarteiraCreatorIndexRoute
   dashboardSideNavDashboardDashboardCreatorIndexRoute: typeof dashboardSideNavDashboardDashboardCreatorIndexRoute
   dashboardSideNavDashboardDashboardMarcaIndexRoute: typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   dashboardSideNavDashboardDashboardIndexRoute: typeof dashboardSideNavDashboardDashboardIndexRoute
@@ -608,6 +623,8 @@ interface dashboardSideNavDashboardRouteChildren {
 
 const dashboardSideNavDashboardRouteChildren: dashboardSideNavDashboardRouteChildren =
   {
+    dashboardSideNavDashboardCarteiraCreatorIndexRoute:
+      dashboardSideNavDashboardCarteiraCreatorIndexRoute,
     dashboardSideNavDashboardDashboardCreatorIndexRoute:
       dashboardSideNavDashboardDashboardCreatorIndexRoute,
     dashboardSideNavDashboardDashboardMarcaIndexRoute:
@@ -689,6 +706,7 @@ export interface FileRoutesByFullPath {
   '/cadastro': typeof authCadastroIndexRoute
   '/esquecer-senha': typeof authEsquecerSenhaIndexRoute
   '/login': typeof authLoginIndexRoute
+  '/carteira-creator': typeof dashboardSideNavDashboardCarteiraCreatorIndexRoute
   '/dashboard-creator': typeof dashboardSideNavDashboardDashboardCreatorIndexRoute
   '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/dashboard': typeof dashboardSideNavDashboardDashboardIndexRoute
@@ -730,6 +748,7 @@ export interface FileRoutesByTo {
   '/cadastro': typeof authCadastroIndexRoute
   '/esquecer-senha': typeof authEsquecerSenhaIndexRoute
   '/login': typeof authLoginIndexRoute
+  '/carteira-creator': typeof dashboardSideNavDashboardCarteiraCreatorIndexRoute
   '/dashboard-creator': typeof dashboardSideNavDashboardDashboardCreatorIndexRoute
   '/dashboard-marca': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/dashboard': typeof dashboardSideNavDashboardDashboardIndexRoute
@@ -773,6 +792,7 @@ export interface FileRoutesById {
   '/cadastro/': typeof authCadastroIndexRoute
   '/esquecer-senha/': typeof authEsquecerSenhaIndexRoute
   '/login/': typeof authLoginIndexRoute
+  '/_side-nav-dashboard/carteira-creator/': typeof dashboardSideNavDashboardCarteiraCreatorIndexRoute
   '/_side-nav-dashboard/dashboard-creator/': typeof dashboardSideNavDashboardDashboardCreatorIndexRoute
   '/_side-nav-dashboard/dashboard-marca/': typeof dashboardSideNavDashboardDashboardMarcaIndexRoute
   '/_side-nav-dashboard/dashboard/': typeof dashboardSideNavDashboardDashboardIndexRoute
@@ -816,6 +836,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/esquecer-senha'
     | '/login'
+    | '/carteira-creator'
     | '/dashboard-creator'
     | '/dashboard-marca'
     | '/dashboard'
@@ -856,6 +877,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/esquecer-senha'
     | '/login'
+    | '/carteira-creator'
     | '/dashboard-creator'
     | '/dashboard-marca'
     | '/dashboard'
@@ -897,6 +919,7 @@ export interface FileRouteTypes {
     | '/cadastro/'
     | '/esquecer-senha/'
     | '/login/'
+    | '/_side-nav-dashboard/carteira-creator/'
     | '/_side-nav-dashboard/dashboard-creator/'
     | '/_side-nav-dashboard/dashboard-marca/'
     | '/_side-nav-dashboard/dashboard/'
@@ -1001,6 +1024,7 @@ export const routeTree = rootRoute
       "filePath": "(dashboard)/_side-nav-dashboard.tsx",
       "parent": "/",
       "children": [
+        "/_side-nav-dashboard/carteira-creator/",
         "/_side-nav-dashboard/dashboard-creator/",
         "/_side-nav-dashboard/dashboard-marca/",
         "/_side-nav-dashboard/dashboard/",
@@ -1052,6 +1076,10 @@ export const routeTree = rootRoute
     },
     "/login/": {
       "filePath": "(auth)/login/index.tsx"
+    },
+    "/_side-nav-dashboard/carteira-creator/": {
+      "filePath": "(dashboard)/_side-nav-dashboard/carteira-creator/index.tsx",
+      "parent": "/_side-nav-dashboard"
     },
     "/_side-nav-dashboard/dashboard-creator/": {
       "filePath": "(dashboard)/_side-nav-dashboard/dashboard-creator/index.tsx",
