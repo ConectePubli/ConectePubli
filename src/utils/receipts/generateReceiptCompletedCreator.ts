@@ -68,7 +68,7 @@ export const generateReceiptCompletedCreator = (data: ReceiptData) => {
 
   doc.setFont("helvetica", "normal");
   doc.rect(20, startY + 30, 170, 10);
-  doc.text("Valor total pago por Creator", 2e2, startY + 37);
+  doc.text("Valor total pago por Creator", 22, startY + 37);
   doc.setFont("helvetica", "bold");
   doc.text(`R$${data.totalAmount.toFixed(2)}`, 178, startY + 37, {
     align: "right",

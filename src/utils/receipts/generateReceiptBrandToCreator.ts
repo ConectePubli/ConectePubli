@@ -8,10 +8,11 @@ export const generateReceiptBrand = (data: {
   conecteFee: number;
   netValue: number;
   paymentDate: string;
+  completedDate: string;
 }) => {
   const doc = new jsPDF();
 
-  const dateObj = new Date(data.paymentDate.split("/").reverse().join("-"));
+  const dateObj = new Date(data.completedDate.split("/").reverse().join("-"));
   const formattedMonthYear = new Intl.DateTimeFormat("pt-BR", {
     month: "long",
     year: "numeric",

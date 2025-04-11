@@ -63,6 +63,7 @@ function Page() {
       paymentDate: getNext15th(
         new Date(completedCreators.items[0].completed_date)
       ),
+      completedDate: completedCreators.items[0].completed_date,
     });
 
     doc.save(`recibo-creator-${campaign.name}.pdf`);
@@ -117,6 +118,7 @@ function Page() {
                   paymentDate: getNext15th(
                     new Date(completedCreators.items[0].completed_date)
                   ),
+                  completedDate: completedCreators.items[0].completed_date,
                 });
                 doc.save(`recibo-creator-${campaign.name}.pdf`);
               }}
