@@ -4,11 +4,11 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { TransactionList } from "./TransactionList";
 
 export type TransactionStatus =
-  | "Extrato"
   | "Reservado"
   | "Liberado"
   | "Pago"
-  | "Cancelado";
+  | "Cancelado"
+  | "Extrato";
 
 export interface Transaction {
   id: string;
