@@ -2000,5 +2000,23 @@ export default {
       "Creator Economy 360º: Strategy and Knowledge for Brands",
     "Descubra como transformar suas campanhas com os produtos essenciais Creator Economy":
       "Discover how to transform your campaigns with Creator Economy essential products",
+    Carteira: "Wallet",
+    "Filtrar por mês:": "Filter by month:",
+    "Carregando transações...": "Loading transactions...",
+    "Nenhuma transação encontrada para este mês":
+      "No transactions found for this month",
+    "Nenhuma transação encontrada": "No transactions found",
+    Extrato: "Statement",
+    Reservado: "Reserved",
+    Liberado: "Released",
+    Pago: "Paid",
+    Cancelado: "Canceled",
+    "Minha Carteira": "My Wallet",
+    "Acompanhe seus ganhos na Conecte Publi!":
+      "Follow your earnings on Conecte Publi!",
+    "Saldo Liberado": "Released Balance",
+    "Saldo Reservado": "Reserved Balance",
+    "Total Recebido": "Total Received",
+    "Histórico de Transações": "Transaction History",
   },
 };

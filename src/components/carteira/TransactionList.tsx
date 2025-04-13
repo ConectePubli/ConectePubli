@@ -1,12 +1,12 @@
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
-import { Transaction, TransactionStatus } from "./TransactionHistory";
-import { cn } from "@/lib/utils";
+import { TransactionStatus } from "./TransactionHistory";
 import { useEffect, useState, useMemo } from "react";
 import pb from "@/lib/pb";
 import { useNavigate } from "@tanstack/react-router";
 import money from "@/assets/wallet/money.png";
 import down from "@/assets/wallet/down.png";
 import wallet from "@/assets/wallet/wallet.png";
+import { useTranslation } from "react-i18next";
 
 interface TransactionListProps {
   status: TransactionStatus;
@@ -17,6 +17,7 @@ interface CampaignParticipation {
   status: string;
   completed_date?: string;
   conecte_paid_status?: "PAID" | "NOT_PAID";
+  conecte_paid_date?: string;
   expand?: {
     campaign?: {
       name: string;
@@ -42,6 +43,7 @@ export function TransactionList({ status }: TransactionListProps) {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   });
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // Gerar lista de meses para o dropdown (Janeiro a Dezembro)
   const monthOptions = useMemo(() => {
@@ -150,7 +152,7 @@ export function TransactionList({ status }: TransactionListProps) {
             htmlFor="month-select"
             className="text-sm font-medium text-gray-700"
           >
-            Filtrar por mês:
+            {t("Filtrar por mês:")}
           </label>
           <select
             id="month-select"
@@ -160,7 +162,7 @@ export function TransactionList({ status }: TransactionListProps) {
           >
             {monthOptions.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.label}
+                {option.label} 
               </option>
             ))}
           </select>
@@ -168,91 +170,93 @@ export function TransactionList({ status }: TransactionListProps) {
 
         {loading ? (
           <div className="flex justify-center items-center p-8 text-gray-500">
-            Carregando transações...
+            {t("Carregando transações...")}
           </div>
         ) : transactions.length === 0 ? (
           <div className="flex justify-center items-center p-8 text-gray-500">
-            Nenhuma transação encontrada para este mês
+            {t("Nenhuma transação encontrada para este mês")}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {transactions.map((transaction) => {
-              const valorBruto =
-                (transaction.expand?.campaign?.price || 0) / 100;
-              const taxaConecte = valorBruto * 0.2;
-              const valorLiquido = valorBruto - taxaConecte;
-
-              return (
-                <div
-                  key={transaction.id}
-                  className="border rounded-lg p-4 space-y-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium">
-                      {transaction.expand?.campaign?.name ||
-                        "Campanha sem nome"}
+          <div className="flex flex-col gap-4">
+            {transactions.map((transaction) => (
+              <div
+                key={transaction.id}
+                className="border rounded-lg p-4 flex justify-evenly"
+              >
+                {/* Parte Esquerda */}
+                <div className="flex items-center gap-2">
+                  <img src={wallet} alt="Valor Total" className="w-12 h-12" />
+                  <div className="flex flex-col gap-2">
+                    <p className="font-bold">
+                      {transaction.expand?.campaign?.name}
                     </p>
-                    <p className="text-sm text-gray-500">
-                      {transaction.completed_date
-                        ? new Date(
-                            transaction.completed_date
-                          ).toLocaleDateString("pt-BR")
-                        : ""}
+                    <p>
+                      {new Date(
+                        transaction.completed_date || ""
+                      ).toLocaleDateString("pt-BR", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
                     </p>
                   </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={money}
-                          alt="Valor Total"
-                          className="w-6 h-6"
-                        />
-                        <span className="text-sm text-gray-500">
-                          Valor Total
-                        </span>
-                      </div>
-                      <p className="font-medium text-gray-900">
-                        + {formatCurrency(valorBruto)}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={down}
-                          alt="Taxa Conecte"
-                          className="w-6 h-6"
-                        />
-                        <span className="text-sm text-gray-500">
-                          Taxa Conecte (20%)
-                        </span>
-                      </div>
-                      <p className="font-medium text-red-500">
-                        - {formatCurrency(taxaConecte)}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={wallet}
-                          alt="Valor Recebido"
-                          className="w-6 h-6"
-                        />
-                        <span className="text-sm text-gray-500">
-                          Valor Recebido
-                        </span>
-                      </div>
-                      <p className="font-medium text-green-500">
-                        = {formatCurrency(valorLiquido)}
-                      </p>
-                    </div>
-                  </div>
+                  <p className="text-green-500 font-bold whitespace-nowrap ml-3">
+                    +{" "}
+                    {formatCurrency(
+                      (transaction.expand?.campaign?.price || 0) / 100
+                    )}
+                  </p>
                 </div>
-              );
-            })}
+
+                {/* Parte Central */}
+                <div className="flex items-center gap-2">
+                  <img src={down} alt="Valor Total" className="w-12 h-12" />
+                  <div className="flex flex-col gap-2">
+                    <p className="font-bold">Conecte Publi LTDA</p>
+                    <p>
+                      {new Date(
+                        transaction.conecte_paid_date || ""
+                      ).toLocaleDateString("pt-BR", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <p className="text-red-500 font-bold whitespace-nowrap ml-3">
+                    - 20%{" "}
+                    {formatCurrency(
+                      ((transaction.expand?.campaign?.price || 0) * 0.2) / 100
+                    )}
+                  </p>
+                </div>
+
+                {/* Parte Direita */}
+                <div className="flex items-center gap-2">
+                  <img src={money} alt="Valor Total" className="w-12 h-12" />
+                  <div className="flex flex-col gap-2">
+                    <p className="font-bold">
+                      {transaction.expand?.campaign?.name}
+                    </p>
+                    <p>
+                      {new Date(
+                        transaction.conecte_paid_date || ""
+                      ).toLocaleDateString("pt-BR", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <p className="text-green-500 font-bold whitespace-nowrap ml-3">
+                    +{" "}
+                    {formatCurrency(
+                      ((transaction.expand?.campaign?.price || 0) * 0.8) / 100
+                    )}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -265,95 +269,7 @@ export function TransactionList({ status }: TransactionListProps) {
   ) {
     return (
       <div className="flex justify-center items-center p-8 text-gray-500">
-        Carregando transações...
-      </div>
-    );
-  }
-
-  if (status === "Extrato") {
-    if (transactions.length === 0) {
-      return (
-        <div className="flex justify-center items-center p-8 text-gray-500">
-          Nenhuma transação encontrada
-        </div>
-      );
-    }
-
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-10">
-        {transactions.map((transaction) => {
-          const valorBruto = (transaction.expand?.campaign?.price || 0) / 100;
-          const taxaConecte = valorBruto * 0.2;
-          const valorLiquido = valorBruto - taxaConecte;
-
-          return (
-            <div
-              key={transaction.id}
-              className="border rounded-lg p-4 space-y-4"
-            >
-              <div className="flex items-center justify-between">
-                <p className="font-medium">
-                  {transaction.expand?.campaign?.name || "Campanha sem nome"}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {transaction.completed_date
-                    ? new Date(transaction.completed_date).toLocaleDateString(
-                        "pt-BR"
-                      )
-                    : ""}
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src="/assets/wallet/money-bag.png"
-                      alt="Valor Total"
-                      className="w-6 h-6"
-                    />
-                    <span className="text-sm text-gray-500">Valor Total</span>
-                  </div>
-                  <p className="font-medium text-gray-900">
-                    + {formatCurrency(valorBruto)}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src="/assets/wallet/arrow-down-red.png"
-                      alt="Taxa Conecte"
-                      className="w-6 h-6"
-                    />
-                    <span className="text-sm text-gray-500">
-                      Taxa Conecte (20%)
-                    </span>
-                  </div>
-                  <p className="font-medium text-red-500">
-                    - {formatCurrency(taxaConecte)}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src="/assets/wallet/check-circle.png"
-                      alt="Valor Recebido"
-                      className="w-6 h-6"
-                    />
-                    <span className="text-sm text-gray-500">
-                      Valor Recebido
-                    </span>
-                  </div>
-                  <p className="font-medium text-green-500">
-                    = {formatCurrency(valorLiquido)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {t("Carregando transações...")}
       </div>
     );
   }
@@ -362,7 +278,7 @@ export function TransactionList({ status }: TransactionListProps) {
     if (transactions.length === 0) {
       return (
         <div className="flex justify-center items-center p-8 text-gray-500">
-          Nenhuma transação encontrada
+          {t("Nenhuma transação encontrada")}
         </div>
       );
     }
@@ -430,78 +346,4 @@ export function TransactionList({ status }: TransactionListProps) {
       </div>
     );
   }
-
-  // Manter o comportamento existente para outros status
-  const mockTransactions: Transaction[] = [
-    {
-      id: "1",
-      creatorName: "Foco Digital - Ganhe, Lucre e Brilhe",
-      amount: 200,
-      date: "17 de março de 2025",
-      status: "Reservado",
-      type: "credit",
-    },
-    {
-      id: "2",
-      creatorName: "Conecte Publi LTDA",
-      amount: -40,
-      date: "15 de abril de 2025",
-      status: "Reservado",
-      type: "debit",
-    },
-    {
-      id: "3",
-      creatorName: "Valor Pago ao Creator",
-      amount: 160,
-      date: "15 de abril de 2025",
-      status: "Pago",
-      type: "credit",
-    },
-  ];
-
-  const filteredTransactions = mockTransactions.filter(
-    (t) => t.status === status
-  );
-
-  if (filteredTransactions.length === 0) {
-    return (
-      <div className="flex justify-center items-center p-8 text-gray-500">
-        Nenhuma transação encontrada
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4 py-4">
-      {filteredTransactions.map((transaction) => (
-        <div
-          key={transaction.id}
-          className="flex items-center justify-between p-4 border rounded-lg"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-2 bg-gray-100 rounded-full">
-              {transaction.type === "credit" ? (
-                <ArrowUpIcon className="w-6 h-6 text-green-600" />
-              ) : (
-                <ArrowDownIcon className="w-6 h-6 text-red-600" />
-              )}
-            </div>
-            <div>
-              <p className="font-medium">{transaction.creatorName}</p>
-              <p className="text-sm text-gray-500">{transaction.date}</p>
-            </div>
-          </div>
-          <p
-            className={cn(
-              "font-medium",
-              transaction.type === "credit" ? "text-green-500" : "text-red-500"
-            )}
-          >
-            {transaction.type === "credit" ? "+" : "-"} R$
-            {Math.abs(transaction.amount).toFixed(2)}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
 }

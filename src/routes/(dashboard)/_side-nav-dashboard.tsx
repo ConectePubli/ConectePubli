@@ -15,6 +15,7 @@ import { useSheetStore } from "@/store/useDashSheetStore";
 import pb from "@/lib/pb";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import sign from "@/assets/wallet/dollar-sign.png";
 
 export const Route = createFileRoute("/(dashboard)/_side-nav-dashboard")({
   component: SideNavDashboard,
@@ -127,6 +128,20 @@ export function SideNavDashboard() {
                 <Link to="/premium/creator" className="flex items-center gap-2">
                   <Flame className="w-6 h-6" />
                   {t("Assinatura premium")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {!isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/carteira-creator"
+                  className="flex items-center gap-2"
+                >
+                  <img src={sign} alt="Carteira" className="w-6 h-6" />
+                  {t("Carteira")}
                 </Link>
               </Button>
             </li>
@@ -311,6 +326,20 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                 >
                   <LayoutGrid className="w-6 h-6" />
                   {t("Vitrine de Campanhas")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {!isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link
+                  to="/carteira-creator"
+                  className="flex items-center gap-2"
+                >
+                  <img src={sign} alt="Carteira" className="w-6 h-6" />
+                  {t("Carteira")}
                 </Link>
               </Button>
             </li>

@@ -4,6 +4,7 @@ import pb from "@/lib/pb";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // Tipos para as participações
 interface Participacao {
@@ -70,6 +71,7 @@ export const Route = createFileRoute(
 });
 
 function Page() {
+  const { t } = useTranslation();
   const [showBalance, setShowBalance] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("showBalance");
@@ -179,7 +181,7 @@ function Page() {
       const participacoesPagas = await pb
         .collection("Campaigns_Participations")
         .getList<Participacao>(1, 100, {
-          filter: `influencer="${influencerId}" && conecte_paid_status="PAID"`,
+          filter: `influencer="${influencerId}" && conecte_paid_status="PAID" && status="completed"`,
           expand: "campaign",
         });
 
@@ -248,9 +250,9 @@ function Page() {
     <div>
       <div className="flex flex-col gap-2">
         <div className="px-10 pt-10 pb-4">
-          <p className="text-lg font-bold">Minha Carteira</p>
+          <p className="text-lg font-bold">{t("Minha Carteira")}</p>
           <p className="text-sm text-gray-500">
-            Acompanhe seus ganhos na Conecte Publi!
+            {t("Acompanhe seus ganhos na Conecte Publi!")}
           </p>
         </div>
 
@@ -268,33 +270,33 @@ function Page() {
             </div>
 
             <div className="flex flex-col gap-2 items-center">
-              <p className="text-sm text-gray-500">Saldo Liberado</p>
+              <p className="text-sm text-gray-500">{t("Saldo Liberado")}</p>
               <p className="text-lg font-bold text-green-500">
                 {showBalance
                   ? saldos.carregando
-                    ? "Carregando..."
+                    ? t("Carregando...")
                     : formatarValor(saldos.saldoLiberado)
                   : "••••••"}
               </p>
             </div>
 
             <div className="flex flex-col gap-2 items-center">
-              <p className="text-sm text-gray-500">Saldo Reservado</p>
+              <p className="text-sm text-gray-500">{t("Saldo Reservado")}</p>
               <p className="text-lg font-bold">
                 {showBalance
                   ? saldos.carregando
-                    ? "Carregando..."
+                    ? t("Carregando...")
                     : formatarValor(saldos.saldoReservado)
                   : "••••••"}
               </p>
             </div>
 
             <div className="flex flex-col gap-2 items-center pr-4">
-              <p className="text-sm text-gray-500">Total Recebido</p>
+              <p className="text-sm text-gray-500">{t("Total Recebido")}</p>
               <p className="text-lg font-bold text-green-500">
                 {showBalance
                   ? saldos.carregando
-                    ? "Carregando..."
+                    ? t("Carregando...")
                     : formatarValor(totalEarnings * 0.8)
                   : "••••••"}
               </p>
@@ -305,7 +307,7 @@ function Page() {
 
       <div className="flex flex-col gap-2">
         <p className="text-base font-bold px-10 py-4">
-          Histórico de Transações
+          {t("Histórico de Transações")}
         </p>
         <TransactionHistory />
       </div>
