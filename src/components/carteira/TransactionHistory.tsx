@@ -23,41 +23,24 @@ export interface Transaction {
 export function TransactionHistory() {
   const { t } = useTranslation();
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 ">
       <div className="flex flex-col gap-4">
         <Tabs defaultValue="Extrato" className="w-full">
-          <TabsList className="border-b rounded-none w-full justify-start h-auto p-0 bg-transparent px-10">
-            <TabsTrigger
-              value="Extrato"
-              className="data-[state=active]:border-primary data-[state=active]:bg-transparent border-b-2 border-transparent rounded-none h-auto pb-2"
-            >
-              {t("Extrato")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="Reservado"
-              className="data-[state=active]:border-primary data-[state=active]:bg-transparent border-b-2 border-transparent rounded-none h-auto pb-2"
-            >
-              {t("Reservado")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="Liberado"
-              className="data-[state=active]:border-primary data-[state=active]:bg-transparent border-b-2 border-transparent rounded-none h-auto pb-2"
-            >
-              {t("Liberado")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="Pago"
-              className="data-[state=active]:border-primary data-[state=active]:bg-transparent border-b-2 border-transparent rounded-none h-auto pb-2"
-            >
-              {t("Pago")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="Cancelado"
-              className="data-[state=active]:border-primary data-[state=active]:bg-transparent border-b-2 border-transparent rounded-none h-auto pb-2"
-            >
-              {t("Cancelado")}
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto  no-scrollbar">
+            <TabsList className="flex w-full justify-start h-auto p-0 bg-transparent px-4 md:px-10 border-b rounded-none min-w-full gap-6">
+              {["Extrato", "Reservado", "Liberado", "Pago", "Cancelado"].map(
+                (status) => (
+                  <TabsTrigger
+                    key={status}
+                    value={status}
+                    className="data-[state=active]:border-primary data-[state=active]:bg-transparent border-b-2 border-transparent rounded-none h-auto pb-2 px-2 md:px-4 text-sm whitespace-nowrap flex-shrink-0 min-w-max"
+                  >
+                    {t(status)}
+                  </TabsTrigger>
+                )
+              )}
+            </TabsList>
+          </div>
 
           <TabsContent value="Extrato">
             <TransactionList status="Extrato" />

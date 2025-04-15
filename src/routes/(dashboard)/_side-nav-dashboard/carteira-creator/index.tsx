@@ -256,10 +256,10 @@ function Page() {
           </p>
         </div>
 
-        <div className="px-10">
-          <div className="flex border rounded-lg p-4 w-fit gap-10">
+        <div className="px-4 md:px-10">
+          <div className="flex flex-col md:flex-row border rounded-lg p-4 gap-6 w-full md:w-fit">
             <div
-              className="flex items-center gap-2 pl-4 cursor-pointer"
+              className="flex items-center justify-center md:pl-4 cursor-pointer"
               onClick={toggleBalance}
             >
               {showBalance ? (
@@ -269,7 +269,7 @@ function Page() {
               )}
             </div>
 
-            <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col gap-1 items-center w-full md:w-auto">
               <p className="text-sm text-gray-500">{t("Saldo Liberado")}</p>
               <p className="text-lg font-bold text-green-500">
                 {showBalance
@@ -280,7 +280,7 @@ function Page() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col gap-1 items-center w-full md:w-auto">
               <p className="text-sm text-gray-500">{t("Saldo Reservado")}</p>
               <p className="text-lg font-bold">
                 {showBalance
@@ -291,7 +291,7 @@ function Page() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-2 items-center pr-4">
+            <div className="flex flex-col gap-1 items-center w-full md:w-auto md:pr-4">
               <p className="text-sm text-gray-500">{t("Total Recebido")}</p>
               <p className="text-lg font-bold text-green-500">
                 {showBalance

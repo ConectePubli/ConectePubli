@@ -144,6 +144,18 @@ export function TransactionList({ status }: TransactionListProps) {
     navigate({ to: `/dashboard/campanhas/${uniqueName}` });
   };
 
+  const statusMessages = {
+    Reservado: t(
+      "A marca aceitou o trabalho, aguardando liberação de pagamento."
+    ),
+    Liberado: t("Conteúdo entregue e aprovado pela marca."),
+    Pago: t("Valor transferido para a conta do Creator."),
+    Cancelado: t("Conteúdo não entregue no prazo, pagamento cancelado."),
+  };
+
+  const mensagemStatus =
+    statusMessages[status as keyof typeof statusMessages] || "";
+
   if (status === "Extrato") {
     return (
       <div className="space-y-6 p-10">
@@ -162,7 +174,7 @@ export function TransactionList({ status }: TransactionListProps) {
           >
             {monthOptions.map((option) => (
               <option key={option.value} value={option.value}>
-                {option.label} 
+                {option.label}
               </option>
             ))}
           </select>
@@ -177,20 +189,20 @@ export function TransactionList({ status }: TransactionListProps) {
             {t("Nenhuma transação encontrada para este mês")}
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 ">
             {transactions.map((transaction) => (
               <div
                 key={transaction.id}
-                className="border rounded-lg p-4 flex justify-evenly"
+                className="border rounded-lg p-4 flex flex-col md:flex-row justify-between gap-8"
               >
                 {/* Parte Esquerda */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-1">
                   <img src={wallet} alt="Valor Total" className="w-12 h-12" />
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1">
                     <p className="font-bold">
                       {transaction.expand?.campaign?.name}
                     </p>
-                    <p>
+                    <p className="text-sm text-gray-600">
                       {new Date(
                         transaction.completed_date || ""
                       ).toLocaleDateString("pt-BR", {
@@ -200,7 +212,7 @@ export function TransactionList({ status }: TransactionListProps) {
                       })}
                     </p>
                   </div>
-                  <p className="text-green-500 font-bold whitespace-nowrap ml-3">
+                  <p className="text-green-500 font-bold whitespace-nowrap ml-auto">
                     +{" "}
                     {formatCurrency(
                       (transaction.expand?.campaign?.price || 0) / 100
@@ -209,11 +221,11 @@ export function TransactionList({ status }: TransactionListProps) {
                 </div>
 
                 {/* Parte Central */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-1">
                   <img src={down} alt="Valor Total" className="w-12 h-12" />
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1">
                     <p className="font-bold">Conecte Publi LTDA</p>
-                    <p>
+                    <p className="text-sm text-gray-600">
                       {new Date(
                         transaction.conecte_paid_date || ""
                       ).toLocaleDateString("pt-BR", {
@@ -223,7 +235,7 @@ export function TransactionList({ status }: TransactionListProps) {
                       })}
                     </p>
                   </div>
-                  <p className="text-red-500 font-bold whitespace-nowrap ml-3">
+                  <p className="text-red-500 font-bold whitespace-nowrap ml-auto">
                     - 20%{" "}
                     {formatCurrency(
                       ((transaction.expand?.campaign?.price || 0) * 0.2) / 100
@@ -232,13 +244,13 @@ export function TransactionList({ status }: TransactionListProps) {
                 </div>
 
                 {/* Parte Direita */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-1">
                   <img src={money} alt="Valor Total" className="w-12 h-12" />
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-1">
                     <p className="font-bold">
                       {transaction.expand?.campaign?.name}
                     </p>
-                    <p>
+                    <p className="text-sm text-gray-600">
                       {new Date(
                         transaction.conecte_paid_date || ""
                       ).toLocaleDateString("pt-BR", {
@@ -248,7 +260,7 @@ export function TransactionList({ status }: TransactionListProps) {
                       })}
                     </p>
                   </div>
-                  <p className="text-green-500 font-bold whitespace-nowrap ml-3">
+                  <p className="text-green-500 font-bold whitespace-nowrap ml-auto">
                     +{" "}
                     {formatCurrency(
                       ((transaction.expand?.campaign?.price || 0) * 0.8) / 100
@@ -312,15 +324,7 @@ export function TransactionList({ status }: TransactionListProps) {
                 <p className="font-medium">
                   {transaction.expand?.campaign?.name || "Campanha sem nome"}
                 </p>
-                <p className="text-sm text-gray-500">
-                  {status === "Reservado"
-                    ? "O trabalho foi aceito pela marca, mas ainda não foi liberado para pagamento"
-                    : status === "Liberado"
-                      ? 'O Creator entregou o conteúdo e a Marca marcou o trabalho como "Trabalho Concluído"'
-                      : status === "Pago"
-                        ? "O valor já foi transferido para a conta cadastrada pelo Creator"
-                        : "Caso o Creator não entregue o conteúdo da campanha dentro do prazo e o pagamento retorne para a marca"}
-                </p>
+                <p className="text-sm text-gray-500">{mensagemStatus}</p>
               </div>
             </div>
             <div className="flex flex-col items-end gap-1">
