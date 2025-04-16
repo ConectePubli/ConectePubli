@@ -38,7 +38,7 @@ export const generateReceiptBrand = (data: {
   doc.setFontSize(12);
   doc.text("Nome da Campanha:", 20, 40);
   doc.setFont("helvetica", "normal");
-  const lines = doc.splitTextToSize(data.campaignName, 140);
+  const lines = doc.splitTextToSize(data.campaignName, 90);
   doc.text(lines, 65, 40);
 
   doc.setFont("helvetica", "bold");
