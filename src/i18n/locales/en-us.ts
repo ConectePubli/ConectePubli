@@ -2019,5 +2019,10 @@ export default {
     "Total Recebido": "Total Received",
     "Histórico de Transações": "Transaction History",
     "Total Investido": "Total Invested",
+    "Pagamento pendente": "Pending Payment",
+    "Pagamento realizado pela Conecte": "Payment made by Conecte",
+    "Pagamento para a Conecte em": "Payment to Conecte on",
+    "Pagamento realizado": "Payment made",
+    "Pagamento cancelado": "Payment canceled",
   },
 };
