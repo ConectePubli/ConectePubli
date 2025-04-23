@@ -2018,5 +2018,6 @@ export default {
     "Saldo Reservado": "Reserved Balance",
     "Total Recebido": "Total Received",
     "Histórico de Transações": "Transaction History",
+    "Total Investido": "Total Invested",
   },
 };

@@ -105,13 +105,13 @@ export function TransactionList({ status }: TransactionListProps) {
 
         const result = await pb
           .collection("Campaigns_Participations")
-          .getList<CampaignParticipation>(1, 50, {
+          .getFullList<CampaignParticipation>({
             filter,
             expand: "campaign,brand",
             sort: "-created",
           });
 
-        setTransactions(result.items);
+        setTransactions(result);
       } catch (error) {
         console.error("Erro ao buscar transações:", error);
       } finally {

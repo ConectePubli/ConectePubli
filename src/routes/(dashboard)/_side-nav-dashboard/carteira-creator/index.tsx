@@ -180,17 +180,14 @@ function Page() {
       // Calcular total de ganhos
       const participacoesPagas = await pb
         .collection("Campaigns_Participations")
-        .getList<Participacao>(1, 100, {
+        .getFullList<Participacao>({
           filter: `influencer="${influencerId}" && conecte_paid_status="PAID" && status="completed"`,
           expand: "campaign",
         });
 
-      const totalGanhos = participacoesPagas.items.reduce(
-        (acc, participacao) => {
-          return acc + (participacao.expand?.campaign?.price || 0) / 100;
-        },
-        0
-      );
+      const totalGanhos = participacoesPagas.reduce((acc, participacao) => {
+        return acc + (participacao.expand?.campaign?.price || 0) / 100;
+      }, 0);
 
       setTotalEarnings(totalGanhos);
 

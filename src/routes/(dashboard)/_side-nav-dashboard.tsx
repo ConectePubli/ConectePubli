@@ -147,6 +147,17 @@ export function SideNavDashboard() {
             </li>
           )}
 
+          {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link to="/carteira-marca" className="flex items-center gap-2">
+                  <img src={sign} alt="Carteira" className="w-6 h-6" />
+                  {t("Carteira")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
           {isBrand && hasPlan && (
             <li>
               <Button variant="ghost" className="w-full justify-start" asChild>
@@ -354,6 +365,17 @@ const Sheet = ({ hasPlan }: SheetProps) => {
                 >
                   <Compass className="w-6 h-6" />
                   {t("Central de recursos")}
+                </Link>
+              </Button>
+            </li>
+          )}
+
+          {isBrand && (
+            <li>
+              <Button variant="ghost" className="w-full justify-start" asChild>
+                <Link to="/carteira-marca" className="flex items-center gap-2">
+                  <img src={sign} alt="Carteira" className="w-6 h-6" />
+                  {t("Carteira")}
                 </Link>
               </Button>
             </li>
