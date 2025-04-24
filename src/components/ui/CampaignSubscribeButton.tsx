@@ -141,10 +141,18 @@ const CampaignSubscribeButton: React.FC = () => {
   const isOwner = campaign?.id === user?.id;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [contentIdea, setContentIdea] = useState("");
+  const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const [isContractAccepted, setIsContractAccepted] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const [isLoadingCancel, setIsLoadingCancel] = useState(false);
+  const [isLoadingInvoice, setIsLoadingInvoice] = useState(false);
+  const [hasInvoice, setHasInvoice] = useState(false);
+
+  const userParticipation = user
+    ? campaignParticipations.find((p) => p.influencer === user.id)
+    : null;
 
   useEffect(() => {
     const unsubscribe = pb.authStore.onChange(() => {
@@ -153,9 +161,11 @@ const CampaignSubscribeButton: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  const userParticipation = user
-    ? campaignParticipations.find((p) => p.influencer === user.id)
-    : null;
+  useEffect(() => {
+    if (userParticipation?.invoice) {
+      setHasInvoice(true);
+    }
+  }, [userParticipation]);
 
   const isUserRegistered = Boolean(userParticipation);
   const participationStatus = userParticipation?.status;
@@ -217,6 +227,31 @@ const CampaignSubscribeButton: React.FC = () => {
       );
     } finally {
       setIsLoadingCancel(false);
+    }
+  };
+
+  const handleInvoiceUpload = async () => {
+    if (!invoiceFile || !userParticipation?.id) return;
+    setIsLoadingInvoice(true);
+    try {
+      const formData = new FormData();
+      formData.append("invoice", invoiceFile);
+      formData.append("participation", userParticipation.id);
+
+      await pb
+        .collection("Campaigns_Participations")
+        .update(userParticipation.id, formData);
+      setHasInvoice(true);
+      toast.success(t("Nota fiscal enviada com sucesso!"));
+      setIsInvoiceModalOpen(false);
+      setInvoiceFile(null);
+    } catch (error) {
+      console.error("Erro ao enviar nota fiscal:", error);
+      toast.error(
+        t("Ocorreu um erro ao enviar a nota fiscal. Tente novamente.")
+      );
+    } finally {
+      setIsLoadingInvoice(false);
     }
   };
 
@@ -341,6 +376,19 @@ const CampaignSubscribeButton: React.FC = () => {
             brandId={campaign?.expand?.brand?.id as string}
           />
         )}
+
+        {participationStatus === "completed" && (
+          <button
+            className={`px-4 py-2 rounded-md mt-2 font-bold border ${
+              hasInvoice
+                ? "bg-green-500 text-white hover:bg-green-600"
+                : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
+            }`}
+            onClick={() => setIsInvoiceModalOpen(true)}
+          >
+            {hasInvoice ? t("Reenviar Nota Fiscal") : t("Anexar Nota Fiscal")}
+          </button>
+        )}
       </div>
 
       {buttonText === "Inscrever-se" && (
@@ -415,6 +463,67 @@ const CampaignSubscribeButton: React.FC = () => {
           </DialogContent>
         </Dialog>
       )}
+
+      <Dialog open={isInvoiceModalOpen} onOpenChange={setIsInvoiceModalOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {hasInvoice
+                ? t("Reenviar Nota Fiscal")
+                : t("Enviar Nota Fiscal para a Marca")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("Finalize sua entrega com profissionalismo!")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4 space-y-4">
+            <ul className="list-disc list-inside space-y-2 text-sm text-gray-600">
+              <li>
+                {t(
+                  "Anexe abaixo o PDF da sua Nota Fiscal referente a este trabalho."
+                )}
+              </li>
+              <li>
+                {t(
+                  "Certifique-se de que o valor da nota corresponde ao valor líquido recebido na campanha"
+                )}
+              </li>
+              <li>
+                {t(
+                  "Essa nota será disponibilizada à marca contratante, garantindo transparência e cumprimento legal."
+                )}
+              </li>
+              <li>
+                {t(
+                  "Se tiver dúvidas sobre como emitir sua NF, recomendamos consultar um contador de confiança"
+                )}
+              </li>
+            </ul>
+
+            <div className="mt-4">
+              <input
+                type="file"
+                accept=".pdf"
+                onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+          </div>
+          <DialogFooter className="mt-4">
+            <button
+              onClick={handleInvoiceUpload}
+              disabled={!invoiceFile || isLoadingInvoice}
+              className={`bg-[#E34105] text-white px-4 py-2 rounded-md ${
+                !invoiceFile || isLoadingInvoice
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-[#E34105]/90"
+              }`}
+            >
+              {isLoadingInvoice ? t("Enviando...") : t("Enviar Nota Fiscal")}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
