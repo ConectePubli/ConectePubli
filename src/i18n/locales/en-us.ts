@@ -2024,5 +2024,18 @@ export default {
     "Pagamento para a Conecte em": "Payment to Conecte on",
     "Pagamento realizado": "Payment made",
     "Pagamento cancelado": "Payment canceled",
+    "Reenviar Nota Fiscal": "Resend Invoice",
+    "Nota Fiscal Enviada": "Invoice Sent",
+    "Anexar Nota Fiscal": "Attach Invoice",
+    "Enviar Nota Fiscal para a Marca": "Send Invoice to the Brand",
+    "Finalize sua entrega com profissionalismo!":
+      "Finalize your delivery with professionalism!",
+    "Anexe abaixo o PDF da sua Nota Fiscal referente a este trabalho.":
+      "Attach below the PDF of your invoice for this work.",
+    "Se tiver dúvidas sobre como emitir sua NF, recomendamos consultar um contador de confiança":
+      "If you have questions about how to issue your invoice, we recommend consulting a trusted accountant",
+    "Nota Fiscal": "Invoice",
+    "Nota Fiscal Reenviada": "Invoice Resent",
+    "Nota Fiscal Anexada": "Invoice Attached",
   },
 };

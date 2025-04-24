@@ -19,6 +19,8 @@ import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { isEnableSubscription } from "@/utils/campaignSubscription";
 import { Campaign } from "@/types/Campaign";
+import { Paperclip } from "lucide-react";
+import { Button } from "./button";
 
 const Spinner: React.FC = () => (
   <svg
@@ -378,16 +380,17 @@ const CampaignSubscribeButton: React.FC = () => {
         )}
 
         {participationStatus === "completed" && (
-          <button
+          <Button
             className={`px-4 py-2 rounded-md mt-2 font-bold border ${
               hasInvoice
-                ? "bg-green-500 text-white hover:bg-green-600"
+                ? "bg-orange-500 text-white hover:bg-orange-600"
                 : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
             }`}
             onClick={() => setIsInvoiceModalOpen(true)}
           >
+            <Paperclip className="w-4 h-4 mr-2" />
             {hasInvoice ? t("Reenviar Nota Fiscal") : t("Anexar Nota Fiscal")}
-          </button>
+          </Button>
         )}
       </div>
 
