@@ -15,7 +15,8 @@ export enum ParticipationStatusFilter {
   Sold_out = "sold_out",
   Waiting = "waiting",
   Analysing = "analysing",
-  Shop_bag = "shop_bag"
+  Canceled = "canceled",
+  Shop_bag = "shop_bag",
 }
 
 export enum CampaignGoalFilter {

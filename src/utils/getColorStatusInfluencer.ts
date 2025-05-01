@@ -10,6 +10,8 @@ export const getStatusColor = (type: string) => {
       return "#DC3545"; // Vagas esgotadas
     case "analysing":
       return "#DC3545"; // Bloqueada
+    case "canceled":
+      return "#DC3545"; // Cancelado
     default:
       return "#000000"; // Cor padrão (preto)
   }
