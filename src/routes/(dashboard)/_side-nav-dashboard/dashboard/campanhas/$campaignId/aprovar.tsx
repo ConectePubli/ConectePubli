@@ -931,7 +931,7 @@ function Page() {
                                     : status === "completed"
                                       ? t("Trabalho Concluído")
                                       : status === "canceled"
-                                        ? t("Cancelado")
+                                        ? t("Trabalho não Entregue")
                                         : ""}
                               </p>
                             )}
