@@ -49,6 +49,7 @@ const ModalNotDelivered: React.FC<Props> = ({
       <RateParticipantModal
         participant={participation.expand?.influencer as Influencer}
         selectedParticipation={participation}
+        jobCanceled={true}
         setModalType={() => {
           setShowRatingModal(false);
           onClose();

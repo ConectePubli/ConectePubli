@@ -930,7 +930,9 @@ function Page() {
                                     ? t("Trabalho em Progresso")
                                     : status === "completed"
                                       ? t("Trabalho Concluído")
-                                      : ""}
+                                      : status === "canceled"
+                                        ? t("Cancelado")
+                                        : ""}
                               </p>
                             )}
                           </div>

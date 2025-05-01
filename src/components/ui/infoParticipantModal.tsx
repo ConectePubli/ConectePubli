@@ -103,7 +103,10 @@ const InfoParticipantModal: React.FC<Props> = ({
                   }, ${participant?.country || t("País não definido")}`}
                 </p>
 
-                <p className="flex items-center"><WhatsappLogo className="w-4 h-4 mr-1" /> {formatPhoneNumber(String(participant?.cell_phone))}</p>
+                <p className="flex items-center">
+                  <WhatsappLogo className="w-4 h-4 mr-1" />{" "}
+                  {formatPhoneNumber(String(participant?.cell_phone))}
+                </p>
               </div>
             )}
           </div>
@@ -138,7 +141,9 @@ const InfoParticipantModal: React.FC<Props> = ({
                     ? t("Trabalho em Progresso")
                     : selectedParticipation.status === "completed"
                       ? t("Trabalho Concluído")
-                      : ""}
+                      : selectedParticipation.status === "canceled"
+                        ? t("Cancelado")
+                        : ""}
               </p>
             </>
           )}
