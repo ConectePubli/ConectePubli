@@ -2000,5 +2000,64 @@ export default {
       "Creator Economy 360º: Strategy and Knowledge for Brands",
     "Descubra como transformar suas campanhas com os produtos essenciais Creator Economy":
       "Discover how to transform your campaigns with Creator Economy essential products",
+    Carteira: "Wallet",
+    "Filtrar por mês:": "Filter by month:",
+    "Carregando transações...": "Loading transactions...",
+    "Nenhuma transação encontrada para este mês":
+      "No transactions found for this month",
+    "Nenhuma transação encontrada": "No transactions found",
+    Extrato: "Statement",
+    Reservado: "Reserved",
+    Liberado: "Released",
+    Pago: "Paid",
+    Cancelado: "Canceled",
+    "Trabalho não Entregue": "Job not Delivered",
+    "Minha Carteira": "My Wallet",
+    "Acompanhe seus ganhos na Conecte Publi!":
+      "Follow your earnings on Conecte Publi!",
+    "Saldo Liberado": "Released Balance",
+    "Saldo Reservado": "Reserved Balance",
+    "Total Recebido": "Total Received",
+    "Histórico de Transações": "Transaction History",
+    "Total Investido": "Total Invested",
+    "Pagamento pendente": "Pending Payment",
+    "Pagamento realizado pela Conecte": "Payment made by Conecte",
+    "Pagamento para a Conecte em": "Payment to Conecte on",
+    "Pagamento realizado": "Payment made",
+    "Pagamento cancelado": "Payment canceled",
+    "Reenviar Nota Fiscal": "Resend Invoice",
+    "Nota Fiscal Enviada": "Invoice Sent",
+    "Anexar Nota Fiscal": "Attach Invoice",
+    "Enviar Nota Fiscal para a Marca": "Send Invoice to the Brand",
+    "Finalize sua entrega com profissionalismo!":
+      "Finalize your delivery with professionalism!",
+    "Anexe abaixo o PDF da sua Nota Fiscal referente a este trabalho.":
+      "Attach below the PDF of your invoice for this work.",
+    "Se tiver dúvidas sobre como emitir sua NF, recomendamos consultar um contador de confiança":
+      "If you have questions about how to issue your invoice, we recommend consulting a trusted accountant",
+    "Nota Fiscal": "Invoice",
+    "Nota Fiscal Reenviada": "Invoice Resent",
+    "Nota Fiscal Anexada": "Invoice Attached",
+    "Confirmar Não Entrega do Creator": "Confirm Creator Not Delivery",
+    "Você está prestes a marcar que o Creator":
+      "You are about to mark that the Creator",
+    "NÃO entregou o trabalho nesta campanha.":
+      "Did not deliver the work in this campaign.",
+    "Essa ação confirma que:": "This action confirms that:",
+    "O Creator não cumpriu o escopo combinado dentro do prazo.":
+      "The Creator did not fulfill the agreed scope within the deadline.",
+    "O valor reservado será estornado para você.":
+      "The reserved amount will be refunded to you.",
+    "O reembolso será processado e disponibilizado no próximo dia 15 do mês subsequente à confirmação.":
+      "The refund will be processed and made available on the 15th day of the following month after confirmation.",
+    "Importante: Essa ação é definitiva e não poderá ser desfeita.":
+      "Important: This action is final and cannot be undone.",
+    "Confirmando...": "Confirming...",
+    "Confirmar não entrega": "Confirm not delivery",
+    "Avaliação não enviada devido ao cancelamento da campanha.":
+      "Evaluation not sent due to campaign cancellation.",
+    "Você confirmou que o Creator": "You confirmed that the Creator",
+    "não realizou a entrega do conteúdo na campanha. Agora, avalie sua experiência para ajudar outras marcas a tomarem decisões mais seguras no futuro.":
+      "did not deliver the content in the campaign. Now, evaluate your experience to help other brands make more secure decisions in the future.",
   },
 };

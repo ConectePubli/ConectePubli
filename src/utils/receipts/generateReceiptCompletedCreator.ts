@@ -1,4 +1,5 @@
 import jsPDF from "jspdf";
+import logo from "@/assets/logo.png";
 
 interface ReceiptData {
   campaignName: string;
@@ -67,7 +68,7 @@ export const generateReceiptCompletedCreator = (data: ReceiptData) => {
 
   doc.setFont("helvetica", "normal");
   doc.rect(20, startY + 30, 170, 10);
-  doc.text("Valor total pago por Creator", 2e2, startY + 37);
+  doc.text("Valor total pago por Creator", 22, startY + 37);
   doc.setFont("helvetica", "bold");
   doc.text(`R$${data.totalAmount.toFixed(2)}`, 178, startY + 37, {
     align: "right",
@@ -82,7 +83,7 @@ export const generateReceiptCompletedCreator = (data: ReceiptData) => {
   doc.text(`R$${data.totalAmount.toFixed(2)}`, 145, startY + 67);
 
   // Logo (simulação — ajuste o caminho correto se usar Vite/webpack)
-  doc.addImage("/src/assets/logo.png", "PNG", 20, 140, 44, 10);
+  doc.addImage(logo, "PNG", 20, 140, 44, 10);
 
   return doc;
 };

@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+import logo from "@/assets/logo.png";
 
 export const generateReceiptBrand = (data: {
   campaignName: string;
@@ -7,10 +8,11 @@ export const generateReceiptBrand = (data: {
   conecteFee: number;
   netValue: number;
   paymentDate: string;
+  completedDate: string;
 }) => {
   const doc = new jsPDF();
 
-  const dateObj = new Date(data.paymentDate.split("/").reverse().join("-"));
+  const dateObj = new Date(data.completedDate.split("/").reverse().join("-"));
   const formattedMonthYear = new Intl.DateTimeFormat("pt-BR", {
     month: "long",
     year: "numeric",
@@ -36,7 +38,7 @@ export const generateReceiptBrand = (data: {
   doc.setFontSize(12);
   doc.text("Nome da Campanha:", 20, 40);
   doc.setFont("helvetica", "normal");
-  const lines = doc.splitTextToSize(data.campaignName, 140);
+  const lines = doc.splitTextToSize(data.campaignName, 90);
   doc.text(lines, 65, 40);
 
   doc.setFont("helvetica", "bold");
@@ -99,7 +101,7 @@ export const generateReceiptBrand = (data: {
 
   // Logo final
   const logoY = subtotalY + 25;
-  doc.addImage("/src/assets/logo.png", "PNG", 20, logoY, 44, 10);
+  doc.addImage(logo, "PNG", 20, logoY, 44, 10);
 
   return doc;
 };

@@ -163,6 +163,9 @@ const BrandCampaignFilter: React.FC<BrandCampaignFilterProps> = ({
                 <option value={ParticipationStatusFilter.Sold_out}>
                   {t("Vagas Esgotadas")}
                 </option>
+                <option value={ParticipationStatusFilter.Canceled}>
+                  {t("Trabalho não Entregue")}
+                </option>
               </select>
             </div>
           )}

@@ -361,6 +361,40 @@ function TermosDeUso() {
         )}
       </p>
 
+      <h2 className="text-lg font-semibold mt-6 mb-2">
+        {t("CLÁUSULA SEXTA - EMISSÃO DE NOTA FISCAL PELOS CREATORS")}
+      </h2>
+
+      <p className="mb-4">
+        {t(
+          "1. A nota fiscal deve ser emitida no momento da conclusão do serviço, sendo considerada como tal a entrega e aprovação do conteúdo pelo contratante (Marca), de acordo com o fluxo operacional da plataforma."
+        )}
+      </p>
+
+      <p className="mb-4">
+        {t(
+          "2. A não emissão da nota fiscal constitui infração legal e pode ser enquadrada como crime contra a ordem tributária, sujeito a multa e demais sanções previstas em lei."
+        )}
+      </p>
+
+      <p className="mb-4">
+        {t(
+          "3. Todos os Creators, incluindo aqueles que atuam como Pessoa Física, têm o dever de avaliar sua regularidade tributária e consultar um contador de confiança para garantir a emissão adequada do documento fiscal. A Conecte Publi não se responsabiliza por infrações fiscais cometidas pelos usuários."
+        )}
+      </p>
+
+      <p className="mb-4">
+        {t(
+          "4. As Marcas têm o direito de exigir o documento fiscal correspondente ao valor pago pela campanha. Por isso, a Conecte Publi disponibiliza, dentro da plataforma, um campo opcional que permite ao Creator anexar o PDF da sua nota fiscal diretamente na campanha para acesso da Marca contratante."
+        )}
+      </p>
+
+      <p className="mb-4">
+        {t(
+          "5. O valor da nota fiscal emitida pelo Creator corresponda exatamente ao valor líquido recebido pela prestação do serviço 80% do valor da transação, conforme discriminado no recibo gerado pela Conecte Publi, já considerando a dedução da taxa de intermediação de 20% retida pela plataforma."
+        )}
+      </p>
+
       <h2 className="text-xl font-semibold mt-6 mb-2">
         {t("Responsabilidades do Usuário")}
       </h2>

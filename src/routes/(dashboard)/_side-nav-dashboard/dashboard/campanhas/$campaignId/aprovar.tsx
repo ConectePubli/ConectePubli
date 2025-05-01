@@ -12,7 +12,7 @@ import { t } from "i18next";
 import { ClientResponseError } from "pocketbase";
 import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
-import { Info, MessageCircle, ThumbsUp, User } from "lucide-react";
+import { Info, MessageCircle, ThumbsUp, User, FileText, X } from "lucide-react";
 import { Flag, Headset, MagnifyingGlassPlus, Warning } from "phosphor-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -51,6 +51,8 @@ import {
   removeFromCart,
 } from "@/services/carCreators";
 
+import ModalNotDelivered from "@/components/ui/ModalNotDelivered";
+
 type LoaderData = {
   campaignData: Campaign | null;
   campaignParticipations: CampaignParticipation[];
@@ -66,20 +68,20 @@ interface SpotlightCampaign {
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/campanhas/$campaignId/aprovar"
 )({
-    loader: async ({ params: { campaignId } }): Promise<LoaderData> => {
+  loader: async ({ params: { campaignId } }): Promise<LoaderData> => {
     try {
       const currentBrandId = pb.authStore.model?.id;
       if (!currentBrandId) {
         throw redirect({ to: "/login" });
       }
-      
+
       const campaignData = await pb
         .collection("Campaigns")
         .getFirstListItem<Campaign>(`id="${campaignId}"`);
       if (!campaignData) {
         throw notFound();
       }
-      
+
       // 1. Buscar as participações da campanha
       const campaignParticipations = await pb
         .collection("Campaigns_Participations")
@@ -88,22 +90,22 @@ export const Route = createFileRoute(
           sort: "created",
           expand: "campaign,influencer",
         });
-      
+
       // 2. Extrair os IDs dos influencers das participações
       const influencerIds = campaignParticipations.map((p) => p.influencer);
       console.log("Influencer IDs das participações:", influencerIds);
-      
+
       // 3. Buscar todos os registros ativos de planos (active = true)
       const allActivePlans = await pb
         .collection("purchased_influencers_plans")
-        .getFullList({ filter: 'active = true' });
-      
+        .getFullList({ filter: "active = true" });
+
       // 4. Filtrar os registros para identificar os influencers com plano ativo
-      const premiumRecords = allActivePlans.filter(record =>
+      const premiumRecords = allActivePlans.filter((record) =>
         influencerIds.includes(record.influencer)
       );
       console.log("Registros premium obtidos:", premiumRecords);
-      
+
       // 5. Criar um Set com os IDs dos influencers premium
       const premiumInfluencerIds = new Set(
         premiumRecords.map((record) => record.influencer)
@@ -112,22 +114,22 @@ export const Route = createFileRoute(
         "IDs de influencers premium:",
         Array.from(premiumInfluencerIds)
       );
-      
+
       // 6. Ordenar as participações: primeiro os premium, depois pelo mais antigo
       campaignParticipations.sort((a, b) => {
         const isPremiumA = premiumInfluencerIds.has(a.influencer);
         const isPremiumB = premiumInfluencerIds.has(b.influencer);
-      
+
         if (isPremiumA && !isPremiumB) return -1;
         if (!isPremiumA && isPremiumB) return 1;
-      
+
         return (
           new Date(a.created ?? 0).getTime() -
           new Date(b.created ?? 0).getTime()
         );
       });
       console.log("Participações ordenadas:", campaignParticipations);
-      
+
       if (
         campaignData.brand !== currentBrandId ||
         campaignData.status === "analyzing" ||
@@ -137,10 +139,10 @@ export const Route = createFileRoute(
           to: `/dashboard/campanhas/${campaignData.id}/status`,
         });
       }
-      
+
       const now = new Date();
       let isSpotlightCampaign: boolean = false;
-      
+
       try {
         // Buscar todos os spotlights ativos
         const activeSpotlights = await pb
@@ -149,16 +151,16 @@ export const Route = createFileRoute(
             filter: `spotlight_end >= "${now.toISOString()}"`,
             sort: "created",
           });
-      
+
         const filteredRecords = activeSpotlights.filter(
           (spotlight) => spotlight.campaign === campaignData.id
         );
-      
+
         isSpotlightCampaign = filteredRecords.length >= 1;
       } catch (spotlightError) {
         console.error("Erro ao buscar spotlights:", spotlightError);
       }
-      
+
       return { campaignData, campaignParticipations, isSpotlightCampaign };
     } catch (error) {
       if (error instanceof ClientResponseError && error.status === 404) {
@@ -592,6 +594,9 @@ function Page() {
     (participation) => participation.status === "approved"
   ).length;
 
+  // Inside the Page component, add the new state:
+  const [showNotDeliveredModal, setShowNotDeliveredModal] = useState(false);
+
   if (error === "not_found" || !campaignData) {
     return <div>{t("Campanha não encontrada")}</div>;
   }
@@ -925,7 +930,9 @@ function Page() {
                                     ? t("Trabalho em Progresso")
                                     : status === "completed"
                                       ? t("Trabalho Concluído")
-                                      : ""}
+                                      : status === "canceled"
+                                        ? t("Trabalho não Entregue")
+                                        : ""}
                               </p>
                             )}
                           </div>
@@ -992,6 +999,27 @@ function Page() {
                             {t("Visualizar")}
                           </Button>
 
+                          {participation.invoice && (
+                            <Button
+                              variant={"blue"}
+                              className="text-base"
+                              onClick={() => {
+                                if (participation.invoice) {
+                                  window.open(
+                                    pb.files.getUrl(
+                                      participation,
+                                      participation.invoice
+                                    ),
+                                    "_blank"
+                                  );
+                                }
+                              }}
+                            >
+                              <FileText size={19} className="mr-1" />{" "}
+                              {t("Ver Nota Fiscal")}
+                            </Button>
+                          )}
+
                           {status === "waiting" &&
                             campaignData.status !== "ended" &&
                             (cartParticipations.some(
@@ -1016,6 +1044,20 @@ function Page() {
                                 {t("Escolher para a Campanha")}
                               </Button>
                             ))}
+
+                          {status === "approved" && (
+                            <Button
+                              variant={"brown"}
+                              className="px-4 py-2 rounded flex items-center text-base"
+                              onClick={() => {
+                                setSelectedParticipation(participation);
+                                setShowNotDeliveredModal(true);
+                              }}
+                            >
+                              <X size={19} className="mr-1" />{" "}
+                              {t("Trabalho não entregue")}
+                            </Button>
+                          )}
 
                           {status === "approved" && (
                             <>
@@ -1136,6 +1178,23 @@ function Page() {
             </div>
           </div>
         </Modal>
+      )}
+      {showNotDeliveredModal && selectedParticipation && (
+        <ModalNotDelivered
+          onClose={() => setShowNotDeliveredModal(false)}
+          participation={selectedParticipation}
+          onStatusChange={async () => {
+            // Atualizar a lista de participações
+            const updatedParticipations = await pb
+              .collection("Campaigns_Participations")
+              .getFullList<CampaignParticipation>({
+                filter: `campaign="${campaignData?.id}"`,
+                sort: "created",
+                expand: "campaign,influencer",
+              });
+            setCampaignParticipations(updatedParticipations);
+          }}
+        />
       )}
       <ToastContainer />
     </div>

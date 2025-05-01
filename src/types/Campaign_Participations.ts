@@ -13,6 +13,7 @@ export interface CampaignParticipation {
   updated?: Date;
   collectionId?: string;
   collectionName?: string;
+  invoice?: string;
   expand?: {
     campaign?: Campaign;
     influencer?: Influencer;

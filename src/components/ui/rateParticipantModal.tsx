@@ -14,12 +14,14 @@ interface Props {
   participant: Influencer;
   selectedParticipation: CampaignParticipation;
   setModalType: React.ComponentState;
+  jobCanceled?: boolean;
 }
 
 const RateParticipantModal: React.FC<Props> = ({
   participant,
   selectedParticipation,
   setModalType,
+  jobCanceled = false,
 }) => {
   const { t } = useTranslation();
   const [ratings, setRatings] = useState({
@@ -125,6 +127,16 @@ const RateParticipantModal: React.FC<Props> = ({
             </p>
           </div>
         </div>
+        <div className="border-t border-gray-300" />
+        {jobCanceled && (
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-gray-600 font-bold">
+              {t(
+                `Você confirmou que o Creator ${participant.name} não realizou a entrega do conteúdo na campanha. Agora, avalie sua experiência para ajudar outras marcas a tomarem decisões mais seguras no futuro.`
+              )}
+            </p>
+          </div>
+        )}
 
         <div className="flex flex-col gap-4">
           <div className="border-t border-gray-300" />
