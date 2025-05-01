@@ -12,7 +12,7 @@ import { t } from "i18next";
 import { ClientResponseError } from "pocketbase";
 import { useNavigate } from "@tanstack/react-router";
 import { CampaignParticipation } from "@/types/Campaign_Participations";
-import { Info, MessageCircle, ThumbsUp, User, FileText } from "lucide-react";
+import { Info, MessageCircle, ThumbsUp, User, FileText, X } from "lucide-react";
 import { Flag, Headset, MagnifyingGlassPlus, Warning } from "phosphor-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -50,6 +50,8 @@ import {
   getCartItems,
   removeFromCart,
 } from "@/services/carCreators";
+
+import ModalNotDelivered from "@/components/ui/ModalNotDelivered";
 
 type LoaderData = {
   campaignData: Campaign | null;
@@ -592,6 +594,9 @@ function Page() {
     (participation) => participation.status === "approved"
   ).length;
 
+  // Inside the Page component, add the new state:
+  const [showNotDeliveredModal, setShowNotDeliveredModal] = useState(false);
+
   if (error === "not_found" || !campaignData) {
     return <div>{t("Campanha não encontrada")}</div>;
   }
@@ -1039,6 +1044,20 @@ function Page() {
                             ))}
 
                           {status === "approved" && (
+                            <Button
+                              variant={"brown"}
+                              className="px-4 py-2 rounded flex items-center text-base"
+                              onClick={() => {
+                                setSelectedParticipation(participation);
+                                setShowNotDeliveredModal(true);
+                              }}
+                            >
+                              <X size={19} className="mr-1" />{" "}
+                              {t("Trabalho não entregue")}
+                            </Button>
+                          )}
+
+                          {status === "approved" && (
                             <>
                               <Button
                                 variant={"brown"}
@@ -1157,6 +1176,23 @@ function Page() {
             </div>
           </div>
         </Modal>
+      )}
+      {showNotDeliveredModal && selectedParticipation && (
+        <ModalNotDelivered
+          onClose={() => setShowNotDeliveredModal(false)}
+          participation={selectedParticipation}
+          onStatusChange={async () => {
+            // Atualizar a lista de participações
+            const updatedParticipations = await pb
+              .collection("Campaigns_Participations")
+              .getFullList<CampaignParticipation>({
+                filter: `campaign="${campaignData?.id}"`,
+                sort: "created",
+                expand: "campaign,influencer",
+              });
+            setCampaignParticipations(updatedParticipations);
+          }}
+        />
       )}
       <ToastContainer />
     </div>

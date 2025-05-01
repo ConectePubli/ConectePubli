@@ -2037,5 +2037,21 @@ export default {
     "Nota Fiscal": "Invoice",
     "Nota Fiscal Reenviada": "Invoice Resent",
     "Nota Fiscal Anexada": "Invoice Attached",
+    "Confirmar Não Entrega do Creator": "Confirm Creator Not Delivery",
+    "Você está prestes a marcar que o Creator":
+      "You are about to mark that the Creator",
+    "NÃO entregou o trabalho nesta campanha.":
+      "Did not deliver the work in this campaign.",
+    "Essa ação confirma que:": "This action confirms that:",
+    "O Creator não cumpriu o escopo combinado dentro do prazo.":
+      "The Creator did not fulfill the agreed scope within the deadline.",
+    "O valor reservado será estornado para você.":
+      "The reserved amount will be refunded to you.",
+    "O reembolso será processado e disponibilizado no próximo dia 15 do mês subsequente à confirmação.":
+      "The refund will be processed and made available on the 15th day of the following month after confirmation.",
+    "Importante: Essa ação é definitiva e não poderá ser desfeita.":
+      "Important: This action is final and cannot be undone.",
+    "Confirmando...": "Confirming...",
+    "Confirmar não entrega": "Confirm not delivery",
   },
 };

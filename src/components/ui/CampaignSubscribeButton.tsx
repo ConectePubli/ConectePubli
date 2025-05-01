@@ -21,6 +21,7 @@ import { isEnableSubscription } from "@/utils/campaignSubscription";
 import { Campaign } from "@/types/Campaign";
 import { Paperclip } from "lucide-react";
 import { Button } from "./button";
+import { CampaignParticipation } from "@/types/Campaign_Participations";
 
 const Spinner: React.FC = () => (
   <svg
@@ -137,6 +138,7 @@ const CampaignSubscribeButton: React.FC = () => {
     campaignParticipations,
     addParticipation,
     removeParticipation,
+    setCampaignParticipations,
   } = useIndividualCampaignStore();
 
   const isBrand = user?.collectionName === "Brands";
@@ -247,6 +249,16 @@ const CampaignSubscribeButton: React.FC = () => {
       toast.success(t("Nota fiscal enviada com sucesso!"));
       setIsInvoiceModalOpen(false);
       setInvoiceFile(null);
+
+      // Atualizar a lista de participações após o upload
+      const updatedParticipations = await pb
+        .collection("Campaigns_Participations")
+        .getFullList<CampaignParticipation>({
+          filter: `campaign="${campaign?.id}"`,
+          sort: "created",
+          expand: "campaign,influencer",
+        });
+      setCampaignParticipations(updatedParticipations);
     } catch (error) {
       console.error("Erro ao enviar nota fiscal:", error);
       toast.error(
