@@ -377,9 +377,11 @@ const CampaignSubscribeButton: React.FC = () => {
             buttonText === "Cancelando..."
               ? "bg-white border-[#942A2A] text-[#942A2A] hover:bg-[#942A2A] hover:text-white"
               : buttonText === "Aprovado pela marca" ||
-                  buttonText === "Trabalho concluído"
-                ? "bg-green-500 text-white cursor-default"
-                : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
+                  buttonText === "Trabalho não Entregue"
+                ? "bg-red-500 text-white cursor-default"
+                : buttonText === "Trabalho concluído"
+                  ? "bg-green-500 text-white cursor-default"
+                  : "bg-[#10438F] text-white hover:bg-[#10438F]/90"
           } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
           disabled={isDisabled}
           onClick={onClickHandler}
