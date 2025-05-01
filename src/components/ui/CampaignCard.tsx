@@ -42,7 +42,7 @@ const CampaignCard: React.FC<CampaignCardProps> = ({
       case "analysing":
         return t("Campanha em análise");
       case "canceled":
-        return t("Cancelado");
+        return t("Trabalho não Entregue");
       default:
         return "";
     }

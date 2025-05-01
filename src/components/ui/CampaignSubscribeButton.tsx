@@ -307,7 +307,7 @@ const CampaignSubscribeButton: React.FC = () => {
         isDisabled = true;
         break;
       case "canceled":
-        buttonText = "Cancelado";
+        buttonText = "Trabalho não Entregue";
         isDisabled = true;
         break;
       default:

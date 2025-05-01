@@ -142,7 +142,7 @@ const InfoParticipantModal: React.FC<Props> = ({
                     : selectedParticipation.status === "completed"
                       ? t("Trabalho Concluído")
                       : selectedParticipation.status === "canceled"
-                        ? t("Cancelado")
+                        ? t("Trabalho não Entregue")
                         : ""}
               </p>
             </>

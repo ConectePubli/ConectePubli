@@ -2011,6 +2011,7 @@ export default {
     Liberado: "Released",
     Pago: "Paid",
     Cancelado: "Canceled",
+    "Trabalho não Entregue": "Job not Delivered",
     "Minha Carteira": "My Wallet",
     "Acompanhe seus ganhos na Conecte Publi!":
       "Follow your earnings on Conecte Publi!",
@@ -2053,5 +2054,10 @@ export default {
       "Important: This action is final and cannot be undone.",
     "Confirmando...": "Confirming...",
     "Confirmar não entrega": "Confirm not delivery",
+    "Avaliação não enviada devido ao cancelamento da campanha.":
+      "Evaluation not sent due to campaign cancellation.",
+    "Você confirmou que o Creator": "You confirmed that the Creator",
+    "não realizou a entrega do conteúdo na campanha. Agora, avalie sua experiência para ajudar outras marcas a tomarem decisões mais seguras no futuro.":
+      "did not deliver the content in the campaign. Now, evaluate your experience to help other brands make more secure decisions in the future.",
   },
 };
