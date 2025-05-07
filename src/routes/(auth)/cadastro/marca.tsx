@@ -3,19 +3,13 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/logo.svg";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
 
-import register_marca from "@/assets/register-marca.webp";
+import logo from "@/assets/logo.svg";
+import register_marca from "@/assets/register-brands-mockup.png";
+import orange_check from "@/assets/orange-check-conecte.png";
+
 import pb from "@/lib/pb";
 
-import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { validateEmail } from "@/utils/validateEmail";
 import { getUserType } from "@/lib/auth";
 import { Eye, EyeOff } from "lucide-react";
@@ -86,11 +80,7 @@ function Page() {
 
         const data = {
           name: formData.name,
-          responsible_name: formData.responsible_name,
           email: formData.email,
-          cell_phone: formData.phone.replace(/\D/g, ""),
-          known_from: formData.knownFrom,
-          known_from_details: formData.knownFromDetails,
           password: formData.password,
           passwordConfirm: formData.confirmPassword,
         };
@@ -98,7 +88,7 @@ function Page() {
         await pb.collection("Brands").create(data);
       },
       onSuccess: () => {
-        navigate({ to: "/login" });
+        navigate({ to: "/login", search: { recentRegister: true } });
         setErrorMessage("");
       },
       onError: (error) => {
@@ -112,11 +102,6 @@ function Page() {
         mutation.reset();
       },
     });
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedPhone = formatPhoneNumber(e.target.value);
-    setFormData({ ...formData, phone: formattedPhone });
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,46 +144,76 @@ function Page() {
     mutation.mutate();
   };
 
-  const knownFromOptions = [
-    { value: "indAmigos", label: "Indicação de amigos ou colegas" },
-    { value: "indUsuario", label: "Indicação de outro usuário na plataforma" },
-    { value: "instagram", label: "Instagram" },
-    { value: "facebook", label: "Facebook" },
-    { value: "linkedin", label: "LinkedIn" },
-    { value: "youtube", label: "YouTube" },
-    { value: "tiktok", label: "TikTok" },
-    { value: "kwai", label: "Kwai" },
-    { value: "twitter", label: "Twitter/X" },
-    { value: "yourclub", label: "YourClub" },
-    { value: "emailmarketing", label: "E-mail marketing" },
-    { value: "midia", label: "Mídia" },
-    { value: "google", label: "Pesquisa no Google" },
-    { value: "outrobuscador", label: "Pesquisa em outro buscador" },
-    { value: "outra", label: "Outra" },
-  ];
-
   return (
     <div className="relative">
       <div className="grid lg:grid-cols-2 overflow-hidden items-center min-h-screen">
-        <div
-          className="hidden lg:block w-full h-full bg-cover bg-center"
-          style={{ backgroundImage: `url(${register_marca})` }}
-        ></div>
-
-        <div className="w-full flex flex-col justify-start overflow-y-auto px-4 py-6 lg:p-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2x">
-          <Link to="/" className="mb-8 block w-fit">
-            <img src={logo} alt="ConectePubli" className="h-7" />
+        {/* Primeira coluna - com as informações de cadastro */}
+        <div className="flex flex-col p-4 lg:p-12 space-y-4 lg:space-y-8">
+          <Link to="/" className="mb-6 lg:mb-12 block w-fit">
+            <img src={logo} alt="ConectePubli" className="h-8 lg:h-12" />
           </Link>
 
-          <h2 className="text-3xl font-bold mb-4">
+          <h2 className="text-3xl lg:text-5xl font-bold mb-4 lg:mb-8">
             {t("Cadastro para Marcas")}
           </h2>
-          <p className="text-gray-600 mb-6">
+
+          <p className="text-lg lg:text-2xl text-gray-600 mb-4 lg:mb-8">
             {t(
-              "Junte-se à ConectePubli e conecte sua marca a creators que podem amplificar sua mensagem de forma autêntica."
+              "Faça seu Cadastro, Crie sua primeira Campanha e Encontre Creators em menos de 5 Minutos!"
             )}
           </p>
 
+          <p className="text-lg lg:text-2xl text-gray-600 mb-4 lg:mb-8">
+            {t(
+              "Conecte-se Rapidamente a Creators prontos para Impulsionar sua Marca!"
+            )}
+          </p>
+
+          {/* Lista de características */}
+          <div className="flex flex-col lg:flex-row justify-center items-center gap-6 lg:gap-0">
+            <div className="flex flex-col gap-4 lg:gap-6 justify-center">
+              <div className="flex items-center gap-3">
+                <img
+                  src={orange_check}
+                  alt="Cadastro para Marcas"
+                  className="h-6 w-6 lg:h-8 lg:w-8"
+                />
+                <p className="text-base lg:text-xl font-semibold">
+                  {t("Crie Campanhas em Minutos")}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <img
+                  src={orange_check}
+                  alt="Cadastro para Marcas"
+                  className="h-6 w-6 lg:h-8 lg:w-8"
+                />
+                <p className="text-base lg:text-xl font-semibold">
+                  {t("Acesse Creators Verificados")}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <img
+                  src={orange_check}
+                  alt="Cadastro para Marcas"
+                  className="h-6 w-6 lg:h-8 lg:w-8"
+                />
+                <p className="text-base lg:text-xl font-semibold">
+                  {t("Gerencie Tudo Em Um Só Lugar")}
+                </p>
+              </div>
+            </div>
+
+            {/* Imagem ao lado - visível apenas em telas grandes */}
+            <img
+              src={register_marca}
+              alt="Cadastro para Marcas"
+              className="hidden lg:block w-[45%] mx-auto"
+            />
+          </div>
+        </div>
+
+        <div className="w-full flex flex-col justify-start overflow-y-auto px-4 py-6 lg:p-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2x">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
@@ -217,28 +232,6 @@ function Page() {
                 }
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder={t("Digite o nome da sua marca ou empresa")}
-                maxLength={50}
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
-                htmlFor="responsibleName"
-              >
-                {t("Nome do Responsável")}
-                <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="responsibleName"
-                value={formData.responsible_name}
-                onChange={(e) =>
-                  setFormData({ ...formData, responsible_name: e.target.value })
-                }
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder={t("Nome do responsável da marca ou empresa")}
                 maxLength={50}
                 required
               />
@@ -269,78 +262,6 @@ function Page() {
                 placeholder={t("Informe o e-mail de contato da empresa")}
                 required
               />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
-                htmlFor="telefone"
-              >
-                {t("Número de Celular/Whatsapp")}
-              </label>
-              <input
-                type="tel"
-                id="telefone"
-                value={formData.phone}
-                onChange={handlePhoneChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder={t("(XX) XXXXX-XXXX")}
-                maxLength={15}
-              />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
-                htmlFor="knownFrom"
-              >
-                {t("Como você conheceu a Conecte Publi?")}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <Select
-                onValueChange={(value) => {
-                  setFormData({
-                    ...formData,
-                    knownFrom: value,
-                    knownFromDetails: "",
-                  });
-                }}
-                value={formData.knownFrom}
-              >
-                <SelectTrigger className="w-full border border-gray-300 rounded-md">
-                  <SelectValue placeholder={t("Selecione")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {knownFromOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {t(option.label)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {(formData.knownFrom === "indAmigos" ||
-                formData.knownFrom === "indUsuario" ||
-                formData.knownFrom === "outra") && (
-                <div className="mt-2">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t("Especifique:")}
-                    <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.knownFromDetails}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        knownFromDetails: e.target.value,
-                      })
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder={t("Forneça mais detalhes")}
-                    required
-                  />
-                </div>
-              )}
             </div>
 
             <div>

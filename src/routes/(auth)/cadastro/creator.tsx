@@ -4,14 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.svg";
-import register_influencer from "@/assets/register-influencer.webp";
+import register_creators from "@/assets/register-creators-mockup.png";
 import pb from "@/lib/pb";
-import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { validateEmail } from "@/utils/validateEmail";
 import { getUserType } from "@/lib/auth";
 import { ClientResponseError } from "pocketbase";
 import { Eye, EyeOff } from "lucide-react";
 import { t } from "i18next";
+import orange_check from "@/assets/orange-check-conecte.png";
 
 export const Route = createFileRoute("/(auth)/cadastro/creator")({
   component: Page,
@@ -70,7 +70,7 @@ function Page() {
       await pb.collection("Influencers").create(data);
     },
     onSuccess: () => {
-      navigate({ to: "/login" });
+      navigate({ to: "/login", search: { recentRegister: true } });
       setErrorMessage("");
     },
     onError: (error) => {
@@ -83,11 +83,6 @@ function Page() {
       }
     },
   });
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedPhone = formatPhoneNumber(e.target.value);
-    setFormData({ ...formData, phone: formattedPhone });
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,25 +112,72 @@ function Page() {
   return (
     <div className="relative">
       <div className="grid lg:grid-cols-2 overflow-hidden items-center min-h-screen">
-        <div
-          className="hidden lg:block w-full h-full bg-cover bg-center"
-          style={{ backgroundImage: `url(${register_influencer})` }}
-        ></div>
-
-        <div className="w-full flex flex-col justify-start overflow-y-auto px-4 py-6 lg:p-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2x">
-          <Link to="/" className="mb-8 block w-fit">
-            <img src={logo} alt="ConectePubli" className="h-7" />
+        <div className="flex flex-col p-4 lg:p-12 space-y-4 lg:space-y-8">
+          <Link to="/" className="mb-6 lg:mb-12 block w-fit">
+            <img src={logo} alt="ConectePubli" className="h-8 lg:h-12" />
           </Link>
 
-          <h2 className="text-3xl font-bold mb-4">
+          <h2 className="text-3xl lg:text-5xl font-bold mb-4 lg:mb-8">
             {t("Cadastro para Creators")}
           </h2>
-          <p className="text-gray-600 mb-6">
+
+          <p className="text-lg lg:text-2xl text-gray-600 mb-4 lg:mb-8">
             {t(
-              "Junte-se à ConectePubli e faça parte de uma rede exclusiva de creators."
+              "Ganhe dinheiro criando conteúdos autênticos, sem precisar ser famoso!"
             )}
           </p>
 
+          <p className="text-lg lg:text-2xl text-gray-600 mb-4 lg:mb-8">
+            {t(
+              "Cadastre-se agora e descubra campanhas reais para gerar sua renda extra. Comece em menos de 2 minutos!"
+            )}
+          </p>
+
+          {/* Lista de características */}
+          <div className="flex flex-col lg:flex-row justify-center items-center gap-6 lg:gap-0">
+            {/* Imagem ao lado - visível apenas em telas grandes */}
+            <img
+              src={register_creators}
+              alt="Cadastro para Creators"
+              className="hidden lg:block w-[20%] mr-12"
+            />
+
+            <div className="flex flex-col gap-4 lg:gap-6 justify-center">
+              <div className="flex items-center gap-3">
+                <img
+                  src={orange_check}
+                  alt="Cadastro para Creator"
+                  className="h-6 w-6 lg:h-8 lg:w-8"
+                />
+                <p className="text-base lg:text-xl font-semibold">
+                  {t("Receba produtos de marcas reais")}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <img
+                  src={orange_check}
+                  alt="Cadastro para Creator"
+                  className="h-6 w-6 lg:h-8 lg:w-8"
+                />
+                <p className="text-base lg:text-xl font-semibold">
+                  {t("Crie conteúdos simples e seja pago")}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <img
+                  src={orange_check}
+                  alt="Cadastro para Creator"
+                  className="h-6 w-6 lg:h-8 lg:w-8"
+                />
+                <p className="text-base lg:text-xl font-semibold">
+                  {t("Ganhe dinheiro sem precisar postar nas suas redes")}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full flex flex-col justify-start overflow-y-auto px-4 py-6 lg:p-12 mx-auto max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2x">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
@@ -183,24 +225,6 @@ function Page() {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 placeholder={t("Informe o e-mail de contato")}
                 required
-              />
-            </div>
-
-            <div>
-              <label
-                className="block text-sm font-medium text-gray-700"
-                htmlFor="influencerPhone"
-              >
-                {t("Número de Celular/Whatsapp")}
-              </label>
-              <input
-                type="tel"
-                id="influencerPhone"
-                value={formData.phone}
-                onChange={handlePhoneChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="(XX) XXXXX-XXXX"
-                maxLength={15}
               />
             </div>
 
@@ -326,6 +350,16 @@ function Page() {
                   {t("formulário de cadastro para marcas")}
                 </a>{" "}
                 {t("aqui.")}
+              </p>
+
+              <p className="text-sm mt-2">
+                {t("Já tem uma conta? ")}{" "}
+                <a
+                  className="text-customLinkBlue underline cursor-pointer"
+                  onClick={() => navigate({ to: "/login" })}
+                >
+                  {t("Faça login")}
+                </a>{" "}
               </p>
             </div>
           </form>

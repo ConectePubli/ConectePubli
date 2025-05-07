@@ -5,8 +5,9 @@ import pb from "@/lib/pb";
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard/"
 )({
-  beforeLoad: async () => {
+  beforeLoad: async ({ search }) => {
     const userType = await getUserType();
+    const { recentRegister } = search as { recentRegister: string };
 
     if (!userType) {
       throw redirect({
@@ -15,10 +16,12 @@ export const Route = createFileRoute(
     } else if (userType === "Brands") {
       throw redirect({
         to: "/dashboard-marca",
+        search: { recentRegister },
       });
     } else if (userType === "Influencers") {
       throw redirect({
         to: "/dashboard-creator",
+        search: { recentRegister },
       });
     } else {
       pb.authStore.clear();

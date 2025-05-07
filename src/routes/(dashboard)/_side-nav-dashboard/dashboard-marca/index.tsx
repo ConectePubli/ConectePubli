@@ -1,6 +1,11 @@
 import MuxPlayer from "@mux/mux-player-react";
 import { useEffect, useState } from "react";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  useNavigate,
+  useSearch,
+} from "@tanstack/react-router";
 import { Plus, Workflow } from "lucide-react";
 import { File } from "phosphor-react";
 import { useTranslation } from "react-i18next";
@@ -13,6 +18,7 @@ import Pagination from "@/components/ui/Pagination";
 import Spinner from "@/components/ui/Spinner";
 import Modal from "@/components/ui/Modal";
 import SponsorBanner from "@/components/ui/SponsorBanner";
+import SuccessRegistrationDialog from "@/components/ui/SuccessRegistrationDialog";
 import { Button } from "@/components/ui/button";
 
 import { Deliverables } from "@/types/Deliverables";
@@ -21,6 +27,7 @@ import { useCampaignStore } from "@/store/useCampaignStore";
 import { getUserType } from "@/lib/auth";
 import { getBrandDeliverables, returnStatus } from "@/services/deliverables";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
+import pb from "@/lib/pb";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-marca/"
@@ -49,6 +56,9 @@ export const Route = createFileRoute(
 function Page() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { recentRegister } = useSearch({
+    from: "/(dashboard)/_side-nav-dashboard/dashboard-marca/",
+  });
 
   const {
     fetchCampaigns,
@@ -61,6 +71,15 @@ function Page() {
     resetFilters,
   } = useCampaignStore();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const playbackId = "OtAqjPz6J5oR7lVldgjVhBmlmxWIHiomTc0100mfUMGSc";
+
+  const [isModalDeliverableOpen, setModalDeliverableOpen] = useState(false);
+  const [loadingDeliverables, setLoadingDeliverables] = useState(false);
+  const [deliverables, setDeliverables] = useState<Deliverables[]>([]);
+
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+
   useEffect(() => {
     resetFilters();
   }, [resetFilters]);
@@ -69,12 +88,11 @@ function Page() {
     fetchCampaigns();
   }, [fetchCampaigns, statusFilter, campaignGoalFilter, searchTerm, page]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const playbackId = "OtAqjPz6J5oR7lVldgjVhBmlmxWIHiomTc0100mfUMGSc";
-
-  const [isModalDeliverableOpen, setModalDeliverableOpen] = useState(false);
-  const [loadingDeliverables, setLoadingDeliverables] = useState(false);
-  const [deliverables, setDeliverables] = useState<Deliverables[]>([]);
+  useEffect(() => {
+    if (recentRegister) {
+      setIsSuccessDialogOpen(true);
+    }
+  }, [recentRegister]);
 
   const openDeliverableModal = async () => {
     setModalDeliverableOpen(true);
@@ -90,6 +108,12 @@ function Page() {
   return (
     <div>
       <SponsorBanner />
+
+      <SuccessRegistrationDialog
+        isOpen={isSuccessDialogOpen}
+        onClose={() => setIsSuccessDialogOpen(false)}
+        redirectPath={`/marca/${pb.authStore.model?.username}/editar`}
+      />
 
       <div className="p-4 overflow-y-auto">
         <h1 className="text-2xl font-bold">{t("Minhas Campanhas")}</h1>

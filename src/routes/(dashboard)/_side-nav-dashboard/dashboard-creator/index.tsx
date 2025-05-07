@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  useNavigate,
+  useSearch,
+} from "@tanstack/react-router";
 import { t } from "i18next";
 
 import ProfilePlaceholder from "@/assets/profile-placeholder.webp";
@@ -13,6 +18,7 @@ import BrandCampaignFilter from "@/components/ui/BrandCampaignFilter";
 import Modal from "@/components/ui/Modal";
 import Pagination from "@/components/ui/Pagination";
 import SponsorBanner from "@/components/ui/SponsorBanner";
+import SuccessRegistrationDialog from "@/components/ui/SuccessRegistrationDialog";
 import { Button } from "@/components/ui/button";
 
 import { getUserType } from "@/lib/auth";
@@ -20,6 +26,7 @@ import { getCreatorDeliverables, returnStatus } from "@/services/deliverables";
 import { formatCentsToCurrency } from "@/utils/formatCentsToCurrency";
 import { useCampaignStore } from "@/store/useCampaignStore";
 import { HandCoins } from "lucide-react";
+import pb from "@/lib/pb";
 
 export const Route = createFileRoute(
   "/(dashboard)/_side-nav-dashboard/dashboard-creator/"
@@ -47,6 +54,18 @@ export const Route = createFileRoute(
 
 function Page() {
   const navigate = useNavigate();
+  const { recentRegister } = useSearch({
+    from: "/(dashboard)/_side-nav-dashboard/dashboard-creator/",
+  });
+
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (recentRegister) {
+      setIsSuccessDialogOpen(true);
+    }
+  }, [recentRegister]);
+
   const {
     fetchParticipatingCampaigns,
     campaignGoalFilter,
@@ -93,6 +112,12 @@ function Page() {
   return (
     <div>
       <SponsorBanner />
+
+      <SuccessRegistrationDialog
+        isOpen={isSuccessDialogOpen}
+        onClose={() => setIsSuccessDialogOpen(false)}
+        redirectPath={`/creator/${pb.authStore.model?.username}/editar`}
+      />
 
       <div className="mx-auto py-6 px-4">
         <div className="flex items-center justify-between w-full max-sm:flex-col">

@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  redirect,
+  useSearch,
+} from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
@@ -32,6 +37,7 @@ export const Route = createFileRoute("/(auth)/login/")({
 
 function Page() {
   const navigate = useNavigate();
+  const { recentRegister } = useSearch({ strict: false });
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,7 +54,10 @@ function Page() {
         .authWithPassword(email.toLowerCase(), password);
     },
     onSuccess: () => {
-      navigate({ to: "/dashboard" });
+      navigate({
+        to: "/dashboard",
+        search: { recentRegister: recentRegister },
+      });
     },
     onError: (error: any) => {
       if (error.message === "Failed to authenticate.") {
