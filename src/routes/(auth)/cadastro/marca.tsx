@@ -111,18 +111,6 @@ function Page() {
       return;
     }
 
-    if (
-      (formData.knownFrom === "indAmigos" ||
-        formData.knownFrom === "indUsuario" ||
-        formData.knownFrom === "outra") &&
-      !formData.knownFromDetails.trim()
-    ) {
-      setErrorMessage(
-        "Por favor, especifique como você conheceu a Conecte Publi."
-      );
-      return;
-    }
-
     if (formData.password.length < 8) {
       setErrorMessage("A senha precisa ter mais que 8 caracteres.");
       return;
@@ -130,14 +118,6 @@ function Page() {
 
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage("As senhas não coincidem.");
-      return;
-    }
-
-    // Validação adicional
-    if (!formData.knownFrom) {
-      setErrorMessage(
-        "Por favor, selecione como você conheceu a Conecte Publi."
-      );
       return;
     }
 
@@ -170,7 +150,7 @@ function Page() {
           </p>
 
           {/* Lista de características */}
-          <div className="flex flex-col lg:flex-row justify-center items-center gap-6 lg:gap-0">
+          <div className="flex flex-col lg:flex-row justify-center gap-6 lg:gap-0">
             <div className="flex flex-col gap-4 lg:gap-6 justify-center">
               <div className="flex items-center gap-3">
                 <img

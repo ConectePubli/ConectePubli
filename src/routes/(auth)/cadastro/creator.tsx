@@ -134,7 +134,7 @@ function Page() {
           </p>
 
           {/* Lista de características */}
-          <div className="flex flex-col lg:flex-row justify-center items-center gap-6 lg:gap-0">
+          <div className="flex flex-col lg:flex-row justify-center gap-6 lg:gap-0">
             {/* Imagem ao lado - visível apenas em telas grandes */}
             <img
               src={register_creators}
